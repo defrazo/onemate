@@ -1,0 +1,47 @@
+.calc-container {
+    display: flex;
+    flex-direction: column;
+    padding: 1%;
+    box-sizing: border-box;
+    border-radius: 10px;
+}
+
+.calc-container__display {
+    font-size: 1.5em;
+    font-weight: 500;
+    text-align: right;
+    cursor: default;
+    pointer-events: none;
+}
+
+.calc-container__btns {
+    display: flex;
+    flex-wrap: wrap;
+    margin-top: 10px;
+}
+
+.calc-container__btns__btn {
+    flex: calc(20% - 4px);
+    margin: 3px 2px;
+    padding: 0;
+}
+
+.calc-container__log__textarea {
+    display: none;
+    max-height: 20vh;
+    padding: 1%;
+    text-align: right;
+    border-radius: 10px;
+    cursor: default;
+    resize: none;
+}
+
+.calc-container__log--visible {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+}
+
+.calc-container__log--visible .calc-container__log__textarea {
+    display: block;
+}

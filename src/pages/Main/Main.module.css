@@ -1,0 +1,16 @@
+.main-container {
+    display: flex;
+    height: 86%;
+    padding: 1%;
+    justify-content: space-between;
+}
+
+.main-container__first-col,
+.main-container__second-col,
+.main-container__third-col {
+    display: flex;
+    height: 100%;
+    flex-direction: column;
+    width: 32vw;
+    justify-content: space-between;
+}

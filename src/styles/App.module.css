@@ -1,0 +1,37 @@
+.app__default-background {
+    background-image: url('../assets/img/back.jpg');
+    background-size: cover;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.app__welcome-message {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: center;
+    margin-left: 10%;
+    z-index: 0;
+    cursor: default;
+}
+
+.app__welcome-message h2 {
+    color: #f1f1f1;
+    font-size: 5.5em;
+}
+
+.app__welcome-message.app__welcome-message--hidden {
+    display: none;
+}
+
+.app__slider-container {
+    display: flex;
+    width: 516px;
+    flex-wrap: nowrap;
+    align-items: center;
+    overflow: hidden;
+}
+
+.app__blur-background {
+    filter: blur(5px);
+}

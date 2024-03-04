@@ -1,0 +1,7 @@
+.calendar-container {
+    padding: 1%;
+    box-sizing: border-box;
+    border: none;
+    border-radius: 10px;
+    z-index: 1;
+}

@@ -1,0 +1,11 @@
+.switcher {
+    height: 30px;
+    position: absolute;
+    right: 15px;
+    transition: transform 0.5s ease-in-out;
+    cursor: pointer;
+}
+
+.switcher:hover {
+    transform: rotate(360deg);
+}

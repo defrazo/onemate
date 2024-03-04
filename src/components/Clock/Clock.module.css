@@ -1,0 +1,46 @@
+.clock-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.clock-container__analog-clock {
+    position: relative;
+    display: flex;
+    width: 150px;
+    height: 150px;
+    align-content: center;
+    justify-content: center;
+    background: url('../../assets/img/clock.png') no-repeat;
+    background-size: contain;
+}
+
+.clock-container__analog-clock__hands {
+    position: absolute;
+    top: 50%;
+    left: 49%;
+}
+
+.clock-container__analog-clock__hands__hour {
+    width: 3px;
+    height: 33px;
+    margin-top: -33px;
+    background-color: #000;
+    border-radius: 5px;
+}
+
+.clock-container__analog-clock__hands__min {
+    width: 3px;
+    height: 52px;
+    margin-top: -52px;
+    background-color: #000;
+    border-radius: 5px;
+}
+
+.clock-container__analog-clock__hands__sec {
+    width: 1px;
+    height: 55px;
+    margin-top: -55px;
+    background-color: #ff7300;
+    border-radius: 5px;
+}
