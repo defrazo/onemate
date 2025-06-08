@@ -1,56 +1,63 @@
 {
-  "name": "organizer",
-  "version": "0.1.0",
-  "private": true,
-  "dependencies": {
-    "@testing-library/jest-dom": "^5.17.0",
-    "@testing-library/react": "^13.4.0",
-    "@testing-library/user-event": "^13.5.0",
-    "axios": "^1.6.2",
-    "chart.js": "^4.4.0",
-    "crypto": "^1.0.1",
-    "crypto-browserify": "^3.12.0",
-    "mongodb": "^6.3.0",
-    "react": "^18.2.0",
-    "react-calendar": "^4.8.0",
-    "react-dom": "^18.2.0",
-    "react-player": "^2.14.1",
-    "react-redux": "^8.1.3",
-    "react-router-dom": "^6.19.0",
-    "react-scripts": "5.0.1",
-    "react-toastify": "^10.0.4",
-    "react-tooltip": "^5.25.0",
-    "redux": "^4.2.1",
-    "redux-devtools-extension": "^2.13.9",
-    "redux-thunk": "^2.4.2",
-    "styled-components": "^6.1.8",
-    "util": "^0.12.5",
-    "web-vitals": "^2.1.4",
-    "webpack-node-externals": "^3.0.0",
-    "zlib": "^1.0.5"
-  },
-  "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
-  },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  }
+    "name": "organizer",
+    "version": "0.1.0",
+    "type": "module",
+    "private": true,
+    "dependencies": {
+        "@dnd-kit/core": "^6.3.1",
+        "@dnd-kit/sortable": "^10.0.0",
+        "@supabase/supabase-js": "^2.49.4",
+        "@tailwindcss/vite": "^4.0.6",
+        "@use-gesture/react": "^10.3.1",
+        "clsx": "^2.1.1",
+        "copy-to-clipboard": "^3.3.3",
+        "cyrillic-to-translit-js": "^3.2.1",
+        "date-fns": "^4.1.0",
+        "mobx": "^6.13.6",
+        "mobx-react": "^9.2.0",
+        "mobx-react-lite": "^4.1.0",
+        "react": "^19.0.0",
+        "react-calendar": "^5.1.0",
+        "react-dom": "^19.0.0",
+        "react-icons": "^5.5.0",
+        "react-router-dom": "^7.1.5",
+        "react-toastify": "^11.0.3",
+        "sass": "^1.84.0",
+        "sonner": "^2.0.3",
+        "tailwind-merge": "^3.0.1",
+        "transliteration": "^2.3.5"
+    },
+    "devDependencies": {
+        "@tailwindcss/postcss": "^4.0.6",
+        "@types/node": "^22.15.2",
+        "@types/react": "^19.0.8",
+        "@types/react-dom": "^19.0.3",
+        "@typescript-eslint/eslint-plugin": "^8.24.0",
+        "@typescript-eslint/parser": "^8.24.0",
+        "@vitejs/plugin-react": "^4.3.4",
+        "autoprefixer": "^10.4.20",
+        "eslint": "^9.20.1",
+        "eslint-config-prettier": "^10.0.1",
+        "eslint-import-resolver-typescript": "^3.7.0",
+        "eslint-plugin-jsx-a11y": "^6.10.2",
+        "eslint-plugin-prettier": "^5.2.3",
+        "eslint-plugin-react": "^7.37.4",
+        "eslint-plugin-react-hooks": "^5.1.0",
+        "eslint-plugin-simple-import-sort": "^12.1.1",
+        "eslint-plugin-sort-keys-fix": "^1.1.2",
+        "eslint-plugin-tailwindcss": "^3.18.0",
+        "postcss": "^8.5.2",
+        "prettier": "^3.5.0",
+        "prettier-plugin-classnames": "^0.7.6",
+        "prettier-plugin-tailwindcss": "^0.6.11",
+        "tailwindcss": "^4.0.6",
+        "typescript": "^5.7.3",
+        "vite": "^6.1.0",
+        "vite-plugin-svgr": "^4.3.0"
+    },
+    "scripts": {
+        "dev": "vite",
+        "build": "vite build",
+        "preview": "vite preview"
+    }
 }

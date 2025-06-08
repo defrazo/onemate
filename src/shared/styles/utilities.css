@@ -1,0 +1,17 @@
+@layer utilities {
+	.core-base {
+		@apply bg-[var(--bg-secondary)] text-[var(--color-primary)];
+	}
+
+	.core-elements {
+		@apply bg-[var(--bg-tertiary)];
+	}
+
+	.core-border {
+		@apply border-1 border-[var(--border-color)];
+	}
+
+	.core-header {
+		@apply mr-auto text-center text-2xl font-bold select-none;
+	}
+}

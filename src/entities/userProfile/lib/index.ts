@@ -1,0 +1,1 @@
+export { checkUserProfile } from './checkUserProfile';

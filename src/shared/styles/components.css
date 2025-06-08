@@ -1,0 +1,17 @@
+@layer components {
+	.core-card {
+		@apply rounded-xl p-2 md:p-4;
+	}
+
+	a {
+		@apply cursor-pointer select-none hover:text-[var(--accent-default)];
+	}
+
+	.textSubhead {
+		@apply mb-4 text-5xl font-semibold;
+	}
+
+	.textSection {
+		@apply mb-4 text-justify text-xl;
+	}
+}

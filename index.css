@@ -1,0 +1,20 @@
+@import 'tailwindcss';
+@config "./tailwind.config.js";
+
+/* Импорт шрифтов */
+@import './src/shared/styles/font.css';
+
+/* Импорт базовых стилей */
+@import './src/shared/styles/base.css';
+
+/* Импорт тем */
+@import './src/shared/styles/themes.css';
+
+/* Импорт компонентов */
+@import './src/shared/styles/components.css';
+
+/* Импорт утилит */
+@import './src/shared/styles/utilities.css';
+
+/* Импорт специальных стилей */
+@import './src/shared/styles/special.css';

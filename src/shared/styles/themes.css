@@ -1,0 +1,65 @@
+.dark-theme {
+	/* Текст */
+	--color-primary: #d7d7d7;
+	--color-secondary: #a0a0a0;
+	--color-disabled: #666666;
+
+	/* Акцентные цвета */
+	--accent-default: #c5622d;
+	--accent-hover: #d1681c;
+	--accent-active: #8a3f1f;
+	--accent-disabled: #e0b9a3;
+	--accent-text: #ffffff;
+	--accent-text-disabled: #8b5c49;
+
+	/* Фоны */
+	--bg-primary: #19191a;
+	--bg-secondary: #222224;
+	--bg-tertiary: #39393a;
+	--bg-overlay: rgba(0, 0, 0, 0.7);
+
+	/* Статусные цвета */
+	--status-success: #039140;
+	--status-error: #d33131;
+	--status-warning: #f9a825;
+	--status-info: #0288d1;
+
+	/* Разделители и бордеры */
+	--border-color: #39393a;
+
+	/* Тени */
+	--shadow: none;
+}
+
+.light-theme {
+	/* Текст */
+	--color-primary: #393939;
+	--color-secondary: #1d1c1c;
+	--color-disabled: #666666;
+
+	/* Акцентные цвета */
+	--accent-default: #c5622d;
+	--accent-hover: #d1681c;
+	--accent-active: #8a3f1f;
+	--accent-disabled: #e0b9a3;
+	--accent-text: #ffffff;
+	--accent-text-disabled: #8b5c49;
+
+	/* Фоны */
+	--bg-primary: #edeef0;
+	--bg-secondary: #fafbfc;
+	--bg-tertiary: #e3e3e3;
+	--bg-overlay: rgba(0, 0, 0, 0.7);
+
+	/* Статусные цвета */
+	--status-success: #039140;
+	--status-error: #d33131;
+	--status-warning: #f9a825;
+	--status-info: #0288d1;
+
+	/* Разделители и бордеры */
+	--border-color: #c9c9c9;
+
+	/* Тени */
+	--shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.07);
+}

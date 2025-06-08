@@ -1,0 +1,62 @@
+* {
+	box-sizing: border-box;
+}
+html {
+	height: 100%;
+}
+
+body {
+	font-family: 'Nunito', sans-serif;
+	height: 100%;
+	color: var(--color-primary);
+	background: var(--bg-primary);
+}
+
+#root {
+	height: 100%;
+}
+
+/* Стили для скроллбаров */
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 5px;
+	background-color: var(--bg-primary);
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 5px;
+	background-color: var(--field-bg);
+}
+
+/* Firefox */
+* {
+	scrollbar-width: thin;
+	scrollbar-color: var(--bg-primary) var(--bg-tertiary);
+}
+
+/* Стили для инпутов */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--color-primary);
+	-webkit-box-shadow: 0 0 0px 40rem var(--bg-primary) inset;
+	background-color: #080807 !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+input[type='radio']:checked {
+	background-color: var(--accent-hover);
+}
