@@ -1,6 +1,5 @@
 import { observer } from 'mobx-react-lite';
 
-import { useIsMobile } from '@/shared/lib/hooks';
 import { Divider, ZoomOnHover } from '@/shared/ui';
 
 import { renderCutLine } from '../lib';
@@ -8,9 +7,6 @@ import { genStore, useGenModel } from '../model';
 import { TextBlock } from '.';
 
 export const SettingsLeft = observer(() => {
-	const isMobile = useIsMobile();
-	if (isMobile) return undefined;
-
 	const { cardWidth, cardHeight } = useGenModel();
 
 	return (

@@ -1,9 +1,21 @@
+import { IconBack } from '@/shared/assets/icons';
 import { Button, Divider, Input } from '@/shared/ui';
+
+import { profileStore } from '../model';
 
 export const ProfileSecure = () => {
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
-			<h2 className="core-header">Безопасность</h2>
+			<div className="relative flex items-center">
+				<Button
+					centerIcon={<IconBack className="size-6" />}
+					className="absolute left-0 md:hidden"
+					size="custom"
+					variant="mobile"
+					onClick={() => profileStore.setActiveTab('profile')}
+				/>
+				<h2 className="core-header">Безопасность</h2>
+			</div>
 			<div className="core-border flex flex-col rounded-xl p-4">
 				<div className="flex flex-col gap-2">
 					<h2 className="text-xl font-bold">Пароль</h2>
@@ -29,7 +41,11 @@ export const ProfileSecure = () => {
 				>
 					Сохранить
 				</Button>
-				<Button className="hover:bg-[var(--status-error)]" variant="custom">
+				<Button
+					className="hover:bg-[var(--status-error)]"
+					variant="custom"
+					onClick={() => profileStore.setActiveTab('profile')}
+				>
 					Отменить
 				</Button>
 			</div>

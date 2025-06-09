@@ -7,8 +7,48 @@ import type { UserProfile } from '.';
 class UserProfileStore {
 	profile: UserProfile | null = storage.get('userProfile') || null;
 
-	constructor() {
-		makeAutoObservable(this);
+	// get avatar() {
+	// 	return this.profile?.avatarUrl;
+	// }
+
+	get userId() {
+		return this.profile?.userId;
+	}
+
+	get firstName() {
+		return this.profile?.firstName;
+	}
+
+	get lastName() {
+		return this.profile?.lastName;
+	}
+
+	get gender() {
+		return this.profile?.gender === 'male' ? 'Мужской' : 'Женский';
+	}
+
+	get birthYear() {
+		return this.profile?.birthDate.year;
+	}
+
+	get birthMonth() {
+		return this.profile?.birthDate.month;
+	}
+
+	get birthDay() {
+		return this.profile?.birthDate.day;
+	}
+
+	get location() {
+		return this.profile?.location;
+	}
+
+	get phone() {
+		return this.profile?.phone || [];
+	}
+
+	get email() {
+		return this.profile?.email || [];
 	}
 
 	setProfile(profile: UserProfile | null) {
@@ -16,7 +56,7 @@ class UserProfileStore {
 		this.syncProfile(profile);
 	}
 
-	updateAvatarUrl(url: string) {
+	updateAvatar(url: string) {
 		if (this.profile) {
 			this.profile.avatarUrl = url;
 			this.syncProfile(this.profile);
@@ -51,6 +91,14 @@ class UserProfileStore {
 	updateBirthDate({ year, month, day }: { year: string; month: string; day: string }) {
 		if (this.profile) {
 			this.profile.birthDate = { year, month, day };
+			this.syncProfile(this.profile);
+			this.syncToUserProfiles(this.profile);
+		}
+	}
+
+	updateLocation(city: string, region: string) {
+		if (this.profile) {
+			this.profile.location = `${city} (${region})`;
 			this.syncProfile(this.profile);
 			this.syncToUserProfiles(this.profile);
 		}
@@ -93,6 +141,10 @@ class UserProfileStore {
 		}
 
 		storage.set('userProfiles', profiles);
+	}
+
+	constructor() {
+		makeAutoObservable(this);
 	}
 }
 

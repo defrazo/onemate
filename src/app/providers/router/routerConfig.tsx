@@ -34,7 +34,13 @@ export const routes: RouteObject[] = [
 	{
 		path: '/generator',
 		element: (
-			<Layout leftSide={<SettingsLeft />} rightSide={<SettingsRight />} showFooter={true}>
+			<Layout
+				hideLeftOnMobile
+				hideRightOnMobile
+				leftSide={<SettingsLeft />}
+				rightSide={<SettingsRight />}
+				showFooter
+			>
 				<GeneratorPage />
 			</Layout>
 		),
@@ -44,7 +50,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<PrivateRoute
 				element={
-					<Layout leftSide={<UserProfileNav />} showFooter={true}>
+					<Layout hideLeftOnMobile leftSide={<UserProfileNav />} showFooter={true}>
 						<PrivateRoute element={<UserProfilePage />} />
 					</Layout>
 				}

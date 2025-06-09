@@ -5,7 +5,7 @@ import { ProfileContacts, ProfileInfo, ProfilePreview, ProfileSecure } from '.';
 
 const UserProfileWidget = () => {
 	return (
-		<div className="w-full max-w-2xl">
+		<div className="mb-2 w-full max-w-2xl">
 			{profileStore.activeTab === 'profile' && <ProfilePreview />}
 			{profileStore.activeTab === 'info' && <ProfileInfo />}
 			{profileStore.activeTab === 'contacts' && <ProfileContacts />}

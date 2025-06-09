@@ -12,6 +12,6 @@
 	}
 
 	.core-header {
-		@apply mr-auto text-center text-2xl font-bold select-none;
+		@apply mx-auto text-center text-2xl font-bold select-none md:mr-auto md:ml-0;
 	}
 }

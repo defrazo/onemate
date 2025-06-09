@@ -1,15 +1,11 @@
 import { observer } from 'mobx-react-lite';
 
-import { useIsMobile } from '@/shared/lib/hooks';
 import { Button, CheckboxBool, Divider, FileUploader, Input } from '@/shared/ui';
 
 import { downloadGridSvg } from '../lib';
 import { genStore, useGenModel } from '../model';
 
 export const SettingsRight = observer(() => {
-	const isMobile = useIsMobile();
-	if (isMobile) return undefined;
-
 	const { selectedFileName, handleUpload, setSelectedFileName } = useGenModel();
 
 	return (
