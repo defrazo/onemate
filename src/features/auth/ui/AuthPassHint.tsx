@@ -28,7 +28,7 @@ export const AuthPassHint = ({ password, showHint }: AuthPassHintProps) => {
 
 	return (
 		visible && (
-			<div className="absolute top-full z-20 -mt-[1px] w-full rounded-b-lg bg-[var(--color-primary)] p-2 ring-1 ring-[var(--accent-default)] ring-inset">
+			<div className="absolute top-full z-20 -mt-[1px] w-full rounded-b-lg bg-[var(--color-primary)] p-2">
 				<ul className="space-y-1 text-sm">
 					{passwordRules.map((rule, index) => {
 						const passed = rule.test(password);

@@ -96,9 +96,9 @@ class UserProfileStore {
 		}
 	}
 
-	updateLocation(city: string, region: string) {
+	updateLocation(city: string) {
 		if (this.profile) {
-			this.profile.location = `${city} (${region})`;
+			this.profile.location = city;
 			this.syncProfile(this.profile);
 			this.syncToUserProfiles(this.profile);
 		}

@@ -89,10 +89,27 @@ class AppStore {
 
 	// Показ уведомления через библиотеку (например, sonner)
 	showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
-		if (type === 'success') {
-			notify.success(message);
-		} else {
-			notify.error(message);
+		// if (type === 'success') {
+		// 	notify.success(message);
+		// } else {
+		// 	notify.error(message);
+		// }
+
+		switch (type) {
+			case 'success':
+				notify.success(message);
+				break;
+			case 'error':
+				notify.error(message);
+				break;
+			case 'warning':
+				notify.warning(message);
+				break;
+			case 'info':
+				notify.info(message);
+				break;
+			default:
+				notify.warning(message);
 		}
 
 		// После отображения уведомления очищаем состояние через 3 секунды

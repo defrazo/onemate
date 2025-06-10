@@ -13,9 +13,11 @@ import {
 } from '@/shared/assets/icons';
 import { appStore } from '@/shared/store/appStore';
 import { Button, Divider } from '@/shared/ui';
+import { profileStore } from '@/widgets/UserProfile';
 
 interface MobileUserMenuProps {
 	onLogout: () => void;
+	// onClose: () => void;
 }
 
 const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
@@ -32,6 +34,10 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				leftIcon={<IconUser className="h-6 w-6" />}
 				navigateTo="/user-profile"
 				variant="mobile"
+				onClick={() => {
+					profileStore.setActiveTab('info');
+					appStore.closeModal();
+				}}
 			>
 				Личные данные
 				<IconForward className="ml-auto h-4 w-4" />
@@ -41,6 +47,10 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				leftIcon={<IconShield className="h-6 w-6" />}
 				navigateTo="/user-profile"
 				variant="mobile"
+				onClick={() => {
+					profileStore.setActiveTab('secure');
+					appStore.closeModal();
+				}}
 			>
 				Безопасность
 				<IconForward className="ml-auto h-4 w-4" />
@@ -61,7 +71,7 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				navigateTo="/user-profile"
 				variant="mobile"
 			>
-				<span>{userProfileStore.profile?.location || 'Не указано'}</span>
+				<span>{userProfileStore.location || 'Не указано'}</span>
 				<IconForward className="ml-auto h-4 w-4" />
 			</Button>
 			<Button
@@ -69,6 +79,7 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				leftIcon={<IconAgreement className="h-6 w-6" />}
 				navigateTo="/terms"
 				variant="mobile"
+				onClick={() => appStore.closeModal()}
 			>
 				Пользовательское соглашение
 				<IconForward className="ml-auto h-4 w-4" />
@@ -78,6 +89,7 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				leftIcon={<IconSecure className="h-6 w-6" />}
 				navigateTo="/privacy"
 				variant="mobile"
+				onClick={() => appStore.closeModal()}
 			>
 				Политика конфиденциальности
 				<IconForward className="ml-auto h-4 w-4" />
@@ -87,6 +99,7 @@ const MobileUserMenu = ({ onLogout }: MobileUserMenuProps) => {
 				leftIcon={<IconAbout className="h-6 w-6" />}
 				navigateTo="/about"
 				variant="mobile"
+				onClick={() => appStore.closeModal()}
 			>
 				О проекте
 				<IconForward className="ml-auto h-4 w-4" />

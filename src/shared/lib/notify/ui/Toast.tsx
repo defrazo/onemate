@@ -17,7 +17,7 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 	return (
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
 			<div
-				className={`flex items-center justify-center gap-4 rounded-xl border border-l-4 border-[var(--border-not)] bg-[rgba(255,255,255,0.2)] px-4 py-2 shadow-lg backdrop-blur-md select-none ${leftBorder(type)}`}
+				className={`flex items-center justify-center gap-4 rounded-xl border border-l-4 border-[var(--border-color)] bg-[rgba(255,255,255,0.2)] px-4 py-2 shadow-lg backdrop-blur-md select-none ${leftBorder(type)}`}
 			>
 				<div className={`h-8 py-1 ${iconColor(type)}`}>{Icon}</div>
 				<div className="">

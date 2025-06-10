@@ -67,9 +67,9 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 			>
 				<div className="relative">
 					<Input
-						className="core-auth-input rounded-b-none"
+						className="core-auth-input rounded-b-none border-b-0"
 						id="username"
-						leftIcon={<IconUser />}
+						leftIcon={<IconUser className="size-7" />}
 						placeholder={isRegister ? 'Имя пользователя' : 'Имя пользователя или e-mail'}
 						required
 						type="text"
@@ -82,9 +82,9 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 				{isRegister && (
 					<div className="relative">
 						<Input
-							className="core-auth-input rounded-none"
+							className="core-auth-input rounded-none border-b-0"
 							id="email"
-							leftIcon={<IconEmail />}
+							leftIcon={<IconEmail className="size-7" />}
 							placeholder="E-mail"
 							required
 							type="email"
@@ -97,9 +97,9 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 
 				<div className="relative">
 					<Input
-						className={`rounded-t-none ${isRegister ? 'rounded-b-none' : ''}`}
+						className={`rounded-t-none ${isRegister ? 'rounded-b-none border-b-0' : ''}`}
 						id="password"
-						leftIcon={<IconPass />}
+						leftIcon={<IconPass className="size-7" />}
 						placeholder="Пароль"
 						required
 						rightIcon={renderPasswordToggle()}
@@ -121,7 +121,7 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 						<Input
 							className="core-auth-input rounded-t-none"
 							id="passwordConfirm"
-							leftIcon={<IconPass />}
+							leftIcon={<IconPass className="size-7" />}
 							placeholder="Подтвердите пароль"
 							required
 							rightIcon={renderPasswordToggle()}

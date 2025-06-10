@@ -59,7 +59,8 @@ const Button = ({
 			'enabled:hover:bg-[var(--accent-hover)] enabled:hover:text-[var(--accent-text)]',
 			'rounded-full'
 		),
-		mobile: cn('bg-transparent border-none', 'active:bg-[var(--accent-hover)]', 'rounded-xl'),
+		// mobile: cn('bg-transparent border-none', 'active:bg-[var(--accent-hover)]', 'rounded-xl'),
+		mobile: cn('bg-transparent border-none', 'rounded-xl'),
 		custom: cn('rounded-xl'),
 	};
 

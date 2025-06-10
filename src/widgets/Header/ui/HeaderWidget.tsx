@@ -38,7 +38,7 @@ const Header = () => {
 	return (
 		<header
 			className={cn(
-				'core-card core-elements sticky z-10 my-2 flex items-end justify-between px-4 py-3 md:my-4',
+				'core-card core-elements sticky z-10 my-2 flex items-end justify-between px-4 py-3 select-none md:my-4',
 				isUserMenuOpen && 'rounded-br-none'
 			)}
 		>
@@ -54,7 +54,7 @@ const Header = () => {
 
 				{authStore.isAuthenticated && authStore.isAuthChecked && (
 					<Button
-						centerIcon={<UserAvatar className="h-9 ring-[var(--accent-hover)] hover:ring-1" />}
+						centerIcon={<UserAvatar className="size-9 ring-[var(--accent-hover)] hover:ring-1" />}
 						className="h-9"
 						size="custom"
 						variant="rounded"

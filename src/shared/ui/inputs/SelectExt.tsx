@@ -7,7 +7,7 @@ interface SelectExtOption {
 	key?: string;
 	value: string;
 	label: string;
-	icon: string;
+	icon?: string;
 	disabled?: boolean;
 }
 
@@ -17,10 +17,21 @@ interface SelectExtProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onC
 	variant?: 'default' | 'ghost' | 'custom';
 	size?: 'sm' | 'md' | 'lg';
 	value: string;
+	justify?: 'start' | 'center' | 'end';
+	disabled?: boolean;
 	onChange: (value: string) => void;
 }
 
-const SelectExt = ({ options, placeholder, variant = 'default', value, onChange, className }: SelectExtProps) => {
+const SelectExt = ({
+	options,
+	justify = 'start',
+	placeholder,
+	variant = 'default',
+	value,
+	onChange,
+	disabled = false,
+	className,
+}: SelectExtProps) => {
 	const [isOpen, setIsOpen] = useState(false);
 	const selectedOption = options.find((opt) => opt.value === value);
 	const buttonRef = useRef<HTMLButtonElement>(null);
@@ -67,6 +78,12 @@ const SelectExt = ({ options, placeholder, variant = 'default', value, onChange,
 		custom: '',
 	};
 
+	const justifies = {
+		start: 'justify-start',
+		center: 'justify-center',
+		end: 'justify-end',
+	};
+
 	return (
 		<div ref={wrapperRef} className="relative flex size-full">
 			<button
@@ -77,23 +94,19 @@ const SelectExt = ({ options, placeholder, variant = 'default', value, onChange,
 				type="button"
 				onClick={handleOpen}
 			>
-				{selectedOption && (
-					<>
-						<img alt="" className="mr-2 size-6 rounded-lg" src={selectedOption.icon} />
-						<span>{selectedOption.label}</span>
-					</>
-				)}
-				{!selectedOption && <span className="text-muted-foreground">{placeholder}</span>}
-				<div className="pointer-events-none top-1/2 ml-auto flex items-center pl-2">
+				{selectedOption?.icon && <img alt="" className="mr-2 size-6 rounded-xl" src={selectedOption.icon} />}
+				<span className={cn('w-full pr-6 text-center', !selectedOption && 'text-muted-foreground')}>
+					{selectedOption?.label ?? placeholder}
+				</span>
+				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
 					<IconDown className="size-4" />
 				</div>
 			</button>
-
-			{isOpen && (
+			{isOpen && !disabled && (
 				<ul
 					className={cn(
-						'core-elements core-border absolute right-0 z-10 max-h-60 w-max overflow-y-auto rounded-xl',
-						openUpwards ? 'bottom-full mb-2' : 'top-full mt-2'
+						'core-elements core-border absolute right-0 z-10 max-h-60 w-full min-w-max overflow-y-auto rounded-l-xl text-center',
+						openUpwards ? 'bottom-full' : 'top-full'
 					)}
 					role="listbox"
 					tabIndex={-1}
@@ -104,6 +117,7 @@ const SelectExt = ({ options, placeholder, variant = 'default', value, onChange,
 							aria-selected={opt.value === value}
 							className={cn(
 								'flex w-full cursor-pointer items-center gap-2 p-2 text-sm text-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
+								justify && justifies[justify],
 								opt.value === value && 'font-bold text-[var(--accent-hover)]'
 							)}
 							role="option"
@@ -112,7 +126,7 @@ const SelectExt = ({ options, placeholder, variant = 'default', value, onChange,
 								setIsOpen(false);
 							}}
 						>
-							<img alt="" className="size-6 rounded-lg" src={opt.icon} />
+							{opt.icon && <img alt="" className="size-6 rounded-lg" src={opt.icon} />}
 							<span className="font-bold">{opt.label}</span>
 							<span className="opacity-50">{opt.key}</span>
 						</li>

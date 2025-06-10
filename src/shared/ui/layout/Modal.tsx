@@ -21,7 +21,8 @@ const Modal = ({ children, onBack, onClose }: ModalProps) => {
 	}, [onClose]);
 
 	return ReactDOM.createPortal(
-		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+		// <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 backdrop-blur-sm">
+		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
 			<div className="core-base core-card core-border max-w-fit flex-col shadow-2xl">
 				<div className="top-4 flex h-4 w-full justify-between">
 					{onBack && <IconBack className="w-5 cursor-pointer" onClick={onBack} />}

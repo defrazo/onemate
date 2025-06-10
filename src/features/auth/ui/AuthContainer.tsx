@@ -11,9 +11,11 @@ interface AuthContainerProps {}
 
 const AuthContainer = ({}: AuthContainerProps) => {
 	const navigate = useNavigate();
-	const isLogin = authFormStore.authForm.authType === 'login';
 
+	console.log(authFormStore.authForm.authType);
 	const handleAuth = async () => {
+		const isLogin = authFormStore.authForm.authType === 'login';
+		console.log(isLogin);
 		try {
 			isLogin ? await authStore.login() : await authStore.register();
 			authFormStore.reset();
@@ -32,5 +34,6 @@ const AuthContainer = ({}: AuthContainerProps) => {
 export default observer(AuthContainer);
 
 export function openAuthContainer() {
+	// authFormStore.update('authType', 'login');
 	appStore.setModal(<AuthContainer />);
 }

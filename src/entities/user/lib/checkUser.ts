@@ -1,4 +1,5 @@
 import { storage } from '@/shared/lib/storage/localStorage';
+import { generateUUID } from '@/shared/lib/utils';
 
 import { User } from '../model';
 
@@ -10,7 +11,7 @@ export const checkUser = (username: string, email: string, password?: string): U
 
 	if (!user) {
 		user = {
-			id: crypto.randomUUID(),
+			id: generateUUID(),
 			email: normalizedEmail,
 			username: username ? username : 'Пользователь',
 			password,

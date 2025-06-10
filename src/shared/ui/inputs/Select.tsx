@@ -74,13 +74,13 @@ const Select = ({
 				{...props}
 			>
 				{placeholder && (
-					<option disabled value="">
+					<option className="core-base" disabled value="">
 						{placeholder}
 					</option>
 				)}
 
 				{options.map((option) => (
-					<option key={option.value} disabled={option.disabled} value={option.value}>
+					<option key={option.value} className="core-base" disabled={option.disabled} value={option.value}>
 						{option.label}
 					</option>
 				))}

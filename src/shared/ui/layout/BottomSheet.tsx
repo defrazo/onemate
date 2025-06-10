@@ -58,9 +58,17 @@ const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => {
 
 	return (
 		<>
-			<div className="fixed inset-0 z-40" onClick={onClose} />
+			{/* <div className="fixed inset-0 z-40" onClick={onClose} /> */}
 			<div
-				className="core-elements fixed right-0 bottom-0 left-0 z-50 rounded-t-xl"
+				className="fixed inset-0 z-40 bg-black/60"
+				onClick={(e) => {
+					if (e.target === e.currentTarget) {
+						onClose();
+					}
+				}}
+			/>
+			<div
+				className="core-base fixed right-0 bottom-0 left-0 z-50 rounded-t-xl"
 				style={{
 					transform: `translateY(${positionY}px)`,
 					transition: isDraggingRef.current ? 'none' : 'transform 0.3s ease',

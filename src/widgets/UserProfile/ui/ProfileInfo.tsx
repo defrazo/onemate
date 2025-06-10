@@ -7,9 +7,10 @@ import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
 import SearchCity from '@/features/search-city';
 import { IconBack } from '@/shared/assets/icons';
+import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 import { capitalizeFirstLetter } from '@/shared/lib/utils';
 import { appStore } from '@/shared/store/appStore';
-import { Avatar, AvatarPicker, Button, Input, Radio, Select } from '@/shared/ui';
+import { Avatar, AvatarPicker, Button, Input, Radio, SelectExt } from '@/shared/ui';
 
 import { profileStore } from '../model';
 
@@ -35,31 +36,20 @@ export const ProfileInfo = observer(() => {
 		}
 	}, [year, month]);
 
-	const handleFocus = (field: string) => {
-		if (field === 'firstName') setFirstName('');
-		if (field === 'lastName') setLastName('');
-		if (field === 'username') setUsername('');
-	};
-
-	const handleBlur = (field: string) => {
-		if (field === 'firstName' && firstName.trim() === '') setFirstName(userProfileStore.profile?.firstName || '');
-		if (field === 'lastName' && lastName.trim() === '') setLastName(userProfileStore.profile?.lastName || '');
-		if (field === 'username' && username.trim() === '') setUsername(userStore.username || '');
-	};
-
 	const saveChanges = () => {
 		userProfileStore.updateFirstName(firstName);
 		userProfileStore.updateLastName(lastName);
 		userStore.updateUsername(username);
 		userProfileStore.updateBirthDate({ year, month, day });
 		userProfileStore.updateGender(gender);
-		userProfileStore.updateLocation(cityStore.cityName, cityStore.cityRegion);
+		userProfileStore.updateLocation(cityStore.cityName);
 		appStore.setSuccess('Данные успешно сохранены');
 	};
 
 	const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setGender(event.target.value as 'male' | 'female');
 	};
+
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
 			<div className="relative flex items-center">
@@ -77,7 +67,7 @@ export const ProfileInfo = observer(() => {
 					<Avatar
 						alt="avatar"
 						className="size-1/2 md:size-fit"
-						src={userProfileStore.profile?.avatarUrl || ''}
+						src={userProfileStore.profile?.avatarUrl || AVATAR_OPTIONS[0]}
 						onClick={() =>
 							appStore.setModal(
 								<AvatarPicker onSelect={(newAvatar) => userProfileStore.updateAvatar(newAvatar)} />
@@ -102,9 +92,7 @@ export const ProfileInfo = observer(() => {
 							placeholder="Ваше имя"
 							value={firstName}
 							variant="ghost"
-							onBlur={() => handleBlur('firstName')}
 							onChange={(e) => setFirstName(e.target.value)}
-							onFocus={() => handleFocus('firstName')}
 						/>
 					</div>
 					<div>
@@ -113,9 +101,7 @@ export const ProfileInfo = observer(() => {
 							placeholder="Ваша фамилия"
 							value={lastName}
 							variant="ghost"
-							onBlur={() => handleBlur('lastName')}
 							onChange={(e) => setLastName(e.target.value)}
-							onFocus={() => handleFocus('lastName')}
 						/>
 					</div>
 					<div>
@@ -124,17 +110,14 @@ export const ProfileInfo = observer(() => {
 							placeholder="Ваш никнейм"
 							value={username}
 							variant="ghost"
-							onBlur={() => handleBlur('username')}
 							onChange={(e) => setUsername(e.target.value)}
-							onFocus={() => handleFocus('username')}
 						/>
 					</div>
 					<div>
 						<h3>Дата рождения</h3>
 						<div className="flex gap-2">
-							<Select
-								align="center"
-								fullWidth
+							<SelectExt
+								justify="center"
 								options={Array.from({ length: 100 }, (_, i) => {
 									const y = (new Date().getFullYear() - i).toString();
 									return { value: y, label: y };
@@ -142,11 +125,10 @@ export const ProfileInfo = observer(() => {
 								placeholder="Год"
 								value={year}
 								variant="ghost"
-								onChange={(e) => (setYear(e.target.value), setDay(''))}
+								onChange={(value) => (setYear(value), setDay(''))}
 							/>
-							<Select
-								align="center"
-								fullWidth
+							<SelectExt
+								justify="center"
 								options={Array.from({ length: 12 }, (_, i) => ({
 									value: i.toString(),
 									label: capitalizeFirstLetter(
@@ -156,19 +138,16 @@ export const ProfileInfo = observer(() => {
 								placeholder="Месяц"
 								value={month}
 								variant="ghost"
-								onChange={(e) => (setMonth(e.target.value), setDay(''))}
+								onChange={(value) => (setMonth(value), setDay(''))}
 							/>
-							<Select
-								align="center"
+							<SelectExt
 								disabled={!year || month === ''}
-								fullWidth
+								justify="center"
 								options={days.map((d) => ({ value: d, label: d }))}
 								placeholder="День"
 								value={day}
 								variant="ghost"
-								onChange={(e) => {
-									setDay(e.target.value);
-								}}
+								onChange={(value) => setDay(value)}
 							/>
 						</div>
 					</div>
