@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 
 import { IconDown } from '@/shared/assets/icons';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
 import { cn } from '@/shared/lib/utils';
 
 interface SelectExtOption {
@@ -13,22 +14,25 @@ interface SelectExtOption {
 
 interface SelectExtProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
 	options: SelectExtOption[];
-	placeholder: string;
-	variant?: 'default' | 'ghost' | 'custom';
-	size?: 'sm' | 'md' | 'lg';
 	value: string;
+	onChange: (value: string) => void;
+	placeholder: string;
+	variant?: keyof typeof variants.selectExt;
+	size?: keyof typeof sizes.selectExt;
+	error?: boolean;
 	justify?: 'start' | 'center' | 'end';
 	disabled?: boolean;
-	onChange: (value: string) => void;
 }
 
 const SelectExt = ({
 	options,
-	justify = 'start',
-	placeholder,
-	variant = 'default',
 	value,
 	onChange,
+	placeholder,
+	variant = 'default',
+	size = 'md',
+	error = false,
+	justify = 'start',
 	disabled = false,
 	className,
 }: SelectExtProps) => {
@@ -54,29 +58,13 @@ const SelectExt = ({
 		setIsOpen(true);
 	};
 
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) {
-				setIsOpen(false);
-			}
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
-
-	const base = cn(
-		'flex w-full ring-[var(--accent-hover)]',
-		'transition-colors outline-none ring-inset',
-		'focus:outline-none',
-		'cursor-pointer appearance-none rounded-xl text-nowrap items-center p-2'
-	);
-
-	const variants = {
-		default: cn('bg-[var(--bg-tertiary)]', ' focus:ring-1'),
-		ghost: cn('border-[var(--border-color)] bg-transparent', 'hover:border-[var(--accent-hover)]', 'border-1'),
-		custom: '',
-	};
+	const styles = getComponentStyles({
+		variant,
+		size,
+		error,
+		disabled: disabled,
+		component: 'selectExt',
+	});
 
 	const justifies = {
 		start: 'justify-start',
@@ -84,13 +72,23 @@ const SelectExt = ({
 		end: 'justify-end',
 	};
 
+	useEffect(() => {
+		const handleClickOutside = (event: MouseEvent) => {
+			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) setIsOpen(false);
+		};
+
+		document.addEventListener('mousedown', handleClickOutside);
+		return () => document.removeEventListener('mousedown', handleClickOutside);
+	}, []);
+
 	return (
 		<div ref={wrapperRef} className="relative flex size-full">
 			<button
 				ref={buttonRef}
 				aria-expanded={isOpen}
 				aria-haspopup="listbox"
-				className={cn(base, variants[variant], className)}
+				className={cn(styles, className)}
+				disabled={disabled}
 				type="button"
 				onClick={handleOpen}
 			>
@@ -116,12 +114,13 @@ const SelectExt = ({
 							key={opt.value}
 							aria-selected={opt.value === value}
 							className={cn(
-								'flex w-full cursor-pointer items-center gap-2 p-2 text-sm text-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
-								justify && justifies[justify],
-								opt.value === value && 'font-bold text-[var(--accent-hover)]'
+								'flex w-full cursor-pointer items-center gap-2 p-2 text-sm whitespace-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
+								justifies[justify],
+								opt.value === value && 'text-[var(--accent-hover)]'
 							)}
 							role="option"
 							onClick={() => {
+								if (opt.disabled) return;
 								onChange(opt.value);
 								setIsOpen(false);
 							}}

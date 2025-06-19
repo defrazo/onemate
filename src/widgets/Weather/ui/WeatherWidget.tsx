@@ -41,11 +41,7 @@ const WeatherWidget = forwardRef<HTMLDivElement, WeatherWidgetProps>((props, ref
 						)}
 					</div>
 					<div>
-						<Button
-							className="mt-2 h-10 w-full bg-[var(--accent-default)] text-[var(--accent-text)] hover:bg-[var(--accent-hover)]"
-							variant="custom"
-							onClick={toggleView}
-						>
+						<Button className="mt-2 h-10 w-full" variant="accent" onClick={toggleView}>
 							{isOpenWeather ? 'Прогноз на 5 дней' : 'Текущая погода'}
 						</Button>
 					</div>

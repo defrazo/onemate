@@ -36,13 +36,13 @@ export const ProfileSecure = () => {
 			<div className="mt-2 flex justify-center gap-4">
 				<Button
 					className="bg-[var(--accent-default)] text-[var(--accent-text)] hover:bg-[var(--accent-hover)]"
-					variant="custom"
+					variant="accent"
 					// onClick={saveChanges}
 				>
 					Сохранить
 				</Button>
 				<Button
-					className="hover:bg-[var(--status-error)]"
+					className="rounded-xl hover:bg-[var(--status-error)]"
 					variant="custom"
 					onClick={() => profileStore.setActiveTab('profile')}
 				>
@@ -58,12 +58,7 @@ export const ProfileSecure = () => {
 				</p>
 			</div>
 			<div className="mt-2 flex justify-center gap-4">
-				<Button
-					className="text-[var(--status-error)] ring-1 ring-[var(--status-error)] hover:bg-[var(--status-error)] hover:text-[var(--color-primary)]"
-					variant="custom"
-				>
-					Удалить мой аккаунт
-				</Button>
+				<Button variant="warning">Удалить мой аккаунт</Button>
 			</div>
 		</div>
 	);

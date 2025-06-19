@@ -19,7 +19,7 @@ export const CurrencyBlock = ({
 		<div className="core-border flex w-full rounded-xl p-1">
 			<div className="flex-1">
 				<Input
-					className="text-right"
+					className="border-none text-right"
 					size="md"
 					type="number"
 					value={currencyValue}

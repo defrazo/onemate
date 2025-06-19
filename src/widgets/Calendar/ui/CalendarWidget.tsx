@@ -29,7 +29,6 @@ interface CalendarWidgetProps {
 
 const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, ref) => {
 	const [currentDate, setCurrentDate] = useState(new Date());
-	const [isWeekendInRange, setIsWeekendInRange] = useState(false);
 	const [includeWeekends, setIncludeWeekends] = useState(true);
 	const [startDate, setStartDate] = useState<Date | null>(null);
 	const [endDate, setEndDate] = useState<Date | null>(null);
@@ -37,12 +36,6 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 	const startOfCurrentMonth = startOfMonth(currentDate);
 	const startWeekday = (getDay(startOfCurrentMonth) + 6) % 7; // понедельник = 0
 	const daysInMonth = getDaysInMonth(currentDate);
-
-	// Генерация дней месяца
-	// const daysArray = Array.from({ length: 42 }, (_, i) => {
-	// 	const day = i - startWeekday + 1;
-	// 	return day > 0 && day <= daysInMonth ? day : null;
-	// });
 
 	const rawDaysArray = Array.from({ length: 42 }, (_, i) => {
 		const day = i - startWeekday + 1;
@@ -165,16 +158,12 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 							❯
 						</Button>
 					</div>
-
-					{/* <div className="grid h-full grid-cols-7 justify-items-center rounded-lg border-1 border-[var(--border)]"> */}
 					<div className="grid h-full grid-cols-7 justify-items-center gap-0.5">
 						{['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'].map((day) => (
 							<div key={day} className="flex items-center">
 								{day}
 							</div>
 						))}
-
-						{/* <div className="core-theme-elements grid grid-cols-7 justify-items-center gap-y-2 rounded-b-lg"> */}
 
 						{daysArray.map((day, idx) => {
 							if (!day) return <div key={idx}></div>;
@@ -189,12 +178,12 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 								<Button
 									key={idx}
 									className={cn(
-										'aspect-square bg-transparent text-sm text-[var(--color-primary)] transition-all md:p-1',
+										'aspect-square rounded-full bg-transparent text-sm text-[var(--color-primary)] transition-all md:p-1',
 										inRange && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
 										today &&
 											!selected &&
 											'bg-[var(--accent-default)] text-[var(--accent-text)] ring-inset',
-										today && inRange && 'ring-2 ring-[var(--status-success)]',
+										today && inRange && 'ring-1 ring-[var(--status-info)]',
 										startDate &&
 											isSameDay(date, startDate) &&
 											'bg-[var(--accent-default)] text-[var(--accent-text)]',
@@ -203,7 +192,7 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 											'bg-[var(--accent-default)] text-[var(--accent-text)]'
 									)}
 									size="custom"
-									variant="rounded"
+									variant="custom"
 									onClick={() => handleDayClick(day)}
 								>
 									{day}
@@ -255,7 +244,6 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 					</Button>
 				</div>
 			</div>
-			{/* )} */}
 		</div>
 	);
 });

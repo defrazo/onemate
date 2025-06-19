@@ -96,7 +96,7 @@ export const ProfileContacts = () => {
 					</div>
 					<Button
 						centerIcon={<IconAdd className="h-6" />}
-						className="w-fit p-2"
+						size="custom"
 						variant="rounded"
 						onClick={addPhone}
 					/>
@@ -138,23 +138,19 @@ export const ProfileContacts = () => {
 						))}
 					</div>
 					<Button
-						centerIcon={<IconAdd className="h-6" />}
-						className="w-fit p-2"
+						centerIcon={<IconAdd className="size-6" />}
+						size="custom"
 						variant="rounded"
 						onClick={addEmail}
 					/>
 				</div>
 			</div>
 			<div className="mt-2 flex justify-center gap-4">
-				<Button
-					className="bg-[var(--accent-default)] text-[var(--accent-text)] hover:bg-[var(--accent-hover)]"
-					variant="custom"
-					onClick={saveChanges}
-				>
+				<Button variant="accent" onClick={saveChanges}>
 					Сохранить
 				</Button>
 				<Button
-					className="hover:bg-[var(--status-error)]"
+					className="rounded-xl hover:bg-[var(--status-error)]"
 					variant="custom"
 					onClick={() => profileStore.setActiveTab('profile')}
 				>

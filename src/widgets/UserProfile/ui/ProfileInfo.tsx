@@ -166,15 +166,11 @@ export const ProfileInfo = observer(() => {
 						<SearchCity />
 					</div>
 					<div className="flex justify-center gap-4 md:justify-start">
-						<Button
-							className="bg-[var(--accent-default)] text-[var(--accent-text)] hover:bg-[var(--accent-hover)]"
-							variant="custom"
-							onClick={saveChanges}
-						>
+						<Button variant="accent" onClick={saveChanges}>
 							Сохранить
 						</Button>
 						<Button
-							className="hover:bg-[var(--status-error)]"
+							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
 							onClick={() => profileStore.setActiveTab('profile')}
 						>

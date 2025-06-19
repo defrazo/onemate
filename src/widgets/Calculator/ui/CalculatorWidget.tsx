@@ -190,6 +190,7 @@ const CalculatorWidget = forwardRef<HTMLDivElement, CalculatorWidgetProps>((prop
 			<Input
 				className="pointer-events-none cursor-default px-2 text-right text-2xl"
 				readOnly
+				tabIndex={-1}
 				type="text"
 				value={displayValue}
 				variant="ghost"
@@ -197,28 +198,18 @@ const CalculatorWidget = forwardRef<HTMLDivElement, CalculatorWidgetProps>((prop
 			{/* <div className="my-2 w-full"> */}
 			<div className="grid grid-cols-4 gap-2">
 				{buttons.slice(0, buttons.length - 3).map((value) => (
-					<Button key={value} className="core-elements" size="sm" onClick={() => handleButtonClick(value)}>
+					<Button key={value} size="sm" variant="ghost" onClick={() => handleButtonClick(value)}>
 						{value}
 					</Button>
 				))}
 				<div className="col-span-4 grid grid-cols-4 gap-2">
 					{buttons.slice(-3, -1).map((value) => (
-						<Button
-							key={value}
-							className="core-elements col-span-1"
-							size="sm"
-							onClick={() => handleButtonClick(value)}
-						>
+						<Button key={value} className="col-span-1" size="sm" onClick={() => handleButtonClick(value)}>
 							{value}
 						</Button>
 					))}
 					{buttons.slice(-1).map((value) => (
-						<Button
-							key={value}
-							className="core-elements col-span-2"
-							size="sm"
-							onClick={() => handleButtonClick(value)}
-						>
+						<Button key={value} className="col-span-2" size="sm" onClick={() => handleButtonClick(value)}>
 							{value}
 						</Button>
 					))}

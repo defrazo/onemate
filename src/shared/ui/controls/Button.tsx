@@ -1,84 +1,51 @@
 import { useNavigate } from 'react-router-dom';
 
+import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
 import { cn } from '@/shared/lib/utils';
 
 import { Preloader } from '../feedback';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+	navigateTo?: string;
+	loading?: boolean;
+	active?: boolean;
 	leftIcon?: React.ReactNode;
 	centerIcon?: React.ReactNode;
 	rightIcon?: React.ReactNode;
-	active?: boolean;
-	loading?: boolean;
-	navigateTo?: string;
-	variant?: 'default' | 'ghost' | 'warning' | 'rounded' | 'mobile' | 'custom';
-	size?: 'sm' | 'md' | 'lg' | 'custom';
+	variant?: keyof typeof variants.button;
+	size?: keyof typeof sizes.button;
+	error?: boolean;
 }
 
 const Button = ({
-	children,
+	navigateTo,
+	onClick,
+	loading = false,
+	active = false,
 	leftIcon,
 	centerIcon,
 	rightIcon,
-	active = false,
-	loading = false,
-	type = 'button',
-	navigateTo,
-	onClick,
+	children,
 	variant = 'default',
 	size = 'md',
+	error = false,
 	className,
 	...props
 }: ButtonProps) => {
 	const navigate = useNavigate();
+	const isDisabled = props.disabled || loading;
 
-	const base = cn(
-		'flex items-center justify-center',
-		'transition-colors outline-none ring-inset select-none',
-		'enabled:cursor-pointer disabled:cursor-default'
-	);
-
-	const variants = {
-		default: cn(
-			'bg-[var(--bg-tertiary)]',
-			'enabled:hover:bg-[var(--accent-hover)] enabled:hover:text-[var(--accent-text)]',
-			'rounded-xl'
-		),
-		ghost: cn(
-			'border-[var(--color-disabled)] border-[var(--border-color)] bg-transparent',
-			'hover:border-[var(--accent-hover)] enabled:hover:bg-[var(--accent-hover)] enabled:hover:text-[var(--bg-accent-hover)]',
-			'rounded-xl border-1'
-		),
-		warning: cn(
-			'enabled:border-[var(--status-error)] enabled:text-[var(--status-error)] bg-transparent',
-			'enabled:hover:border-[var(--accent-hover)] enabled:hover:bg-[var(--accent-hover)] enabled:hover:text-[var(--bg-accent-hover)]',
-			'rounded-xl border-1'
-		),
-		rounded: cn(
-			'bg-[var(--accent-default)] text-[var(--accent-text)]',
-			'enabled:hover:bg-[var(--accent-hover)] enabled:hover:text-[var(--accent-text)]',
-			'rounded-full'
-		),
-		// mobile: cn('bg-transparent border-none', 'active:bg-[var(--accent-hover)]', 'rounded-xl'),
-		mobile: cn('bg-transparent border-none', 'rounded-xl'),
-		custom: cn('rounded-xl'),
-	};
-
-	const sizes = {
-		sm: 'text-sm py-1 px-3',
-		md: 'text-base py-2 px-4',
-		lg: 'text-lg py-3 px-6',
-		custom: '',
-	};
-
-	const states = {
-		disabled: 'opacity-60 cursor-not-allowed',
-		loading: 'opacity-80 cursor-wait',
-		active: 'bg-[var(--status-success)] text-[var(--color-primary)',
-	};
+	const styles = getComponentStyles({
+		variant,
+		size,
+		active,
+		error,
+		disabled: isDisabled,
+		component: 'button',
+	});
 
 	const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-		if (props.disabled || loading) return e.preventDefault();
+		if (isDisabled) return e.preventDefault();
 
 		if (navigateTo) {
 			e.preventDefault();
@@ -89,24 +56,16 @@ const Button = ({
 	};
 
 	return (
-		<button
-			className={cn(
-				base,
-				sizes[size],
-				active ? states.active : variants[variant],
-				props.disabled && states.disabled,
-				loading && states.loading,
-				className
+		<button className={cn(styles, className)} disabled={isDisabled} type="button" onClick={handleClick} {...props}>
+			{loading ? (
+				<Preloader className="size-6" />
+			) : (
+				<>
+					{leftIcon && <span className="mr-2">{leftIcon}</span>}
+					{centerIcon ? <span>{centerIcon}</span> : children}
+					{rightIcon && <span className="ml-2">{rightIcon}</span>}
+				</>
 			)}
-			disabled={props.disabled || loading}
-			type={type}
-			onClick={handleClick}
-			{...props}
-		>
-			{loading && <Preloader />}
-			{leftIcon && <span className="mr-2">{leftIcon}</span>}
-			{centerIcon ? <span>{centerIcon}</span> : children}
-			{rightIcon && <span className="ml-2">{rightIcon}</span>}
 		</button>
 	);
 };
