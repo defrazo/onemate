@@ -2,16 +2,16 @@ import { observer } from 'mobx-react-lite';
 
 import { Stock } from '@/shared/assets/images';
 import { SLIDER_CONTENT } from '@/shared/lib/constants';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 import { Slider } from '@/shared/ui';
 
 interface HomePageProps {}
 
 const HomePage = ({}: HomePageProps) => {
 	const check = () => {
-		appStore.setSuccess(`Work Smarter Not Harder`);
-		appStore.setError(`Work Smarter Not Harder`);
-		appStore.setWarning(`Work Smarter Not Harder`);
+		notifyStore.setSuccess(`Work Smarter Not Harder`);
+		notifyStore.setError(`Work Smarter Not Harder`);
+		notifyStore.setWarning(`Work Smarter Not Harder`);
 		// appStore.setInfo(`Work Smarter Not Harder`);
 	};
 	return (

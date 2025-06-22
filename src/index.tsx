@@ -6,7 +6,7 @@ import App from '@/app/App';
 import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
 import { authStore } from '@/features/auth';
-import { appStore } from '@/shared/store/appStore';
+import { rootStore } from '@/shared/stores';
 
 import '../index.css';
 
@@ -16,7 +16,7 @@ if (rootElement) {
 	const root = createRoot(rootElement);
 	root.render(
 		// <StrictMode>
-		<Provider appStore={appStore} authStore={authStore} userProfileStore={userProfileStore} userStore={userStore}>
+		<Provider authStore={authStore} rootStore={rootStore} userProfileStore={userProfileStore} userStore={userStore}>
 			<App />
 		</Provider>
 		// </StrictMode>

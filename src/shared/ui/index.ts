@@ -12,4 +12,4 @@ export {
 	SelectExt,
 	Textarea,
 } from './inputs';
-export { Avatar, BottomSheet, Divider, Modal, ModalManager, SortableWidget } from './layout';
+export { Avatar, BottomSheet, Divider, Dropdown, Modal, ModalManager, SortableWidget } from './layout';

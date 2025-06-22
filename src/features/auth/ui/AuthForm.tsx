@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { IconEmail, IconEye, IconEyeSlash, IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { useIsMobile } from '@/shared/lib/hooks';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore, uiStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { validatePassword } from '../lib';
@@ -41,7 +41,7 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 	};
 
 	useEffect(() => {
-		if (error) appStore.setError(error);
+		if (error) notifyStore.setError(error);
 	}, [error]);
 
 	return (
@@ -151,9 +151,9 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 				<a
 					onClick={() => {
 						authFormStore.update('authType', 'register');
-						appStore.setBack(() => {
+						uiStore.setBack(() => {
 							authFormStore.update('authType', 'login');
-							appStore.resetBack();
+							uiStore.resetBack();
 						});
 					}}
 				>

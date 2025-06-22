@@ -6,15 +6,16 @@ import { cityStore } from '@/entities/city';
 import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
 import SearchCity from '@/features/search-city';
-import { IconBack } from '@/shared/assets/icons';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
+import { useIsMobile } from '@/shared/lib/hooks';
 import { capitalizeFirstLetter } from '@/shared/lib/utils';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore, uiStore } from '@/shared/stores';
 import { Avatar, AvatarPicker, Button, Input, Radio, SelectExt } from '@/shared/ui';
 
 import { profileStore } from '../model';
 
 export const ProfileInfo = observer(() => {
+	const isMobile = useIsMobile();
 	const [firstName, setFirstName] = useState<string>(userProfileStore.profile?.firstName || '');
 	const [lastName, setLastName] = useState<string>(userProfileStore.profile?.lastName || '');
 	const [username, setUsername] = useState<string>(userStore.user?.username || '');
@@ -43,7 +44,7 @@ export const ProfileInfo = observer(() => {
 		userProfileStore.updateBirthDate({ year, month, day });
 		userProfileStore.updateGender(gender);
 		userProfileStore.updateLocation(cityStore.cityName);
-		appStore.setSuccess('Данные успешно сохранены');
+		notifyStore.setSuccess('Данные успешно сохранены');
 	};
 
 	const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,16 +53,7 @@ export const ProfileInfo = observer(() => {
 
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
-			<div className="relative flex items-center">
-				<Button
-					centerIcon={<IconBack className="size-6" />}
-					className="absolute left-0 md:hidden"
-					size="custom"
-					variant="mobile"
-					onClick={() => profileStore.setActiveTab('profile')}
-				/>
-				<h1 className="core-header">Личные данные</h1>
-			</div>
+			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
 					<Avatar
@@ -69,7 +61,7 @@ export const ProfileInfo = observer(() => {
 						className="size-1/2 md:size-fit"
 						src={userProfileStore.profile?.avatarUrl || AVATAR_OPTIONS[0]}
 						onClick={() =>
-							appStore.setModal(
+							uiStore.setModal(
 								<AvatarPicker onSelect={(newAvatar) => userProfileStore.updateAvatar(newAvatar)} />
 							)
 						}
@@ -77,7 +69,7 @@ export const ProfileInfo = observer(() => {
 					<Button
 						className="w-full"
 						onClick={() => {
-							appStore.setModal(
+							uiStore.setModal(
 								<AvatarPicker onSelect={(newAvatar) => userProfileStore.updateAvatar(newAvatar)} />
 							);
 						}}
@@ -172,7 +164,9 @@ export const ProfileInfo = observer(() => {
 						<Button
 							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
-							onClick={() => profileStore.setActiveTab('profile')}
+							onClick={() => {
+								isMobile ? uiStore.modal?.back?.() : profileStore.setActiveTab('profile');
+							}}
 						>
 							Отменить
 						</Button>

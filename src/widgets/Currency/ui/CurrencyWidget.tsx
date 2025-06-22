@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { IconArrows, IconCopy } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 import { Button, Textarea } from '@/shared/ui';
 
 import { currencyStore } from '../model';
@@ -95,7 +95,7 @@ const Currency = forwardRef<HTMLDivElement, CurrencyWidgetProps>((props, ref) =>
 
 	const handleCopy = () => {
 		copy(currencyView);
-		appStore.setSuccess('✅ Данные скопированы!');
+		notifyStore.setSuccess('✅ Данные скопированы!');
 	};
 
 	return (

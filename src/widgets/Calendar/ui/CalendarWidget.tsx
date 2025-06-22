@@ -20,7 +20,7 @@ import { ru } from 'date-fns/locale';
 
 import { IconChecked, IconCopy, IconTrash, IconUnchecked } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 import { Button } from '@/shared/ui';
 
 interface CalendarWidgetProps {
@@ -84,7 +84,7 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 
 			copy(text);
 
-			appStore.setSuccess('✅ Диапазон скопирован!');
+			notifyStore.setSuccess('✅ Диапазон скопирован!');
 		}
 	};
 

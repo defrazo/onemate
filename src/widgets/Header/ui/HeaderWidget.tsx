@@ -1,46 +1,52 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useEffect, useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { UserAvatar } from '@/entities/user';
 import { authStore } from '@/features/auth';
 import NavMenu from '@/features/navigation';
 import ThemeSwitcher from '@/features/theme-switcher';
-import { DesktopUserMenu, MobileUserMenu } from '@/features/user-menu';
 import { useIsMobile } from '@/shared/lib/hooks';
-import { storage } from '@/shared/lib/storage/localStorage';
-import { cn } from '@/shared/lib/utils';
-import { appStore } from '@/shared/store/appStore';
+import { uiStore } from '@/shared/stores';
 import { Button, Time } from '@/shared/ui';
 
-import { HeaderLogo } from '.';
+import { DesktopUserMenu, HeaderLogo, MobileUserMenu } from '.';
 
 const Header = () => {
 	const isMobile = useIsMobile();
-	const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-	const navigate = useNavigate();
-
-	const closeUserMenu = () => {
-		setIsUserMenuOpen(false);
-		if (storage.get('savedTab') !== '') storage.set('savedTab', 'profile');
-	};
+	const headerRef = useRef<HTMLDivElement>(null);
 
 	const handleUserMenuClick = () => {
-		isMobile ? appStore.setModal(<MobileUserMenu onLogout={handleLogout} />) : setIsUserMenuOpen(true);
+		if (!headerRef.current) return;
+
+		const rect = headerRef.current.getBoundingClientRect();
+
+		isMobile
+			? uiStore.setModal(<MobileUserMenu />, 'bottom-sheet')
+			: uiStore.setModal(<DesktopUserMenu />, 'dropdown', {
+					position: {
+						top: rect.bottom + window.scrollY - 10,
+						left: rect.right + window.scrollX,
+					},
+				});
 	};
 
-	const handleLogout = async () => {
-		await authStore.logout();
-		isMobile ? appStore.closeModal() : setIsUserMenuOpen(false);
-		queueMicrotask(() => navigate('/'));
-	};
+	useEffect(() => {
+		if (!uiStore.modal) return;
+
+		const isUserMenuOpen = uiStore.modal.type === 'bottom-sheet' || uiStore.modal.type === 'dropdown';
+
+		if (isUserMenuOpen) {
+			uiStore.closeModal();
+			handleUserMenuClick();
+		}
+	}, [isMobile]);
 
 	return (
 		<header
-			className={cn(
-				'core-card core-elements sticky z-10 my-2 flex items-end justify-between px-4 py-3 select-none md:my-4',
-				isUserMenuOpen && 'rounded-br-none'
-			)}
+			ref={headerRef}
+			className={
+				'core-card core-elements sticky z-10 my-2 flex items-end justify-between px-4 py-3 select-none md:my-4'
+			}
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">
@@ -55,20 +61,17 @@ const Header = () => {
 				{authStore.isAuthenticated && authStore.isAuthChecked && (
 					<Button
 						centerIcon={<UserAvatar className="size-9 ring-[var(--accent-hover)] hover:ring-1" />}
-						className="h-9"
+						className="size-9"
 						size="custom"
-						variant="rounded"
+						variant="custom"
 						onClick={handleUserMenuClick}
 					/>
 				)}
 
 				<Time />
-				<ThemeSwitcher />
-			</div>
 
-			{isUserMenuOpen && (
-				<DesktopUserMenu isUserMenuOpen={isUserMenuOpen} onClose={closeUserMenu} onLogout={handleLogout} />
-			)}
+				{!authStore.isAuthenticated && <ThemeSwitcher />}
+			</div>
 		</header>
 	);
 };

@@ -2,7 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { userStore } from '@/entities/user';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore, uiStore } from '@/shared/stores';
 
 import { authFormStore, authStore } from '../model';
 import { AuthForm } from '.';
@@ -19,12 +19,12 @@ const AuthContainer = ({}: AuthContainerProps) => {
 		try {
 			isLogin ? await authStore.login() : await authStore.register();
 			authFormStore.reset();
-			appStore.closeModal();
-			appStore.setSuccess(`Добро пожаловать, ${userStore.username}!`);
+			uiStore.closeModal();
+			notifyStore.setSuccess(`Добро пожаловать, ${userStore.username}!`);
 			navigate('/main');
 		} catch (err: any) {
 			const fallback = isLogin ? 'Ошибка входа' : 'Ошибка регистрации';
-			appStore.setError(err?.message || fallback);
+			notifyStore.setError(err?.message || fallback);
 		}
 	};
 
@@ -35,5 +35,5 @@ export default observer(AuthContainer);
 
 export function openAuthContainer() {
 	// authFormStore.update('authType', 'login');
-	appStore.setModal(<AuthContainer />);
+	uiStore.setModal(<AuthContainer />);
 }

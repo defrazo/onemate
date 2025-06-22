@@ -1,14 +1,16 @@
 import { useState } from 'react';
 
-import { userStore } from '@/entities/user/model';
+import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
-import { IconAdd, IconBack, IconTrash } from '@/shared/assets/icons';
-import { appStore } from '@/shared/store/appStore';
+import { IconAdd, IconTrash } from '@/shared/assets/icons';
+import { useIsMobile } from '@/shared/lib/hooks';
+import { notifyStore, uiStore } from '@/shared/stores';
 import { Button, Divider, Input } from '@/shared/ui';
 
 import { profileStore } from '../model';
 
 export const ProfileContacts = () => {
+	const isMobile = useIsMobile();
 	const [phones, setPhones] = useState<string[]>(
 		userProfileStore.profile?.phone?.length ? userProfileStore.profile.phone : ['']
 	);
@@ -57,21 +59,12 @@ export const ProfileContacts = () => {
 	const saveChanges = () => {
 		userProfileStore.updatePhone(phones);
 		userProfileStore.updateEmail(emails);
-		appStore.setSuccess('Данные успешно сохранены');
+		notifyStore.setSuccess('Данные успешно сохранены');
 	};
 
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
-			<div className="relative flex items-center">
-				<Button
-					centerIcon={<IconBack className="size-6" />}
-					className="absolute left-0 md:hidden"
-					size="custom"
-					variant="mobile"
-					onClick={() => profileStore.setActiveTab('profile')}
-				/>
-				<h1 className="core-header">Контактные данные</h1>
-			</div>
+			<h1 className="core-header">Контактные данные</h1>
 			<div className="core-border flex flex-col rounded-xl p-4">
 				<div className="flex flex-col gap-2">
 					<h2 className="text-xl font-semibold">Телефон</h2>
@@ -152,7 +145,9 @@ export const ProfileContacts = () => {
 				<Button
 					className="rounded-xl hover:bg-[var(--status-error)]"
 					variant="custom"
-					onClick={() => profileStore.setActiveTab('profile')}
+					onClick={() => {
+						isMobile ? uiStore.modal?.back?.() : profileStore.setActiveTab('profile');
+					}}
 				>
 					Отменить
 				</Button>

@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { City, CityLocation, cityStore } from '@/entities/city';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 import { Input, SuggestionList } from '@/shared/ui';
 
 import { checkWeatherAvailability } from '../api';
@@ -26,12 +26,12 @@ const SearchCity = () => {
 	const handleSelect = async (city: City) => {
 		const hasWeather = await checkWeatherAvailability(city.lat, city.lon);
 		if (!hasWeather) {
-			appStore.setError(`Прогноз для этого города недоступен`);
+			notifyStore.setError(`Прогноз для этого города недоступен`);
 			return;
 		}
 		cityStore.setCurrentCity(city);
 
-		appStore.setSuccess(`Выбран город: ${city.name}`);
+		notifyStore.setSuccess(`Выбран город: ${city.name}`);
 		searchCityStore.setQuery(city.name);
 		searchCityStore.resetResults();
 	};

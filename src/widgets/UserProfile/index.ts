@@ -1,2 +1,3 @@
+export type { TabId } from './model';
 export { profileStore } from './model';
-export { default, UserProfileNav } from './ui';
+export { default, ProfileContacts, ProfileInfo, ProfileSecure, UserProfileNav } from './ui';

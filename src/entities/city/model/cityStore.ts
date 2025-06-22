@@ -1,7 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { storage } from '@/shared/lib/storage/localStorage';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 
 import { fetchCityByCoordinates } from '../api';
 import { City } from '.';
@@ -79,12 +79,12 @@ export class CityStore {
 
 					runInAction(() => {
 						this.setCurrentCity(city);
-						appStore.setSuccess(`Выбран город: ${city.name}`);
+						notifyStore.setSuccess(`Выбран город: ${city.name}`);
 						// this.success = `Выбран город: ${city.name}`;
 					});
 				} catch (error: any) {
 					runInAction(() => {
-						appStore.setError(error.message || 'Ошибка при определении текущего местоположения');
+						notifyStore.setError(error.message || 'Ошибка при определении текущего местоположения');
 					});
 				} finally {
 					runInAction(() => {

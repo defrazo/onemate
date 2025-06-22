@@ -1,15 +1,15 @@
 import { observer } from 'mobx-react-lite';
 
 import { Day, Night } from '@/shared/assets/images';
-import { appStore } from '@/shared/store/appStore';
+import { uiStore } from '@/shared/stores';
 
 const ThemeSwitcher = () => {
 	return (
 		<div className="hidden h-7 md:flex">
-			{appStore.theme === 'dark' ? (
-				<img alt="Светлая тема" className="cursor-pointer" src={Day} onClick={() => appStore.toggleTheme()} />
+			{uiStore.theme === 'dark' ? (
+				<img alt="Светлая тема" className="cursor-pointer" src={Day} onClick={() => uiStore.toggleTheme()} />
 			) : (
-				<img alt="Темная тема" className="cursor-pointer" src={Night} onClick={() => appStore.toggleTheme()} />
+				<img alt="Темная тема" className="cursor-pointer" src={Night} onClick={() => uiStore.toggleTheme()} />
 			)}
 		</div>
 	);

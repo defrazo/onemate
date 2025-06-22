@@ -1,5 +1,5 @@
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
-import { appStore } from '@/shared/store/appStore';
+import { uiStore } from '@/shared/stores';
 
 interface AvatarPickerProps {
 	className?: string;
@@ -20,7 +20,7 @@ const AvatarPicker = ({ onSelect }: AvatarPickerProps) => {
 						src={src}
 						onClick={() => {
 							onSelect(src);
-							appStore.closeModal();
+							uiStore.closeModal();
 						}}
 					/>
 				))}

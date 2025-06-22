@@ -1,21 +1,14 @@
-import { IconBack } from '@/shared/assets/icons';
+import { useIsMobile } from '@/shared/lib/hooks';
+import { uiStore } from '@/shared/stores';
 import { Button, Divider, Input } from '@/shared/ui';
 
 import { profileStore } from '../model';
 
 export const ProfileSecure = () => {
+	const isMobile = useIsMobile();
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
-			<div className="relative flex items-center">
-				<Button
-					centerIcon={<IconBack className="size-6" />}
-					className="absolute left-0 md:hidden"
-					size="custom"
-					variant="mobile"
-					onClick={() => profileStore.setActiveTab('profile')}
-				/>
-				<h2 className="core-header">Безопасность</h2>
-			</div>
+			<h1 className="core-header">Безопасность</h1>
 			<div className="core-border flex flex-col rounded-xl p-4">
 				<div className="flex flex-col gap-2">
 					<h2 className="text-xl font-bold">Пароль</h2>
@@ -44,7 +37,9 @@ export const ProfileSecure = () => {
 				<Button
 					className="rounded-xl hover:bg-[var(--status-error)]"
 					variant="custom"
-					onClick={() => profileStore.setActiveTab('profile')}
+					onClick={() => {
+						isMobile ? uiStore.modal?.back?.() : profileStore.setActiveTab('profile');
+					}}
 				>
 					Отменить
 				</Button>

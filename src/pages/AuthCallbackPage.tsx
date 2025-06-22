@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { authStore, supabase } from '@/features/auth';
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 import { Preloader } from '@/shared/ui';
 
 const AuthCallback = () => {
@@ -17,9 +17,9 @@ const AuthCallback = () => {
 
 			await authStore.oAuth({ data, error });
 
-			appStore.setSuccess('Вы успешно вошли через Google!');
+			notifyStore.setSuccess('Вы успешно вошли через Google!');
 		} catch {
-			appStore.setError('Не удалось завершить вход через Google');
+			notifyStore.setError('Не удалось завершить вход через Google');
 		} finally {
 			navigate('/');
 		}

@@ -1,20 +1,36 @@
 import { observer } from 'mobx-react-lite';
 
-import { useIsMobile } from '@/shared/lib/hooks/useIsMobile';
-import { appStore } from '@/shared/store/appStore';
+import { useIsMobile } from '@/shared/lib/hooks';
+import { uiStore } from '@/shared/stores';
 
-import { BottomSheet, Modal } from '.';
+import { BottomSheet, Dropdown, Modal } from '.';
 
 const ModalManager = () => {
-	const modal = appStore.modal;
+	const modal = uiStore.modal;
 	const isMobile = useIsMobile();
 
-	if (!modal) return null;
+	if (!modal || modal.type === 'none') return null;
 
-	const Wrapper = isMobile ? BottomSheet : Modal;
+	let Wrapper;
+
+	switch (modal.type) {
+		case 'modal':
+			Wrapper = Modal;
+			break;
+		case 'bottom-sheet':
+			Wrapper = BottomSheet;
+			break;
+		case 'dropdown':
+			Wrapper = Dropdown;
+			break;
+		case 'auto':
+		default:
+			Wrapper = isMobile ? BottomSheet : Modal;
+			break;
+	}
 
 	return (
-		<Wrapper onBack={appStore.back || undefined} onClose={() => appStore.closeModal()}>
+		<Wrapper onBack={modal.back} onClose={uiStore.closeModal} {...(modal.position && { position: modal.position })}>
 			{modal.content}
 		</Wrapper>
 	);

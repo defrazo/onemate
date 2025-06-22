@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 
-import { appStore } from '@/shared/store/appStore';
+import { notifyStore } from '@/shared/stores';
 
 import { fetchWeatherData } from '../api';
 import { ForecastItem, WeatherData } from '../model';
@@ -21,7 +21,7 @@ export const useWeather = (city: string) => {
 				setCurrentWeather(weatherData);
 				setForecastWeather(forecastData);
 			} catch (error: any) {
-				appStore.setError(error.message);
+				notifyStore.setError(error.message);
 			}
 		};
 
