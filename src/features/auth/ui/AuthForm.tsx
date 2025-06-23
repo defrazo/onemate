@@ -29,12 +29,12 @@ const AuthForm = ({ onSubmit, error }: AuthFormProps) => {
 
 		return showPassword ? (
 			<IconEyeSlash
-				className="cursor-pointer p-1 hover:text-[var(--accent-default)]"
+				className="size-7 cursor-pointer p-1 hover:text-[var(--accent-default)]"
 				onClick={() => setShowPassword((prev) => !prev)}
 			/>
 		) : (
 			<IconEye
-				className="cursor-pointer p-1 hover:text-[var(--accent-default)]"
+				className="size-7 cursor-pointer p-1 hover:text-[var(--accent-default)]"
 				onClick={() => setShowPassword((prev) => !prev)}
 			/>
 		);

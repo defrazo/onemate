@@ -37,11 +37,23 @@ const NavMenu = ({ isAuth, className, variant = 'desktop' }: NavMenuProps) => {
 					);
 
 					return onClick ? (
-						<Button key={label} className={itemClass} size={isMobile ? 'custom' : 'md'} onClick={onClick}>
+						<Button
+							key={label}
+							className={itemClass}
+							size={isMobile ? 'custom' : 'md'}
+							variant="mobile"
+							onClick={onClick}
+						>
 							{content}
 						</Button>
 					) : (
-						<Link key={label} className={itemClass} size={isMobile ? 'custom' : 'md'} to={to}>
+						<Link
+							key={label}
+							className={itemClass}
+							size={isMobile ? 'custom' : 'md'}
+							to={to}
+							variant="mobile"
+						>
 							{content}
 						</Link>
 					);
