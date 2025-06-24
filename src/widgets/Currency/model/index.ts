@@ -1,2 +1,2 @@
-export { currencyStore } from './currencyStore';
-export type { RatesList, RatesResponse } from './types';
+export { currStore } from './currStore';
+export type { Currency, CurrencyOption, RatesList, RatesResponse } from './types';

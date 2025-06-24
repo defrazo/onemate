@@ -1,19 +1,19 @@
 import { Input, SelectExt } from '@/shared/ui';
 
+import { currStore } from '../model';
+
 interface CurrencyBlockProps {
-	currencyValue?: number;
 	currencyOption: string;
-	onChangeCurrencyValue: (value: number) => void;
+	currencyValue: number;
 	onChangeCurrency: (value: string) => void;
-	options: { value: string; label: string; icon: string }[];
+	onChangeCurrencyValue: (value: number) => void;
 }
 
 export const CurrencyBlock = ({
-	currencyValue,
 	currencyOption,
-	onChangeCurrencyValue,
+	currencyValue,
 	onChangeCurrency,
-	options,
+	onChangeCurrencyValue,
 }: CurrencyBlockProps) => {
 	return (
 		<div className="core-border flex w-full rounded-xl p-1">
@@ -30,7 +30,7 @@ export const CurrencyBlock = ({
 			<div className="shrink">
 				<SelectExt
 					className="w-30"
-					options={options}
+					options={currStore.currencyOptions}
 					placeholder="Выберите валюту"
 					value={currencyOption}
 					onChange={(value) => onChangeCurrency(value)}
