@@ -1,5 +1,8 @@
 import { type ClassValue, clsx } from 'clsx';
+import copy from 'copy-to-clipboard';
 import { twMerge } from 'tailwind-merge';
+
+import { notifyStore } from '../stores';
 
 export function cn(...inputs: ClassValue[]) {
 	return twMerge(clsx(...inputs));
@@ -43,4 +46,9 @@ export const generateUUID = () => {
 		const v = c === 'x' ? r : (r & 0x3) | 0x8;
 		return v.toString(16);
 	});
+};
+
+export const copyExt = (data: string, message?: string): void => {
+	copy(data);
+	notifyStore.setSuccess(message ?? 'Данные скопированы!');
 };

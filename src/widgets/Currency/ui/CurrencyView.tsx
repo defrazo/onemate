@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { IconCopy } from '@/shared/assets/icons';
-import { useCopy } from '@/shared/lib/hooks';
+import { copyExt } from '@/shared/lib/utils';
 import { Button, Textarea } from '@/shared/ui';
 
 import { currStore } from '../model';
@@ -50,7 +50,7 @@ export const CurrencyView = observer(() => {
 				size="custom"
 				title="Скопировать в буфер"
 				variant="mobile"
-				onClick={() => useCopy(currencyView)}
+				onClick={() => copyExt(currencyView)}
 			/>
 		</div>
 	);
