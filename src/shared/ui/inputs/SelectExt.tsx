@@ -16,11 +16,13 @@ interface SelectExtProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onC
 	options: SelectExtOption[];
 	value: string;
 	onChange: (value: string) => void;
-	placeholder: string;
+	placeholder?: string;
 	variant?: keyof typeof variants.selectExt;
 	size?: keyof typeof sizes.selectExt;
 	error?: boolean;
 	justify?: 'start' | 'center' | 'end';
+	visibleKey?: boolean;
+	visibleDown?: boolean;
 	disabled?: boolean;
 }
 
@@ -33,6 +35,8 @@ const SelectExt = ({
 	size = 'md',
 	error = false,
 	justify = 'start',
+	visibleKey = true,
+	visibleDown = true,
 	disabled = false,
 	className,
 }: SelectExtProps) => {
@@ -93,17 +97,28 @@ const SelectExt = ({
 				onClick={handleOpen}
 			>
 				{selectedOption?.icon && <img alt="" className="mr-2 size-6 rounded-xl" src={selectedOption.icon} />}
-				<span className={cn('w-full pr-6 text-center', !selectedOption && 'text-muted-foreground')}>
+				<span
+					className={cn(
+						'w-full text-center',
+						visibleDown && 'pr-6',
+						!selectedOption && 'text-muted-foreground'
+					)}
+				>
 					{selectedOption?.label ?? placeholder}
 				</span>
-				<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-					<IconDown className="size-4" />
-				</div>
+				{/* <span className={cn('w-full pr-6 text-center', !selectedOption && 'text-muted-foreground')}>
+					{selectedOption?.label ?? placeholder}
+				</span> */}
+				{visibleDown && (
+					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
+						<IconDown className="size-4" />
+					</div>
+				)}
 			</button>
 			{isOpen && !disabled && (
 				<ul
 					className={cn(
-						'core-elements core-border absolute right-0 z-10 max-h-60 w-full min-w-max overflow-y-auto rounded-l-xl text-center',
+						'core-elements core-border absolute right-0 z-30 max-h-60 w-full min-w-max overflow-y-auto rounded-l-xl text-center',
 						openUpwards ? 'bottom-full' : 'top-full'
 					)}
 					role="listbox"
@@ -127,7 +142,7 @@ const SelectExt = ({
 						>
 							{opt.icon && <img alt="" className="size-6 rounded-lg" src={opt.icon} />}
 							<span className="font-bold">{opt.label}</span>
-							<span className="opacity-50">{opt.key}</span>
+							{visibleKey && <span className="opacity-50">{opt.key}</span>}
 						</li>
 					))}
 				</ul>

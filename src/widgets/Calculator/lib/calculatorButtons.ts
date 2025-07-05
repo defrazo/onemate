@@ -1,4 +1,4 @@
-import { CalculatorButton } from '../model';
+import type { CalculatorButton } from '../model';
 
 export const calculatorButtons: CalculatorButton[] = [
 	{ label: 'ON/C' },

@@ -2,7 +2,7 @@ import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
 import { cn } from '@/shared/lib/utils';
 
 interface RadioOption {
-	value: string;
+	value: string | null;
 	label: string;
 	disabled?: boolean;
 }
@@ -41,7 +41,7 @@ const Radio = ({
 
 				return (
 					<label
-						key={option.value}
+						key={option.label}
 						className={cn(
 							'group flex items-center gap-2 select-none',
 							labelSide === 'left' && 'flex-row-reverse',
@@ -53,7 +53,7 @@ const Radio = ({
 							className={cn(styles, 'rounded-full border-1')}
 							disabled={isDisabled}
 							type="radio"
-							value={option.value}
+							value={option.value ?? ''}
 							onChange={onChange}
 							{...props}
 						/>

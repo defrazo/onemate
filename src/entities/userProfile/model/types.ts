@@ -8,5 +8,4 @@ export type UserProfile = {
 	location: string;
 	phone: string[];
 	email: string[];
-	// preferences: {theme: string};
 };

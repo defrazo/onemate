@@ -1,52 +1,48 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { type City, cityStore } from '@/entities/city';
+import { handleError } from '@/shared/lib/errors';
+import { notifyStore } from '@/shared/stores';
 
-import { fetchCitiesByName } from '../api';
+import { checkWeatherAvailability, fetchCitiesByName } from '../api';
 import { regionsDictionary } from '../lib';
-// import { fetchCityByCoordinates } from '@/entities/city';
 
 export class SearchCityStore {
-	query: string = ''; // Запрос, который вводит пользователь
-	searchResults: City[] = []; // Результаты поиска
+	private abortController: AbortController | null = null;
+
+	query: string = '';
+	searchResults: City[] = [];
 	isLoading: boolean = false;
 	error: string = '';
 
-	constructor() {
-		makeAutoObservable(this);
-	}
-
 	setQuery(query: string) {
 		this.query = query;
-	}
-
-	// get currentQuery(): string {
-	// 	return this.query || '';
-	// }
-
-	setResults(results: City[]) {
-		this.searchResults = results;
+		this.error = '';
 	}
 
 	resetResults() {
 		this.searchResults = [];
 	}
 
-	async fetchCities(query: string, signal: AbortSignal) {
-		if (query.length < 3) {
-			this.searchResults = [];
-			return;
-		}
+	async fetchCities(query: string) {
+		this.abortController?.abort();
+		this.abortController = new AbortController();
 		this.isLoading = true;
 		this.error = '';
+
 		try {
-			const cities = await fetchCitiesByName(query, signal);
+			if (query.length < 3) {
+				this.searchResults = [];
+				this.error = '';
+				return;
+			}
+
+			const cities = await fetchCitiesByName(query, this.abortController.signal);
 			const translatedCities = cities
 				.map((city) => {
 					const regionKey = city.region?.toLowerCase();
-					if (regionKey && regionsDictionary[regionKey]) {
-						city.region = regionsDictionary[regionKey];
-					}
+					if (regionKey && regionsDictionary[regionKey]) city.region = regionsDictionary[regionKey];
+
 					return city;
 				})
 				.sort((a, b) => {
@@ -55,12 +51,12 @@ export class SearchCityStore {
 					return getPriority(a.country) - getPriority(b.country);
 				});
 			runInAction(() => {
-				// this.setResults(translatedCities);
 				this.searchResults = translatedCities;
 			});
-		} catch (e: any) {
+		} catch (error) {
+			handleError(error);
 			runInAction(() => {
-				this.error = e.message || 'Ошибка загрузки городов';
+				this.error = 'Ошибка загрузки городов';
 			});
 		} finally {
 			runInAction(() => {
@@ -69,10 +65,28 @@ export class SearchCityStore {
 		}
 	}
 
-	// Функция для выбора города из результатов поиска
-	selectCity(city: City) {
-		// Обновление города в CityStore
-		cityStore.setCurrentCity(city);
+	async selectCity(city: City) {
+		try {
+			const hasWeather = await checkWeatherAvailability(city.lat, city.lon);
+
+			if (!hasWeather) {
+				notifyStore.setError(`Прогноз для этого города недоступен`);
+				return;
+			}
+
+			cityStore.setCurrentCity(city);
+			notifyStore.setSuccess(`Выбран город: ${city.name}`);
+
+			this.setQuery(city.name);
+			this.resetResults();
+		} catch (error) {
+			handleError(error);
+			notifyStore.setError('Ошибка при выборе города');
+		}
+	}
+
+	constructor() {
+		makeAutoObservable(this);
 	}
 }
 

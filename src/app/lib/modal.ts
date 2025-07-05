@@ -1,1 +1,1 @@
-export { openAuthContainer } from '@/features/auth';
+export { openAuthContainer } from '@/features/user-auth';

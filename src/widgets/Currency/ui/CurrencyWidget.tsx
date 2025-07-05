@@ -1,28 +1,13 @@
-import { forwardRef } from 'react';
-
-import { cn } from '@/shared/lib/utils';
-
 import { CurrencyControls, CurrencyView } from '.';
 
-interface CurrencyWidgetProps {
-	className?: string;
-}
-
-const CurrencyWidget = forwardRef<HTMLDivElement, CurrencyWidgetProps>((props, ref) => {
+const CurrencyWidget = () => {
 	return (
-		<div
-			ref={ref}
-			{...props}
-			className={cn(
-				'core-card core-base flex w-full flex-1 flex-col gap-2 shadow-[var(--shadow)]',
-				props.className
-			)}
-		>
-			<span className="core-header">Конвертер валют</span>
+		<div className="core-card core-base flex h-full w-full flex-1 flex-col gap-2 shadow-[var(--shadow)]">
+			<h1 className="core-header">Конвертер валют</h1>
 			<CurrencyView />
 			<CurrencyControls />
 		</div>
 	);
-});
+};
 
 export default CurrencyWidget;

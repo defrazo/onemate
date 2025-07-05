@@ -1,1 +1,0 @@
-export { getCityByIP } from './getCityByIP';

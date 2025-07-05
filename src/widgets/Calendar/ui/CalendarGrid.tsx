@@ -5,7 +5,7 @@ import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { generateCalendarDays, getDateFromDay, isInRange } from '../lib';
-import { DateRange } from '../model';
+import type { DateRange } from '../model';
 
 interface CalendarGridProps {
 	currentDate: Date;

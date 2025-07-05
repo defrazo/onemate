@@ -3,58 +3,68 @@ import { makeAutoObservable, runInAction } from 'mobx';
 import { storage } from '@/shared/lib/storage/localStorage';
 import { notifyStore } from '@/shared/stores';
 
-import { fetchCityByCoordinates } from '../api';
+import { fetchCityByCoordinates, fetchCityByIP } from '../api';
 import { City } from '.';
 
 const DEFAULT_CITY: City = {
-	// id: '',
 	name: 'Москва',
 	region: 'Центральный',
 	lat: 55.7558,
 	lon: 37.6173,
 	country: 'Russia',
 };
+
 const LAST_CITY_KEY = 'lastCityLocation';
 
 export class CityStore {
+	private wasResetOnce = false;
+
 	currentCity: City = DEFAULT_CITY;
 	isLoading = false;
 	success = '';
 	error = '';
 
-	constructor() {
-		makeAutoObservable(this);
-		this.currentCity = storage.get(LAST_CITY_KEY) ?? DEFAULT_CITY;
+	get cityName(): string {
+		return this.currentCity?.name || '';
+	}
+
+	get cityRegion(): string {
+		return this.currentCity?.region || '';
+	}
+
+	get cityCoordinates(): { lat: number; lon: number } {
+		return { lat: this.currentCity.lat, lon: this.currentCity.lon };
+	}
+
+	initCity() {
+		const savedCity = storage.get(LAST_CITY_KEY);
+
+		if (savedCity) this.setCurrentCity(savedCity);
+
+		if (!savedCity && this.isDefaultCity()) this.detectCityByIP();
+	}
+
+	isDefaultCity(): boolean {
+		return (
+			this.currentCity.name === DEFAULT_CITY.name &&
+			this.currentCity.lat === DEFAULT_CITY.lat &&
+			this.currentCity.lon === DEFAULT_CITY.lon
+		);
 	}
 
 	setCurrentCity(city: City) {
 		this.currentCity = city;
 		storage.set(LAST_CITY_KEY, city);
-		console.log(city, 'Город установлен');
 	}
 
-	// async detectCityByIP() {
-	// 	this.isLoading = true;
-	// 	this.error = '';
+	async resetCurrentCity() {
+		if (this.wasResetOnce) return;
 
-	// 	try {
-	// 		const city = await fetchCityByIP();
-	// 		if (!city) throw new Error('Город не определён');
+		this.setCurrentCity(DEFAULT_CITY);
+		await this.detectCityByIP();
 
-	// 		runInAction(() => {
-	// 			this.setCurrentCity(city);
-	// 			this.success = `Выбран город: ${city.name}`;
-	// 		});
-	// 	} catch (e: any) {
-	// 		runInAction(() => {
-	// 			this.error = e.message || 'Ошибка определения города';
-	// 		});
-	// 	} finally {
-	// 		runInAction(() => {
-	// 			this.isLoading = false;
-	// 		});
-	// 	}
-	// }
+		this.wasResetOnce = true;
+	}
 
 	async detectCityByGeolocation() {
 		this.isLoading = true;
@@ -80,7 +90,6 @@ export class CityStore {
 					runInAction(() => {
 						this.setCurrentCity(city);
 						notifyStore.setSuccess(`Выбран город: ${city.name}`);
-						// this.success = `Выбран город: ${city.name}`;
 					});
 				} catch (error: any) {
 					runInAction(() => {
@@ -101,16 +110,23 @@ export class CityStore {
 		);
 	}
 
-	get cityName(): string {
-		return this.currentCity?.name || '';
+	private async detectCityByIP() {
+		this.isLoading = true;
+
+		try {
+			const city = await fetchCityByIP();
+			this.setCurrentCity(city ?? DEFAULT_CITY);
+		} catch {
+		} finally {
+			runInAction(() => {
+				this.isLoading = false;
+			});
+		}
 	}
 
-	get cityRegion(): string {
-		return this.currentCity?.region || '';
-	}
-
-	get cityCoordinates(): { lat: number; lon: number } {
-		return { lat: this.currentCity.lat, lon: this.currentCity.lon };
+	constructor() {
+		makeAutoObservable(this);
+		this.initCity();
 	}
 }
 

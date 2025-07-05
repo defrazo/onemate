@@ -16,9 +16,8 @@ export const checkUserProfile = (user: User): UserProfile => {
 			birthDate: { year: '', month: '', day: '' },
 			gender: null,
 			location: '',
-			phone: [],
-			email: [],
-			// preferences: { theme: 'light' },
+			phone: [''],
+			email: [''],
 		};
 
 		userProfiles.push(userProfile);

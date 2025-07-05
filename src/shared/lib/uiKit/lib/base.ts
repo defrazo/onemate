@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-import { Component } from '../model';
+import type { Component } from '../model';
 
 export const base: Record<Component, string> = {
 	button: cn('flex items-center justify-center', 'transition-colors', 'cursor-pointer outline-none select-none'),
@@ -11,7 +11,7 @@ export const base: Record<Component, string> = {
 	radio: cn(
 		'border-[var(--border-color)]',
 		'transition-colors',
-		'enabled:hover:border-[var(--accent-hover)] enabled:focus:border-[var(--accent-default)]',
+		'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]',
 		'cursor-pointer appearance-none outline-none'
 	),
 	select: cn('w-full', 'rounded-xl', 'transition-colors', 'cursor-pointer appearance-none outline-none'),

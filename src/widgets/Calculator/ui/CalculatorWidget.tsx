@@ -1,27 +1,13 @@
-import { forwardRef } from 'react';
-
-import { cn } from '@/shared/lib/utils';
 import { Input } from '@/shared/ui';
 
 import { useCalculator } from '../model';
 import { CalculatorButtons, CalculatorLog } from '.';
 
-interface CalculatorWidgetProps {
-	className?: string;
-}
-
-const CalculatorWidget = forwardRef<HTMLDivElement, CalculatorWidgetProps>((props, ref) => {
+const CalculatorWidget = () => {
 	const { display, handleButtonClick, result } = useCalculator();
 
 	return (
-		<div
-			ref={ref}
-			{...props}
-			className={cn(
-				'core-base core-card flex w-full flex-2 flex-col gap-2 shadow-[var(--shadow-card)]',
-				props.className
-			)}
-		>
+		<div className="core-base core-card flex h-full w-full flex-col gap-2 shadow-[var(--shadow-card)]">
 			<h1 className="core-header">Калькулятор</h1>
 			<Input
 				className="pointer-events-none px-2 text-right text-2xl"
@@ -35,6 +21,6 @@ const CalculatorWidget = forwardRef<HTMLDivElement, CalculatorWidgetProps>((prop
 			<CalculatorLog result={result} />
 		</div>
 	);
-});
+};
 
 export default CalculatorWidget;

@@ -4,13 +4,15 @@ import { Day, Night } from '@/shared/assets/images';
 import { uiStore } from '@/shared/stores';
 
 const ThemeSwitcher = () => {
+	const isDark = uiStore.theme === 'dark';
+	const alt = isDark ? 'Светлая тема' : 'Темная тема';
+	const image = isDark ? Day : Night;
+	const title = isDark ? 'Активировать светлую тему' : 'Активировать темную тему';
+	const handleToogle = () => uiStore.toggleTheme();
+
 	return (
-		<div className="hidden h-7 md:flex">
-			{uiStore.theme === 'dark' ? (
-				<img alt="Светлая тема" className="cursor-pointer" src={Day} onClick={() => uiStore.toggleTheme()} />
-			) : (
-				<img alt="Темная тема" className="cursor-pointer" src={Night} onClick={() => uiStore.toggleTheme()} />
-			)}
+		<div className="hidden size-7 md:flex">
+			<img alt={alt} className="cursor-pointer" src={image} title={title} onClick={handleToogle} />
 		</div>
 	);
 };

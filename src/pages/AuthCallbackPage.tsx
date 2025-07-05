@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { authStore, supabase } from '@/features/auth';
+import { authStore, supabase } from '@/features/user-auth';
 import { notifyStore } from '@/shared/stores';
 import { Preloader } from '@/shared/ui';
 
@@ -31,7 +31,8 @@ const AuthCallback = () => {
 				<span className="text-muted-foreground animate-pulse text-xl font-medium">
 					Подождите, выполняется вход...
 				</span>
-				<Preloader className="h-15" />
+				{/* <Preloader className="h-15" /> */}
+				<Preloader className="size-15" />
 			</div>
 		</div>
 	);

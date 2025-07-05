@@ -5,13 +5,14 @@ import IconChecked from './checked.svg?react';
 import IconClose from './close.svg?react';
 import IconCopy from './copy.svg?react';
 import IconDay from './day.svg?react';
+import IconDots from './dots.svg?react';
 import IconDown from './down.svg?react';
 import IconForward from './forward.svg?react';
 import IconLocation from './location.svg?react';
+import IconMove from './move.svg?react';
 import IconNight from './night.svg?react';
 import IconTrash from './trash.svg?react';
 import IconUnchecked from './unchecked.svg?react';
-import IconWidgets from './widgets.svg?react';
 
 export {
 	IconAdd,
@@ -21,11 +22,12 @@ export {
 	IconClose,
 	IconCopy,
 	IconDay,
+	IconDots,
 	IconDown,
 	IconForward,
 	IconLocation,
+	IconMove,
 	IconNight,
 	IconTrash,
 	IconUnchecked,
-	IconWidgets,
 };

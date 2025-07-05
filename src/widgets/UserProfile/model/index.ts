@@ -1,2 +1,3 @@
 export { profileStore } from './profileStore';
-export type { ProfileNavButtons, TabId } from './types';
+export type { BrowserInfo, DraftProfile, GenderOption, ProfileNavButton, TabId } from './types';
+export { useProfile } from './useProfile';

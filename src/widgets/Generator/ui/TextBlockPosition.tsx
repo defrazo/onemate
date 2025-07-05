@@ -10,7 +10,7 @@ interface TextBlockPositionProps {
 	onChange: (axis: 'x' | 'y', value: number) => void;
 }
 
-export const TextBlockPosition = ({ label, position, onChange, maxX, maxY }: TextBlockPositionProps) => (
+export const TextBlockPosition = ({ label, position, maxX, maxY, onChange }: TextBlockPositionProps) => (
 	<label className="flex w-full flex-col gap-1">
 		<div className="flex items-center justify-between gap-1">
 			{label}
@@ -27,6 +27,7 @@ export const TextBlockPosition = ({ label, position, onChange, maxX, maxY }: Tex
 				min={0}
 				type="range"
 				value={position[0]}
+				variant="custom"
 				onChange={(e) => onChange('x', parseFloat(e.target.value))}
 			/>
 		</div>
@@ -39,6 +40,7 @@ export const TextBlockPosition = ({ label, position, onChange, maxX, maxY }: Tex
 				min={0}
 				type="range"
 				value={position[1]}
+				variant="custom"
 				onChange={(e) => onChange('y', parseFloat(e.target.value))}
 			/>
 		</div>

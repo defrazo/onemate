@@ -10,7 +10,7 @@ import {
 } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-import { DateRange } from '../model';
+import type { DateRange } from '../model';
 
 export const calculateNewRange = (clickedDate: Date, currentRange: DateRange): [Date, Date | null] => {
 	const [start, end] = currentRange;
@@ -21,7 +21,6 @@ export const calculateNewRange = (clickedDate: Date, currentRange: DateRange): [
 
 		const earlier = isBefore(clickedDate, start) ? clickedDate : start;
 		const later = isAfter(clickedDate, start) ? clickedDate : start;
-
 		return [earlier, later];
 	}
 

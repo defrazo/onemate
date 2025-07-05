@@ -18,6 +18,10 @@ export class UIStore {
 		return this.theme === 'light' ? 'Светлая' : 'Темная';
 	}
 
+	get modalType() {
+		return this.modal?.type;
+	}
+
 	setModal(
 		content: React.ReactNode,
 		type: ModalType = 'auto',

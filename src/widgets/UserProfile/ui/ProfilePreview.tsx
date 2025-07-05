@@ -2,8 +2,9 @@ import { format } from 'date-fns';
 import { ru } from 'date-fns/locale';
 import { observer } from 'mobx-react-lite';
 
-import { UserAvatar, userStore } from '@/entities/user';
+import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
+import UserAvatar from '@/features/user-avatar';
 import { Button, Divider } from '@/shared/ui';
 
 import { profileStore } from '../model';

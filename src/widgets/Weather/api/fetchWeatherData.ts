@@ -2,7 +2,7 @@ import { API_URLS, WEATHER_API_KEY } from '@/shared/config/apiConfig';
 import { ApiError, handleError } from '@/shared/lib/errors';
 import { convertDate, dayOfWeek, formatDate } from '@/shared/lib/utils';
 
-import { ForecastApiItem, ForecastItem, WeatherData } from '../model';
+import type { ForecastApiItem, ForecastItem, WeatherData } from '../model';
 
 // Получение текущей погоды и прогноза на 5 дней для выбранного города
 export const fetchWeatherData = async (
@@ -45,7 +45,7 @@ export const fetchWeatherData = async (
 				const icon = icons.length === 8 ? icons[4] : icons[0];
 				const description = descriptions.length === 8 ? descriptions[4] : descriptions[0];
 
-				const formattedDate = convertDate(date);
+				const formattedDate = convertDate(date, 'short');
 				const formattedDay = dayOfWeek(entries[0].dt, 'short');
 
 				return {

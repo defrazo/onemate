@@ -5,7 +5,7 @@
 	}
 
 	a {
-		@apply cursor-pointer select-none hover:text-[var(--accent-default)];
+		@apply cursor-pointer select-none hover:text-[var(--accent-hover)];
 	}
 
 	.textSubhead {

@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react-lite';
 
 import { genStore, useGenModel } from '../model';
-import { CardSvg } from './CardSvg';
+import { CardSvg } from '.';
 
 export const PreviewGrid = observer(() => {
-	const { ref, cardWidth, cardHeight, fullGridHeight, fullGridWidth, gap } = useGenModel();
+	const { cardWidth, cardHeight, fullGridWidth, fullGridHeight, gap, ref } = useGenModel();
 
 	return (
 		<div className="flex w-full flex-col gap-2">

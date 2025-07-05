@@ -1,4 +1,4 @@
-import { Component } from '../model';
+import type { Component } from '../model';
 
 export const sizes: Record<Component, Record<string, string>> = {
 	button: {
@@ -20,21 +20,21 @@ export const sizes: Record<Component, Record<string, string>> = {
 		custom: '',
 	},
 	checkbox: {
-		sm: 'h-4 w-4',
-		md: 'h-5 w-5',
-		lg: 'h-6 w-6',
+		sm: 'size-4',
+		md: 'size-5',
+		lg: 'size-6',
 		custom: '',
 	},
 	checkboxBool: {
-		sm: 'h-4 w-4',
-		md: 'h-5 w-5',
-		lg: 'h-6 w-6',
+		sm: 'size-4',
+		md: 'size-5',
+		lg: 'size-6',
 		custom: '',
 	},
 	radio: {
-		sm: 'h-4 w-4',
-		md: 'h-5 w-5',
-		lg: 'h-6 w-6',
+		sm: 'size-4',
+		md: 'size-5',
+		lg: 'size-6',
 		custom: '',
 	},
 	select: {

@@ -53,7 +53,6 @@ export const useCalculator = () => {
 				handleCloseBracket(); break;
 			case '±': 
 				handlePlusMinus(); break;
-			
 			case '.': 
 				handleMathDot(); break;
 			case '÷':
@@ -85,7 +84,6 @@ export const useCalculator = () => {
 
 		setResult((prev) => [...prev, { expression, result: safeResult }]);
 		setDisplay(safeResult);
-
 		return safeResult;
 	};
 

@@ -17,8 +17,8 @@ const initialState = {
 };
 
 export class GenStore {
-	svgRaw: string | null = null; // исходный SVG без текста
-	svgWithText: string | null = null; // скомпилированный  SVG уже с текстом
+	svgRaw: string | null = null;
+	svgWithText: string | null = null;
 	count: number = 1;
 	sizePt: [number, number] = [0, 0]; // width, height
 	grid: [number, number] = [1, 1]; // columns, rows
@@ -115,20 +115,14 @@ export class GenStore {
 
 	constructor() {
 		makeAutoObservable(this);
-
-		// Реакция: когда меняются svgRaw или textBlocks пересобираем svgWithText
 		reaction(
-			// 1) Функция-датчик: возвращаем кортеж [svgRaw, копия textBlocks]
 			() => [this.svgRaw, this.textBlocks.map((b) => ({ ...b }))] as [string | null, TextBlock[]],
-
-			// 2) Обработчик: получает два элемента, первый — raw (string|null), второй — snapshot массива
 			([raw]) => {
 				if (!raw) {
 					this.svgWithText = null;
 					return;
 				}
 
-				// Из this.textBlocks берем только включённые блоки
 				const enabledBlocks = this.textBlocks.filter((b) => b.isEnabled);
 				this.svgWithText = insertTextBlocks(
 					raw,
@@ -141,7 +135,6 @@ export class GenStore {
 				);
 			},
 			{
-				// чтобы сразу собрать svgWithText, если svgRaw уже был
 				fireImmediately: true,
 			}
 		);

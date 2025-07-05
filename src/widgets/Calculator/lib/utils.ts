@@ -1,4 +1,4 @@
-import { ResultItem } from '../model';
+import type { ResultItem } from '../model';
 
 export const formatNumber = (num: number): string => {
 	if (Number.isInteger(num)) return num.toString();

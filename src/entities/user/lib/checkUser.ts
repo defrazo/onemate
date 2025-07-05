@@ -1,7 +1,7 @@
 import { storage } from '@/shared/lib/storage/localStorage';
 import { generateUUID } from '@/shared/lib/utils';
 
-import { User } from '../model';
+import type { User } from '../model';
 
 export const checkUser = (username: string, email: string, password?: string): User => {
 	const existingUsers: User[] = storage.get('users') || [];

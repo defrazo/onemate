@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { IconArrows } from '@/shared/assets/icons';
 import { Button } from '@/shared/ui';
 
-import { currStore } from '../model';
+import { currencyStore } from '../model';
 import { CurrencyBlock } from '.';
 
 export const CurrencyControls = observer(() => {
@@ -11,22 +11,21 @@ export const CurrencyControls = observer(() => {
 		<div className="flex gap-2">
 			<div className="relative flex w-full flex-col gap-2">
 				<CurrencyBlock
-					currencyOption={currStore.baseCode}
-					currencyValue={currStore.baseValue}
-					onChangeCurrency={(value) => currStore.selectCurrency(value, 'base')}
-					onChangeCurrencyValue={(value) => currStore.handleCurrencyValue(0, value)}
+					currencyOption={currencyStore.baseCode}
+					currencyValue={currencyStore.baseValue}
+					onChangeCurrency={(value) => currencyStore.selectCurrency(value, 'base')}
+					onChangeCurrencyValue={(value) => currencyStore.handleCurrencyValue(0, value)}
 				/>
 				<Button
-					centerIcon={<IconArrows className="size-5" />}
-					className="core-base absolute top-1/2 left-4 size-10 -translate-y-1/2"
-					variant="custom"
-					onClick={currStore.swapCurrencies}
+					centerIcon={<IconArrows className="size-4" />}
+					className="core-elements absolute top-1/2 left-4 size-8 -translate-y-1/2 rounded-full"
+					onClick={currencyStore.swapCurrencies}
 				/>
 				<CurrencyBlock
-					currencyOption={currStore.targetCode}
-					currencyValue={currStore.targetValue}
-					onChangeCurrency={(value) => currStore.selectCurrency(value, 'target')}
-					onChangeCurrencyValue={(value) => currStore.handleCurrencyValue(1, value)}
+					currencyOption={currencyStore.targetCode}
+					currencyValue={currencyStore.targetValue}
+					onChangeCurrency={(value) => currencyStore.selectCurrency(value, 'target')}
+					onChangeCurrencyValue={(value) => currencyStore.handleCurrencyValue(1, value)}
 				/>
 			</div>
 		</div>

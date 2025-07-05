@@ -3,6 +3,7 @@
 }
 html {
 	height: 100%;
+	scrollbar-gutter: stable both-edges;
 }
 
 body {
@@ -10,6 +11,7 @@ body {
 	height: 100%;
 	color: var(--color-primary);
 	background: var(--bg-primary);
+	padding-right: calc(100vw - 100%);
 }
 
 #root {
@@ -35,6 +37,15 @@ body {
 * {
 	scrollbar-width: thin;
 	scrollbar-color: var(--bg-primary) var(--bg-tertiary);
+}
+
+.hide-scrollbar {
+	scrollbar-width: none; /* Firefox */
+	-ms-overflow-style: none; /* IE и Edge */
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none; /* Chrome, Safari */
 }
 
 /* Стили для инпутов */

@@ -3,7 +3,7 @@ import { copyExt } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { hasWeekendInRange } from '../lib';
-import { DateRange } from '../model';
+import type { DateRange } from '../model';
 
 interface CalendarControlsProps {
 	range: DateRange;
@@ -25,7 +25,7 @@ export const CalendarControls = ({
 			<div className="col-span-3 text-center">{rangeState}</div>
 			<Button
 				active={hasWeekendInRange(range) && includeWeekends}
-				className="w-full text-xs"
+				className="w-full text-sm"
 				disabled={!hasWeekendInRange(range)}
 				leftIcon={includeWeekends ? <IconChecked className="size-4" /> : <IconUnchecked className="size-4" />}
 				onClick={() => setIncludeWeekends((prev) => !prev)}
@@ -33,7 +33,7 @@ export const CalendarControls = ({
 				Выходные
 			</Button>
 			<Button
-				className="w-full text-xs"
+				className="w-full text-sm"
 				disabled={!range[0] || !range[1]}
 				leftIcon={<IconCopy className="size-4" />}
 				onClick={() => copyExt(rangeState, 'Диапазон скопирован!')}
@@ -41,7 +41,7 @@ export const CalendarControls = ({
 				Скопировать
 			</Button>
 			<Button
-				className="w-full text-xs hover:enabled:bg-[var(--status-error)]"
+				className="w-full text-sm hover:enabled:bg-[var(--status-error)]"
 				disabled={!range[0]}
 				leftIcon={<IconTrash className="size-4" />}
 				onClick={() => setRange([null, null])}

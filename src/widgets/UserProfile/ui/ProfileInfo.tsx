@@ -1,68 +1,30 @@
-import React, { useEffect, useState } from 'react';
-import { getDaysInMonth } from 'date-fns';
 import { observer } from 'mobx-react-lite';
 
-import { cityStore } from '@/entities/city';
-import { userStore } from '@/entities/user';
-import { userProfileStore } from '@/entities/userProfile';
 import SearchCity from '@/features/search-city';
+import { AvatarPicker } from '@/features/user-avatar';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
-import { useIsMobile } from '@/shared/lib/hooks';
 import { capitalizeFirstLetter } from '@/shared/lib/utils';
-import { notifyStore, uiStore } from '@/shared/stores';
-import { Avatar, AvatarPicker, Button, Input, Radio, SelectExt } from '@/shared/ui';
+import { uiStore } from '@/shared/stores';
+import { Button, Input, Radio, SelectExt, Thumbnail } from '@/shared/ui';
 
-import { profileStore } from '../model';
+import { profileStore, useProfile } from '../model';
 
 export const ProfileInfo = observer(() => {
-	const isMobile = useIsMobile();
-	const [firstName, setFirstName] = useState<string>(userProfileStore.profile?.firstName || '');
-	const [lastName, setLastName] = useState<string>(userProfileStore.profile?.lastName || '');
-	const [username, setUsername] = useState<string>(userStore.user?.username || '');
-	const [year, setYear] = useState<string>(userProfileStore.profile?.birthDate.year || '');
-	const [month, setMonth] = useState<string>(userProfileStore.profile?.birthDate.month || '');
-	const [day, setDay] = useState<string>(userProfileStore.profile?.birthDate.day || '');
-	const [gender, setGender] = useState<'male' | 'female' | null>(userProfileStore.profile?.gender || null);
-	const [days, setDays] = useState<string[]>([]);
-
-	const genderOptions: { value: 'male' | 'female'; label: string }[] = [
-		{ value: 'male', label: 'Мужской' },
-		{ value: 'female', label: 'Женский' },
-	];
-
-	useEffect(() => {
-		if (year && month) {
-			const count = getDaysInMonth(new Date(+year, +month));
-			setDays(Array.from({ length: count }, (_, i) => (i + 1).toString()));
-		}
-	}, [year, month]);
-
-	const saveChanges = () => {
-		userProfileStore.updateFirstName(firstName);
-		userProfileStore.updateLastName(lastName);
-		userStore.updateUsername(username);
-		userProfileStore.updateBirthDate({ year, month, day });
-		userProfileStore.updateGender(gender);
-		userProfileStore.updateLocation(cityStore.cityName);
-		notifyStore.setSuccess('Данные успешно сохранены');
-	};
-
-	const handleGenderChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setGender(event.target.value as 'male' | 'female');
-	};
+	const { isMobile, draft, updateDraft, days, genderOptions, saveChanges } = useProfile();
 
 	return (
 		<div className="core-card core-base flex flex-col gap-2">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
-					<Avatar
+					<Thumbnail
 						alt="avatar"
-						className="size-1/2 md:size-fit"
-						src={userProfileStore.profile?.avatarUrl || AVATAR_OPTIONS[0]}
+						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-1 md:size-fit"
+						src={draft.avatar || AVATAR_OPTIONS[0]}
+						title="Сменить аватар"
 						onClick={() =>
 							uiStore.setModal(
-								<AvatarPicker onSelect={(newAvatar) => userProfileStore.updateAvatar(newAvatar)} />
+								<AvatarPicker onSelect={(newAvatar) => updateDraft('avatar', newAvatar)} />
 							)
 						}
 					/>
@@ -70,7 +32,7 @@ export const ProfileInfo = observer(() => {
 						className="w-full"
 						onClick={() => {
 							uiStore.setModal(
-								<AvatarPicker onSelect={(newAvatar) => userProfileStore.updateAvatar(newAvatar)} />
+								<AvatarPicker onSelect={(newAvatar) => updateDraft('avatar', newAvatar)} />
 							);
 						}}
 					>
@@ -78,34 +40,34 @@ export const ProfileInfo = observer(() => {
 					</Button>
 				</div>
 				<div className="flex w-full flex-col justify-center gap-4">
-					<div>
+					<div className="flex flex-col gap-1">
 						<h3>Имя</h3>
 						<Input
 							placeholder="Ваше имя"
-							value={firstName}
+							value={draft.firstName}
 							variant="ghost"
-							onChange={(e) => setFirstName(e.target.value)}
+							onChange={(e) => updateDraft('firstName', e.target.value)}
 						/>
 					</div>
-					<div>
+					<div className="flex flex-col gap-1">
 						<h3>Фамилия</h3>
 						<Input
 							placeholder="Ваша фамилия"
-							value={lastName}
+							value={draft.lastName}
 							variant="ghost"
-							onChange={(e) => setLastName(e.target.value)}
+							onChange={(e) => updateDraft('lastName', e.target.value)}
 						/>
 					</div>
-					<div>
+					<div className="flex flex-col gap-1">
 						<h3>Никнейм</h3>
 						<Input
 							placeholder="Ваш никнейм"
-							value={username}
+							value={draft.username}
 							variant="ghost"
-							onChange={(e) => setUsername(e.target.value)}
+							onChange={(e) => updateDraft('username', e.target.value)}
 						/>
 					</div>
-					<div>
+					<div className="flex flex-col gap-1">
 						<h3>Дата рождения</h3>
 						<div className="flex gap-2">
 							<SelectExt
@@ -115,9 +77,9 @@ export const ProfileInfo = observer(() => {
 									return { value: y, label: y };
 								})}
 								placeholder="Год"
-								value={year}
+								value={draft.year}
 								variant="ghost"
-								onChange={(value) => (setYear(value), setDay(''))}
+								onChange={(value) => (updateDraft('year', value), updateDraft('day', ''))}
 							/>
 							<SelectExt
 								justify="center"
@@ -128,32 +90,35 @@ export const ProfileInfo = observer(() => {
 									),
 								}))}
 								placeholder="Месяц"
-								value={month}
+								value={draft.month}
 								variant="ghost"
-								onChange={(value) => (setMonth(value), setDay(''))}
+								onChange={(value) => {
+									updateDraft('month', value);
+									updateDraft('day', '');
+								}}
 							/>
 							<SelectExt
-								disabled={!year || month === ''}
+								disabled={!draft.year || draft.month === ''}
 								justify="center"
 								options={days.map((d) => ({ value: d, label: d }))}
 								placeholder="День"
-								value={day}
+								value={draft.day}
 								variant="ghost"
-								onChange={(value) => setDay(value)}
+								onChange={(value) => updateDraft('day', value)}
 							/>
 						</div>
 					</div>
-					<div>
+					<div className="flex flex-col gap-1">
 						<h3>Пол:</h3>
 						<Radio
 							className="gap-4"
 							name="gender"
 							options={genderOptions}
-							value={gender}
-							onChange={handleGenderChange}
+							value={draft.gender}
+							onChange={(e) => updateDraft('gender', e.target.value as 'male' | 'female' | null)}
 						/>
 					</div>
-					<div className="w-full">
+					<div className="flex flex-col gap-1">
 						<h3>Город</h3>
 						<SearchCity />
 					</div>

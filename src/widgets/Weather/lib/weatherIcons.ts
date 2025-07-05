@@ -37,7 +37,7 @@ import Icon50dLight from '@/shared/assets/icons/weather/light/50d.svg';
 import Icon50nLight from '@/shared/assets/icons/weather/light/50n.svg';
 import UnknownLight from '@/shared/assets/icons/weather/light/unknown.svg';
 
-import { WeatherCode } from '../model';
+import type { WeatherCode } from '../model';
 
 export const weatherIcons: Record<'light' | 'dark', Record<WeatherCode, string> & { default: string }> = {
 	light: {

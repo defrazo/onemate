@@ -1,4 +1,4 @@
-import { ResultItem } from '../model';
+import type { ResultItem } from '../model';
 import { formatNumber, sanitizeExpression } from '.';
 
 export const calculateResult = (display: string): ResultItem => {

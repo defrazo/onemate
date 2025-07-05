@@ -1,15 +1,7 @@
-import { forwardRef } from 'react';
-
-import { cn } from '@/shared/lib/utils';
-
 import { useCalendar } from '../model';
 import { CalendarControls, CalendarGrid, CalendarNav } from '.';
 
-interface CalendarWidgetProps {
-	className?: string;
-}
-
-const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, ref) => {
+const CalendarWidget = () => {
 	const {
 		currentDate,
 		handleDayClick,
@@ -23,14 +15,7 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 	} = useCalendar();
 
 	return (
-		<div
-			ref={ref}
-			{...props}
-			className={cn(
-				'core-card core-base flex flex-1 flex-col gap-2 shadow-[var(--shadow)] select-none',
-				props.className
-			)}
-		>
+		<div className="core-card core-base flex h-full flex-col gap-2 shadow-[var(--shadow)] select-none">
 			<h1 className="core-header">Календарь</h1>
 			<div className="flex size-full flex-col justify-between gap-2">
 				<div className="core-border flex h-full flex-col rounded-xl py-2">
@@ -47,6 +32,6 @@ const CalendarWidget = forwardRef<HTMLDivElement, CalendarWidgetProps>((props, r
 			</div>
 		</div>
 	);
-});
+};
 
 export default CalendarWidget;

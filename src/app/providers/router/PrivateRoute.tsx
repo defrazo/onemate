@@ -1,7 +1,7 @@
 import { Navigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { authStore } from '@/features/auth';
+import { authStore } from '@/features/user-auth';
 
 interface PrivateRouteProps {
 	element: React.ReactNode;

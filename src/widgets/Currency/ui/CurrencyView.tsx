@@ -5,35 +5,36 @@ import { IconCopy } from '@/shared/assets/icons';
 import { copyExt } from '@/shared/lib/utils';
 import { Button, Textarea } from '@/shared/ui';
 
-import { currStore } from '../model';
+import { currencyStore } from '../model';
 
 export const CurrencyView = observer(() => {
 	const [currencyView, setCurrencyView] = useState<string>('');
+	const store = currencyStore;
 
 	useEffect(() => {
-		const baseRate = currStore.ratesList[currStore.baseCode]?.value;
-		const targetRate = currStore.ratesList[currStore.targetCode]?.value;
+		const baseRate = store.ratesList[store.baseCode]?.value;
+		const targetRate = store.ratesList[store.targetCode]?.value;
 
 		if (!baseRate || !targetRate) {
 			setCurrencyView('Пожалуйста, выберите обе валюты');
-			currStore.updateCurrencies(1, 'value', 0);
+			store.updateCurrencies(1, 'value', 0);
 			return;
 		}
 
 		const singleValue = (targetRate / baseRate).toFixed(2);
-		const totalValue = (currStore.baseValue * +singleValue).toFixed(2);
+		const totalValue = (store.baseValue * +singleValue).toFixed(2);
 
-		currStore.updateCurrencies(1, 'value', +totalValue);
+		store.updateCurrencies(1, 'value', +totalValue);
 
-		const baseName = currStore.ratesList[currStore.baseCode]?.name || currStore.baseCode;
-		const targetName = currStore.ratesList[currStore.targetCode]?.name || currStore.targetCode;
+		const baseName = store.ratesList[store.baseCode]?.name || store.baseCode;
+		const targetName = store.ratesList[store.targetCode]?.name || store.targetCode;
 
 		const viewText =
 			`1 ${baseName} = ${singleValue} ${targetName}\n` +
-			`${currStore.baseValue} ${baseName} = ${totalValue} ${targetName}`;
+			`${store.baseValue} ${baseName} = ${totalValue} ${targetName}`;
 
 		setCurrencyView(viewText);
-	}, [currStore.baseCode, currStore.targetCode, currStore.baseValue, currStore.ratesList]);
+	}, [store.baseCode, store.targetCode, store.baseValue, store.ratesList]);
 
 	return (
 		<div className="relative flex flex-1">
@@ -48,7 +49,7 @@ export const CurrencyView = observer(() => {
 				centerIcon={<IconCopy className="size-5" />}
 				className="absolute right-0 bottom-0 bg-transparent p-2 opacity-20 transition hover:bg-transparent hover:opacity-100 active:bg-transparent"
 				size="custom"
-				title="Скопировать в буфер"
+				title="Скопировать"
 				variant="mobile"
 				onClick={() => copyExt(currencyView)}
 			/>

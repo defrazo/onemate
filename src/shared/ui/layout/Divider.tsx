@@ -3,35 +3,35 @@ import { cn } from '@/shared/lib/utils';
 interface DividerProps {
 	className?: string;
 	variant?: 'default' | 'custom';
-	padY?: 'none' | 'sm' | 'md' | 'lg';
-	padX?: 'none' | 'sm' | 'md' | 'lg';
+	margY?: 'none' | 'sm' | 'md' | 'lg';
+	margX?: 'none' | 'sm' | 'md' | 'lg';
 }
 
-const Divider = ({ className, variant = 'default', padY = 'none', padX = 'none' }: DividerProps) => {
-	const base = 'h-px flex-1';
+const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
+	const base = 'h-px';
 
 	const variants = {
-		default: 'bg-[var(--bg-tertiary)]',
+		default: 'bg-[var(--border-color)]',
 		custom: '',
 	};
 
-	const paddingsY = {
-		sm: 'py-2',
-		md: 'py-4',
-		lg: 'py-6',
-		none: 'py-0',
+	const marginsY = {
+		sm: 'my-2',
+		md: 'my-4',
+		lg: 'my-6',
+		none: 'my-0',
 	};
 
-	const paddingsX = {
-		sm: 'px-2',
-		md: 'px-4',
-		lg: 'px-6',
-		none: 'py-0',
+	const marginsX = {
+		sm: 'mx-2',
+		md: 'mx-4',
+		lg: 'mx-6',
+		none: 'mx-0',
 	};
 
 	return (
-		<div className={cn('flex', paddingsY[padY], paddingsX[padX])}>
-			<hr className={cn(base, variants[variant], className)} />
+		<div className={cn(marginsY[margY], marginsX[margX])}>
+			<hr className={cn('border-none', base, variants[variant], className)} />
 		</div>
 	);
 };

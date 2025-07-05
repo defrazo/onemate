@@ -1,4 +1,5 @@
-import { ContainerSize, DimensionsPt, DisplaySizes, genStore } from '../model';
+import type { ContainerSize, DimensionsPt, DisplaySizes } from '../model';
+import { genStore } from '../model';
 import { stringifyCutLine } from '.';
 
 // Конвертирует миллиметры в поинты
@@ -28,7 +29,6 @@ export const extractSvgDimensions = (svgElement: SVGSVGElement): DimensionsPt =>
 	if (widthAttr && heightAttr) {
 		const parseNumber = (str: string): number => {
 			const num = parseFloat(str);
-
 			return isNaN(num) ? 0 : num;
 		};
 

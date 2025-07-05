@@ -7,9 +7,9 @@ interface TextBlockProps {
 	label: string;
 	textValue: string;
 	isChecked: boolean;
+	position: number[];
 	onCheckToggle: () => void;
 	onTextChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
-	position: number[];
 	onPositionChange: (axis: 'x' | 'y', value: number) => void;
 }
 
@@ -17,9 +17,9 @@ export const TextBlock = ({
 	label,
 	textValue,
 	isChecked,
+	position,
 	onCheckToggle,
 	onTextChange,
-	position,
 	onPositionChange,
 }: TextBlockProps) => (
 	<div className="core-border flex flex-col gap-1 rounded-xl p-2">
@@ -35,7 +35,7 @@ export const TextBlock = ({
 			</div>
 			<div className="w-full">
 				<Input
-					className="rounded-xl"
+					className="rounded-xl text-center"
 					disabled={!genStore.svgWithText}
 					size="sm"
 					type="text"

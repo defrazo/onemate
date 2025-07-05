@@ -1,13 +1,15 @@
 import { observer } from 'mobx-react-lite';
 
-import { UserAvatar, userStore } from '@/entities/user';
+import { userStore } from '@/entities/user';
+import UserAvatar from '@/features/user-avatar';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { ProfileNavButtons, profileStore } from '../model';
+import type { ProfileNavButton } from '../model';
+import { profileStore } from '../model';
 
 export const UserProfileNav = observer(() => {
-	const buttons: ProfileNavButtons = [
+	const buttons: ProfileNavButton[] = [
 		{ id: 'profile', title: 'Главная' },
 		{ id: 'info', title: 'Личные данные' },
 		{ id: 'contacts', title: 'Контакты и адреса' },

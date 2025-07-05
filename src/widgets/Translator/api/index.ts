@@ -1,0 +1,1 @@
+export { fetchTranslate } from './fetchTranslate';

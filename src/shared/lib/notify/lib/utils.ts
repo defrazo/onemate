@@ -1,4 +1,4 @@
-import { NotifyType } from '../model';
+import type { NotifyType } from '../model';
 
 export const leftBorder = (type: NotifyType) => {
 	switch (type) {

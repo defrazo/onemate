@@ -1,7 +1,7 @@
 import { Textarea } from '@/shared/ui';
 
 import { renderResult } from '../lib';
-import { ResultItem } from '../model';
+import type { ResultItem } from '../model';
 
 interface CalculatorLogProps {
 	result: ResultItem[];
@@ -10,11 +10,11 @@ interface CalculatorLogProps {
 export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 	return (
 		<Textarea
-			className="pointer-events-none grow text-right"
+			className="h-full border-1 border-[var(--border-color)] text-right"
 			placeholder="Журнала еще нет"
 			readOnly
 			value={renderResult(result)}
-			variant="ghost"
+			variant="custom"
 		/>
 	);
 };

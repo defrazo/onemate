@@ -1,5 +1,5 @@
-export { default as ForecastCard } from './ForecastCard';
-export { default as WeatherCurrent } from './WeatherCurrent';
-export { default as WeatherForecast } from './WeatherForecast';
-export { default as WeatherIcon } from './WeatherIcon';
+export { ForecastCard } from './ForecastCard';
+export { WeatherCurrent } from './WeatherCurrent';
+export { WeatherForecast } from './WeatherForecast';
+export { WeatherIcon } from './WeatherIcon';
 export { default } from './WeatherWidget';

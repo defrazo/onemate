@@ -6,7 +6,7 @@ import { downloadGridSvg } from '../lib';
 import { genStore, useGenModel } from '../model';
 
 export const SettingsRight = observer(() => {
-	const { selectedFileName, handleUpload, setSelectedFileName } = useGenModel();
+	const { selectedFileName, setSelectedFileName, handleUpload } = useGenModel();
 
 	return (
 		<div className="core-base core-card top-4 flex w-full flex-col gap-2">

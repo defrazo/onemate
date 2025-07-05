@@ -5,7 +5,7 @@ import { Provider } from 'mobx-react';
 import App from '@/app/App';
 import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/userProfile';
-import { authStore } from '@/features/auth';
+import { authStore } from '@/features/user-auth';
 import { rootStore } from '@/shared/stores';
 
 import '../index.css';

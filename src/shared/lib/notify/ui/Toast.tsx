@@ -19,7 +19,8 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 			<div
 				className={`flex items-center justify-center gap-4 rounded-xl border border-l-4 border-[var(--border-color)] bg-[rgba(255,255,255,0.2)] px-4 py-2 shadow-lg backdrop-blur-md select-none ${leftBorder(type)}`}
 			>
-				<div className={`h-8 py-1 ${iconColor(type)}`}>{Icon}</div>
+				<div className={`size-8 py-1 ${iconColor(type)}`}>{Icon}</div>
+				{/* <div className={`h-8 py-1 ${iconColor(type)}`}>{Icon}</div> */}
 				<div className="">
 					<p>{message}</p>
 					{options?.description && <p className="text-sm opacity-75">{options.description}</p>}

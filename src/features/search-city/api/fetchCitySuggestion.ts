@@ -5,10 +5,8 @@ import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 // Получение списка городов на основе введенного пользователем значения
 export const fetchCitySuggestion = async (queryCity: string, signal?: AbortSignal): Promise<City[]> => {
 	try {
-		const response = await fetch(
-			`${API_URLS.openWeather}find?q=${queryCity}&units=metric&lang=ru&appid=${WEATHER_API_KEY}`,
-			{ signal }
-		);
+		const url = `${API_URLS.openWeather}find?q=${queryCity}&units=metric&lang=ru&appid=${WEATHER_API_KEY}`;
+		const response = await fetch(url, { signal });
 
 		if (!response.ok) throw new ApiError();
 

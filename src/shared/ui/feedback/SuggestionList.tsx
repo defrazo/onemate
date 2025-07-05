@@ -15,7 +15,7 @@ const SuggestionList = <T,>({ items, onSelect, renderItem, className }: Suggesti
 	return (
 		<div
 			className={cn(
-				'absolute top-full left-0 z-10 max-h-[60vh] w-full overflow-y-auto rounded-t-none rounded-b-lg bg-[var(--bg-primary)] shadow-lg',
+				'absolute top-full left-0 -mt-2.5 max-h-[60vh] w-full overflow-y-auto rounded-t-none rounded-b-lg bg-[var(--bg-primary)] pt-2.5 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]',
 				className
 			)}
 		>

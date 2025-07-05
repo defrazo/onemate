@@ -1,8 +1,9 @@
-export { default as AvatarPicker } from './AvatarPicker';
+export { default as Button } from './Button';
 export { default as Checkbox } from './Checkbox';
 export { default as CheckboxBool } from './CheckboxBool';
 export { default as FileUploader } from './FileUploader';
 export { default as Input } from './Input';
+export { default as Link } from './Link';
 export { default as Radio } from './Radio';
 export { default as Select } from './Select';
 export { default as SelectExt } from './SelectExt';

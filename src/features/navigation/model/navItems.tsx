@@ -1,23 +1,15 @@
-import { ReactNode } from 'react';
-
 import { openAuthContainer } from '@/app/lib/modal';
-import { IconGen, IconKanban, IconLogin, IconMain, IconTodo, IconWidgets } from '@/shared/assets/icons';
+import { IconDash, IconGen, IconKanban, IconLogin, IconMain, IconTodo } from '@/shared/assets/icons';
 
-type NavItem = {
-	to: string;
-	icon: ReactNode;
-	label: string;
-	onClick?: () => void;
-	orderMobile?: number;
-};
+import { NavItem } from '.';
 
-export const getNavItems = (isAuthenticated: boolean): NavItem[] => {
-	if (isAuthenticated) {
+export const getNavItems = (isAuth: boolean): NavItem[] => {
+	if (isAuth) {
 		return [
-			{ to: '/', icon: <IconMain />, label: 'Главная', orderMobile: 1 },
-			{ to: '/main', icon: <IconWidgets />, label: 'Dashboard', orderMobile: 4 },
-			{ to: '/todo', icon: <IconTodo />, label: 'To Do', orderMobile: 3 },
-			{ to: '/kanban', icon: <IconKanban />, label: 'Канбан', orderMobile: 2 },
+			{ to: '/', icon: <IconMain />, label: 'Главная', order: 1 },
+			{ to: '/main', icon: <IconDash className="size-full" />, label: 'Dashboard', order: 4 },
+			{ to: '/todo', icon: <IconTodo className="size-full" />, label: 'ToDo', order: 3 },
+			{ to: '/kanban', icon: <IconKanban />, label: 'Канбан', order: 2 },
 			{ to: '/generator', icon: <IconGen />, label: 'OneGen' },
 		];
 	} else {
