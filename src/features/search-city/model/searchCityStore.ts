@@ -1,6 +1,7 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { type City, cityStore } from '@/entities/city';
+import type { City } from '@/entities/city';
+import { cityStore } from '@/entities/city';
 import { handleError } from '@/shared/lib/errors';
 import { notifyStore } from '@/shared/stores';
 

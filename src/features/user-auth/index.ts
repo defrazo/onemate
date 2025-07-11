@@ -1,3 +1,3 @@
-export { supabase } from './lib';
-export { authFormStore, authStore } from './model';
-export { openAuthContainer } from './ui';
+export type { AuthType } from './model';
+export { authFormStore, authService, authStore } from './model';
+export { ConfirmForm, LoginForm, RegisterForm, ResetForm } from './ui';

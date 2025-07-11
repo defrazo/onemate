@@ -1,9 +1,9 @@
 import { ReactNode } from 'react';
 
 import { useIsMobile } from '@/shared/lib/hooks';
-import Footer from '@/widgets/Footer';
-import Header from '@/widgets/Header';
-import MobileTabBar from '@/widgets/MobileTabBar';
+import Footer from '@/widgets/footer';
+import Header from '@/widgets/header';
+import MobileTabBar from '@/widgets/mobile-tab-bar';
 
 import { cn } from '../lib/utils';
 

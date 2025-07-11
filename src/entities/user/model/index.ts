@@ -1,2 +1,2 @@
-export type { AuthType, User } from './types';
+export type { User } from './types';
 export { userStore } from './userStore';

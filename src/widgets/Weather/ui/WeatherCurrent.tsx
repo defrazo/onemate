@@ -44,7 +44,7 @@ export const WeatherCurrent = ({ currentWeather }: WeatherCurrentProps) => {
 				</div>
 				<div className="h-full w-px bg-[var(--border-color)]" />
 				<div className="flex flex-col gap-4 px-2">
-					<div className="flex flex-col gap-1">
+					<div className="flex flex-col">
 						<div className="flex items-center gap-2">
 							<ThermometerSun className="size-4" />
 							Максимум: <span className={textStyle}>{Math.round(temp_max)}°C</span>
@@ -54,7 +54,7 @@ export const WeatherCurrent = ({ currentWeather }: WeatherCurrentProps) => {
 							Минимум: <span className={textStyle}>{Math.round(temp_min)}°C</span>
 						</div>
 					</div>
-					<div className="flex flex-col gap-1">
+					<div className="flex flex-col">
 						<div className="flex items-center gap-2">
 							<Sunrise className="size-4" />
 							Восход: <span className={textStyle}>{formatTime(sunrise)}</span>
@@ -64,7 +64,7 @@ export const WeatherCurrent = ({ currentWeather }: WeatherCurrentProps) => {
 							Закат: <span className={textStyle}>{formatTime(sunset)}</span>
 						</div>
 					</div>
-					<div className="flex flex-col gap-1">
+					<div className="flex flex-col">
 						<Tooltip className="group flex items-center gap-2" text={getWindDirection(deg)}>
 							<Wind className="size-4" />
 							Ветер: <span className={textStyle}>{speed} м/с</span>

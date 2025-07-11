@@ -1,3 +1,9 @@
-export { setUserSession } from './setUserSession';
-export { supabase } from './supabaseClient';
-export { passwordRules, validateEmail, validatePassword, validatePasswords, validateUsername } from './utils';
+export { renderPasswordToggle } from './renderPasswordToggle';
+export {
+	passwordRules,
+	validateEmail,
+	validateLogin,
+	validatePassword,
+	validatePasswords,
+	validateUsername,
+} from './utils';

@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { userStore } from '@/entities/user';
-import { userProfileStore } from '@/entities/userProfile';
+import { userProfileStore } from '@/entities/user-profile';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 import { cn } from '@/shared/lib/utils';
 import { Thumbnail } from '@/shared/ui';

@@ -1,5 +1,5 @@
 import { IconDown } from '@/shared/assets/icons';
-import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
 interface SelectOption {

@@ -1,4 +1,4 @@
-import { storage } from '@/shared/lib/storage/localStorage';
+import { storage } from '@/shared/lib/storage';
 import { generateUUID } from '@/shared/lib/utils';
 
 import type { User } from '../model';

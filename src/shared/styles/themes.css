@@ -47,7 +47,8 @@
 
 	/* Фоны */
 	--bg-primary: #edeef0;
-	--bg-secondary: #fafbfc;
+	/* --bg-secondary: #fafbfc; */
+	--bg-secondary: #fbfcfc;
 	--bg-tertiary: #e3e3e3;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
@@ -59,8 +60,7 @@
 
 	/* Разделители и бордеры */
 	--border-color: #e3e3e3;
-	/* --border-color: #c9c9c9; */
 
 	/* Тени */
-	--shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.07);
+	--shadow: 0 2px 4px 0px rgba(58, 66, 75, 0.2);
 }

@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { storage } from '@/shared/lib/storage/localStorage';
+import { storage } from '@/shared/lib/storage';
 import { generateUUID } from '@/shared/lib/utils';
 
 import { Note } from '.';

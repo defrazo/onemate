@@ -12,26 +12,24 @@ export class AuthStore {
 		try {
 			const result = await authService.oAuth(authData);
 			this.setAuthState(result);
-
+			if (result) authFormStore.reset();
 			return result;
 		} catch (error) {
 			this.setAuthState(false);
-
 			throw error;
 		}
 	}
 
 	async login(): Promise<boolean> {
-		const authData = authFormStore.authForm;
+		const { login, password } = authFormStore;
 
 		try {
-			const result = await authService.login(authData);
+			const result = await authService.login(login, password);
 			this.setAuthState(result);
-
+			if (result) authFormStore.reset();
 			return result;
 		} catch (error) {
 			this.setAuthState(false);
-
 			throw error;
 		}
 	}
@@ -42,17 +40,16 @@ export class AuthStore {
 		try {
 			const result = await authService.register(authData);
 			this.setAuthState(result);
-
+			if (result) authFormStore.reset();
 			return result;
 		} catch (error) {
 			this.setAuthState(false);
-
 			throw error;
 		}
 	}
 
-	logout() {
-		authService.logout();
+	async logout() {
+		await authService.logout();
 		this.setAuthState(false);
 	}
 

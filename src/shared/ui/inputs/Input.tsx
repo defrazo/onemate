@@ -1,4 +1,4 @@
-import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
 interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {

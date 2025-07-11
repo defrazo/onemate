@@ -33,7 +33,7 @@ const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => {
 						<IconBack className="size-5 cursor-pointer hover:text-[var(--accent-hover)]" onClick={onBack} />
 					)}
 				</div>
-				<div>{children}</div>
+				<div className="p-4">{children}</div>
 			</div>
 		</>
 	);

@@ -2,6 +2,7 @@ import { toast } from 'sonner';
 
 import { IconError, IconInfo, IconSuccess, IconWarning } from '@/shared/assets/icons';
 
+import { cn } from '../../utils';
 import { iconColor, leftBorder } from '../lib';
 import type { ToastProps } from '../model';
 
@@ -17,13 +18,15 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 	return (
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
 			<div
-				className={`flex items-center justify-center gap-4 rounded-xl border border-l-4 border-[var(--border-color)] bg-[rgba(255,255,255,0.2)] px-4 py-2 shadow-lg backdrop-blur-md select-none ${leftBorder(type)}`}
+				className={cn(
+					'flex items-center justify-center gap-2 rounded-xl border border-l-4 border-[var(--border-color)] bg-[rgba(255,255,255,0.2)] p-2 shadow-lg backdrop-blur-md select-none',
+					leftBorder(type)
+				)}
 			>
-				<div className={`size-8 py-1 ${iconColor(type)}`}>{Icon}</div>
-				{/* <div className={`h-8 py-1 ${iconColor(type)}`}>{Icon}</div> */}
-				<div className="">
+				<div className={cn('size-8 py-1', iconColor(type))}>{Icon}</div>
+				<div className="flex-1 text-sm">
 					<p>{message}</p>
-					{options?.description && <p className="text-sm opacity-75">{options.description}</p>}
+					{options?.description && <p className="opacity-75">{options.description}</p>}
 				</div>
 				{options?.button && <div>{options.button}</div>}
 			</div>

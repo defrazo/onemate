@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { storage } from '@/shared/lib/storage/localStorage';
+import { storage } from '@/shared/lib/storage';
 import { notifyStore } from '@/shared/stores';
 
 import { fetchCityByCoordinates, fetchCityByIP } from '../api';

@@ -1,4 +1,4 @@
-import UserProfileWidget from '@/widgets/UserProfile';
+import UserProfileWidget from '@/widgets/user-profile';
 
 const UserProfilePage = () => {
 	return <UserProfileWidget />;

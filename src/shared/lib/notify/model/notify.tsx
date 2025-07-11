@@ -1,7 +1,7 @@
 import { toast } from 'sonner';
 
-import type { NotifyType, ToastOptions } from '../model';
 import { Toast } from '../ui';
+import type { NotifyType, ToastOptions } from '.';
 
 const notifyFunction = (type: NotifyType) => (message: string, options?: ToastOptions) => {
 	toast.custom((toastId) => <Toast message={message} options={options} toastId={toastId} type={type} />, {

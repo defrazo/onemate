@@ -1,4 +1,4 @@
-import GeneratorWidget from '@/widgets/Generator';
+import GeneratorWidget from '@/widgets/generator';
 
 const GeneratorPage = () => {
 	return <GeneratorWidget />;

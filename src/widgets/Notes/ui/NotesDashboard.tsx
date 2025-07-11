@@ -36,7 +36,7 @@ export const NotesDashboard = ({ notes, focusedId, onOrderChange, children }: No
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext items={notes.map((n) => n.id)} strategy={verticalListSortingStrategy}>
-				<div className="hide-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto">
+				<div className="hide-scrollbar flex max-h-[19rem] flex-col gap-2 overflow-y-auto">
 					{visibleNotes.map((note, idx) => children(note, idx))}
 				</div>
 			</SortableContext>

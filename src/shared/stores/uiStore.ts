@@ -1,5 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 
+import { storage } from '../lib/storage';
+
 type ModalType = 'modal' | 'bottom-sheet' | 'dropdown' | 'auto' | 'none';
 
 interface ModalConfig {
@@ -50,7 +52,7 @@ export class UIStore {
 
 	setTheme(theme: 'light' | 'dark') {
 		this.theme = theme;
-		localStorage.setItem('theme', theme);
+		storage.set('theme', theme);
 		this.applyTheme(theme);
 	}
 
@@ -60,7 +62,7 @@ export class UIStore {
 	}
 
 	private initTheme() {
-		const savedTheme = localStorage.getItem('theme') as 'light' | 'dark' | null;
+		const savedTheme = storage.get('theme') as 'light' | 'dark' | null;
 
 		if (savedTheme) this.setTheme(savedTheme);
 		else {

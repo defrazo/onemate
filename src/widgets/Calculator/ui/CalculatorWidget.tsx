@@ -7,7 +7,7 @@ const CalculatorWidget = () => {
 	const { display, handleButtonClick, result } = useCalculator();
 
 	return (
-		<div className="core-base core-card flex h-full w-full flex-col gap-2 shadow-[var(--shadow-card)]">
+		<div className="core-base core-card flex h-full w-full flex-col gap-2 shadow-[var(--shadow)]">
 			<h1 className="core-header">Калькулятор</h1>
 			<Input
 				className="pointer-events-none px-2 text-right text-2xl"

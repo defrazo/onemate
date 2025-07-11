@@ -5,14 +5,14 @@ import AboutPage from '@/pages/AboutPage';
 import AuthCallback from '@/pages/AuthCallbackPage';
 import GeneratorPage from '@/pages/GeneratorPage';
 import HomePage from '@/pages/HomePage';
-import MainPage from '@/pages/MainPage';
+import MainPage from '@/pages/main-page';
 import NotFoundPage from '@/pages/NotFoundPage';
 import PrivacyPolicyPage from '@/pages/PrivacyPolicyPage';
 import TermsOfServicePage from '@/pages/TermsOfServicePage';
 import UserProfilePage from '@/pages/UserProfilePage';
 import Layout from '@/shared/layouts/Layout';
-import { SettingsLeft, SettingsRight } from '@/widgets/Generator';
-import { UserProfileNav } from '@/widgets/UserProfile';
+import { SettingsLeft, SettingsRight } from '@/widgets/generator';
+import { UserProfileNav } from '@/widgets/user-profile';
 
 export const routes: RouteObject[] = [
 	{

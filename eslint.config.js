@@ -21,7 +21,6 @@ export default [
 			},
 		},
 		plugins: {
-			
 			'@typescript-eslint': typescriptEslintPlugin,
 			prettier: eslintPluginPrettier,
 			'simple-import-sort': eslintPluginSimpleImportSort,
@@ -48,15 +47,15 @@ export default [
 			'react/jsx-sort-props': [
 				'warn',
 				{
-					callbacksLast: true, // onClick, onChange и прочие — всегда в конце
-					shorthandFirst: false, // не важно: сокращённые props или полные
-					noSortAlphabetically: false, // ⬅️ обязательно false для каноничного порядка!
-					reservedFirst: true, // key, ref — всегда сверху
+					callbacksLast: true,
+					shorthandFirst: false,
+					noSortAlphabetically: false,
+					reservedFirst: true,
 				},
 			],
 		},
 	},
 	{
-		ignores: ['dist', 'node_modules', 'vite.config.ts', 'tailwind.config.js'],
+		ignores: ['dist', 'node_modules','env.d.ts', 'vite.config.ts', 'tailwind.config.js'],
 	},
 ];

@@ -1,0 +1,116 @@
+import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+
+import { IconEmail, IconPass, IconUser } from '@/shared/assets/icons';
+import { Logo } from '@/shared/assets/images';
+import { notifyStore } from '@/shared/stores';
+import { Button, Input } from '@/shared/ui';
+
+import { renderPasswordToggle, validateEmail, validatePassword, validatePasswords, validateUsername } from '../lib';
+import { authFormStore } from '../model';
+import { AuthSocial, PasswordHint } from '.';
+
+interface RegisterFormProps {
+	onSubmit: () => void;
+}
+
+export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
+	const [showPassword, setShowPassword] = useState(false);
+	const [showHint, setShowHint] = useState(false);
+	const store = authFormStore;
+
+	const passwordToggleIcon = renderPasswordToggle({
+		show: showPassword,
+		toggle: () => setShowPassword((p) => !p),
+		visible: !!store.password,
+	});
+
+	const handleSubmit = async (e: React.FormEvent) => {
+		e.preventDefault();
+
+		try {
+			await validateUsername(store.username);
+			await validateEmail(store.email);
+			await validatePasswords(store.password, store.passwordConfirm);
+			onSubmit();
+		} catch (error: any) {
+			notifyStore.setError(error.message || 'Проверьте введенные данные');
+		}
+	};
+
+	return (
+		<div className="flex flex-col items-center gap-4 md:w-lg">
+			<div className="flex flex-col items-center gap-2 select-none">
+				<img alt="Логотип" className="size-20" src={Logo} />
+				<h1 className="core-header">Зарегистрировать аккаунт OneMate</h1>
+			</div>
+			<AuthSocial />
+			<div className="flex w-full items-center select-none">
+				<div className="grow border-t border-[var(--border-color)]" />
+				<span className="px-4">ИЛИ</span>
+				<div className="grow border-t border-[var(--border-color)]" />
+			</div>
+			<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+				<Input
+					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					placeholder="Имя пользователя"
+					required
+					type="text"
+					value={store.username}
+					variant="ghost"
+					onBlur={(event) => store.update('username', event.target.value.trim())}
+					onChange={(event) => store.update('username', event.target.value)}
+				/>
+				<Input
+					leftIcon={<IconEmail className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					placeholder="E-mail"
+					required
+					type="email"
+					value={store.email}
+					variant="ghost"
+					onBlur={(event) => store.update('email', event.target.value.trim())}
+					onChange={(event) => store.update('email', event.target.value)}
+				/>
+				<div className="relative">
+					<Input
+						leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+						placeholder="Пароль"
+						required
+						rightIcon={passwordToggleIcon}
+						type={showPassword ? 'text' : 'password'}
+						value={store.password}
+						variant="ghost"
+						onBlur={(event) => {
+							setShowHint(false);
+							store.update('password', event.target.value.trim());
+						}}
+						onChange={(event) => {
+							const value = event.target.value;
+							if (validatePassword(value)) store.update('password', value);
+						}}
+						onFocus={() => setShowHint(true)}
+					/>
+					<PasswordHint password={store.password} showHint={showHint} />
+				</div>
+				<Input
+					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					placeholder="Подтвердите пароль"
+					required
+					rightIcon={passwordToggleIcon}
+					type={showPassword ? 'text' : 'password'}
+					value={store.passwordConfirm}
+					variant="ghost"
+					onBlur={(event) => store.update('passwordConfirm', event.target.value.trim())}
+					onChange={(event) => store.update('passwordConfirm', event.target.value)}
+					onPaste={(e) => {
+						e.preventDefault();
+						notifyStore.setError('Подтвердите пароль, введя его вручную');
+					}}
+				/>
+				<Button className="mt-4 h-10 w-full" type="submit">
+					Зарегистрироваться
+				</Button>
+			</form>
+		</div>
+	);
+});

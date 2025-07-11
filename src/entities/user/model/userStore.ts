@@ -1,6 +1,6 @@
 import { makeAutoObservable } from 'mobx';
 
-import { storage } from '@/shared/lib/storage/localStorage';
+import { storage } from '@/shared/lib/storage';
 
 import { User } from '.';
 

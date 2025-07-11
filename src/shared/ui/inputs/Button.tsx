@@ -1,6 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/uiKit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
 import { Preloader } from '../feedback';

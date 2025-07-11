@@ -6,7 +6,7 @@ import ThemeSwitcher from '@/features/theme-switcher';
 import { authStore } from '@/features/user-auth';
 import { useIsMobile } from '@/shared/lib/hooks';
 import { Time } from '@/shared/ui';
-import { UserMenuButton } from '@/widgets/UserMenu';
+import { UserMenuButton } from '@/widgets/user-menu';
 
 import { HeaderLogo } from '.';
 

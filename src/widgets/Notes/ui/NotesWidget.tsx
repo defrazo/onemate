@@ -15,7 +15,7 @@ const NotesWidget = () => {
 					<Preloader className="size-25" />
 				</div>
 			) : (
-				<>
+				<div className="flex flex-1 flex-col justify-between">
 					<NotesDashboard
 						focusedId={focusedId}
 						notes={notes}
@@ -44,7 +44,7 @@ const NotesWidget = () => {
 							Всего записей: {notes.length}
 						</div>
 					</div>
-				</>
+				</div>
 			)}
 		</div>
 	);

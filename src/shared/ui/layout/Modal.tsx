@@ -2,7 +2,10 @@ import { useEffect } from 'react';
 import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react-lite';
 
+import { authFormStore } from '@/features/user-auth';
 import { IconBack, IconClose } from '@/shared/assets/icons';
+
+import { Button } from '../inputs';
 
 interface ModalProps {
 	children: React.ReactNode;
@@ -29,6 +32,21 @@ const Modal = ({ children, onBack, onClose }: ModalProps) => {
 					{onClose && <IconClose className="ml-auto w-5 cursor-pointer" onClick={onClose} />}
 				</div>
 				<div>{children}</div>
+			</div>
+			<div className="absolute top-30 flex h-7 gap-2">
+				<Button className="h-7" onClick={() => authFormStore.update('authType', 'login')}>
+					Login
+				</Button>
+				<Button className="h-7" onClick={() => authFormStore.update('authType', 'register')}>
+					Register
+				</Button>
+				<Button className="h-7" onClick={() => authFormStore.update('authType', 'confirm')}>
+					Confirm
+				</Button>
+				<Button className="h-7" onClick={() => authFormStore.update('authType', 'reset')}>
+					Reset
+				</Button>
+				<div className="!h-7 text-white">{authFormStore.resetMode ? 'true' : 'false'}</div>
 			</div>
 		</div>,
 
