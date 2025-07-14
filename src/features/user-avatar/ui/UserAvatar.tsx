@@ -11,14 +11,14 @@ interface UserAvatarProps {
 }
 
 const UserAvatar = observer(({ className }: UserAvatarProps) => {
-	const { avatarUrl } = userProfileStore.profile ?? {};
-	const { username } = userStore.user ?? {};
+	const { avatar_url } = userProfileStore.profile ?? {};
+	const { username } = userStore ?? {};
 
 	return (
 		<Thumbnail
 			alt={username || 'Пользователь'}
 			className={cn('size-full', className)}
-			src={avatarUrl || AVATAR_OPTIONS[0]}
+			src={avatar_url || AVATAR_OPTIONS[0]}
 		/>
 	);
 });

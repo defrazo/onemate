@@ -1,1 +1,0 @@
-export { checkUser } from './checkUser';

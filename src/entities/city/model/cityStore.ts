@@ -1,28 +1,18 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
+import { DEFAULT_CITY } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { notifyStore } from '@/shared/stores';
 
 import { fetchCityByCoordinates, fetchCityByIP } from '../api';
-import { City } from '.';
-
-const DEFAULT_CITY: City = {
-	name: 'Москва',
-	region: 'Центральный',
-	lat: 55.7558,
-	lon: 37.6173,
-	country: 'Russia',
-};
+import type { City } from '.';
+import { cityService } from '.';
 
 const LAST_CITY_KEY = 'lastCityLocation';
 
 export class CityStore {
-	private wasResetOnce = false;
-
-	currentCity: City = DEFAULT_CITY;
 	isLoading = false;
-	success = '';
-	error = '';
+	currentCity: City = DEFAULT_CITY;
 
 	get cityName(): string {
 		return this.currentCity?.name || '';
@@ -36,12 +26,12 @@ export class CityStore {
 		return { lat: this.currentCity.lat, lon: this.currentCity.lon };
 	}
 
-	initCity() {
+	async initCity() {
 		const savedCity = storage.get(LAST_CITY_KEY);
 
-		if (savedCity) this.setCurrentCity(savedCity);
+		if (savedCity) await this.setCurrentCity(savedCity);
 
-		if (!savedCity && this.isDefaultCity()) this.detectCityByIP();
+		if (!savedCity && this.isDefaultCity()) await this.detectCityByIP();
 	}
 
 	isDefaultCity(): boolean {
@@ -52,29 +42,25 @@ export class CityStore {
 		);
 	}
 
-	setCurrentCity(city: City) {
+	async setCurrentCity(city: City) {
 		this.currentCity = city;
-		storage.set(LAST_CITY_KEY, city);
+		await this.saveCity(city);
 	}
 
 	async resetCurrentCity() {
-		if (this.wasResetOnce) return;
-
-		this.setCurrentCity(DEFAULT_CITY);
+		await this.setCurrentCity(DEFAULT_CITY);
 		await this.detectCityByIP();
-
-		this.wasResetOnce = true;
 	}
 
 	async detectCityByGeolocation() {
 		this.isLoading = true;
-		this.error = '';
 
 		if (!navigator.geolocation) {
 			runInAction(() => {
-				this.error = 'Геолокация не поддерживается вашим браузером';
 				this.isLoading = false;
 			});
+
+			notifyStore.setError('Геолокация не поддерживается вашим браузером');
 			return;
 		}
 
@@ -84,30 +70,74 @@ export class CityStore {
 
 				try {
 					const city = await fetchCityByCoordinates(latitude, longitude);
-
 					if (!city) throw new Error('Город не найден по координатам');
 
-					runInAction(() => {
-						this.setCurrentCity(city);
-						notifyStore.setSuccess(`Выбран город: ${city.name}`);
-					});
-				} catch (error: any) {
-					runInAction(() => {
-						notifyStore.setError(error.message || 'Ошибка при определении текущего местоположения');
-					});
-				} finally {
+					await this.setCurrentCity(city);
+
 					runInAction(() => {
 						this.isLoading = false;
 					});
+
+					notifyStore.setSuccess(`Выбран город: ${city.name}`);
+				} catch (error: any) {
+					runInAction(() => {
+						this.isLoading = false;
+					});
+
+					notifyStore.setError(error.message || 'Ошибка при определении текущего местоположения');
 				}
 			},
-			(error) => {
+			() => {
 				runInAction(() => {
-					this.error = 'Не удалось получить геолокацию';
 					this.isLoading = false;
 				});
+
+				notifyStore.setError('Не удалось получить геолокацию');
 			}
 		);
+	}
+
+	async loadCity() {
+		this.isLoading = true;
+
+		try {
+			const city = await cityService.loadCity();
+
+			runInAction(() => {
+				if (city) {
+					this.currentCity = city;
+					storage.set(LAST_CITY_KEY, city);
+				} else {
+					const cachedCity = storage.get(LAST_CITY_KEY);
+					this.currentCity = cachedCity ?? DEFAULT_CITY;
+				}
+			});
+		} catch (error: any) {
+			notifyStore.setError(error.message);
+		} finally {
+			runInAction(() => {
+				this.isLoading = false;
+			});
+		}
+	}
+
+	async saveCity(city: City) {
+		this.isLoading = true;
+
+		try {
+			const savedCity = await cityService.saveCity(city);
+
+			runInAction(() => {
+				this.currentCity = savedCity;
+				storage.set(LAST_CITY_KEY, savedCity);
+			});
+		} catch (error: any) {
+			notifyStore.setError(error.message);
+		} finally {
+			runInAction(() => {
+				this.isLoading = false;
+			});
+		}
 	}
 
 	private async detectCityByIP() {
@@ -115,7 +145,8 @@ export class CityStore {
 
 		try {
 			const city = await fetchCityByIP();
-			this.setCurrentCity(city ?? DEFAULT_CITY);
+
+			await this.setCurrentCity(city ?? DEFAULT_CITY);
 		} catch {
 		} finally {
 			runInAction(() => {
@@ -126,7 +157,7 @@ export class CityStore {
 
 	constructor() {
 		makeAutoObservable(this);
-		this.initCity();
+		this.loadCity();
 	}
 }
 

@@ -1,3 +1,2 @@
-export { checkUserProfile } from './lib';
 export type { UserProfile } from './model';
-export { userProfileStore } from './model';
+export { userProfileService, userProfileStore } from './model';

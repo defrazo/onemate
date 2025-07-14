@@ -1,7 +1,6 @@
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { userProfileStore } from '@/entities/user-profile';
 import { authStore } from '@/features/user-auth';
 import {
 	IconAbout,
@@ -19,7 +18,8 @@ import {
 import { useIsMobile } from '@/shared/lib/hooks';
 import { uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
-import { ProfileContacts, ProfileInfo, ProfileSecure, profileStore, TabId } from '@/widgets/user-profile';
+import type { TabId } from '@/widgets/user-profile';
+import { ProfileContacts, ProfileInfo, ProfileSecure, profileStore } from '@/widgets/user-profile';
 
 import type { UserButton } from '../model';
 import { UserMenuInfo } from '.';
@@ -73,7 +73,7 @@ export const MobileUserMenu = observer(() => {
 			id: 'location',
 			leftIcon: <IconLocation className="size-6" />,
 			action: () => goTo('secure', <ProfileSecure />),
-			label: `${userProfileStore.location || 'Не указано'}`,
+			label: `${profileStore.location || 'Не указано'}`,
 		},
 		{
 			id: 'terms',

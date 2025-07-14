@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 
-import { profileStore } from '../model/profileStore';
+import { profileStore } from '../model';
 import { ProfileContacts, ProfileInfo, ProfilePreview, ProfileSecure } from '.';
 
 const UserProfileWidget = () => {

@@ -1,6 +1,8 @@
 export type User = {
-	id: string;
-	username: string;
-	email: string;
-	password?: string;
+	id?: string;
+	email?: string;
+	user_metadata?: {
+		username?: string;
+		[key: string]: any;
+	};
 };

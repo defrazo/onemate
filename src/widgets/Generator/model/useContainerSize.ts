@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 
-import { ContainerSize } from '.';
+import type { ContainerSize } from '.';
 
 export const useContainerSize = (offset = 32) => {
 	const ref = useRef<HTMLDivElement>(null);

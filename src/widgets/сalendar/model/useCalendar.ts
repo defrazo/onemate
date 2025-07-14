@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { addMonths, subMonths } from 'date-fns';
 
 import { calculateNewRange, formatRange, getDateFromDay, getRangeLength, hasWeekendInRange } from '../lib';
-import { DateRange } from '.';
+import type { DateRange } from '.';
 
 export const useCalendar = () => {
 	const [currentDate, setCurrentDate] = useState<Date>(new Date());

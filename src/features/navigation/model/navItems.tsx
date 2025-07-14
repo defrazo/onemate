@@ -3,7 +3,7 @@ import { IconDash, IconGen, IconKanban, IconLogin, IconMain, IconTodo } from '@/
 import { uiStore } from '@/shared/stores';
 import AuthContainer from '@/widgets/authorization';
 
-import { NavItem } from '.';
+import type { NavItem } from '.';
 
 export const getNavItems = (isAuth: boolean): NavItem[] => {
 	const openAuth = () => {

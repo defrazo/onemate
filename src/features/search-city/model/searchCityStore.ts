@@ -14,11 +14,9 @@ export class SearchCityStore {
 	query: string = '';
 	searchResults: City[] = [];
 	isLoading: boolean = false;
-	error: string = '';
 
 	setQuery(query: string) {
 		this.query = query;
-		this.error = '';
 	}
 
 	resetResults() {
@@ -29,12 +27,10 @@ export class SearchCityStore {
 		this.abortController?.abort();
 		this.abortController = new AbortController();
 		this.isLoading = true;
-		this.error = '';
 
 		try {
 			if (query.length < 3) {
 				this.searchResults = [];
-				this.error = '';
 				return;
 			}
 
@@ -56,9 +52,6 @@ export class SearchCityStore {
 			});
 		} catch (error) {
 			handleError(error);
-			runInAction(() => {
-				this.error = 'Ошибка загрузки городов';
-			});
 		} finally {
 			runInAction(() => {
 				this.isLoading = false;

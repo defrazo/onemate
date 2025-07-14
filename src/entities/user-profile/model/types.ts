@@ -1,11 +1,12 @@
-export type UserProfile = {
-	userId: string;
-	avatarUrl?: string;
-	firstName: string;
-	lastName: string;
-	birthDate: { year: string; month: string; day: string };
+export interface UserProfile {
+	id?: string;
+	avatar_url: string;
+	first_name: string;
+	last_name: string;
+	birth_year: string;
+	birth_month: string;
+	birth_day: string;
 	gender: 'male' | 'female' | null;
-	location: string;
 	phone: string[];
 	email: string[];
-};
+}

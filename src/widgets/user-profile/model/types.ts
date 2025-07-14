@@ -6,17 +6,18 @@ export type ProfileNavButton = {
 };
 
 export type DraftProfile = {
-	avatar?: string;
+	avatar: string;
 	firstName: string;
 	lastName: string;
 	username: string;
-	year: string;
-	month: string;
-	day: string;
+	birthYear: string;
+	birthMonth: string;
+	birthDay: string;
 	gender: 'male' | 'female' | null;
-	mainEmail: string;
+	location: string;
 	phone: string[];
 	email: string[];
+	mainEmail: string;
 };
 
 export type GenderOption = {

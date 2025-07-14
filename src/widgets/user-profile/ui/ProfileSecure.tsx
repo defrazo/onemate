@@ -3,7 +3,7 @@ import { uiStore } from '@/shared/stores';
 import { Button, Divider, Input } from '@/shared/ui';
 
 import { profileStore, useProfile } from '../model';
-import { DeviceInfo } from './DeviceInfo';
+import { DeviceInfo } from '.';
 
 export const ProfileSecure = () => {
 	const { isMobile, ip, info } = useProfile();

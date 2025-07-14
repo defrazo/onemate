@@ -1,20 +1,20 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { handleError } from '@/shared/lib/errors';
+import { notifyStore } from '@/shared/stores';
 
 import { fetchTranslate } from '../api';
 import { availableLanguages } from '../lib';
-import { Language, Textbox } from '.';
+import type { Language, Textbox } from '.';
 
 class TranslatorStore {
 	private abortController: AbortController | null = null;
 
+	isLoading: boolean = false;
 	textboxes: Textbox[] = [
 		{ type: 'source', language: 'ru', text: '' },
 		{ type: 'target', language: 'en', text: '' },
 	];
-	isLoading: boolean = false;
-	error: string | null = null;
 
 	get sourceLang() {
 		return this.textboxes[0].language;
@@ -58,7 +58,6 @@ class TranslatorStore {
 		this.abortController?.abort();
 		this.abortController = new AbortController();
 		this.isLoading = true;
-		this.error = null;
 
 		try {
 			const result = await fetchTranslate({
@@ -75,8 +74,8 @@ class TranslatorStore {
 		} catch (error) {
 			handleError(error);
 			runInAction(() => {
-				this.error = 'Ошибка перевода';
 				this.isLoading = false;
+				notifyStore.setError('Ошибка перевода');
 			});
 		}
 	}

@@ -1,11 +1,9 @@
 import { userStore } from '@/entities/user';
-import { userProfileStore } from '@/entities/user-profile';
-import { storage } from '@/shared/lib/storage';
 import { supabase } from '@/shared/lib/supabase';
 
 import { validateEmail, validatePasswords, validateUsername } from '../lib';
 import type { AuthData, SupabaseUserCheck } from '.';
-import { authFormStore, setUserSession } from '.';
+import { authFormStore } from '.';
 
 const defaultRedirect = 'http://92.248.239.2:3000/auth/callback';
 
@@ -14,13 +12,7 @@ export const authService = {
 		const user = data?.user ?? data?.data?.user;
 		if (!user) throw new Error('Пользователь не найден');
 
-		const username = user.user_metadata?.full_name ?? 'Пользователь';
-
-		await setUserSession({
-			id: user.id,
-			email: user.email!,
-			username,
-		});
+		await userStore.loadUser();
 
 		return true;
 	},
@@ -32,7 +24,6 @@ export const authService = {
 		await validateEmail(email);
 		await validatePasswords(password, passwordConfirm);
 
-		// Проверка существования аккаунта (через RPC)
 		const existing = await authService.checkUserByEmail(email);
 
 		if (existing) {
@@ -43,42 +34,34 @@ export const authService = {
 			} else throw new Error('Пользователь с таким e-mail уже существует');
 		}
 
-		// Регистрация
 		const { data: userData, error } = await supabase.auth.signUp({
 			email,
 			password,
 			options: {
-				data: { full_name: username },
+				data: { username },
 				emailRedirectTo: defaultRedirect,
 			},
 		});
 
 		if (error || !userData?.user) throw new Error(error?.message || 'Ошибка регистрации');
 
-		// Проверка подтверждения
 		if (!userData.user.email_confirmed_at) {
 			authFormStore.switchToConfirm(email);
 			return false;
 		}
 
-		await setUserSession({
-			id: userData.user.id,
-			email: userData.user.email!,
-			username,
-		});
+		await userStore.loadUser();
 
 		return true;
 	},
 
 	async login(login: string, password: string): Promise<boolean> {
-		// Поиск email для username (через RPC)
 		if (login && !login.includes('@')) {
 			const res = await supabase.rpc('get_email_by_username', { username_input: login });
 			if (!res.data || res.data.length === 0) throw new Error('Пользователь не найден');
 			login = res.data[0].email;
 		}
 
-		// Логинг
 		const { data: userData, error } = await supabase.auth.signInWithPassword({
 			email: login,
 			password: password,
@@ -95,13 +78,7 @@ export const authService = {
 
 		if (error || !userData?.user) throw new Error(error?.message || 'Неверное имя пользователя или пароль');
 
-		const fullName = userData.user.user_metadata?.full_name ?? 'Пользователь';
-
-		await setUserSession({
-			id: userData.user.id,
-			email: userData.user.email!,
-			username: fullName,
-		});
+		await userStore.loadUser();
 
 		return true;
 	},
@@ -130,9 +107,7 @@ export const authService = {
 
 	// Запуск процедуры восстановления пароля
 	async resetPassword(email: string): Promise<void> {
-		const { error } = await supabase.auth.resetPasswordForEmail(email, {
-			redirectTo: defaultRedirect,
-		});
+		const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: defaultRedirect });
 
 		if (error) throw new Error(error.message || 'Ошибка при отправке письма для сброса пароля');
 
@@ -141,42 +116,19 @@ export const authService = {
 
 	// Смена пароля пользователя
 	async updatePassword(newPassword: string, newPasswordConfirm: string): Promise<void> {
-		// Проверка сессии
 		const { data: sessionData, error: sessionError } = await supabase.auth.getSession();
 		if (sessionError || !sessionData.session)
 			throw new Error('Пользователь не авторизован. Пожалуйста, войдите заново.');
 
 		await validatePasswords(newPassword, newPasswordConfirm);
-		// Обновление пароля
+
 		const { error } = await supabase.auth.updateUser({ password: newPassword });
 		if (error) throw new Error(error.message || 'Не удалось изменить пароль');
 	},
 
 	async logout() {
 		await supabase.auth.signOut();
-
-		userStore.setUser(null);
-		userProfileStore.clearProfile?.();
-
-		storage.remove('user');
-		storage.remove('userProfile');
-		storage.remove('isAuth');
-	},
-
-	checkAuth(): boolean {
-		const isAuth = storage.get('isAuth');
-		const savedUser = storage.get('user');
-		const savedProfile = storage.get('userProfile');
-
-		if (isAuth && savedUser && savedProfile) {
-			userStore.setUser(savedUser);
-			userProfileStore.setProfile(savedProfile);
-			return true;
-		}
-
-		userStore.setUser(null);
-		userProfileStore.clearProfile?.();
-
-		return false;
+		userStore.clearUser();
+		userStore.clearSession();
 	},
 };

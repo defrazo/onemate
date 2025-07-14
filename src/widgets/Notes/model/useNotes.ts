@@ -3,7 +3,7 @@ import { useEffect, useRef, useState } from 'react';
 import { storage } from '@/shared/lib/storage';
 import { generateUUID } from '@/shared/lib/utils';
 
-import { Note } from '.';
+import type { Note } from '.';
 
 export const useNotes = () => {
 	const [notes, setNotes] = useState<Note[]>(() => {

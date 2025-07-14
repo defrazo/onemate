@@ -1,15 +1,15 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { storage } from '@/shared/lib/storage';
+import { notifyStore } from '@/shared/stores';
 
 import { fetchRates } from '../api';
 import { currencyIcons, currencyNames } from '../lib';
-import { Currency, CurrencyOption, RatesList, RatesResponse } from '.';
+import type { Currency, CurrencyOption, RatesList, RatesResponse } from '.';
 
 class CurrencyStore {
 	data: RatesResponse | null = storage.get('rates') || null;
 	isLoading: boolean = false;
-	error: string | null = null;
 
 	currencies: Currency[] = [
 		{ type: 'base', code: 'USD', value: 1 },
@@ -102,7 +102,6 @@ class CurrencyStore {
 
 	private async fetchRates(): Promise<void> {
 		this.isLoading = true;
-		this.error = null;
 
 		const result = await fetchRates();
 
@@ -112,7 +111,7 @@ class CurrencyStore {
 
 		runInAction(() => {
 			if (result) this.data = result;
-			else this.error = 'Не удалось загрузить курсы валют';
+			else notifyStore.setError('Не удалось загрузить курсы валют');
 			this.isLoading = false;
 		});
 	}

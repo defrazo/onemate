@@ -21,8 +21,8 @@ export const UserProfileNav = observer(() => {
 			<div className="core-base flex flex-col items-center gap-4 rounded-xl p-4">
 				<UserAvatar />
 				<div className="flex flex-col items-center justify-center">
-					<div>{userStore.user?.username}</div>
-					<div>{userStore.user?.email}</div>
+					<div>{userStore.username}</div>
+					<div>{userStore.email}</div>
 				</div>
 			</div>
 			<div className="flex flex-col gap-2">

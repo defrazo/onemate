@@ -11,7 +11,7 @@ import {
 	plusMinus,
 	sqrt,
 } from '../lib';
-import { ResultItem } from '.';
+import type { ResultItem } from '.';
 
 export const useCalculator = () => {
 	const [display, setDisplay] = useState<string>('0');

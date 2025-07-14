@@ -1,4 +1,3 @@
-import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import { Provider } from 'mobx-react';
 
@@ -15,11 +14,9 @@ const rootElement = document.getElementById('root');
 if (rootElement) {
 	const root = createRoot(rootElement);
 	root.render(
-		// <StrictMode>
 		<Provider authStore={authStore} rootStore={rootStore} userProfileStore={userProfileStore} userStore={userStore}>
 			<App />
 		</Provider>
-		// </StrictMode>
 	);
 } else {
 	console.error('Element with id "root" not found');

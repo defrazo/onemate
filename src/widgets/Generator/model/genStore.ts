@@ -1,7 +1,7 @@
 import { makeAutoObservable, reaction } from 'mobx';
 
 import { insertTextBlocks } from '../lib';
-import { CutLine, TextBlock } from '.';
+import type { CutLine, TextBlock } from '.';
 
 const initialState = {
 	count: 1,

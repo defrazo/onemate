@@ -1,4 +1,4 @@
-import { City } from '@/entities/city';
+import type { City } from '@/entities/city';
 import { API_URLS, WEATHER_API_KEY } from '@/shared/config/apiConfig';
 import { handleError } from '@/shared/lib/errors/errorHandler';
 

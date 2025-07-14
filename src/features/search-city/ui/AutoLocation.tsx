@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 
-import { cityStore } from '@/entities/city/model';
+import { cityStore } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
 import { Button, Preloader, Tooltip } from '@/shared/ui';
 
