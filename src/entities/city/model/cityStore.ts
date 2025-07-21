@@ -1,14 +1,12 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { DEFAULT_CITY } from '@/shared/lib/constants';
+import { DEFAULT_CITY, LAST_CITY_KEY } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { notifyStore } from '@/shared/stores';
 
 import { fetchCityByCoordinates, fetchCityByIP } from '../api';
 import type { City } from '.';
 import { cityService } from '.';
-
-const LAST_CITY_KEY = 'lastCityLocation';
 
 export class CityStore {
 	isLoading = false;
@@ -26,20 +24,16 @@ export class CityStore {
 		return { lat: this.currentCity.lat, lon: this.currentCity.lon };
 	}
 
-	async initCity() {
-		const savedCity = storage.get(LAST_CITY_KEY);
-
-		if (savedCity) await this.setCurrentCity(savedCity);
-
-		if (!savedCity && this.isDefaultCity()) await this.detectCityByIP();
-	}
-
 	isDefaultCity(): boolean {
 		return (
 			this.currentCity.name === DEFAULT_CITY.name &&
 			this.currentCity.lat === DEFAULT_CITY.lat &&
 			this.currentCity.lon === DEFAULT_CITY.lon
 		);
+	}
+
+	clearCity(): void {
+		storage.remove(LAST_CITY_KEY);
 	}
 
 	async setCurrentCity(city: City) {
@@ -140,6 +134,14 @@ export class CityStore {
 		}
 	}
 
+	async init() {
+		const savedCity = storage.get(LAST_CITY_KEY);
+
+		if (savedCity) await this.setCurrentCity(savedCity);
+
+		if (!savedCity && this.isDefaultCity()) await this.detectCityByIP();
+	}
+
 	private async detectCityByIP() {
 		this.isLoading = true;
 
@@ -157,7 +159,6 @@ export class CityStore {
 
 	constructor() {
 		makeAutoObservable(this);
-		this.loadCity();
 	}
 }
 

@@ -6,7 +6,7 @@ import { Toaster } from 'sonner';
 import { useIsMobile } from '@/shared/lib/hooks';
 import { ModalManager } from '@/shared/ui';
 
-import AppRouter from './providers/router/AppRouter';
+import AppRouter from './providers/router/Router';
 
 const App = () => {
 	const isMobile = useIsMobile();

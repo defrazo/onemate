@@ -65,7 +65,7 @@ export const WeatherCurrent = ({ currentWeather }: WeatherCurrentProps) => {
 						</div>
 					</div>
 					<div className="flex flex-col">
-						<Tooltip className="group flex items-center gap-2" text={getWindDirection(deg)}>
+						<Tooltip className="flex items-center gap-2" text={getWindDirection(deg)}>
 							<Wind className="size-4" />
 							Ветер: <span className={textStyle}>{speed} м/с</span>
 						</Tooltip>

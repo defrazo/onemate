@@ -3,10 +3,11 @@ import { observer } from 'mobx-react-lite';
 
 import { IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
+import { validateLogin } from '@/shared/lib/validators';
 import { notifyStore, uiStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
-import { renderPasswordToggle, validateLogin } from '../lib';
+import { renderPasswordToggle } from '../lib';
 import { authFormStore } from '../model';
 import { AuthSocial } from '.';
 
@@ -70,8 +71,8 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 					type={showPassword ? 'text' : 'password'}
 					value={store.password}
 					variant="ghost"
-					onBlur={(event) => store.update('password', event.target.value.trim())}
-					onChange={(event) => store.update('password', event.target.value)}
+					onBlur={(e) => store.update('password', e.target.value.trim())}
+					onChange={(e) => store.update('password', e.target.value)}
 				/>
 				<Button
 					className="ml-auto text-sm"

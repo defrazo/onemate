@@ -10,9 +10,9 @@ interface TooltipProps {
 
 const Tooltip = ({ text, className, children }: TooltipProps) => {
 	return (
-		<div className={cn('relative inline-block cursor-help', className)}>
+		<div className={cn('group relative inline-block cursor-help', className)}>
 			{children}
-			<div className="pointer-events-none absolute bottom-full left-1/2 mb-2 hidden w-max -translate-x-1/2 transform rounded bg-black px-2 py-1 text-center text-base text-white group-hover:block">
+			<div className="pointer-events-none absolute bottom-full left-1/2 hidden w-max -translate-x-1/2 transform rounded bg-[var(--bg-overlay)] px-2 py-1 text-center text-base group-hover:block">
 				{text}
 			</div>
 		</div>

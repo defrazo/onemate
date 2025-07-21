@@ -3,7 +3,6 @@ import { DEFAULT_USER_PROFILE } from '@/shared/lib/constants';
 import { supabase } from '@/shared/lib/supabase';
 
 import type { UserProfile } from '.';
-import { userProfileStore } from '.';
 
 const TABLE = 'user_profiles';
 
@@ -17,8 +16,8 @@ export const userProfileService = {
 
 		if (!data) {
 			const inserted = await this.saveProfile(DEFAULT_USER_PROFILE);
-			userProfileStore.setProfile(inserted);
-		} else userProfileStore.setProfile(data);
+			return inserted;
+		} else return data;
 	},
 
 	async saveProfile(profile: UserProfile): Promise<UserProfile> {

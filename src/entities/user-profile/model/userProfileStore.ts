@@ -1,10 +1,12 @@
 import { makeAutoObservable } from 'mobx';
 
+import { notifyStore } from '@/shared/stores';
+
 import type { UserProfile } from '.';
+import { userProfileService } from '.';
 
 export class UserProfileStore {
 	profile: UserProfile | null = null;
-	loading = false;
 
 	get isProfileLoaded() {
 		return this.profile !== null;
@@ -14,13 +16,21 @@ export class UserProfileStore {
 		this.profile = profile;
 	}
 
-	setLoading(value: boolean) {
-		this.loading = value;
+	clearProfile() {
+		this.profile = null;
 	}
 
-	reset() {
-		this.profile = null;
-		this.loading = false;
+	async loadProfile(): Promise<void> {
+		try {
+			const profileData = await userProfileService.loadProfile();
+			this.setProfile(profileData);
+		} catch (error: any) {
+			notifyStore.setError(error.message || 'Не удалось загрузить профиль');
+		}
+	}
+
+	async init() {
+		await this.loadProfile();
 	}
 
 	constructor() {

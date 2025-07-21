@@ -1,4 +1,9 @@
-export type TabId = 'profile' | 'info' | 'contacts' | 'secure';
+export type TabId = 'overview' | 'personal' | 'contacts' | 'secure';
+
+export type GenderOption = {
+	value: 'male' | 'female' | null;
+	label: string;
+};
 
 export type ProfileNavButton = {
 	id: TabId;
@@ -18,14 +23,4 @@ export type DraftProfile = {
 	phone: string[];
 	email: string[];
 	mainEmail: string;
-};
-
-export type GenderOption = {
-	value: 'male' | 'female' | null;
-	label: string;
-};
-
-export type BrowserInfo = {
-	browser: string;
-	isPhone: boolean;
 };

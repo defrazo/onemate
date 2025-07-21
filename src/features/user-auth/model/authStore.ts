@@ -1,21 +1,21 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
 import { userStore } from '@/entities/user';
+import { userProfileStore } from '@/entities/user-profile';
+import { deviceActivityStore } from '@/features/device-activity';
 
 import { authFormStore, authService } from '.';
 
 export class AuthStore {
 	isAuthChecked = false;
 
-	get isAuthenticated() {
-		return !!userStore.user;
-	}
-
 	async oAuth({ data, error }: { data: any; error: any }): Promise<boolean> {
 		try {
 			const result = await authService.oAuth({ data, error });
 			if (result) {
 				await userStore.loadUser();
+				await userProfileStore.loadProfile();
+				await deviceActivityStore.logAuthOnce();
 				authFormStore.reset();
 			}
 			return result;
@@ -30,6 +30,8 @@ export class AuthStore {
 			const result = await authService.login(login, password);
 			if (result) {
 				await userStore.loadUser();
+				await userProfileStore.loadProfile();
+				await deviceActivityStore.logAuthOnce();
 				authFormStore.reset();
 			}
 			return result;
@@ -56,7 +58,7 @@ export class AuthStore {
 		await authService.logout();
 	}
 
-	private async init() {
+	async init() {
 		await userStore.loadSession();
 		runInAction(() => {
 			this.isAuthChecked = true;
@@ -65,7 +67,6 @@ export class AuthStore {
 
 	constructor() {
 		makeAutoObservable(this);
-		this.init();
 	}
 }
 

@@ -1,0 +1,1 @@
+export { useDeletedAccount } from './useDeletedAccount';

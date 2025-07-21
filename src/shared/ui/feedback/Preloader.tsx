@@ -11,7 +11,7 @@ const Preloader = ({ className }: PreloaderProps) => {
 				'aspect-square animate-spin items-center justify-center rounded-full border-4 border-[var(--color-primary)] border-t-gray-500',
 				className
 			)}
-		></div>
+		/>
 	);
 };
 

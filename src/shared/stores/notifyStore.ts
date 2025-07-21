@@ -60,3 +60,5 @@ export class NotifyStore {
 		makeAutoObservable(this);
 	}
 }
+
+export const notifyStore = new NotifyStore();

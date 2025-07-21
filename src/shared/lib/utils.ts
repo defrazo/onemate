@@ -61,22 +61,34 @@ export function getBrowserInfo() {
 
 	let browser = 'Неизвестный';
 
-	if (/Edg/i.test(ua)) {
-		browser = 'Edge';
-	} else if (/OPR/i.test(ua)) {
-		browser = 'Opera';
-	} else if (/Chrome/i.test(ua)) {
-		browser = 'Chrome';
-	} else if (/Firefox/i.test(ua)) {
-		browser = 'Firefox';
-	} else if (/Safari/i.test(ua)) {
-		browser = 'Safari';
-	}
+	if (/Edg/i.test(ua)) browser = 'Edge';
+	else if (/OPR/i.test(ua)) browser = 'Opera';
+	else if (/Chrome/i.test(ua)) browser = 'Chrome';
+	else if (/Firefox/i.test(ua)) browser = 'Firefox';
+	else if (/Safari/i.test(ua)) browser = 'Safari';
 
 	const isPhone = /Mobi|Android|iPhone/i.test(ua);
 
-	return {
-		browser,
-		isPhone,
-	};
+	return { browser, isPhone };
 }
+
+export const generateYears = (count = 100) =>
+	Array.from({ length: count }, (_, i) => {
+		const y = (new Date().getFullYear() - i).toString();
+		return { value: y, label: y };
+	});
+
+export const generateMonth = (count = 12) =>
+	Array.from({ length: count }, (_, i) => ({
+		value: i.toString(),
+		label: capitalizeFirstLetter(new Date(0, i).toLocaleString('ru', { month: 'long' })),
+	}));
+
+export const fullDate = (date: string) =>
+	new Date(date).toLocaleString('ru-RU', {
+		day: '2-digit',
+		month: '2-digit',
+		year: 'numeric',
+		hour: '2-digit',
+		minute: '2-digit',
+	});

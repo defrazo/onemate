@@ -1,16 +1,15 @@
-import { makeAutoObservable } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 
 import { cityStore } from '@/entities/city';
 import { userStore } from '@/entities/user';
 import type { UserProfile } from '@/entities/user-profile';
 import { userProfileService, userProfileStore } from '@/entities/user-profile';
-import { storage } from '@/shared/lib/storage';
 import { notifyStore } from '@/shared/stores';
 
-import type { DraftProfile, TabId } from '.';
+import { getAvailableDays } from '../lib';
+import type { DraftProfile } from '.';
 
 export class ProfileStore {
-	activeTab: TabId = (storage.get('savedTab') as TabId) || 'profile';
 	draft: DraftProfile = {
 		avatar: '',
 		firstName: '',
@@ -25,6 +24,9 @@ export class ProfileStore {
 		email: [''],
 		mainEmail: '',
 	};
+
+	isProfileUploaded: boolean = false;
+	days: string[] = [];
 
 	get avatar() {
 		return this.draft.avatar;
@@ -58,6 +60,11 @@ export class ProfileStore {
 		return this.draft.gender;
 	}
 
+	get genderLabel() {
+		const map: Record<string, string> = { male: 'Мужской', female: 'Женский' };
+		return map[this.draft.gender ?? ''] || 'Не указано';
+	}
+
 	get location() {
 		return this.draft.location;
 	}
@@ -72,11 +79,6 @@ export class ProfileStore {
 
 	get mainEmail() {
 		return this.draft.mainEmail;
-	}
-
-	setActiveTab(tab: TabId) {
-		this.activeTab = tab;
-		storage.set('savedTab', tab);
 	}
 
 	updateField<K extends keyof DraftProfile>(key: K, value: DraftProfile[K]) {
@@ -98,7 +100,16 @@ export class ProfileStore {
 		this.updateField(key, updated.length ? updated : ['']);
 	};
 
-	loadFromProfile() {
+	syncArrayFields(): void {
+		this.syncSingleArrayField('phone');
+		this.syncSingleArrayField('email');
+	}
+
+	syncDays(): void {
+		this.days = getAvailableDays(this.birthYear, this.birthMonth);
+	}
+
+	loadFromProfile(): void {
 		const profile = userProfileStore.profile;
 		if (!profile) return;
 
@@ -116,6 +127,12 @@ export class ProfileStore {
 			email: profile.email.length ? profile.email : [''],
 			location: cityStore.cityName || '',
 		};
+
+		this.isProfileUploaded = true;
+	}
+
+	init() {
+		this.loadFromProfile();
 	}
 
 	async saveChanges() {
@@ -144,8 +161,33 @@ export class ProfileStore {
 		}
 	}
 
+	private syncSingleArrayField(field: 'phone' | 'email') {
+		const values = this[field];
+		const nonEmpty = values.filter((val) => val.trim() !== '');
+
+		if (values.length > 1) {
+			const cleaned = values.filter((val, i) => val.trim() !== '' || i === values.length - 1);
+			if (cleaned.length !== values.length) {
+				this.updateField(field, cleaned);
+				return;
+			}
+		}
+
+		if (nonEmpty.length === values.length) this.addField(field);
+	}
+
 	constructor() {
 		makeAutoObservable(this);
+
+		reaction(
+			() => [this.birthYear, this.birthMonth],
+			() => this.syncDays()
+		);
+
+		reaction(
+			() => [this.phone.slice(), this.email.slice()],
+			() => this.syncArrayFields()
+		);
 	}
 }
 

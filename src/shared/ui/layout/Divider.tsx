@@ -30,7 +30,7 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	};
 
 	return (
-		<div className={cn(marginsY[margY], marginsX[margX])}>
+		<div className={cn(marginsY[margY], marginsX[margX], 'w-full')}>
 			<hr className={cn('border-none', base, variants[variant], className)} />
 		</div>
 	);

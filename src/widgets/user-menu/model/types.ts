@@ -3,6 +3,6 @@ export type UserButton = {
 	icon?: React.ReactElement;
 	leftIcon?: React.ReactNode;
 	to?: string;
-	action: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	action?: (e: React.MouseEvent<HTMLButtonElement>) => void;
 	label: React.ReactNode;
 };

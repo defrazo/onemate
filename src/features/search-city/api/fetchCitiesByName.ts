@@ -1,6 +1,6 @@
 import type { City } from '@/entities/city';
 import { API_URLS, WEATHER_API_KEY } from '@/shared/config/apiConfig';
-import { handleError } from '@/shared/lib/errors/errorHandler';
+import { handleError } from '@/shared/lib/errors';
 
 // Получение списка городов с регионами
 export const fetchCitiesByName = async (query: string, signal?: AbortSignal): Promise<City[]> => {
@@ -19,8 +19,8 @@ export const fetchCitiesByName = async (query: string, signal?: AbortSignal): Pr
 			lat: item.lat,
 			lon: item.lon,
 		}));
-	} catch (e) {
-		handleError(e);
+	} catch (error) {
+		handleError(error);
 		return [];
 	}
 };

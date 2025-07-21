@@ -1,4 +1,4 @@
-import { JSX } from 'react';
+import { JSX, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
@@ -14,22 +14,29 @@ import {
 	ResetForm,
 } from '@/features/user-auth';
 import { notifyStore, uiStore } from '@/shared/stores';
+import { Preloader } from '@/shared/ui';
 
 const AuthContainer = () => {
+	const [isLoading, setIsLoading] = useState(false);
+
 	const navigate = useNavigate();
 	const store = authFormStore;
 	const handleSuccessAuth = () => {
 		notifyStore.setSuccess(`Добро пожаловать, ${userStore.username}!`);
 		uiStore.closeModal();
-		navigate('/main');
+		navigate('/dashboard');
 	};
 
 	const handleLogin = async () => {
+		setIsLoading(true);
+
 		try {
 			const success = await authStore.login();
 			if (success) handleSuccessAuth();
 		} catch (error: any) {
 			notifyStore.setError(error.message || 'Произошла ошибка при входе');
+		} finally {
+			setIsLoading(false);
 		}
 	};
 
@@ -39,7 +46,7 @@ const AuthContainer = () => {
 			if (success) {
 				const loggedIn = await authStore.login();
 				if (loggedIn) handleSuccessAuth();
-			} else notifyStore.setSuccess('Письмо для подтверждения отправлено, проверьте почту.');
+			} else notifyStore.setSuccess('Письмо для подтверждения отправлено, проверьте почту');
 		} catch (error: any) {
 			notifyStore.setError(error.message || 'Произошла ошибка при регистрации');
 		}
@@ -61,7 +68,7 @@ const AuthContainer = () => {
 			await authService.updatePassword(store.password, store.passwordConfirm);
 			store.setResetMode(false);
 			uiStore.closeModal();
-			navigate('/main');
+			navigate('/dashboard');
 		} catch (error: any) {
 			notifyStore.setError(error.message || 'Произошла ошибка при отправке письма');
 		}
@@ -74,7 +81,18 @@ const AuthContainer = () => {
 		reset: <ResetForm onSubmit={handleReset} />,
 	};
 
-	return formMap[store.authType] ?? null;
+	return (
+		<>
+			{formMap[store.authType]}
+
+			{isLoading && (
+				<div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--bg-primary)]">
+					<span className="mb-4 animate-pulse text-xl font-medium">Подождите, выполняется вход...</span>
+					<Preloader className="size-15" />
+				</div>
+			)}
+		</>
+	);
 };
 
 export default observer(AuthContainer);

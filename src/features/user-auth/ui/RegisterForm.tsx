@@ -3,10 +3,11 @@ import { observer } from 'mobx-react-lite';
 
 import { IconEmail, IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
+import { validateEmail, validatePassword, validatePasswords, validateUsername } from '@/shared/lib/validators';
 import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
-import { renderPasswordToggle, validateEmail, validatePassword, validatePasswords, validateUsername } from '../lib';
+import { renderPasswordToggle } from '../lib';
 import { authFormStore } from '../model';
 import { AuthSocial, PasswordHint } from '.';
 
@@ -58,8 +59,8 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 					type="text"
 					value={store.username}
 					variant="ghost"
-					onBlur={(event) => store.update('username', event.target.value.trim())}
-					onChange={(event) => store.update('username', event.target.value)}
+					onBlur={(e) => store.update('username', e.target.value.trim())}
+					onChange={(e) => store.update('username', e.target.value)}
 				/>
 				<Input
 					leftIcon={<IconEmail className="size-6 border-r border-[var(--border-color)] pr-1" />}
@@ -68,8 +69,8 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 					type="email"
 					value={store.email}
 					variant="ghost"
-					onBlur={(event) => store.update('email', event.target.value.trim())}
-					onChange={(event) => store.update('email', event.target.value)}
+					onBlur={(e) => store.update('email', e.target.value.trim())}
+					onChange={(e) => store.update('email', e.target.value)}
 				/>
 				<div className="relative">
 					<Input
@@ -80,12 +81,12 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
 						variant="ghost"
-						onBlur={(event) => {
+						onBlur={(e) => {
 							setShowHint(false);
-							store.update('password', event.target.value.trim());
+							store.update('password', e.target.value.trim());
 						}}
-						onChange={(event) => {
-							const value = event.target.value;
+						onChange={(e) => {
+							const value = e.target.value;
 							if (validatePassword(value)) store.update('password', value);
 						}}
 						onFocus={() => setShowHint(true)}
@@ -100,8 +101,8 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}
 					variant="ghost"
-					onBlur={(event) => store.update('passwordConfirm', event.target.value.trim())}
-					onChange={(event) => store.update('passwordConfirm', event.target.value)}
+					onBlur={(e) => store.update('passwordConfirm', e.target.value.trim())}
+					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {
 						e.preventDefault();
 						notifyStore.setError('Подтвердите пароль, введя его вручную');

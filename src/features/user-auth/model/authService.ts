@@ -1,18 +1,20 @@
+import { cityStore } from '@/entities/city';
 import { userStore } from '@/entities/user';
+import { userProfileStore } from '@/entities/user-profile';
 import { supabase } from '@/shared/lib/supabase';
+import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
 
-import { validateEmail, validatePasswords, validateUsername } from '../lib';
 import type { AuthData, SupabaseUserCheck } from '.';
 import { authFormStore } from '.';
 
 const defaultRedirect = 'http://92.248.239.2:3000/auth/callback';
 
 export const authService = {
+	// --- Регистрация и авторизация --- //
+
 	async oAuth(data: any): Promise<boolean> {
 		const user = data?.user ?? data?.data?.user;
 		if (!user) throw new Error('Пользователь не найден');
-
-		await userStore.loadUser();
 
 		return true;
 	},
@@ -50,8 +52,6 @@ export const authService = {
 			return false;
 		}
 
-		await userStore.loadUser();
-
 		return true;
 	},
 
@@ -78,10 +78,10 @@ export const authService = {
 
 		if (error || !userData?.user) throw new Error(error?.message || 'Неверное имя пользователя или пароль');
 
-		await userStore.loadUser();
-
 		return true;
 	},
+
+	// --- Операции с E-mail --- //
 
 	// Повторная отправка письма для подтверждения
 	async handleResend(email: string): Promise<void> {
@@ -105,6 +105,8 @@ export const authService = {
 		return data[0];
 	},
 
+	// --- Операции с паролем --- //
+
 	// Запуск процедуры восстановления пароля
 	async resetPassword(email: string): Promise<void> {
 		const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: defaultRedirect });
@@ -126,9 +128,38 @@ export const authService = {
 		if (error) throw new Error(error.message || 'Не удалось изменить пароль');
 	},
 
+	// --- Удаление и восстановление аккаунта --- //
+
+	// Удаление аккаунта
+	async deleteAccount(): Promise<void> {
+		const user = userStore.user;
+		if (!user) throw new Error('Пользователь не авторизован');
+
+		const { error } = await supabase
+			.from('user_profiles')
+			.update({ deleted_at: new Date().toISOString() })
+			.eq('id', user.id);
+
+		if (error) throw new Error('Не удалось удалить аккаунт');
+	},
+
+	// Восстановление аккаунта
+	async restoreAccount(): Promise<void> {
+		const user = userStore.user;
+		if (!user) throw new Error('Пользователь не авторизован');
+
+		const { error } = await supabase.from('user_profiles').update({ deleted_at: null }).eq('id', user.id);
+
+		if (error) throw new Error(error.message || 'Ошибка восстановления аккаунта');
+
+		await userStore.loadUser();
+	},
+
 	async logout() {
 		await supabase.auth.signOut();
 		userStore.clearUser();
 		userStore.clearSession();
+		userProfileStore.clearProfile();
+		cityStore.clearCity();
 	},
 };

@@ -3,10 +3,11 @@ import { observer } from 'mobx-react-lite';
 
 import { IconPass } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
+import { validatePassword, validatePasswords } from '@/shared/lib/validators';
 import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
-import { renderPasswordToggle, validatePassword, validatePasswords } from '../lib';
+import { renderPasswordToggle } from '../lib';
 import { authFormStore } from '../model';
 import { PasswordHint } from '.';
 
@@ -55,12 +56,12 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
 						variant="ghost"
-						onBlur={(event) => {
+						onBlur={(e) => {
 							setShowHint(false);
-							store.update('password', event.target.value.trim());
+							store.update('password', e.target.value.trim());
 						}}
-						onChange={(event) => {
-							const value = event.target.value;
+						onChange={(e) => {
+							const value = e.target.value;
 							if (validatePassword(value)) store.update('password', value);
 						}}
 						onFocus={() => setShowHint(true)}
@@ -75,8 +76,8 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}
 					variant="ghost"
-					onBlur={(event) => store.update('passwordConfirm', event.target.value.trim())}
-					onChange={(event) => store.update('passwordConfirm', event.target.value)}
+					onBlur={(e) => store.update('passwordConfirm', e.target.value.trim())}
+					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {
 						e.preventDefault();
 						notifyStore.setError('Подтвердите пароль, введя его вручную');

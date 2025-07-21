@@ -81,3 +81,5 @@ export class UIStore {
 		this.initTheme();
 	}
 }
+
+export const uiStore = new UIStore();

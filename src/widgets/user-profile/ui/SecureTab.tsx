@@ -1,0 +1,120 @@
+import { useState } from 'react';
+import { observer } from 'mobx-react-lite';
+
+import { userStore } from '@/entities/user';
+import DeviceActivityOverview from '@/features/device-activity';
+import { authService, PasswordHint } from '@/features/user-auth';
+import { validatePassword, validatePasswords } from '@/shared/lib/validators';
+import { notifyStore, uiStore } from '@/shared/stores';
+import { Button, Divider, Input, LoadFallback } from '@/shared/ui';
+
+import { profileStore, useProfile } from '../model';
+
+export const SecureTab = observer(() => {
+	const { isMobile, formattedDate, navigate } = useProfile();
+	const [showHint, setShowHint] = useState(false);
+
+	const handleSave = async () => {
+		try {
+			await validatePasswords(userStore.passwords[0], userStore.passwords[1]);
+			await userStore.updatePassword(userStore.passwords[0]);
+			userStore.clearPasswords();
+			notifyStore.setSuccess('Пароль успешно обновлен!');
+		} catch {
+			notifyStore.setError('Проверьте введенные данные');
+		}
+	};
+
+	const handleDelete = async () => {
+		const confirmed = window.confirm('Вы уверены, что хотите удалить аккаунт?');
+
+		if (!confirmed) return;
+
+		try {
+			await authService.deleteAccount();
+			await authService.logout();
+			notifyStore.setSuccess('Аккаунт успешно удалeн');
+			navigate('/');
+		} catch {
+			notifyStore.setError('Ошибка при удалении аккаунта');
+		}
+	};
+
+	if (!profileStore.isProfileUploaded) return <LoadFallback />;
+
+	return (
+		<div className="flex flex-col gap-4">
+			<div className="core-card core-base flex flex-col gap-4">
+				<h1 className="core-header">Безопасность</h1>
+				<div className="flex flex-col gap-2">
+					<h2 className="text-xl font-bold">Пароль</h2>
+					<h3 className="text-sm text-[var(--color-disabled)]">Ваш пароль был изменен {formattedDate}</h3>
+					<div className="relative">
+						<Input
+							placeholder="Новый пароль"
+							value={userStore.passwords[0]}
+							variant="ghost"
+							onBlur={(e) => {
+								setShowHint(false);
+								userStore.setPasswords(0, e.target.value.trim());
+							}}
+							onChange={(e) => {
+								const value = e.target.value;
+								if (validatePassword(value)) userStore.setPasswords(0, value);
+							}}
+							onFocus={() => setShowHint(true)}
+						/>
+						<PasswordHint password={userStore.passwords[0]} showHint={showHint} />
+					</div>
+					<Input
+						placeholder="Подтвердите новый пароль"
+						value={userStore.passwords[1]}
+						variant="ghost"
+						onBlur={(e) => userStore.setPasswords(1, e.target.value.trim())}
+						onChange={(e) => userStore.setPasswords(1, e.target.value)}
+						onPaste={(e) => {
+							e.preventDefault();
+							notifyStore.setError('Подтвердите пароль, введя его вручную');
+						}}
+					/>
+					<div className="mt-2 flex justify-center gap-2">
+						<Button variant="accent" onClick={handleSave}>
+							Сохранить
+						</Button>
+						<Button
+							className="rounded-xl hover:bg-[var(--status-error)]"
+							variant="custom"
+							onClick={() =>
+								isMobile ? uiStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+							}
+						>
+							Отменить
+						</Button>
+					</div>
+				</div>
+				<Divider />
+				<div className="flex flex-col gap-2">
+					<h2 className="text-xl font-bold">Устройства и активность</h2>
+					<div className="flex h-[10rem]">
+						<DeviceActivityOverview />
+					</div>
+				</div>
+			</div>
+			<div className="core-card flex flex-col gap-2 border-1 border-[#871919] bg-[#1d1412] select-none">
+				<h2 className="mr-auto text-xl font-bold">Удалить аккаунт</h2>
+				<p className="text-justify text-sm">
+					Вы можете удалить свой аккаунт. У вас будет <b>30 дней</b> на его восстановление. По истечении этого
+					срока данные будут безвозвратно удалены, и вы сможете зарегистрироваться заново, используя тот же
+					адрес электронной почты.
+				</p>
+				<Button
+					className="mx-auto w-fit rounded-xl bg-[#871919] text-[var(--color-primary)] transition-colors duration-300 hover:bg-[#a10404]"
+					variant="custom"
+					onClick={handleDelete}
+				>
+					Удалить мой аккаунт
+				</Button>
+			</div>
+		</div>
+	);
+});

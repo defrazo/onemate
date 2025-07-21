@@ -2,10 +2,10 @@ import { observer } from 'mobx-react-lite';
 
 import { IconEmail } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
+import { validateEmail } from '@/shared/lib/validators';
 import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
-import { validateEmail } from '../lib';
 import { authFormStore } from '../model';
 
 interface ConfirmFormProps {
@@ -68,8 +68,8 @@ export const ConfirmForm = observer(({ onSubmit }: ConfirmFormProps) => {
 					type="email"
 					value={store.email}
 					variant="ghost"
-					onBlur={(event) => store.update('email', event.target.value.trim())}
-					onChange={(event) => store.update('email', event.target.value)}
+					onBlur={(e) => store.update('email', e.target.value.trim())}
+					onChange={(e) => store.update('email', e.target.value)}
 				/>
 				<Button className="mt-4 h-10 w-full" disabled={isBlocked} type="submit">
 					{isBlocked

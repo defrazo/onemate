@@ -19,7 +19,7 @@ import { useIsMobile } from '@/shared/lib/hooks';
 import { uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
 import type { TabId } from '@/widgets/user-profile';
-import { ProfileContacts, ProfileInfo, ProfileSecure, profileStore } from '@/widgets/user-profile';
+import { ContactsTab, OverviewTab, PersonalTab, profileStore, SecureTab } from '@/widgets/user-profile';
 
 import type { UserButton } from '../model';
 import { UserMenuInfo } from '.';
@@ -28,34 +28,41 @@ export const MobileUserMenu = observer(() => {
 	const isMobile = useIsMobile();
 	const navigate = useNavigate();
 
-	const goTo = (tab: TabId, to: React.ReactElement) => {
+	const tabs: Record<TabId, React.ReactElement> = {
+		overview: <OverviewTab />,
+		personal: <PersonalTab />,
+		contacts: <ContactsTab />,
+		secure: <SecureTab />,
+	};
+
+	const goTo = (tab: TabId) => {
 		if (isMobile) {
-			uiStore.setModal(to, 'bottom-sheet', {
+			const component = tabs[tab];
+			uiStore.setModal(component, 'bottom-sheet', {
 				back: () => uiStore.setModal(<MobileUserMenu />, 'bottom-sheet'),
 			});
 		} else {
-			navigate('/user-profile');
-			profileStore.setActiveTab(tab);
+			navigate(`/account/profile?tab=${tab}`);
 		}
 	};
 
 	const userButtons: UserButton[] = [
 		{
-			id: 'info',
+			id: 'personal',
 			leftIcon: <IconUser className="size-6" />,
-			action: () => goTo('info', <ProfileInfo />),
+			action: () => goTo('personal'),
 			label: 'Личные данные',
 		},
 		{
 			id: 'contacts',
 			leftIcon: <IconContacts className="size-6" />,
-			action: () => goTo('contacts', <ProfileContacts />),
+			action: () => goTo('contacts'),
 			label: 'Контактные данные',
 		},
 		{
 			id: 'secure',
 			leftIcon: <IconShield className="size-6" />,
-			action: () => goTo('secure', <ProfileSecure />),
+			action: () => goTo('secure'),
 			label: 'Безопасность',
 		},
 		{
@@ -72,14 +79,14 @@ export const MobileUserMenu = observer(() => {
 		{
 			id: 'location',
 			leftIcon: <IconLocation className="size-6" />,
-			action: () => goTo('secure', <ProfileSecure />),
+			action: () => goTo('personal'),
 			label: `${profileStore.location || 'Не указано'}`,
 		},
 		{
 			id: 'terms',
 			leftIcon: <IconAgreement className="size-6" />,
 			action: () => {
-				navigate('/terms');
+				navigate('/terms-of-service');
 				uiStore.closeModal();
 			},
 			label: 'Пользовательское соглашение',
@@ -88,7 +95,7 @@ export const MobileUserMenu = observer(() => {
 			id: 'privacy',
 			leftIcon: <IconSecure className="size-6" />,
 			action: () => {
-				navigate('/privacy');
+				navigate('/privacy-policy');
 				uiStore.closeModal();
 			},
 			label: 'Политика конфиденциальности',

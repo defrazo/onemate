@@ -2,7 +2,7 @@ import { userStore } from '@/entities/user';
 import { DEFAULT_CITY } from '@/shared/lib/constants';
 import { supabase } from '@/shared/lib/supabase';
 
-import type { City } from './types';
+import type { City } from '.';
 
 const TABLE = 'user_cities';
 

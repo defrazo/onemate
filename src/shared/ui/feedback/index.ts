@@ -1,3 +1,4 @@
+export { default as LoadFallback } from './LoadFallback';
 export { default as MobileBlocker } from './MobileBlocker';
 export { default as Preloader } from './Preloader';
 export { default as SuggestionList } from './SuggestionList';

@@ -1,6 +1,7 @@
 import { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { userStore } from '@/entities/user';
 import NavigationLinks from '@/features/navigation';
 import ThemeSwitcher from '@/features/theme-switcher';
 import { authStore } from '@/features/user-auth';
@@ -24,18 +25,18 @@ const Header = () => {
 				<div className="hidden md:flex">
 					<NavigationLinks
 						className="flex h-10 gap-4 font-bold"
-						isAuth={authStore.isAuthenticated}
+						isAuth={userStore.isAuthenticated}
 						variant="desktop"
 					/>
 				</div>
 
-				{authStore.isAuthenticated && authStore.isAuthChecked && (
+				{userStore.isAuthenticated && authStore.isAuthChecked && (
 					<UserMenuButton headerRef={headerRef} isMobile={isMobile} />
 				)}
 
 				<Time />
 
-				{!authStore.isAuthenticated && <ThemeSwitcher />}
+				{!userStore.isAuthenticated && <ThemeSwitcher />}
 			</div>
 		</header>
 	);

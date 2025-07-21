@@ -1,3 +1,5 @@
+export type AuthType = 'login' | 'register' | 'confirm' | 'reset';
+
 export type AuthData = {
 	username: string;
 	password: string;
@@ -5,8 +7,6 @@ export type AuthData = {
 	email: string;
 	authType: AuthType;
 };
-
-export type AuthType = 'login' | 'register' | 'confirm' | 'reset';
 
 export type PasswordRule = {
 	label: string;

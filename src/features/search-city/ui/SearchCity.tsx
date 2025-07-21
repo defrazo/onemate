@@ -36,7 +36,7 @@ const SearchCity = () => {
 	};
 
 	return (
-		<div className="relative">
+		<div className="relative z-10">
 			<Input
 				className="z-10 bg-[var(--bg-secondary)]"
 				placeholder="Введите город"

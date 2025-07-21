@@ -1,0 +1,1 @@
+export { collectDeviceInfo } from './collectDeviceInfo';

@@ -7,7 +7,6 @@ import IconPersonal from './personal.svg?react';
 import IconPhone from './phone.svg?react';
 import IconSecure from './secure.svg?react';
 import IconShield from './shield.svg?react';
-import IconTablet from './tablet.svg?react';
 
 export {
 	IconAbout,
@@ -19,5 +18,4 @@ export {
 	IconPhone,
 	IconSecure,
 	IconShield,
-	IconTablet,
 };
