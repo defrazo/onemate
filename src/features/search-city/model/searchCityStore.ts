@@ -64,18 +64,18 @@ export class SearchCityStore {
 			const hasWeather = await checkWeatherAvailability(city.lat, city.lon);
 
 			if (!hasWeather) {
-				notifyStore.setError(`Прогноз для этого города недоступен`);
+				notifyStore.setNotice(`Прогноз для этого города недоступен`, 'error');
 				return;
 			}
 
 			cityStore.setCurrentCity(city);
-			notifyStore.setSuccess(`Выбран город: ${city.name}`);
+			notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
 
 			this.setQuery(city.name);
 			this.resetResults();
 		} catch (error) {
 			handleError(error);
-			notifyStore.setError('Ошибка при выборе города');
+			notifyStore.setNotice('Ошибка при выборе города', 'error');
 		}
 	}
 

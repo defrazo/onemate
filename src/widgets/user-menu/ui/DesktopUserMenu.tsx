@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { authStore } from '@/features/user-auth';
 import { IconContacts, IconDay, IconLogout, IconMain, IconNight, IconShield, IconUser } from '@/shared/assets/icons';
-import { uiStore } from '@/shared/stores';
+import { modalStore, uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
 
 import type { UserButton } from '../model';
@@ -56,7 +56,7 @@ export const DesktopUserMenu = observer(() => {
 				const handleClick = isThemeToggle
 					? item.action
 					: () => {
-							uiStore.closeModal();
+							modalStore.closeModal();
 							navigate(`/account/profile?tab=${item.id}`);
 						};
 				return (
@@ -78,7 +78,7 @@ export const DesktopUserMenu = observer(() => {
 				leftIcon={<IconLogout className="size-6" />}
 				onClick={async () => {
 					await authStore.logout();
-					uiStore.closeModal();
+					modalStore.closeModal();
 					navigate('/');
 				}}
 			>

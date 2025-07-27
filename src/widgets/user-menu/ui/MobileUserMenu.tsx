@@ -16,7 +16,7 @@ import {
 	IconUser,
 } from '@/shared/assets/icons';
 import { useIsMobile } from '@/shared/lib/hooks';
-import { uiStore } from '@/shared/stores';
+import { modalStore, uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
 import type { TabId } from '@/widgets/user-profile';
 import { ContactsTab, OverviewTab, PersonalTab, profileStore, SecureTab } from '@/widgets/user-profile';
@@ -38,8 +38,8 @@ export const MobileUserMenu = observer(() => {
 	const goTo = (tab: TabId) => {
 		if (isMobile) {
 			const component = tabs[tab];
-			uiStore.setModal(component, 'bottom-sheet', {
-				back: () => uiStore.setModal(<MobileUserMenu />, 'bottom-sheet'),
+			modalStore.setModal(component, 'sheet', {
+				back: () => modalStore.setModal(<MobileUserMenu />, 'sheet'),
 			});
 		} else {
 			navigate(`/account/profile?tab=${tab}`);
@@ -87,7 +87,7 @@ export const MobileUserMenu = observer(() => {
 			leftIcon: <IconAgreement className="size-6" />,
 			action: () => {
 				navigate('/terms-of-service');
-				uiStore.closeModal();
+				modalStore.closeModal();
 			},
 			label: 'Пользовательское соглашение',
 		},
@@ -96,7 +96,7 @@ export const MobileUserMenu = observer(() => {
 			leftIcon: <IconSecure className="size-6" />,
 			action: () => {
 				navigate('/privacy-policy');
-				uiStore.closeModal();
+				modalStore.closeModal();
 			},
 			label: 'Политика конфиденциальности',
 		},
@@ -105,7 +105,7 @@ export const MobileUserMenu = observer(() => {
 			leftIcon: <IconAbout className="size-6" />,
 			action: () => {
 				navigate('/about');
-				uiStore.closeModal();
+				modalStore.closeModal();
 			},
 			label: 'О проекте',
 		},
@@ -136,7 +136,7 @@ export const MobileUserMenu = observer(() => {
 				variant="mobile"
 				onClick={async () => {
 					await authStore.logout();
-					uiStore.closeModal();
+					modalStore.closeModal();
 					navigate('/');
 				}}
 			>

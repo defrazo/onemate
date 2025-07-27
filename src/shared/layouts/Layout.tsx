@@ -1,11 +1,10 @@
 import { ReactNode } from 'react';
 
 import { useIsMobile } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 import Footer from '@/widgets/footer';
 import Header from '@/widgets/header';
 import MobileTabBar from '@/widgets/mobile-tab-bar';
-
-import { cn } from '../lib/utils';
 
 interface LayoutProps {
 	leftSide?: ReactNode;

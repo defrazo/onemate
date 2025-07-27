@@ -20,7 +20,13 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 				.map(({ to, icon, label, onClick, order }) => {
 					const itemClass = cn(
 						'flex-col gap-1 md:flex-row md:gap-2 hover:text-[var(--accent-hover)]',
-						isMobile && order && `order-${order}`
+						isMobile &&
+							order && {
+								'order-1': order === 1,
+								'order-2': order === 2,
+								'order-3': order === 3,
+								'order-4': order === 4,
+							}
 					);
 
 					const commonProps = {

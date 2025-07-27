@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 
 import { authFormStore, authStore } from '@/features/user-auth';
 import { supabase } from '@/shared/lib/supabase';
-import { uiStore } from '@/shared/stores';
+import { modalStore } from '@/shared/stores';
 import AuthContainer from '@/widgets/authorization';
 
 export const useAuthCallback = () => {
@@ -27,7 +27,7 @@ export const useAuthCallback = () => {
 					authFormStore.setResetMode(true);
 					authFormStore.update('authType', 'reset');
 					authFormStore.update('email', user.email || '');
-					uiStore.setModal(<AuthContainer />);
+					modalStore.setModal(<AuthContainer />);
 				} else navigate('/');
 			} catch {
 				navigate('/');

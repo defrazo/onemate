@@ -5,23 +5,23 @@ import { userStore } from '@/entities/user';
 import DeviceActivityOverview from '@/features/device-activity';
 import { authService, PasswordHint } from '@/features/user-auth';
 import { validatePassword, validatePasswords } from '@/shared/lib/validators';
-import { notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Divider, Input, LoadFallback } from '@/shared/ui';
 
 import { profileStore, useProfile } from '../model';
 
 export const SecureTab = observer(() => {
 	const { isMobile, formattedDate, navigate } = useProfile();
-	const [showHint, setShowHint] = useState(false);
+	const [showHint, setShowHint] = useState<boolean>(false);
 
 	const handleSave = async () => {
 		try {
 			await validatePasswords(userStore.passwords[0], userStore.passwords[1]);
 			await userStore.updatePassword(userStore.passwords[0]);
 			userStore.clearPasswords();
-			notifyStore.setSuccess('Пароль успешно обновлен!');
+			notifyStore.setNotice('Пароль успешно обновлен!', 'success');
 		} catch {
-			notifyStore.setError('Проверьте введенные данные');
+			notifyStore.setNotice('Проверьте введенные данные', 'error');
 		}
 	};
 
@@ -33,10 +33,10 @@ export const SecureTab = observer(() => {
 		try {
 			await authService.deleteAccount();
 			await authService.logout();
-			notifyStore.setSuccess('Аккаунт успешно удалeн');
+			notifyStore.setNotice('Аккаунт успешно удалeн', 'success');
 			navigate('/');
 		} catch {
-			notifyStore.setError('Ошибка при удалении аккаунта');
+			notifyStore.setNotice('Ошибка при удалении аккаунта', 'error');
 		}
 	};
 
@@ -74,7 +74,7 @@ export const SecureTab = observer(() => {
 						onChange={(e) => userStore.setPasswords(1, e.target.value)}
 						onPaste={(e) => {
 							e.preventDefault();
-							notifyStore.setError('Подтвердите пароль, введя его вручную');
+							notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 						}}
 					/>
 					<div className="mt-2 flex justify-center gap-2">
@@ -85,7 +85,7 @@ export const SecureTab = observer(() => {
 							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
 							onClick={() =>
-								isMobile ? uiStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+								isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
 							}
 						>
 							Отменить

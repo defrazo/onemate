@@ -8,8 +8,7 @@ const TABLE = 'user_cities';
 
 export const cityService = {
 	async loadCity(): Promise<City | null> {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const { data, error } = await supabase.from(TABLE).select('*').eq('id', id).maybeSingle();
 		if (error) throw new Error(`Ошибка получения города: ${error.message}`);
@@ -23,8 +22,7 @@ export const cityService = {
 	},
 
 	async saveCity(city: City): Promise<City> {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const cityWithId = { ...city, id };
 

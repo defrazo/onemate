@@ -1,6 +1,6 @@
 import { makeAutoObservable, runInAction } from 'mobx';
 
-import { DEFAULT_CITY, LAST_CITY_KEY } from '@/shared/lib/constants';
+import { DEFAULT_CITY, STORAGE_LAST_CITY } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { notifyStore } from '@/shared/stores';
 
@@ -33,7 +33,7 @@ export class CityStore {
 	}
 
 	clearCity(): void {
-		storage.remove(LAST_CITY_KEY);
+		storage.remove(STORAGE_LAST_CITY);
 	}
 
 	async setCurrentCity(city: City) {
@@ -54,7 +54,7 @@ export class CityStore {
 				this.isLoading = false;
 			});
 
-			notifyStore.setError('Геолокация не поддерживается вашим браузером');
+			notifyStore.setNotice('Геолокация не поддерживается вашим браузером', 'error');
 			return;
 		}
 
@@ -72,13 +72,13 @@ export class CityStore {
 						this.isLoading = false;
 					});
 
-					notifyStore.setSuccess(`Выбран город: ${city.name}`);
+					notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
 				} catch (error: any) {
 					runInAction(() => {
 						this.isLoading = false;
 					});
 
-					notifyStore.setError(error.message || 'Ошибка при определении текущего местоположения');
+					notifyStore.setNotice(error.message || 'Ошибка при определении текущего местоположения', 'error');
 				}
 			},
 			() => {
@@ -86,7 +86,7 @@ export class CityStore {
 					this.isLoading = false;
 				});
 
-				notifyStore.setError('Не удалось получить геолокацию');
+				notifyStore.setNotice('Не удалось получить геолокацию', 'error');
 			}
 		);
 	}
@@ -100,14 +100,14 @@ export class CityStore {
 			runInAction(() => {
 				if (city) {
 					this.currentCity = city;
-					storage.set(LAST_CITY_KEY, city);
+					storage.set(STORAGE_LAST_CITY, city);
 				} else {
-					const cachedCity = storage.get(LAST_CITY_KEY);
+					const cachedCity = storage.get(STORAGE_LAST_CITY);
 					this.currentCity = cachedCity ?? DEFAULT_CITY;
 				}
 			});
 		} catch (error: any) {
-			notifyStore.setError(error.message);
+			notifyStore.setNotice(error.message, 'error');
 		} finally {
 			runInAction(() => {
 				this.isLoading = false;
@@ -123,10 +123,10 @@ export class CityStore {
 
 			runInAction(() => {
 				this.currentCity = savedCity;
-				storage.set(LAST_CITY_KEY, savedCity);
+				storage.set(STORAGE_LAST_CITY, savedCity);
 			});
 		} catch (error: any) {
-			notifyStore.setError(error.message);
+			notifyStore.setNotice(error.message, 'error');
 		} finally {
 			runInAction(() => {
 				this.isLoading = false;
@@ -135,7 +135,7 @@ export class CityStore {
 	}
 
 	async init() {
-		const savedCity = storage.get(LAST_CITY_KEY);
+		const savedCity = storage.get(STORAGE_LAST_CITY);
 
 		if (savedCity) await this.setCurrentCity(savedCity);
 

@@ -1,56 +1,17 @@
 import { makeAutoObservable } from 'mobx';
 
-import { storage } from '../lib/storage';
-
-type ModalType = 'modal' | 'bottom-sheet' | 'dropdown' | 'auto' | 'none';
-
-interface ModalConfig {
-	content: React.ReactNode;
-	type?: ModalType;
-	back?: () => void;
-	position?: { top: number; left: number };
-	onClose?: () => void;
-}
+import { storage } from '@/shared/lib/storage';
 
 export class UIStore {
 	theme: 'light' | 'dark' = 'dark';
-	modal: ModalConfig | null = null;
 
 	get currentTheme() {
 		return this.theme === 'light' ? 'Светлая' : 'Темная';
 	}
 
-	get modalType() {
-		return this.modal?.type;
-	}
-
-	setModal(
-		content: React.ReactNode,
-		type: ModalType = 'auto',
-		options?: { back?: () => void; position?: { top: number; left: number }; onClose?: () => void }
-	) {
-		this.modal = {
-			content,
-			type,
-			back: options?.back,
-			position: options?.position,
-			onClose: options?.onClose,
-		};
-	}
-
-	setBack(handler: () => void) {
-		if (this.modal) this.modal.back = handler;
-	}
-
-	resetBack() {
-		if (this.modal) this.modal.back = undefined;
-	}
-
-	closeModal = () => {
-		this.modal = null;
-	};
-
 	setTheme(theme: 'light' | 'dark') {
+		if (this.theme === theme) return;
+
 		this.theme = theme;
 		storage.set('theme', theme);
 		this.applyTheme(theme);
@@ -64,11 +25,15 @@ export class UIStore {
 	private initTheme() {
 		const savedTheme = storage.get('theme') as 'light' | 'dark' | null;
 
-		if (savedTheme) this.setTheme(savedTheme);
+		if (savedTheme) this.theme = savedTheme;
 		else {
-			const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-			this.setTheme(prefersDark ? 'dark' : 'light');
+			const prefersDark =
+				typeof window !== 'undefined' && window.matchMedia?.('(prefers-color-scheme: dark)').matches;
+
+			this.theme = prefersDark ? 'dark' : 'light';
 		}
+
+		this.applyTheme(this.theme);
 	}
 
 	private applyTheme(theme: 'light' | 'dark') {

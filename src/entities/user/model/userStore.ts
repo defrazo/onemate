@@ -6,7 +6,7 @@ import {
 	STORAGE_DELETED,
 	STORAGE_DELETED_AT,
 	STORAGE_KEY,
-	STORAGE_TIMESTAMP_KEY,
+	STORAGE_SESSION_STARTED_AT,
 } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { supabase } from '@/shared/lib/supabase';
@@ -48,12 +48,12 @@ class UserStore {
 
 	saveSession(user: User) {
 		storage.set(STORAGE_KEY, JSON.stringify(user));
-		storage.set(STORAGE_TIMESTAMP_KEY, Date.now().toString());
+		storage.set(STORAGE_SESSION_STARTED_AT, Date.now().toString());
 	}
 
 	clearSession() {
 		storage.remove(STORAGE_KEY);
-		storage.remove(STORAGE_TIMESTAMP_KEY);
+		storage.remove(STORAGE_SESSION_STARTED_AT);
 		storage.remove(STORAGE_DELETED);
 		storage.remove(STORAGE_DELETED_AT);
 	}
@@ -71,6 +71,12 @@ class UserStore {
 			this.user = null;
 			this.userDeleted = false;
 		});
+	}
+
+	getIdOrThrow(): string {
+		const id = this.id;
+		if (!id) throw new Error('Пользователь не авторизован');
+		return id;
 	}
 
 	async updateEmail(email: string) {
@@ -111,7 +117,7 @@ class UserStore {
 
 	async loadSession() {
 		const storedUser = storage.get(STORAGE_KEY);
-		const storedTime = storage.get(STORAGE_TIMESTAMP_KEY);
+		const storedTime = storage.get(STORAGE_SESSION_STARTED_AT);
 		const storedDeleted = storage.get(STORAGE_DELETED);
 		const storedDeletedAt = storage.get(STORAGE_DELETED_AT);
 

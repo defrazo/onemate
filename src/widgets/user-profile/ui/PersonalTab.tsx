@@ -5,7 +5,7 @@ import { AvatarPicker } from '@/features/user-avatar';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
-import { notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input, LoadFallback, Radio, SelectExt, Thumbnail } from '@/shared/ui';
 
 import { genderOptions } from '../lib';
@@ -17,7 +17,7 @@ export const PersonalTab = observer(() => {
 	const store = profileStore;
 
 	const openAvatarPicker = () => {
-		uiStore.setModal(<AvatarPicker onSelect={(newAvatar) => store.updateField('avatar', newAvatar)} />);
+		modalStore.setModal(<AvatarPicker onSelect={(newAvatar) => store.updateField('avatar', newAvatar)} />);
 	};
 
 	const handleSave = async () => {
@@ -27,7 +27,7 @@ export const PersonalTab = observer(() => {
 			await validateUsername(store.username);
 			await store.saveChanges();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Проверьте введенные данные');
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
@@ -138,7 +138,7 @@ export const PersonalTab = observer(() => {
 							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
 							onClick={() =>
-								isMobile ? uiStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+								isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
 							}
 						>
 							Отменить

@@ -46,7 +46,7 @@ export const ConfirmForm = observer(({ onSubmit }: ConfirmFormProps) => {
 			await validateEmail(store.email);
 			onSubmit();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Проверьте введенные данные');
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 

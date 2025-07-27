@@ -5,7 +5,7 @@ import { genStore, useContainerSize } from '.';
 
 export const useGenModel = () => {
 	const { ref, size: containerSize } = useContainerSize(32);
-	const [selectedFileName, setSelectedFileName] = useState('');
+	const [selectedFileName, setSelectedFileName] = useState<string>('');
 
 	const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
 		const file = e.target.files?.[0];

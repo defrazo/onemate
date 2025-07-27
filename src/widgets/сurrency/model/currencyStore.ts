@@ -111,7 +111,7 @@ class CurrencyStore {
 
 		runInAction(() => {
 			if (result) this.data = result;
-			else notifyStore.setError('Не удалось загрузить курсы валют');
+			else notifyStore.setNotice('Не удалось загрузить курсы валют', 'error');
 			this.isLoading = false;
 		});
 	}

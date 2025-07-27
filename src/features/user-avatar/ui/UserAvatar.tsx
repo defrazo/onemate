@@ -10,7 +10,7 @@ interface UserAvatarProps {
 	className?: string;
 }
 
-const UserAvatar = observer(({ className }: UserAvatarProps) => {
+const UserAvatar = ({ className }: UserAvatarProps) => {
 	const { avatar_url } = userProfileStore.profile ?? {};
 	const { username } = userStore ?? {};
 
@@ -21,6 +21,6 @@ const UserAvatar = observer(({ className }: UserAvatarProps) => {
 			src={avatar_url || AVATAR_OPTIONS[0]}
 		/>
 	);
-});
+};
 
-export default UserAvatar;
+export default observer(UserAvatar);

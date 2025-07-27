@@ -1,60 +1,30 @@
 import { makeAutoObservable } from 'mobx';
 
-import { notify } from '../lib/notify';
+import type { NotifyType } from '@/shared/lib/notify';
+import { notify } from '@/shared/lib/notify';
+
+interface Notification {
+	message: string;
+	type: NotifyType;
+}
 
 export class NotifyStore {
-	success = '';
-	error = '';
-	warning = '';
-	info = '';
+	notification: Notification | null = null;
 
-	setSuccess(message: string) {
-		this.success = message;
-		this.showNotification(message, 'success');
-	}
+	setNotice(message: string, type: NotifyType) {
+		if (this.timeoutId) clearTimeout(this.timeoutId);
 
-	setError(message: string) {
-		this.error = message;
-		this.showNotification(message, 'error');
-	}
+		notify[type](message);
 
-	setWarning(message: string) {
-		this.warning = message;
-		this.showNotification(message, 'warning');
-	}
+		this.notification = { message, type };
 
-	setInfo(message: string) {
-		this.info = message;
-		this.showNotification(message, 'info');
-	}
-
-	clearMessages() {
-		this.success = '';
-		this.error = '';
-	}
-
-	showNotification(message: string, type: 'success' | 'error' | 'warning' | 'info') {
-		switch (type) {
-			case 'success':
-				notify.success(message);
-				break;
-			case 'error':
-				notify.error(message);
-				break;
-			case 'warning':
-				notify.warning(message);
-				break;
-			case 'info':
-				notify.info(message);
-				break;
-			default:
-				notify.warning(message);
-		}
-
-		setTimeout(() => {
-			this.clearMessages();
+		this.timeoutId = setTimeout(() => {
+			this.notification = null;
+			this.timeoutId = null;
 		}, 3000);
 	}
+
+	private timeoutId: ReturnType<typeof setTimeout> | null = null;
 
 	constructor() {
 		makeAutoObservable(this);

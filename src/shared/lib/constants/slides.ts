@@ -1,13 +1,13 @@
-import Calculator from '@/shared/assets/images/slides/calculator.png';
-import Calendar from '@/shared/assets/images/slides/calendar.png';
-import Note from '@/shared/assets/images/slides/note.png';
-import Time from '@/shared/assets/images/slides/time.png';
-import Wallet from '@/shared/assets/images/slides/wallet.png';
+import { Calculator, Calendar, Kanban, Notes, Tasks, Time, Translator, Wallet, Weather } from '@/shared/assets/images';
 
-export const SLIDER_CONTENT = [
+export const SLIDES = [
 	{ image: Calculator, text: 'Калькулятор' },
-	{ image: Wallet, text: 'Валюта' },
 	{ image: Calendar, text: 'Календарь' },
-	{ image: Time, text: 'Дата' },
-	{ image: Note, text: 'Заметки' },
+	{ image: Notes, text: 'Заметки' },
+	{ image: Wallet, text: 'Валюта' },
+	{ image: Kanban, text: 'Канбан' },
+	{ image: Weather, text: 'Погода' },
+	{ image: Time, text: 'Время' },
+	{ image: Translator, text: 'Переводчик' },
+	{ image: Tasks, text: 'Задачи' },
 ];

@@ -1,10 +1,10 @@
-import { API_URLS } from '@/shared/config/apiConfig';
+import { CBR_API_URL } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 // Получение актуального курса валют
 export const fetchRates = async (): Promise<any> => {
 	try {
-		const url = `${API_URLS.cbr}`;
+		const url = `${CBR_API_URL}`;
 		const response = await fetch(url);
 
 		if (!response.ok) throw new ApiError();

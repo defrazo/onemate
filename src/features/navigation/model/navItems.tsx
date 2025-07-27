@@ -1,6 +1,6 @@
 import { authFormStore } from '@/features/user-auth';
 import { IconDash, IconGen, IconKanban, IconLogin, IconMain, IconTodo } from '@/shared/assets/icons';
-import { uiStore } from '@/shared/stores';
+import { modalStore } from '@/shared/stores';
 import AuthContainer from '@/widgets/authorization';
 
 import type { NavItem } from '.';
@@ -9,7 +9,7 @@ export const getNavItems = (isAuth: boolean): NavItem[] => {
 	const openAuth = () => {
 		authFormStore.update('authType', 'login');
 		authFormStore.setResetMode(false);
-		uiStore.setModal(<AuthContainer />);
+		modalStore.setModal(<AuthContainer />);
 	};
 
 	if (isAuth) {

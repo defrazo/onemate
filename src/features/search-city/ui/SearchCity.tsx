@@ -8,7 +8,7 @@ import { searchCityStore } from '../model';
 import { AutoLocation } from '.';
 
 const SearchCity = () => {
-	const [isInputFocused, setInputFocused] = useState(false);
+	const [isInputFocused, setInputFocused] = useState<boolean>(false);
 	const store = searchCityStore;
 
 	useEffect(() => {

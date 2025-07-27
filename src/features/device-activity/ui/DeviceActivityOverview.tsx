@@ -39,12 +39,12 @@ const DeviceActivityOverview = () => {
 			<div className="h-full w-px bg-[var(--border-color)]" />
 			<div className="flex flex-1 flex-col">
 				<h3 className="mb-1 text-[var(--color-disabled)]">История активности:</h3>
-				<div className="flex flex-1 flex-col overflow-y-auto overscroll-contain pr-1">
+				<div className="flex flex-1 snap-y snap-mandatory flex-col overflow-y-auto overscroll-contain pr-1">
 					{store.activityLog.length === 0 && (
 						<span className="text-[var(--color-disabled)]">История пуста</span>
 					)}
 					{store.activityLog.map((log, idx) => (
-						<div key={log.id}>
+						<div key={log.id} className="snap-start">
 							<div className="flex gap-2">
 								<div className="flex w-4 justify-center text-xs text-[var(--color-disabled)]">
 									{idx + 1}

@@ -1,24 +1,25 @@
 import { DraggableSyntheticListeners } from '@dnd-kit/core';
+import { observer } from 'mobx-react-lite';
 
 import { IconCopy, IconMove, IconTrash } from '@/shared/assets/icons';
-import { copyExt } from '@/shared/lib/utils';
+import { cn, copyExt } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
+import { notesStore } from '../model';
+
 interface NotesCardActionsProps {
+	id: string;
 	text: string;
 	attributes: React.HTMLAttributes<HTMLElement>;
 	listeners: DraggableSyntheticListeners;
-	focused: boolean;
-	onRemove: () => void;
 }
 
-export const NotesCardActions = ({ text, attributes, listeners, focused, onRemove }: NotesCardActionsProps) => {
+export const NotesCardActions = observer(({ id, text, attributes, listeners }: NotesCardActionsProps) => {
 	return (
 		<div className="flex w-10 flex-col border-l border-[var(--border-color)]">
 			<Button
 				centerIcon={<IconMove className="size-4 rotate-90" />}
-				className="flex-1 cursor-move hover:text-[var(--accent-hover)]"
-				disabled={focused}
+				className={cn(notesStore.focusedId && 'hidden', 'flex-1 cursor-move hover:text-[var(--accent-hover)]')}
 				size="sm"
 				title="Переместить"
 				variant="mobile"
@@ -40,8 +41,8 @@ export const NotesCardActions = ({ text, attributes, listeners, focused, onRemov
 				size="sm"
 				title="Удалить заметку"
 				variant="mobile"
-				onClick={onRemove}
+				onClick={() => notesStore.removeNote(id)}
 			/>
 		</div>
 	);
-};
+});

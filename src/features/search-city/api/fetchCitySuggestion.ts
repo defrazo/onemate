@@ -1,11 +1,11 @@
 import type { City } from '@/entities/city';
-import { API_URLS, WEATHER_API_KEY } from '@/shared/config/apiConfig';
+import { OPENWEATHER_API_KEY, OPENWEATHER_API_URL } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 // Получение списка городов на основе введенного пользователем значения
 export const fetchCitySuggestion = async (queryCity: string, signal?: AbortSignal): Promise<City[]> => {
 	try {
-		const url = `${API_URLS.openWeather}find?q=${queryCity}&units=metric&lang=ru&appid=${WEATHER_API_KEY}`;
+		const url = `${OPENWEATHER_API_URL}find?q=${queryCity}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`;
 		const response = await fetch(url, { signal });
 
 		if (!response.ok) throw new ApiError();

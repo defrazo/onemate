@@ -10,7 +10,12 @@ export const CalculatorButtons = ({ onClick }: CalculatorButtonsProps) => {
 	return (
 		<div className="grid grid-cols-4 gap-2">
 			{calculatorButtons.map(({ label, colSpan = 1 }) => (
-				<Button key={label} className={`col-span-${colSpan}`} size="sm" onClick={() => onClick(label)}>
+				<Button
+					key={label}
+					className={colSpan === 2 ? 'col-span-2' : 'col-span-1'}
+					size="sm"
+					onClick={() => onClick(label)}
+				>
 					{label}
 				</Button>
 			))}

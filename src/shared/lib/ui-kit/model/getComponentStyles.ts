@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
 import { base, sizes, states, variants } from '../lib';
-import { Component, SizeMap, VariantMap } from '.';
+import type { Component, SizeMap, VariantMap } from '.';
 
 interface StyleParams<T extends Component> {
 	component: T;

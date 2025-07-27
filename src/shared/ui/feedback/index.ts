@@ -1,6 +1,3 @@
-export { default as LoadFallback } from './LoadFallback';
-export { default as MobileBlocker } from './MobileBlocker';
-export { default as Preloader } from './Preloader';
-export { default as SuggestionList } from './SuggestionList';
-export { default as Tooltip } from './Tooltip';
-export { default as ZoomOnHover } from './ZoomOnHover';
+export { default as LoadFallback } from './load-fallback';
+export { default as MobileBlocker } from './mobile-blocker';
+export { default as Preloader } from './preloader';

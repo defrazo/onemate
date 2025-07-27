@@ -25,7 +25,7 @@ export const useWeather = (city: string) => {
 				setCurrentWeather(weatherData);
 				setForecastWeather(forecastData);
 			} catch (error: any) {
-				notifyStore.setError(error.message);
+				notifyStore.setNotice(error.message, 'error');
 				if (!cityStore.isDefaultCity()) cityStore.resetCurrentCity();
 			}
 		};

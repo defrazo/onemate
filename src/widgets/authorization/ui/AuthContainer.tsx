@@ -13,17 +13,17 @@ import {
 	RegisterForm,
 	ResetForm,
 } from '@/features/user-auth';
-import { notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore } from '@/shared/stores';
 import { Preloader } from '@/shared/ui';
 
 const AuthContainer = () => {
-	const [isLoading, setIsLoading] = useState(false);
+	const [isLoading, setIsLoading] = useState<boolean>(false);
 
 	const navigate = useNavigate();
 	const store = authFormStore;
 	const handleSuccessAuth = () => {
-		notifyStore.setSuccess(`Добро пожаловать, ${userStore.username}!`);
-		uiStore.closeModal();
+		notifyStore.setNotice(`Добро пожаловать, ${userStore.username}!`, 'success');
+		modalStore.closeModal();
 		navigate('/dashboard');
 	};
 
@@ -34,7 +34,7 @@ const AuthContainer = () => {
 			const success = await authStore.login();
 			if (success) handleSuccessAuth();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Произошла ошибка при входе');
+			notifyStore.setNotice(error.message || 'Произошла ошибка при входе', 'error');
 		} finally {
 			setIsLoading(false);
 		}
@@ -46,9 +46,9 @@ const AuthContainer = () => {
 			if (success) {
 				const loggedIn = await authStore.login();
 				if (loggedIn) handleSuccessAuth();
-			} else notifyStore.setSuccess('Письмо для подтверждения отправлено, проверьте почту');
+			} else notifyStore.setNotice('Письмо для подтверждения отправлено, проверьте почту', 'success');
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Произошла ошибка при регистрации');
+			notifyStore.setNotice(error.message || 'Произошла ошибка при регистрации', 'error');
 		}
 	};
 
@@ -57,9 +57,9 @@ const AuthContainer = () => {
 			!store.resetMode
 				? await authService.handleResend(store.email)
 				: await authService.resetPassword(store.email);
-			notifyStore.setSuccess('Письмо отправлено, проверьте почту.');
+			notifyStore.setNotice('Письмо отправлено, проверьте почту', 'success');
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Произошла ошибка при отправке письма');
+			notifyStore.setNotice(error.message || 'Произошла ошибка при отправке письма', 'error');
 		}
 	};
 
@@ -67,10 +67,10 @@ const AuthContainer = () => {
 		try {
 			await authService.updatePassword(store.password, store.passwordConfirm);
 			store.setResetMode(false);
-			uiStore.closeModal();
+			modalStore.closeModal();
 			navigate('/dashboard');
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Произошла ошибка при отправке письма');
+			notifyStore.setNotice(error.message || 'Произошла ошибка при отправке письма', 'error');
 		}
 	};
 

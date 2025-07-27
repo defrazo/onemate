@@ -25,7 +25,7 @@ export class UserProfileStore {
 			const profileData = await userProfileService.loadProfile();
 			this.setProfile(profileData);
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Не удалось загрузить профиль');
+			notifyStore.setNotice(error.message || 'Не удалось загрузить профиль', 'error');
 		}
 	}
 

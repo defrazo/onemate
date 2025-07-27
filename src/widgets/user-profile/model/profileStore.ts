@@ -155,9 +155,9 @@ export class ProfileStore {
 			if (userStore.username !== this.username) await userStore.updateUsername(this.username);
 			if (userStore.email !== this.mainEmail) await userStore.updateEmail(this.mainEmail);
 
-			notifyStore.setSuccess('Данные успешно сохранены');
+			notifyStore.setNotice('Данные успешно сохранены', 'success');
 		} catch {
-			notifyStore.setError('Приозошла ошибка при сохранении данных');
+			notifyStore.setNotice('Приозошла ошибка при сохранении данных', 'error');
 		}
 	}
 

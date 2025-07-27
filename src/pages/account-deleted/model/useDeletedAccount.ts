@@ -11,10 +11,10 @@ export const useDeletedAccount = () => {
 		try {
 			await authService.restoreAccount();
 			await userStore.checkDeleted();
-			notifyStore.setSuccess('Аккаунт успешно восстановлен!');
+			notifyStore.setNotice('Аккаунт успешно восстановлен!', 'success');
 			navigate('/');
 		} catch {
-			notifyStore.setError('Не удалось восстановить аккаунт. Попробуйте позже.');
+			notifyStore.setNotice('Не удалось восстановить аккаунт. Попробуйте позже.', 'error');
 		}
 	};
 

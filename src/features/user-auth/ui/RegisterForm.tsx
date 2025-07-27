@@ -16,8 +16,8 @@ interface RegisterFormProps {
 }
 
 export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [showHint, setShowHint] = useState(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showHint, setShowHint] = useState<boolean>(false);
 	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
@@ -35,7 +35,7 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 			await validatePasswords(store.password, store.passwordConfirm);
 			onSubmit();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Проверьте введенные данные');
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
@@ -105,7 +105,7 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {
 						e.preventDefault();
-						notifyStore.setError('Подтвердите пароль, введя его вручную');
+						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
 				<Button className="mt-4 h-10 w-full" type="submit">

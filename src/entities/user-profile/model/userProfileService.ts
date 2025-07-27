@@ -8,8 +8,7 @@ const TABLE = 'user_profiles';
 
 export const userProfileService = {
 	async loadProfile() {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const { data, error, status } = await supabase.from(TABLE).select('*').eq('id', id).maybeSingle();
 		if (error && status !== 406) throw error;
@@ -21,8 +20,7 @@ export const userProfileService = {
 	},
 
 	async saveProfile(profile: UserProfile): Promise<UserProfile> {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const profileWithId = { ...profile, id };
 

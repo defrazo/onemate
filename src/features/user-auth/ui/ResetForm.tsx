@@ -16,8 +16,8 @@ interface ResetFormProps {
 }
 
 export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
-	const [showPassword, setShowPassword] = useState(false);
-	const [showHint, setShowHint] = useState(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
+	const [showHint, setShowHint] = useState<boolean>(false);
 	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
@@ -33,7 +33,7 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 			await validatePasswords(store.password, store.passwordConfirm);
 			onSubmit();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Произошла ошибка');
+			notifyStore.setNotice(error.message || 'Произошла ошибка', 'error');
 		}
 	};
 
@@ -80,7 +80,7 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {
 						e.preventDefault();
-						notifyStore.setError('Подтвердите пароль, введя его вручную');
+						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
 				<Button className="mt-4 h-10 w-full" type="submit">

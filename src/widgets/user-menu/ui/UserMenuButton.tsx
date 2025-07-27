@@ -1,7 +1,7 @@
 import { useEffect } from 'react';
 
 import UserAvatar from '@/features/user-avatar';
-import { uiStore } from '@/shared/stores';
+import { modalStore } from '@/shared/stores';
 import { Button } from '@/shared/ui';
 
 import { DesktopUserMenu, MobileUserMenu } from '.';
@@ -12,7 +12,7 @@ interface UserMenuButtonProps {
 }
 
 export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => {
-	const isUserMenuOpen = () => uiStore.modalType === 'bottom-sheet' || uiStore.modalType === 'dropdown';
+	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
 
 	const handleUserMenuClick = () => {
 		const rect = headerRef.current?.getBoundingClientRect();
@@ -20,7 +20,7 @@ export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => 
 		if (!rect) return;
 
 		if (isUserMenuOpen()) {
-			uiStore.closeModal();
+			modalStore.closeModal();
 			return;
 		}
 
@@ -30,13 +30,13 @@ export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => 
 		};
 
 		isMobile
-			? uiStore.setModal(<MobileUserMenu />, 'bottom-sheet')
-			: uiStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
+			? modalStore.setModal(<MobileUserMenu />, 'sheet')
+			: modalStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
 	};
 
 	useEffect(() => {
-		if (uiStore.modal && isUserMenuOpen()) {
-			uiStore.closeModal();
+		if (modalStore.modal && isUserMenuOpen()) {
+			modalStore.closeModal();
 			handleUserMenuClick();
 		}
 	}, [isMobile]);

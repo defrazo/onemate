@@ -75,7 +75,7 @@ class TranslatorStore {
 			handleError(error);
 			runInAction(() => {
 				this.isLoading = false;
-				notifyStore.setError('Ошибка перевода');
+				notifyStore.setNotice('Ошибка перевода', 'error');
 			});
 		}
 	}

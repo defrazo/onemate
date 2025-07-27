@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 
 import { IconTrash } from '@/shared/assets/icons';
 import { validateEmail, validatePhone } from '@/shared/lib/validators';
-import { notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input, LoadFallback } from '@/shared/ui';
 
 import { profileStore, useProfile } from '../model';
@@ -28,7 +28,7 @@ export const ContactsTab = observer(() => {
 
 			await store.saveChanges();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Проверьте введенные данные');
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
@@ -127,7 +127,9 @@ export const ContactsTab = observer(() => {
 					<Button
 						className="rounded-xl hover:bg-[var(--status-error)]"
 						variant="custom"
-						onClick={() => (isMobile ? uiStore.modal?.back?.() : navigate('/account/profile?tab=overview'))}
+						onClick={() =>
+							isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+						}
 					>
 						Отменить
 					</Button>

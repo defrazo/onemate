@@ -1,4 +1,4 @@
-import { API_URLS, WEATHER_API_KEY } from '@/shared/config/apiConfig';
+import { OPENWEATHER_API_KEY, OPENWEATHER_API_URL } from '@/shared/lib/constants';
 import { ApiError, handleError } from '@/shared/lib/errors';
 import { convertDate, dayOfWeek, formatDate } from '@/shared/lib/utils';
 
@@ -10,8 +10,8 @@ export const fetchWeatherData = async (
 ): Promise<{ weather: WeatherData | null; forecast: ForecastItem[] }> => {
 	try {
 		const [resCurrent, resForecast] = await Promise.all([
-			fetch(`${API_URLS.openWeather}weather?q=${city}&units=metric&lang=ru&appid=${WEATHER_API_KEY}`),
-			fetch(`${API_URLS.openWeather}forecast?q=${city}&units=metric&lang=ru&appid=${WEATHER_API_KEY}`),
+			fetch(`${OPENWEATHER_API_URL}weather?q=${city}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`),
+			fetch(`${OPENWEATHER_API_URL}forecast?q=${city}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`),
 		]);
 
 		if (!resCurrent.ok) throw new ApiError();

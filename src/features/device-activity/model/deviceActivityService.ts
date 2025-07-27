@@ -7,8 +7,7 @@ const TABLE = 'user_auth_log';
 
 export const deviceActivityService = {
 	async loadActivityLog(): Promise<ActivityLog[]> {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const { data, error } = await supabase
 			.from(TABLE)
@@ -18,12 +17,11 @@ export const deviceActivityService = {
 
 		if (error) throw new Error(`Ошибка получения истории активности: ${error.message}`);
 
-		return data || [];
+		return data;
 	},
 
 	async saveActivityLog(log: Omit<ActivityLog, 'id' | 'created_at' | 'user_id'>): Promise<ActivityLog> {
-		const id = userStore.id;
-		if (!id) throw new Error('Пользователь не авторизован');
+		const id = userStore.getIdOrThrow();
 
 		const logWithUser = { ...log, user_id: id };
 

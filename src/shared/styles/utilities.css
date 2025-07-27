@@ -14,4 +14,11 @@
 	.core-header {
 		@apply mx-auto text-center text-2xl font-bold select-none md:mr-auto md:ml-0;
 	}
+
+	.loader {
+		@apply aspect-square w-16 animate-spin rounded-full bg-[var(--accent-default)];
+		mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
+		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
+		transform-origin: 50% 40%;
+	}
 }

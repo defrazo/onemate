@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateLogin } from '@/shared/lib/validators';
-import { notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore, uiStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
@@ -16,7 +16,7 @@ interface LoginFormProps {
 }
 
 export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
-	const [showPassword, setShowPassword] = useState(false);
+	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const store = authFormStore;
 
 	const handleSubmit = async (e: React.FormEvent) => {
@@ -26,13 +26,13 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 			await validateLogin(store.login);
 
 			if (!store.password) {
-				notifyStore.setError('Введите пароль');
+				notifyStore.setNotice('Введите пароль', 'error');
 				return;
 			}
 
 			onSubmit();
 		} catch (error: any) {
-			notifyStore.setError(error.message || 'Проверьте введенные данные');
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
@@ -75,15 +75,15 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 					onChange={(e) => store.update('password', e.target.value)}
 				/>
 				<Button
-					className="ml-auto text-sm"
+					className="ml-auto text-sm hover:text-[var(--accent-hover)]"
 					size="custom"
 					variant="mobile"
 					onClick={() => {
 						store.update('authType', 'confirm');
 						store.setResetMode(true);
-						uiStore.setBack(() => {
+						modalStore.setBack(() => {
 							store.update('authType', 'login');
-							uiStore.resetBack();
+							modalStore.resetBack();
 						});
 					}}
 				>
@@ -99,9 +99,9 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 					className="text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
 					onClick={() => {
 						store.update('authType', 'register');
-						uiStore.setBack(() => {
+						modalStore.setBack(() => {
 							store.update('authType', 'login');
-							uiStore.resetBack();
+							modalStore.resetBack();
 						});
 					}}
 				>

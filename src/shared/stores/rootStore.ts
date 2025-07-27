@@ -2,6 +2,7 @@ import { cityStore } from '@/entities/city';
 import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/user-profile';
 import { authStore } from '@/features/user-auth';
+import { notesStore } from '@/widgets/notes';
 import { profileStore } from '@/widgets/user-profile';
 
 import { notifyStore } from './notifyStore';
@@ -21,5 +22,6 @@ export const rootStore = {
 		if (authStore.init) await authStore.init();
 		if (profileStore.init) profileStore.init();
 		if (cityStore.init) await cityStore.init();
+		if (notesStore.init) await notesStore.init();
 	},
 };

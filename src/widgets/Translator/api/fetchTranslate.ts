@@ -1,4 +1,4 @@
-import { API_URLS, TRANSLATOR_API_KEY } from '@/shared/config/apiConfig';
+import { MYMEMORY_API_KEY, MYMEMORY_API_URL } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 import type { TranslateOptions } from '../model';
@@ -9,7 +9,7 @@ export const fetchTranslate = async ({ text, source, target, signal }: Translate
 	const langPair = `${source}|${target}`;
 
 	try {
-		const url = `${API_URLS.myMemory}${encodedText}&langpair=${langPair}&key=${TRANSLATOR_API_KEY}`;
+		const url = `${MYMEMORY_API_URL}${encodedText}&langpair=${langPair}&key=${MYMEMORY_API_KEY}`;
 		const response = await fetch(url, { signal });
 
 		if (!response.ok) throw new ApiError();
