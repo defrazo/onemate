@@ -18,7 +18,7 @@ const Header = () => {
 	return (
 		<header
 			ref={headerRef}
-			className="core-card core-elements sticky z-10 my-2 flex justify-between px-4 py-3 select-none md:my-4"
+			className="core-card core-elements sticky z-10 my-2 flex justify-between px-4 py-3 select-none md:my-4 print:hidden"
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">

@@ -6,12 +6,4 @@
 	a {
 		@apply cursor-pointer select-none hover:text-[var(--accent-hover)];
 	}
-
-	.textSubhead {
-		@apply mb-4 text-5xl font-semibold;
-	}
-
-	.textSection {
-		@apply mb-4 text-justify text-xl;
-	}
 }

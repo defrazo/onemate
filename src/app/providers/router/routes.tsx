@@ -7,9 +7,11 @@ import AuthCallback from '@/pages/auth-callback';
 import DashboardPage from '@/pages/dashboard';
 import GeneratorPage from '@/pages/generator';
 import HomePage from '@/pages/home';
+import KanbanPage from '@/pages/kanban';
 import NotFoundPage from '@/pages/not-found';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import TermsOfServicePage from '@/pages/terms-of-service';
+import TodoPage from '@/pages/to-do';
 import Layout from '@/shared/layouts';
 import { SettingsLeft, SettingsRight } from '@/widgets/generator';
 import { ProfileNav } from '@/widgets/user-profile';
@@ -23,7 +25,9 @@ export const routes: RouteObject[] = [
 	},
 	{
 		path: '/account/deleted',
-		element: <GuardedRoute element={<DeletedAccountPage />} redirectIfDeleted={false} />,
+		element: (
+			<GuardedRoute element={<DeletedAccountPage />} redirectIfDeleted={false} redirectIfNotDeleted={true} />
+		),
 	},
 	{
 		path: '/account/profile',
@@ -44,6 +48,30 @@ export const routes: RouteObject[] = [
 				element={
 					<Layout showFooter>
 						<DashboardPage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/todo',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout showFooter>
+						<TodoPage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/kanban',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout showFooter>
+						<KanbanPage />
 					</Layout>
 				}
 			/>

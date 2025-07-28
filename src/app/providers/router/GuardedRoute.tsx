@@ -7,10 +7,11 @@ import { LoadFallback } from '@/shared/ui';
 
 interface GuardedRouteProps {
 	element: React.ReactElement;
-	requireAuth?: boolean; // Для авторизованных
-	redirectIfDeleted?: boolean; // Для неудаленных
-	fallbackPath?: string; // Куда редиректить неавторизованных
-	deletedRedirectPath?: string; // Куда редиректить удаленных
+	requireAuth?: boolean; // Требуется авторизация
+	redirectIfDeleted?: boolean; // Редирект если удален
+	redirectIfNotDeleted?: boolean; // Редирект если не удален
+	fallbackPath?: string; // Редирект по-умолчанию
+	deletedRedirectPath?: string; // Редирект для удаленных
 }
 
 export const GuardedRoute = observer(
@@ -18,12 +19,15 @@ export const GuardedRoute = observer(
 		element,
 		requireAuth = true,
 		redirectIfDeleted = true,
+		redirectIfNotDeleted = false,
 		fallbackPath = '/',
 		deletedRedirectPath = '/account/deleted',
 	}: GuardedRouteProps) => {
 		if (!authStore.isAuthChecked) return <LoadFallback />;
 
 		if (redirectIfDeleted && userStore.isDeleted) return <Navigate replace to={deletedRedirectPath} />;
+
+		if (redirectIfNotDeleted && !userStore.isDeleted) return <Navigate replace to={fallbackPath} />;
 
 		if (requireAuth && !userStore.isAuthenticated) return <Navigate replace to={fallbackPath} />;
 

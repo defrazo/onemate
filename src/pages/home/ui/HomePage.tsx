@@ -1,8 +1,11 @@
 import { Stock } from '@/shared/assets/images';
 import { SLIDES } from '@/shared/lib/constants';
+import { usePageTitle } from '@/shared/lib/hooks';
 import { Slider } from '@/shared/ui';
 
 const HomePage = () => {
+	usePageTitle('Главная');
+
 	return (
 		<div className="grid w-full grid-cols-1 gap-4 select-none md:grid-cols-2">
 			<div className="flex flex-col items-center justify-center gap-4">
@@ -14,7 +17,6 @@ const HomePage = () => {
 					<Slider slides={SLIDES} />
 				</div>
 			</div>
-
 			<img alt="" className="self-center" src={Stock} />
 		</div>
 	);

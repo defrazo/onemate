@@ -1,0 +1,7 @@
+.print-container {
+	@apply print:m-0 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-base print:text-black;
+}
+
+.print-content {
+	@apply print:gap-0 print:text-black;
+}

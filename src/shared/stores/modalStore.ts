@@ -29,10 +29,13 @@ export class ModalStore {
 			position: options?.position,
 			onClose: options?.onClose,
 		};
+
+		document.body.style.overflow = 'hidden';
 	}
 
 	closeModal = () => {
 		this.modal = null;
+		document.body.style.overflow = '';
 	};
 
 	setBack(handler: () => void) {

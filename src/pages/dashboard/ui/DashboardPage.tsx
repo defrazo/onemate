@@ -3,10 +3,13 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
 
+import { usePageTitle } from '@/shared/lib/hooks';
+
 import { useDashboard } from '../model';
 import { Widget } from '.';
 
 const DashboardPage = () => {
+	usePageTitle('Dashboard');
 	const { sensors, handleDragEnd, topWidgets, bottomWidgets, topRowIds, bottomRowIds } = useDashboard();
 
 	return (

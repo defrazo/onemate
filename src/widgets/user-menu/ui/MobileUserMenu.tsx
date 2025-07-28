@@ -112,7 +112,7 @@ export const MobileUserMenu = observer(() => {
 	];
 
 	return (
-		<div className="top-6 z-60 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto p-4">
+		<div className="top-6 z-60 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto overscroll-contain p-4">
 			<UserMenuInfo />
 			<Divider />
 			{userButtons.map((item) => {
