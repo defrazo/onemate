@@ -8,15 +8,10 @@ const PrivacyPolicyPage = () => {
 		<div className="print-container mx-auto flex max-w-3xl flex-col items-center gap-8 px-4 py-12">
 			<header className="text-center">
 				<div className="mb-2 flex items-center justify-center gap-2">
-					<h1 className="text-4xl font-bold">Политика конфиденциальности</h1>
+					<h1 className="cursor-default text-4xl font-bold">Политика конфиденциальности</h1>
 					<PrintButton />
 				</div>
-				<p className="mb-2 text-sm text-[var(--color-disabled)]">
-					Версия: 1.0 <br />
-					Обновлено: 16 марта 2025 года. <br />
-					Актуально с 16 марта 2025 года.
-				</p>
-				<p className="text-justify leading-relaxed">
+				<p className="print-content text-sm leading-relaxed text-[var(--color-disabled)]">
 					OneMate уважает вашу конфиденциальность и стремится защитить вашу личную информацию. В данном
 					документе описано, какие данные мы собираем, как мы их используем и какие у вас есть права.
 				</p>
@@ -101,6 +96,9 @@ const PrivacyPolicyPage = () => {
 					.
 				</p>
 			</section>
+			<p className="text-sm text-[var(--color-disabled)]">
+				Версия: 1.0. Обновлено: 16 марта 2025 года. Актуально с 16 марта 2025 года.
+			</p>
 		</div>
 	);
 };

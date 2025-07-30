@@ -7,6 +7,8 @@ import { userStore } from '@/entities/user';
 import { deviceActivityStore } from '@/features/device-activity';
 import { useIsMobile } from '@/shared/lib/hooks';
 
+import { profileStore } from '.';
+
 export const useProfile = () => {
 	const isMobile = useIsMobile();
 	const navigate = useNavigate();
@@ -21,9 +23,21 @@ export const useProfile = () => {
 			})})`
 		: 'Не указано';
 
+	const isValidDate =
+		profileStore.birthYear !== undefined &&
+		profileStore.birthMonth !== undefined &&
+		profileStore.birthDay !== undefined &&
+		!Number.isNaN(+profileStore.birthYear) &&
+		!Number.isNaN(+profileStore.birthMonth) &&
+		!Number.isNaN(+profileStore.birthDay);
+	const date = isValidDate
+		? new Date(+profileStore.birthYear, +profileStore.birthMonth, +profileStore.birthDay)
+		: null;
+	const formattedBirthDate = date ? `${format(date, 'dd.MM.yyyy', { locale: ru })} г.` : 'Не указано';
+
 	useEffect(() => {
 		deviceActivityStore.setupDeviceLog();
 	}, []);
 
-	return { isMobile, searchParams, formattedDate, navigate };
+	return { isMobile, searchParams, formattedBirthDate, formattedDate, navigate };
 };

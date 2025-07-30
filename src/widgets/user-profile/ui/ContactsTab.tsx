@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
-import { IconTrash } from '@/shared/assets/icons';
+import { IconTrash, IconWarning } from '@/shared/assets/icons';
+import { cn } from '@/shared/lib/utils';
 import { validateEmail, validatePhone } from '@/shared/lib/validators';
 import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input, LoadFallback } from '@/shared/ui';
@@ -35,7 +36,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isProfileUploaded) return <LoadFallback />;
 
 	return (
-		<div className="core-card core-base flex flex-col gap-4">
+		<div className="core-card core-base flex cursor-default flex-col gap-4">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -48,6 +49,7 @@ export const ContactsTab = observer(() => {
 						return (
 							<div key={idx} className="flex gap-2">
 								<Input
+									className={cn(isLast && 'mr-8')}
 									placeholder="Введите номер телефона"
 									value={phone}
 									variant="ghost"
@@ -76,6 +78,11 @@ export const ContactsTab = observer(() => {
 						<Input
 							error={!store.mainEmail}
 							placeholder="Введите e-mail"
+							rightIcon={
+								!store.mainEmail && (
+									<IconWarning className="mr-1.5 size-5 animate-pulse text-[var(--status-error)]" />
+								)
+							}
 							type="email"
 							value={store.mainEmail}
 							variant="ghost"
@@ -101,6 +108,7 @@ export const ContactsTab = observer(() => {
 						return (
 							<div key={idx} className="flex gap-2">
 								<Input
+									className={cn(isLast && 'mr-8')}
 									placeholder="Введите e-mail"
 									value={email}
 									variant="ghost"

@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { IconEmail, IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
-import { validateEmail, validatePassword, validatePasswords, validateUsername } from '@/shared/lib/validators';
+import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
 import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
@@ -18,6 +18,7 @@ interface RegisterFormProps {
 export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showHint, setShowHint] = useState<boolean>(false);
+	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
@@ -85,13 +86,14 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 							setShowHint(false);
 							store.update('password', e.target.value.trim());
 						}}
-						onChange={(e) => {
-							const value = e.target.value;
-							if (validatePassword(value)) store.update('password', value);
-						}}
+						onChange={(e) => store.update('password', e.target.value)}
 						onFocus={() => setShowHint(true)}
 					/>
-					<PasswordHint password={store.password} showHint={showHint} />
+					<PasswordHint
+						password={store.password}
+						showHint={showHint}
+						onValidityChange={(value) => setIsPasswordValid(value)}
+					/>
 				</div>
 				<Input
 					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
@@ -108,7 +110,7 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" type="submit">
+				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} type="submit">
 					Зарегистрироваться
 				</Button>
 			</form>

@@ -2,13 +2,15 @@ import { observer } from 'mobx-react-lite';
 
 import { userStore } from '@/entities/user';
 import { Logo } from '@/shared/assets/images';
-import { useRemainingTime } from '@/shared/lib/hooks';
+import { usePageTitle, useRemainingTime } from '@/shared/lib/hooks';
 import { msFromDays } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { useDeletedAccount } from '../model';
 
 const DeletedAccountPage = () => {
+	usePageTitle('Аккаунт удален');
+
 	const { handleRestore, handleExit } = useDeletedAccount();
 	const { days } = useRemainingTime(userStore.deletedAt, msFromDays(30));
 

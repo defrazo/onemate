@@ -1,4 +1,4 @@
-import { Calculator, Calendar, Kanban, Notes, Tasks, Time, Translator, Wallet, Weather } from '@/shared/assets/images';
+import { Calculator, Calendar, Kanban, Notes, Tasks, Time, Translator, Wallet, Weather } from '@/shared/assets/icons';
 
 export const SLIDES = [
 	{ image: Calculator, text: 'Калькулятор' },

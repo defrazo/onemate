@@ -7,7 +7,7 @@ import { useWeather } from '../model';
 import { WeatherCurrent, WeatherForecast } from '.';
 
 const WeatherWidget = () => {
-	const { currentWeather, forecastWeather, isOpenWeather, toggleView } = useWeather(cityStore.currentCity.name);
+	const { currentWeather, forecastWeather, isOpenWeather, toggleView } = useWeather(cityStore.cityName);
 
 	return (
 		<div className="core-card core-base flex h-full flex-col gap-2 shadow-[var(--shadow)] select-none">
@@ -21,7 +21,7 @@ const WeatherWidget = () => {
 					{isOpenWeather ? (
 						<WeatherCurrent currentWeather={currentWeather} />
 					) : (
-						<WeatherForecast city={cityStore.currentCity.name} forecastWeather={forecastWeather} />
+						<WeatherForecast city={cityStore.cityName} forecastWeather={forecastWeather} />
 					)}
 					<Button className="w-full text-sm" onClick={toggleView}>
 						{isOpenWeather ? 'Прогноз на 5 дней' : 'Текущая погода'}

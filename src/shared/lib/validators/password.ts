@@ -15,11 +15,3 @@ export const validatePasswords = (password: string, passwordConfirm: string): Pr
 
 	return Promise.resolve(true);
 };
-
-export const validatePassword = (value: string): boolean => {
-	if (/[А-Яа-яЁё]/.test(value)) {
-		throw new Error('Пароль не должен содержать русские буквы');
-	}
-
-	return true;
-};

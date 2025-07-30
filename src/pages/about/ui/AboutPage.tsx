@@ -6,7 +6,7 @@ const AboutPage = () => {
 
 	return (
 		<div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-12">
-			<h1 className="text-center text-4xl font-bold">О проекте OneMate</h1>
+			<h1 className="cursor-default text-center text-4xl font-bold">О проекте OneMate</h1>
 			<section className="text">
 				<p className="text-justify leading-relaxed">
 					OneMate — это современное веб-приложение, созданное для тех, кто хочет легко и эффективно управлять

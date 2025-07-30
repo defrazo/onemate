@@ -1,13 +1,21 @@
+import { useEffect } from 'react';
+
 import { passwordRules } from '../lib';
 
 interface PasswordHintProps {
 	password: string;
 	showHint: boolean;
+	onValidityChange: (isValid: boolean) => void;
 }
 
-export const PasswordHint = ({ password, showHint }: PasswordHintProps) => {
+export const PasswordHint = ({ password, showHint, onValidityChange }: PasswordHintProps) => {
 	const allRulesPassed = passwordRules.every((rule) => rule.test(password));
 	const visible = showHint && password.length > 0 && !allRulesPassed;
+
+	useEffect(() => {
+		if (!password) return;
+		onValidityChange?.(allRulesPassed);
+	}, [allRulesPassed, onValidityChange]);
 
 	if (!visible) return null;
 

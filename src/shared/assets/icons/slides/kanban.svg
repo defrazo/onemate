@@ -2,7 +2,7 @@
 	fill="none"
 	height="100%"
 	preserveAspectRatio="xMidYMid meet"
-	viewBox="3.5 3.5 17 17"
+	viewBox="3.8 3.8 16.4 16.4"
 	width="100%"
 	xmlns="http://www.w3.org/2000/svg"
 >
@@ -11,6 +11,6 @@
 		stroke="currentColor"
 		stroke-linecap="round"
 		stroke-linejoin="round"
-		stroke-width="0.7"
+		stroke-width="0.5"
 	/>
 </svg>

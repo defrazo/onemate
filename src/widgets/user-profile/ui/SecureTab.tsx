@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { userStore } from '@/entities/user';
 import DeviceActivityOverview from '@/features/device-activity';
 import { authService, PasswordHint } from '@/features/user-auth';
-import { validatePassword, validatePasswords } from '@/shared/lib/validators';
+import { validatePasswords } from '@/shared/lib/validators';
 import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Divider, Input, LoadFallback } from '@/shared/ui';
 
@@ -13,6 +13,7 @@ import { profileStore, useProfile } from '../model';
 export const SecureTab = observer(() => {
 	const { isMobile, formattedDate, navigate } = useProfile();
 	const [showHint, setShowHint] = useState<boolean>(false);
+	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
 	const handleSave = async () => {
 		try {
@@ -43,7 +44,7 @@ export const SecureTab = observer(() => {
 	if (!profileStore.isProfileUploaded) return <LoadFallback />;
 
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="flex cursor-default flex-col gap-4">
 			<div className="core-card core-base flex flex-col gap-4">
 				<h1 className="core-header">Безопасность</h1>
 				<div className="flex flex-col gap-2">
@@ -58,13 +59,14 @@ export const SecureTab = observer(() => {
 								setShowHint(false);
 								userStore.setPasswords(0, e.target.value.trim());
 							}}
-							onChange={(e) => {
-								const value = e.target.value;
-								if (validatePassword(value)) userStore.setPasswords(0, value);
-							}}
+							onChange={(e) => userStore.setPasswords(0, e.target.value)}
 							onFocus={() => setShowHint(true)}
 						/>
-						<PasswordHint password={userStore.passwords[0]} showHint={showHint} />
+						<PasswordHint
+							password={userStore.passwords[0]}
+							showHint={showHint}
+							onValidityChange={(value) => setIsPasswordValid(value)}
+						/>
 					</div>
 					<Input
 						placeholder="Подтвердите новый пароль"
@@ -78,7 +80,7 @@ export const SecureTab = observer(() => {
 						}}
 					/>
 					<div className="mt-2 flex justify-center gap-2">
-						<Button variant="accent" onClick={handleSave}>
+						<Button disabled={!isPasswordValid} variant="accent" onClick={handleSave}>
 							Сохранить
 						</Button>
 						<Button

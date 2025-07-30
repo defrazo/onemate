@@ -125,7 +125,7 @@ export class ProfileStore {
 			mainEmail: userStore.email,
 			phone: profile.phone.length ? profile.phone : [''],
 			email: profile.email.length ? profile.email : [''],
-			location: cityStore.cityName || '',
+			location: cityStore.cityName,
 		};
 
 		this.isProfileUploaded = true;
@@ -157,7 +157,7 @@ export class ProfileStore {
 
 			notifyStore.setNotice('Данные успешно сохранены', 'success');
 		} catch {
-			notifyStore.setNotice('Приозошла ошибка при сохранении данных', 'error');
+			notifyStore.setNotice('Произошла ошибка при сохранении данных', 'error');
 		}
 	}
 

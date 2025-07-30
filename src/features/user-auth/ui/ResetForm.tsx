@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { IconPass } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
-import { validatePassword, validatePasswords } from '@/shared/lib/validators';
+import { validatePasswords } from '@/shared/lib/validators';
 import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
@@ -18,6 +18,7 @@ interface ResetFormProps {
 export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showHint, setShowHint] = useState<boolean>(false);
+	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
@@ -60,13 +61,14 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 							setShowHint(false);
 							store.update('password', e.target.value.trim());
 						}}
-						onChange={(e) => {
-							const value = e.target.value;
-							if (validatePassword(value)) store.update('password', value);
-						}}
+						onChange={(e) => store.update('password', e.target.value)}
 						onFocus={() => setShowHint(true)}
 					/>
-					<PasswordHint password={store.password} showHint={showHint} />
+					<PasswordHint
+						password={store.password}
+						showHint={showHint}
+						onValidityChange={(value) => setIsPasswordValid(value)}
+					/>
 				</div>
 				<Input
 					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
@@ -83,7 +85,7 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" type="submit">
+				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} type="submit">
 					Сохранить пароль
 				</Button>
 			</form>

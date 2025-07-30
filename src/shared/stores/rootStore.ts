@@ -20,8 +20,8 @@ export const rootStore = {
 		if (userStore.init) await userStore.init();
 		if (userProfileStore.init) await userProfileStore.init();
 		if (authStore.init) await authStore.init();
-		if (profileStore.init) profileStore.init();
 		if (cityStore.init) await cityStore.init();
+		if (profileStore.init) profileStore.init();
 		if (notesStore.init) await notesStore.init();
 	},
 };

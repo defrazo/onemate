@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateLogin } from '@/shared/lib/validators';
-import { modalStore, notifyStore, uiStore } from '@/shared/stores';
+import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
