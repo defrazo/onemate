@@ -1,30 +1,53 @@
+import { useEffect, useState } from 'react';
+
+import { notifyStore } from '@/shared/stores';
 import { Input, SelectExt } from '@/shared/ui';
 
 import { currencyStore } from '../model';
 
 interface CurrencyBlockProps {
-	currencyOption: string;
+	currency: string;
 	currencyValue: number;
 	onChangeCurrency: (value: string) => void;
-	onChangeCurrencyValue: (value: number) => void;
+	onChangeValue: (value: number) => void;
 }
 
-export const CurrencyBlock = ({
-	currencyOption,
-	currencyValue,
-	onChangeCurrency,
-	onChangeCurrencyValue,
-}: CurrencyBlockProps) => {
+const MAX_VALUE = 9999999;
+
+export const CurrencyBlock = ({ currency, currencyValue, onChangeCurrency, onChangeValue }: CurrencyBlockProps) => {
+	const [input, setInput] = useState(String(currencyValue));
+
+	useEffect(() => setInput(String(currencyValue)), [currencyValue]);
+
 	return (
 		<div className="core-border flex w-full rounded-xl p-2">
 			<div className="flex-1">
 				<Input
 					className="border-none text-right"
+					min="0"
 					size="md"
 					type="number"
-					value={currencyValue}
+					value={input}
 					variant="custom"
-					onChange={(e) => onChangeCurrencyValue(Number(e.target.value))}
+					onBlur={() => {
+						if (input.trim() === '' || input === '0' || input.startsWith('00')) {
+							setInput('1');
+							onChangeValue(1);
+						}
+					}}
+					onChange={(e) => {
+						const val = e.target.value;
+						setInput(val);
+
+						const num = Number(val);
+
+						if (!isNaN(num) && num <= MAX_VALUE) onChangeValue(num);
+						else if (num > MAX_VALUE) {
+							setInput(String(MAX_VALUE));
+							onChangeValue(MAX_VALUE);
+							notifyStore.setNotice('9 999 999 - максимум', 'info');
+						}
+					}}
 				/>
 			</div>
 			<div className="shrink">
@@ -32,7 +55,7 @@ export const CurrencyBlock = ({
 					className="w-30 rounded-none border-l-1 border-[var(--border-color)]"
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
-					value={currencyOption}
+					value={currency}
 					variant="mobile"
 					onChange={(value) => onChangeCurrency(value)}
 				/>

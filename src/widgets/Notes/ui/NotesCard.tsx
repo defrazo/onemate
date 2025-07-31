@@ -40,7 +40,7 @@ export const NotesCard = observer(({ id }: NotesCardProps) => {
 			</div>
 			<div className="flex flex-1 flex-col justify-between px-2">
 				<Textarea
-					className="min-h-27 pt-1 text-sm"
+					className="hide-scrollbar h-full min-h-27 overscroll-contain pt-1 text-sm"
 					resize="none"
 					rows={1}
 					size="custom"

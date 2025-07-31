@@ -23,6 +23,7 @@ const TranslatorWidget = () => {
 					<Button
 						centerIcon={<IconArrows className="size-4" />}
 						className="core-elements absolute bottom-6 left-1/2 z-10 size-8 -translate-x-1/2 rotate-90 rounded-full"
+						title="Поменять местами валюты"
 						onClick={() => translatorStore.swapLanguages()}
 					/>
 					<TranslatorBox

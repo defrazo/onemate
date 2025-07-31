@@ -36,7 +36,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isProfileUploaded) return <LoadFallback />;
 
 	return (
-		<div className="core-card core-base flex cursor-default flex-col gap-4">
+		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -61,6 +61,7 @@ export const ContactsTab = observer(() => {
 										centerIcon={<IconTrash className="size-6" />}
 										className="hover:text-[var(--status-error)]"
 										size="custom"
+										title="Удалить"
 										variant="custom"
 										onClick={() => store.removeField('phone', idx)}
 									/>
@@ -93,6 +94,7 @@ export const ContactsTab = observer(() => {
 							centerIcon={<IconTrash className="size-6" />}
 							className="hover:text-[var(--status-error)]"
 							size="custom"
+							title="Очистить"
 							variant="custom"
 							onClick={() => store.updateField('mainEmail', '')}
 						/>
@@ -120,6 +122,7 @@ export const ContactsTab = observer(() => {
 										centerIcon={<IconTrash className="size-6" />}
 										className="hover:text-[var(--status-error)]"
 										size="custom"
+										title="Удалить"
 										variant="custom"
 										onClick={() => store.removeField('email', idx)}
 									/>

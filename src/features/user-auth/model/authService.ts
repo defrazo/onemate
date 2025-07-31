@@ -3,6 +3,7 @@ import { userStore } from '@/entities/user';
 import { userProfileStore } from '@/entities/user-profile';
 import { supabase } from '@/shared/lib/supabase';
 import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
+import { currencyStore } from '@/widgets/сurrency';
 
 import type { AuthData, SupabaseUserCheck } from '.';
 import { authFormStore } from '.';
@@ -161,5 +162,6 @@ export const authService = {
 		userStore.clearSession();
 		userProfileStore.clearProfile();
 		cityStore.clearCity();
+		currencyStore.clearRates();
 	},
 };

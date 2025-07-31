@@ -34,7 +34,7 @@ export const PersonalTab = observer(() => {
 	if (!store.isProfileUploaded) return <LoadFallback />;
 
 	return (
-		<div className="core-card core-base flex cursor-default flex-col gap-4">
+		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">

@@ -1,6 +1,6 @@
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 import { cn } from '@/shared/lib/utils';
-import { uiStore } from '@/shared/stores';
+import { modalStore } from '@/shared/stores';
 import { Divider } from '@/shared/ui';
 
 interface AvatarPickerProps {
@@ -10,7 +10,7 @@ interface AvatarPickerProps {
 export const AvatarPicker = ({ onSelect }: AvatarPickerProps) => {
 	const handleSelect = (src: string) => {
 		onSelect(src);
-		uiStore.closeModal();
+		modalStore.closeModal();
 	};
 
 	return (

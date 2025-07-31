@@ -20,7 +20,7 @@ export const ProfileNav = observer(() => {
 	const currentTab = searchParams.get('tab') || 'preview';
 
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="flex w-full flex-col gap-4 select-none">
 			{!profileStore.isProfileUploaded ? (
 				<div className="flex min-h-[19.625rem] items-center justify-center">
 					<Preloader className="size-25" />
@@ -29,7 +29,7 @@ export const ProfileNav = observer(() => {
 				<div className="core-base flex flex-col items-center gap-4 rounded-xl p-4">
 					<UserAvatar />
 					<Divider className="w-full" />
-					<div className="flex flex-col items-center justify-center">
+					<div className="flex cursor-default flex-col items-center justify-center">
 						<div>{userStore.username}</div>
 						<div>{userStore.email}</div>
 					</div>

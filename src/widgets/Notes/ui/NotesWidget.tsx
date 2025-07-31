@@ -32,6 +32,7 @@ const NotesWidget = () => {
 							centerIcon={<IconAdd className="size-4" />}
 							className="rounded-full p-2"
 							size="custom"
+							title="Добавить заметку"
 							onClick={() => notesStore.addNote()}
 						/>
 						<div className="pointer-events-none absolute bottom-4 left-0 text-sm leading-0 text-[var(--color-disabled)]">

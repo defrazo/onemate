@@ -1,7 +1,8 @@
 import { Home } from '@/shared/assets/images';
-import { SLIDES } from '@/shared/lib/constants';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Slider } from '@/shared/ui';
+
+import { slides } from '../lib';
 
 const HomePage = () => {
 	usePageTitle('Главная');
@@ -13,7 +14,7 @@ const HomePage = () => {
 					Work Smarter <br /> Not Harder
 				</h1>
 				<div className="hidden w-xl md:block">
-					<Slider slides={SLIDES} />
+					<Slider slides={slides} />
 				</div>
 			</div>
 			<div className="flex items-center justify-center md:flex-1">

@@ -93,6 +93,14 @@ class CurrencyStore {
 		];
 	};
 
+	clearRates() {
+		storage.remove('rates');
+	}
+
+	async init() {
+		await this.updateRates();
+	}
+
 	private convertCurrency = (amount: number, from: string, to: string): number => {
 		const fromRate = this.ratesList[from]?.value || 1;
 		const toRate = this.ratesList[to]?.value || 1;
@@ -132,7 +140,6 @@ class CurrencyStore {
 
 	constructor() {
 		makeAutoObservable(this);
-		this.updateRates();
 	}
 }
 

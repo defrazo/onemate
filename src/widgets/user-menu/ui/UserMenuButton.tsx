@@ -46,6 +46,7 @@ export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => 
 			centerIcon={<UserAvatar className="size-9 ring-[var(--accent-hover)] hover:ring-1" />}
 			className="size-9"
 			size="custom"
+			title="Открыть меню пользователя"
 			variant="custom"
 			onClick={handleUserMenuClick}
 		/>

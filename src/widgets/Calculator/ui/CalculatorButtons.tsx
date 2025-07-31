@@ -1,3 +1,4 @@
+import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { calculatorButtons } from '../lib';
@@ -12,8 +13,8 @@ export const CalculatorButtons = ({ onClick }: CalculatorButtonsProps) => {
 			{calculatorButtons.map(({ label, colSpan = 1 }) => (
 				<Button
 					key={label}
-					className={colSpan === 2 ? 'col-span-2' : 'col-span-1'}
-					size="sm"
+					className={cn('py-[3px] text-xs', colSpan === 2 ? 'col-span-2' : 'col-span-1')}
+					size="custom"
 					onClick={() => onClick(label)}
 				>
 					{label}

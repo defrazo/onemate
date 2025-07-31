@@ -48,7 +48,7 @@ export const SecureTab = observer(() => {
 			<div className="core-card core-base flex flex-col gap-4">
 				<h1 className="core-header">Безопасность</h1>
 				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-bold">Пароль</h2>
+					<h2 className="text-xl font-bold select-none">Пароль</h2>
 					<h3 className="text-sm text-[var(--color-disabled)]">Ваш пароль был изменен {formattedDate}</h3>
 					<div className="relative">
 						<Input
@@ -96,14 +96,14 @@ export const SecureTab = observer(() => {
 				</div>
 				<Divider />
 				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-bold">Устройства и активность</h2>
+					<h2 className="text-xl font-bold select-none">Устройства и активность</h2>
 					<div className="flex h-[10rem]">
 						<DeviceActivityOverview />
 					</div>
 				</div>
 			</div>
 			<div className="core-card flex flex-col gap-2 border-1 border-[#871919] bg-[#1d1412] select-none">
-				<h2 className="mr-auto text-xl font-bold">Удалить аккаунт</h2>
+				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>
 				<p className="text-justify text-sm">
 					Вы можете удалить свой аккаунт. У вас будет <b>30 дней</b> на его восстановление. По истечении этого
 					срока данные будут безвозвратно удалены, и вы сможете зарегистрироваться заново, используя тот же
