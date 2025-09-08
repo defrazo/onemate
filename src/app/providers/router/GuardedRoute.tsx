@@ -1,12 +1,13 @@
+import type { ReactElement } from 'react';
 import { Navigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
-import { authStore } from '@/features/user-auth';
-import { LoadFallback } from '@/shared/ui';
+import { PreloaderExt } from '@/shared/ui';
+
+import { useStore } from '../store';
 
 interface GuardedRouteProps {
-	element: React.ReactElement;
+	element: ReactElement;
 	requireAuth?: boolean; // Требуется авторизация
 	redirectIfDeleted?: boolean; // Редирект если удален
 	redirectIfNotDeleted?: boolean; // Редирект если не удален
@@ -23,13 +24,21 @@ export const GuardedRoute = observer(
 		fallbackPath = '/',
 		deletedRedirectPath = '/account/deleted',
 	}: GuardedRouteProps) => {
-		if (!authStore.isAuthChecked) return <LoadFallback />;
+		const { authStore, userProfileStore: store, userStore } = useStore();
 
-		if (redirectIfDeleted && userStore.isDeleted) return <Navigate replace to={deletedRedirectPath} />;
+		if (authStore.isLoading) return <PreloaderExt />;
 
-		if (redirectIfNotDeleted && !userStore.isDeleted) return <Navigate replace to={fallbackPath} />;
+		if (requireAuth && !userStore.id) return <Navigate replace to={fallbackPath} />;
 
-		if (requireAuth && !userStore.isAuthenticated) return <Navigate replace to={fallbackPath} />;
+		const deletionStatusKnown = store.isReady || !store.isLoading;
+
+		if ((redirectIfDeleted || redirectIfNotDeleted) && !deletionStatusKnown) return <PreloaderExt />;
+
+		if (redirectIfDeleted && store.isDeleted) return <Navigate replace to={deletedRedirectPath} />;
+
+		if (redirectIfNotDeleted && !store.isDeleted) return <Navigate replace to={fallbackPath} />;
+
+		if (requireAuth && !userStore.id) return <Navigate replace to={fallbackPath} />;
 
 		return element;
 	}

@@ -1,17 +1,21 @@
-import { OPENWEATHER_API_KEY, OPENWEATHER_API_URL } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/lib/constants';
 import { ApiError, handleError } from '@/shared/lib/errors';
 import { convertDate, dayOfWeek, formatDate } from '@/shared/lib/utils';
 
-import type { ForecastApiItem, ForecastItem, WeatherData } from '../model';
+import type { CurrentType, ForecastApiItem, ForecastType } from '../model';
 
 // Получение текущей погоды и прогноза на 5 дней для выбранного города
 export const fetchWeatherData = async (
 	city: string
-): Promise<{ weather: WeatherData | null; forecast: ForecastItem[] }> => {
+): Promise<{ weather: CurrentType | null; forecast: ForecastType[] }> => {
 	try {
 		const [resCurrent, resForecast] = await Promise.all([
-			fetch(`${OPENWEATHER_API_URL}weather?q=${city}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`),
-			fetch(`${OPENWEATHER_API_URL}forecast?q=${city}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`),
+			fetch(
+				`${API_URLS.OPENWEATHER_BASE}weather?q=${city}&units=metric&lang=ru&appid=${env.OPENWEATHER_API_KEY}`
+			),
+			fetch(
+				`${API_URLS.OPENWEATHER_BASE}forecast?q=${city}&units=metric&lang=ru&appid=${env.OPENWEATHER_API_KEY}`
+			),
 		]);
 
 		if (!resCurrent.ok) throw new ApiError();
@@ -31,7 +35,7 @@ export const fetchWeatherData = async (
 			grouped[date].push(item);
 		});
 
-		const forecast: ForecastItem[] = Object.keys(grouped)
+		const forecast: ForecastType[] = Object.keys(grouped)
 			.slice(0, 5)
 			.map((date) => {
 				const entries = grouped[date];

@@ -1,2 +1,9 @@
-export type { UserProfile } from './model';
-export { userProfileService, userProfileStore } from './model';
+export { ProfileRepoRouting } from './api';
+export type {
+	Gender,
+	IUserProfileAccountPort,
+	IUserProfileProfilePort,
+	IUserProfileThemePort,
+	UserProfile,
+} from './model';
+export { userProfileService, UserProfileStore } from './model';

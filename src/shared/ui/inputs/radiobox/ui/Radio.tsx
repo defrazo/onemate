@@ -1,3 +1,5 @@
+import type { InputHTMLAttributes } from 'react';
+
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
@@ -7,7 +9,7 @@ interface RadioOption {
 	disabled?: boolean;
 }
 
-interface RadioProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> {
+interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> {
 	value?: string | null;
 	options: RadioOption[];
 	error?: boolean;

@@ -1,7 +1,8 @@
+import type { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { authStore } from '@/features/user-auth';
+import { useStore } from '@/app/providers';
 import {
 	IconAbout,
 	IconAgreement,
@@ -16,19 +17,19 @@ import {
 	IconUser,
 } from '@/shared/assets/icons';
 import { useIsMobile } from '@/shared/lib/hooks';
-import { modalStore, uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
 import type { TabId } from '@/widgets/user-profile';
-import { ContactsTab, OverviewTab, PersonalTab, profileStore, SecureTab } from '@/widgets/user-profile';
+import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
 
 import type { UserButton } from '../model';
 import { UserMenuInfo } from '.';
 
 export const MobileUserMenu = observer(() => {
+	const { authStore, cityStore, modalStore, themeStore } = useStore();
 	const isMobile = useIsMobile();
 	const navigate = useNavigate();
 
-	const tabs: Record<TabId, React.ReactElement> = {
+	const tabs: Record<TabId, ReactElement> = {
 		overview: <OverviewTab />,
 		personal: <PersonalTab />,
 		contacts: <ContactsTab />,
@@ -67,12 +68,12 @@ export const MobileUserMenu = observer(() => {
 		},
 		{
 			id: 'theme',
-			leftIcon: uiStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
-			action: () => uiStore.toggleTheme(),
+			leftIcon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
+			action: () => themeStore.toggleTheme(),
 			label: (
 				<>
 					Тема оформления:
-					<span className="ml-auto text-[var(--accent-default)]">{uiStore.currentTheme}</span>
+					<span className="ml-auto text-[var(--accent-default)]">{themeStore.currentTheme}</span>
 				</>
 			),
 		},
@@ -80,7 +81,7 @@ export const MobileUserMenu = observer(() => {
 			id: 'location',
 			leftIcon: <IconLocation className="size-6" />,
 			action: () => goTo('personal'),
-			label: `${profileStore.location || 'Не указано'}`,
+			label: `${cityStore.name || 'Не указано'}`,
 		},
 		{
 			id: 'terms',
@@ -134,8 +135,8 @@ export const MobileUserMenu = observer(() => {
 				className="h-10 justify-start"
 				leftIcon={<IconLogout className="size-6" />}
 				variant="mobile"
-				onClick={async () => {
-					await authStore.logout();
+				onClick={() => {
+					authStore.logout();
 					modalStore.closeModal();
 					navigate('/');
 				}}

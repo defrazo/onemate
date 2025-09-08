@@ -1,47 +1,64 @@
 import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
+import { useStore } from '@/app/providers';
 import DeviceActivityOverview from '@/features/device-activity';
-import { authService, PasswordHint } from '@/features/user-auth';
+import { PasswordHint } from '@/features/user-auth';
 import { validatePasswords } from '@/shared/lib/validators';
-import { modalStore, notifyStore } from '@/shared/stores';
-import { Button, Divider, Input, LoadFallback } from '@/shared/ui';
+import { Button, ConfirmDialog, Divider, Input, LoadFallback } from '@/shared/ui';
 
-import { profileStore, useProfile } from '../model';
+import { useProfile } from '../model';
 
 export const SecureTab = observer(() => {
+	const { accountStore, modalStore, notifyStore, profileStore, userStore } = useStore();
 	const { isMobile, formattedDate, navigate } = useProfile();
+
 	const [showHint, setShowHint] = useState<boolean>(false);
 	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
 
 	const handleSave = async () => {
 		try {
 			await validatePasswords(userStore.passwords[0], userStore.passwords[1]);
-			await userStore.updatePassword(userStore.passwords[0]);
-			userStore.clearPasswords();
+			await accountStore.updatePassword(userStore.passwords[0]);
+
 			notifyStore.setNotice('Пароль успешно обновлен!', 'success');
-		} catch {
-			notifyStore.setNotice('Проверьте введенные данные', 'error');
+		} catch (error: any) {
+			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
 	const handleDelete = async () => {
-		const confirmed = window.confirm('Вы уверены, что хотите удалить аккаунт?');
+		const title = 'Удалить аккаунт?';
+		const description =
+			'У вас будет 30 дней на его восстановление. По истечении этого срока данные будут безвозвратно удалены.';
+		const confirmed = await new Promise<boolean>((resolve) => {
+			modalStore.setModal(
+				<ConfirmDialog
+					cancelLabel="Отмена"
+					confirmLabel="Удалить"
+					description={description}
+					title={title}
+					onConfirm={(ok) => {
+						resolve(ok);
+						modalStore.closeModal();
+					}}
+				/>
+			);
+		});
 
 		if (!confirmed) return;
 
 		try {
-			await authService.deleteAccount();
-			await authService.logout();
+			await accountStore.deleteAccount();
+
 			notifyStore.setNotice('Аккаунт успешно удалeн', 'success');
 			navigate('/');
-		} catch {
-			notifyStore.setNotice('Ошибка при удалении аккаунта', 'error');
+		} catch (error: any) {
+			notifyStore.setNotice(error.message || 'Ошибка при удалении аккаунта', 'error');
 		}
 	};
 
-	if (!profileStore.isProfileUploaded) return <LoadFallback />;
+	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
 		<div className="flex cursor-default flex-col gap-4">
@@ -80,7 +97,13 @@ export const SecureTab = observer(() => {
 						}}
 					/>
 					<div className="mt-2 flex justify-center gap-2">
-						<Button disabled={!isPasswordValid} variant="accent" onClick={handleSave}>
+						<Button
+							className="w-28"
+							disabled={!isPasswordValid}
+							loading={profileStore.isLoading}
+							variant="accent"
+							onClick={handleSave}
+						>
 							Сохранить
 						</Button>
 						<Button
@@ -97,12 +120,10 @@ export const SecureTab = observer(() => {
 				<Divider />
 				<div className="flex flex-col gap-2">
 					<h2 className="text-xl font-bold select-none">Устройства и активность</h2>
-					<div className="flex h-[10rem]">
-						<DeviceActivityOverview />
-					</div>
+					<DeviceActivityOverview />
 				</div>
 			</div>
-			<div className="core-card flex flex-col gap-2 border-1 border-[#871919] bg-[#1d1412] select-none">
+			<div className="core-card flex flex-col gap-2 border-1 border-[#871919] bg-[var(--bg-warning)] select-none">
 				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>
 				<p className="text-justify text-sm">
 					Вы можете удалить свой аккаунт. У вас будет <b>30 дней</b> на его восстановление. По истечении этого
@@ -110,7 +131,7 @@ export const SecureTab = observer(() => {
 					адрес электронной почты.
 				</p>
 				<Button
-					className="mx-auto w-fit rounded-xl bg-[#871919] text-[var(--color-primary)] transition-colors duration-300 hover:bg-[#a10404]"
+					className="mx-auto w-fit rounded-xl bg-[var(--warning-default)] text-[var(--accent-text)] transition-colors duration-300 hover:bg-[var(--warning-hover)]"
 					variant="custom"
 					onClick={handleDelete}
 				>

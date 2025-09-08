@@ -1,22 +1,19 @@
-import { CBR_API_URL } from '@/shared/lib/constants';
+import { API_URLS } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
-// Получение актуального курса валют
-export const fetchRates = async (): Promise<any> => {
-	try {
-		const url = `${CBR_API_URL}`;
-		const response = await fetch(url);
+import type { RatesResponse } from '../model';
 
+export const fetchRates = async (): Promise<RatesResponse | null> => {
+	try {
+		const response = await fetch(API_URLS.CBR_LATEST);
 		if (!response.ok) throw new ApiError();
 
 		const data = await response.json();
+		if (!data || !data.rates) throw new EmptyResultError('Не удалось получить курсы валют');
 
-		if (!data) throw new EmptyResultError('Не удалось получить курсы валют');
+		const rates: RatesResponse['rates'] = { ...data.rates, RUB: 1 };
 
-		return {
-			lastUpdate: data.timestamp,
-			rates: data.rates,
-		};
+		return { base: 'RUB', lastUpdate: data.timestamp, rates };
 	} catch (error) {
 		handleError(error);
 		return null;

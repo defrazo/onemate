@@ -1,11 +1,11 @@
-import React from 'react';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
 interface SuggestionListProps<T> {
 	items: T[];
-	onSelect: (item: T) => void;
-	renderItem: (item: T) => React.ReactNode;
+	onSelect?: (item: T) => void;
+	renderItem: (item: T) => ReactNode;
 	className?: string;
 }
 
@@ -23,7 +23,7 @@ const SuggestionList = <T,>({ items, onSelect, renderItem, className }: Suggesti
 				<div
 					key={index}
 					className="cursor-pointer p-2 hover:bg-[var(--bg-accent-opacity)]"
-					onMouseDown={() => onSelect(item)}
+					onMouseDown={() => (onSelect ? onSelect(item) : null)}
 				>
 					{renderItem(item)}
 				</div>

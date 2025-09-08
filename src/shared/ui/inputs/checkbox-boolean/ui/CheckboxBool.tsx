@@ -1,8 +1,10 @@
+import type { InputHTMLAttributes } from 'react';
+
 import { IconChecked, IconUnchecked } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
-interface CheckboxBoolProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'onChange'> {
+interface CheckboxBoolProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value' | 'onChange'> {
 	checked: boolean;
 	onChange: (checked: boolean) => void;
 	disabled?: boolean;

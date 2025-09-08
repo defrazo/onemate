@@ -1,9 +1,11 @@
+import type { InputHTMLAttributes, ReactNode } from 'react';
+
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
-interface InputProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size'> {
-	leftIcon?: React.ReactNode;
-	rightIcon?: React.ReactNode;
+interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+	leftIcon?: ReactNode;
+	rightIcon?: ReactNode;
 	error?: boolean;
 	variant?: keyof typeof variants.input;
 	size?: keyof typeof sizes.input;
@@ -41,8 +43,8 @@ const Input = ({
 
 	return (
 		<div className={cn('relative flex w-full items-center', justify && justifies[justify])}>
-			{leftIcon && <span className="absolute left-0 px-1.5">{leftIcon}</span>}
-			{rightIcon && <span className="absolute right-0 px-1.5">{rightIcon}</span>}
+			{leftIcon && <span className="absolute left-0 z-30 px-1.5">{leftIcon}</span>}
+			{rightIcon && <span className="absolute right-0 z-30 px-1.5">{rightIcon}</span>}
 			<input className={cn(styles, iconPadding.leftPadding, iconPadding.rightPadding, className)} {...props} />
 		</div>
 	);

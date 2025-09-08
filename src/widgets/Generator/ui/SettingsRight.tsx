@@ -1,11 +1,13 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { Button, CheckboxBool, Divider, FileUploader, Input } from '@/shared/ui';
 
 import { downloadGridSvg } from '../lib';
-import { genStore, useGenModel } from '../model';
+import { useGenModel } from '../model';
 
 export const SettingsRight = observer(() => {
+	const { genStore } = useStore();
 	const { selectedFileName, setSelectedFileName, handleUpload } = useGenModel();
 
 	return (
@@ -124,7 +126,7 @@ export const SettingsRight = observer(() => {
 					disabled={!genStore.svgWithText}
 					variant="warning"
 					onClick={() => {
-						genStore.resetGenerator();
+						genStore.reset();
 						setSelectedFileName('');
 					}}
 				>

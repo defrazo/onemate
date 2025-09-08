@@ -1,15 +1,15 @@
-import { MYMEMORY_API_KEY, MYMEMORY_API_URL } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
-import type { TranslateOptions } from '../model';
+import type { TranslateRequest } from '../model';
 
 // Запрос перевода текста
-export const fetchTranslate = async ({ text, source, target, signal }: TranslateOptions): Promise<string | null> => {
+export const fetchTranslate = async ({ text, source, target, signal }: TranslateRequest): Promise<string | null> => {
 	const encodedText = encodeURIComponent(text.trim());
 	const langPair = `${source}|${target}`;
 
 	try {
-		const url = `${MYMEMORY_API_URL}${encodedText}&langpair=${langPair}&key=${MYMEMORY_API_KEY}`;
+		const url = `${API_URLS.MYMEMORY}${encodedText}&langpair=${langPair}&key=${env.MYMEMORY_API_KEY}`;
 		const response = await fetch(url, { signal });
 
 		if (!response.ok) throw new ApiError();

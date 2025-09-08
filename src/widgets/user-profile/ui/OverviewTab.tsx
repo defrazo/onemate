@@ -1,22 +1,21 @@
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
-import { deviceActivityStore } from '@/features/device-activity';
+import { useStore } from '@/app/providers';
 import { LoadFallback } from '@/shared/ui';
 
-import { profileStore, useProfile } from '../model';
+import { useProfile } from '../model';
 import { Row } from '.';
 
 export const OverviewTab = observer(() => {
+	const { cityStore, deviceActivityStore, profileStore: store, userStore } = useStore();
 	const { formattedBirthDate, formattedDate } = useProfile();
-	const store = profileStore;
 
 	const renderList = (items: string[]) =>
 		items.filter((x) => x.trim()).length === 0
 			? 'Не указано'
 			: items.map((item, idx) => <span key={idx}>{item}</span>);
 
-	if (!profileStore.isProfileUploaded) return <LoadFallback />;
+	if (!store.isReady) return <LoadFallback />;
 
 	return (
 		<div className="flex flex-col gap-4">
@@ -28,7 +27,7 @@ export const OverviewTab = observer(() => {
 					<Row label="Никнейм" value={userStore.username || 'Пользователь'} />
 					<Row label="Пол" value={store.genderLabel} />
 					<Row label="Дата рождения" value={formattedBirthDate} />
-					<Row label="Город" value={store.location || 'Не указано'} />
+					<Row label="Город" value={cityStore.name || 'Не указано'} />
 				</div>
 			</div>
 			<div className="core-base flex flex-col justify-center rounded-xl py-4">

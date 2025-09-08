@@ -39,7 +39,7 @@ export const formatRange = (start: Date, end: Date): string => {
 	return `С ${format(start, 'd MMMM', { locale: ru })} по ${format(end, 'd MMMM', { locale: ru })}`;
 };
 
-export const isInRange = (date: Date, range: DateRange) => {
+export const isInRange = (date: Date, range: DateRange): boolean => {
 	const [start, end] = range;
 	if (!start || !end) return false;
 

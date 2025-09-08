@@ -5,6 +5,7 @@ import DeletedAccountPage from '@/pages/account-deleted';
 import UserProfilePage from '@/pages/account-profile';
 import AuthCallback from '@/pages/auth-callback';
 import DashboardPage from '@/pages/dashboard';
+import DemoInfoPage from '@/pages/demo-info';
 import GeneratorPage from '@/pages/generator';
 import HomePage from '@/pages/home';
 import KanbanPage from '@/pages/kanban';
@@ -116,6 +117,19 @@ export const routes: RouteObject[] = [
 				element={
 					<Layout showFooter>
 						<AboutPage />
+					</Layout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/demo-info',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout showFooter>
+						<DemoInfoPage />
 					</Layout>
 				}
 				requireAuth={false}

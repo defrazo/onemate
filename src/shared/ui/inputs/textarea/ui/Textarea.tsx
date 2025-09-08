@@ -1,7 +1,9 @@
+import type { TextareaHTMLAttributes } from 'react';
+
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
-interface TextareaProps extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {
+interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	variant?: keyof typeof variants.textarea;
 	size?: keyof typeof sizes.textarea;
 	resize?: 'none' | 'vertical' | 'horizontal' | 'both';

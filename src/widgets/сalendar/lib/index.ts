@@ -1,3 +1,2 @@
-export { generateCalendarDays } from './generateCalendarDays';
 export { calculateNewRange, formatRange, getRangeLength, hasWeekendInRange, isInRange } from './rangeUtils';
-export { formatMonthTitle, getDateFromDay } from './utils';
+export { formatMonthTitle, generateCalendarDays, getDateFromDay } from './utils';

@@ -1,31 +1,27 @@
 import { useEffect, useState } from 'react';
 
-import { currencyStore } from '.';
+import { useStore } from '@/app/providers';
+import { formatFixed } from '@/shared/lib/utils';
 
 export const useCurrency = () => {
-	const store = currencyStore;
+	const { currencyStore: store } = useStore();
 
 	const [exchangeRate, setExchangeRate] = useState<string>('');
 	const [exchangeResult, setExchangeResult] = useState<string>('');
 
 	useEffect(() => {
-		const baseRate = store.ratesList[store.baseCode]?.value;
-		const targetRate = store.ratesList[store.targetCode]?.value;
-
-		const singleValue = (targetRate / baseRate).toFixed(2);
-		const totalValue = (store.baseValue * +singleValue).toFixed(2);
-
-		store.updateCurrencies(1, 'value', +totalValue);
+		const baseRate = store.ratesList[store.baseCode]?.value ?? 0;
+		const targetRate = store.ratesList[store.targetCode]?.value ?? 0;
+		const ratio = baseRate > 0 ? targetRate / baseRate : 0;
 
 		const baseName = store.ratesList[store.baseCode]?.name || store.baseCode;
 		const targetName = store.ratesList[store.targetCode]?.name || store.targetCode;
 
-		const exchangeRateText = `1 ${store.baseCode} = ${singleValue} ${store.targetCode}`;
-		const exchangeResultText = `${store.baseValue} ${baseName} = ${totalValue} ${targetName}`;
-
-		setExchangeRate(exchangeRateText);
-		setExchangeResult(exchangeResultText);
-	}, [store.baseCode, store.targetCode, store.baseValue, store.ratesList]);
+		setExchangeRate(`1 ${baseName} = ${formatFixed(ratio, 2)} ${targetName}`);
+		setExchangeResult(
+			`${formatFixed(store.baseValue, 2)} ${store.baseCode} = ${formatFixed(store.targetValue, 2)} ${store.targetCode}`
+		);
+	}, [store.baseCode, store.targetCode, store.baseValue, store.targetValue, store.ratesList]);
 
 	return { exchangeRate, exchangeResult };
 };

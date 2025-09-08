@@ -1,19 +1,23 @@
+import type { FormEvent } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconEmail } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateEmail } from '@/shared/lib/validators';
-import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
-import { authFormStore } from '../model';
+import { AuthFormStore } from '../model';
 
 interface ConfirmFormProps {
+	store: AuthFormStore;
+	isLoading: boolean;
 	onSubmit: () => void;
 }
 
-export const ConfirmForm = observer(({ onSubmit }: ConfirmFormProps) => {
-	const store = authFormStore;
+export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmFormProps) => {
+	const { notifyStore } = useStore();
+
 	const isBlocked = store.timer > 0;
 
 	const infoText = !store.resetMode ? (
@@ -39,11 +43,12 @@ export const ConfirmForm = observer(({ onSubmit }: ConfirmFormProps) => {
 		</>
 	);
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		try {
 			await validateEmail(store.email);
+
 			onSubmit();
 		} catch (error: any) {
 			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
@@ -71,7 +76,7 @@ export const ConfirmForm = observer(({ onSubmit }: ConfirmFormProps) => {
 					onBlur={(e) => store.update('email', e.target.value.trim())}
 					onChange={(e) => store.update('email', e.target.value)}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={isBlocked} type="submit">
+				<Button className="mt-4 h-10 w-full" disabled={isBlocked} loading={isLoading} type="submit">
 					{isBlocked
 						? `Повторить через ${store.timer} сек.`
 						: !store.resetMode

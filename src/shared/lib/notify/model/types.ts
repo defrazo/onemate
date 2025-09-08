@@ -1,3 +1,5 @@
+import type { CSSProperties, ReactNode } from 'react';
+
 export type NotifyType = 'success' | 'error' | 'warning' | 'info';
 
 export type ToastOptions = {
@@ -5,8 +7,8 @@ export type ToastOptions = {
 	duration?: number;
 	important?: boolean;
 	position?: 'top-left' | 'top-center' | 'top-right' | 'bottom-left' | 'bottom-center' | 'bottom-right';
-	style?: React.CSSProperties;
-	button?: React.ReactNode;
+	style?: CSSProperties;
+	button?: ReactNode;
 	className?: string;
 	onAutoClose?: () => void;
 	onDismiss?: () => void;
@@ -18,4 +20,9 @@ export interface ToastProps {
 	type: NotifyType;
 	message: string;
 	options?: ToastOptions;
+}
+
+export interface Notification {
+	message: string;
+	type: NotifyType;
 }

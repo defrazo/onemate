@@ -33,3 +33,11 @@ declare module '*.svg' {
 	const content: string;
 	export default content;
 }
+
+declare module 'money' {
+	export const fx: {
+		base: string;
+		rates: Record<string, number>;
+		convert(amount: number, opts: { from: string; to: string }): number;
+	};
+}

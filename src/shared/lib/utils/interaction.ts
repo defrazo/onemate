@@ -1,13 +1,3 @@
-import copy from 'copy-to-clipboard';
-
-import { notifyStore } from '@/shared/stores';
-
-// Расширенный copy с возможностью установки кастомного сообщения
-export const copyExt = (data: string, message?: string): void => {
-	copy(data);
-	notifyStore.setNotice(message ?? 'Данные скопированы!', 'success');
-};
-
 // Сбор данных о браузере
 export const getBrowserInfo = () => {
 	const agent = navigator.userAgent;
@@ -23,3 +13,6 @@ export const getBrowserInfo = () => {
 
 	return { browser, isPhone };
 };
+
+// Возвращает унифицированный ключ для демо-записей в LS
+export const key = (id: string, feature: string) => `onemate_${feature}_demo_${id}`;

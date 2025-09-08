@@ -1,21 +1,25 @@
-// import { HashRouter as Router, Route, Routes } from 'react-router-dom';
-import { BrowserRouter as Router } from 'react-router-dom';
+import { BrowserRouter } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 import { Toaster } from 'sonner';
 
 import { useIsMobile } from '@/shared/lib/hooks';
-import { ModalManager } from '@/shared/ui';
+import { LS_CACHE_UI, storage } from '@/shared/lib/storage';
+import { DemoBanner, ModalManager, ScrollToTop } from '@/shared/ui';
 
-import AppRouter from './providers/router/Router';
+import { RouterProvider, useStore } from './providers';
 
 const App = () => {
+	const { userStore } = useStore();
 	const isMobile = useIsMobile();
+
 	return (
-		<Router>
-			<AppRouter />
+		<BrowserRouter>
+			{userStore.id && userStore.userRole !== 'user' && !storage.get(LS_CACHE_UI).demo && <DemoBanner />}
+			<RouterProvider />
 			<ModalManager />
+			<ScrollToTop />
 			<Toaster duration={5000} position={isMobile ? 'top-center' : 'bottom-right'} />
-		</Router>
+		</BrowserRouter>
 	);
 };
 

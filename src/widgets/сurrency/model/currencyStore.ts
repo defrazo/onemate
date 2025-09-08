@@ -1,20 +1,38 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 
-import { storage } from '@/shared/lib/storage';
-import { notifyStore } from '@/shared/stores';
+import type { IBaseUserPort } from '@/entities/user';
+import { createDefaultCurrencies } from '@/shared/lib/constants';
+import type { Status } from '@/shared/stores';
 
 import { fetchRates } from '../api';
-import { currencyIcons, currencyNames } from '../lib';
+import { currencyIcons, currencyNames, sortCodesByPopularity } from '../lib';
 import type { Currency, CurrencyOption, RatesList, RatesResponse } from '.';
 
-class CurrencyStore {
-	data: RatesResponse | null = storage.get('rates') || null;
-	isLoading: boolean = false;
+export class CurrencyStore {
+	private disposers = new Set<() => void>();
+	private inited: boolean = false;
+	private status: Status = 'idle';
+	private error: string | null = null;
 
-	currencies: Currency[] = [
-		{ type: 'base', code: 'USD', value: 1 },
-		{ type: 'target', code: 'RUB', value: 0 },
-	];
+	private rates: RatesResponse | null = null;
+
+	currencies: Currency[] = createDefaultCurrencies();
+
+	get isLoading(): boolean {
+		return this.status === 'loading';
+	}
+
+	get isReady(): boolean {
+		return this.status === 'ready' && this.rates !== null;
+	}
+
+	get isError(): boolean {
+		return this.status === 'error';
+	}
+
+	get errorMessage(): string | null {
+		return this.error;
+	}
 
 	get baseCode(): string {
 		return this.currencies[0].code;
@@ -33,7 +51,9 @@ class CurrencyStore {
 	}
 
 	get currencyOptions(): CurrencyOption[] {
-		return Object.values(this.ratesList).map((item) => ({
+		const list = this.ratesList;
+
+		return Object.values(list).map((item) => ({
 			icon: item.icon,
 			key: item.name,
 			label: item.code,
@@ -42,105 +62,189 @@ class CurrencyStore {
 	}
 
 	get ratesList(): RatesList {
-		if (!this.data?.rates) return {};
+		if (!this.rates?.rates) return {};
 
-		return Object.keys(this.data.rates)
-			.filter((item) => item !== 'XDR')
-			.sort()
-			.reduce((acc, key) => {
-				acc[key] = {
-					code: key,
-					icon: currencyIcons[key],
-					name: currencyNames[key] || key,
-					value: this.data!.rates[key],
-				};
-				return acc;
-			}, {} as RatesList);
+		const codes = Object.keys(this.rates.rates).filter((c) => c !== 'XDR');
+		if (!codes.includes('RUB')) codes.push('RUB');
+
+		const ordered = sortCodesByPopularity(codes);
+		return ordered.reduce((acc, code) => {
+			acc[code] = {
+				code,
+				icon: currencyIcons[code],
+				name: currencyNames[code] ?? code,
+				value: this.rates!.rates[code] ?? (code === 'RUB' ? 1 : 0),
+			};
+			return acc;
+		}, {} as RatesList);
 	}
 
-	updateCurrencies = <K extends keyof Currency>(index: number, key: K, value: Currency[K]): void => {
+	get isDefault(): boolean {
+		return (
+			this.currencies.length === createDefaultCurrencies().length &&
+			this.currencies.every((c, i) => {
+				const def = createDefaultCurrencies()[i];
+				if (i === 0) return c.type === def.type && c.code === def.code && c.value === def.value;
+
+				return c.type === def.type && c.code === def.code;
+			})
+		);
+	}
+
+	updateCurrencies<K extends keyof Currency>(index: number, key: K, value: Currency[K]): void {
 		const updated = [...this.currencies];
 		updated[index] = { ...updated[index], [key]: value };
 		this.currencies = updated;
-	};
+	}
 
-	selectCurrency = (selectedCode: string, type: 'base' | 'target'): void => {
+	selectCurrency(selectedCode: string, type: 'base' | 'target'): void {
 		const base = this.currencies[0];
 		const target = this.currencies[1];
 
 		if ((type === 'base' && selectedCode === target.code) || (type === 'target' && selectedCode === base.code)) {
 			this.swapCurrencies();
-		} else {
-			const index = type === 'base' ? 0 : 1;
-			this.updateCurrencies(index, 'code', selectedCode);
-		}
-	};
-
-	handleCurrencyValue = (index: number, value: number): void => {
-		const from = index === 0 ? this.currencies[0].code : this.currencies[1].code;
-		const to = index === 0 ? this.currencies[1].code : this.currencies[0].code;
-
-		this.updateCurrencies(index, 'value', value);
-		const converted = this.convertCurrency(value, from, to);
-		this.updateCurrencies(1, 'value', converted);
-	};
-
-	swapCurrencies = (): void => {
-		const [base, target] = this.currencies;
-		this.currencies = [
-			{ ...base, code: target.code },
-			{ ...target, code: base.code },
-		];
-	};
-
-	clearRates() {
-		storage.remove('rates');
-	}
-
-	async init() {
-		await this.updateRates();
-	}
-
-	private convertCurrency = (amount: number, from: string, to: string): number => {
-		const fromRate = this.ratesList[from]?.value || 1;
-		const toRate = this.ratesList[to]?.value || 1;
-
-		return Number(((amount * fromRate) / toRate).toFixed(2));
-	};
-
-	private async fetchRates(): Promise<void> {
-		this.isLoading = true;
-
-		const result = await fetchRates();
-
-		if (result?.rates) result.rates.RUB = 1;
-
-		storage.set('rates', result);
-
-		runInAction(() => {
-			if (result) this.data = result;
-			else notifyStore.setNotice('Не удалось загрузить курсы валют', 'error');
-			this.isLoading = false;
-		});
-	}
-
-	private async updateRates(): Promise<void> {
-		const lastUpdateUnix = this.data?.lastUpdate;
-
-		if (!lastUpdateUnix) {
-			await this.fetchRates();
 			return;
 		}
 
-		const lastDate = new Date(lastUpdateUnix * 1000).toISOString().split('T')[0];
-		const nowDate = new Date().toISOString().split('T')[0];
-
-		if (lastDate !== nowDate) await this.fetchRates();
+		const idx = type === 'base' ? 0 : 1;
+		this.updateCurrencies(idx, 'code', selectedCode);
+		this.recalcTarget();
 	}
 
-	constructor() {
-		makeAutoObservable(this);
+	handleCurrencyValue(index: number, amount: number): void {
+		const fromIdx = index as 0 | 1;
+		const toIdx = fromIdx === 0 ? 1 : 0;
+
+		if (!this.isReady) {
+			this.updateCurrencies(fromIdx, 'value', amount);
+			return;
+		}
+
+		const fromCode = this.currencies[fromIdx].code;
+		const toCode = this.currencies[toIdx].code;
+		const toValue = this.convertCurrency(amount, fromCode, toCode);
+
+		this.updateCurrencies(fromIdx, 'value', amount);
+		this.updateCurrencies(toIdx, 'value', toValue);
+	}
+
+	swapCurrencies(): void {
+		const [base, target] = this.currencies;
+		const newBase = { ...base, code: target.code };
+		const newTarget = {
+			type: 'target' as const,
+			code: base.code,
+			value: this.convertCurrency(newBase.value, newBase.code, base.code),
+		};
+		this.currencies = [newBase, newTarget];
+	}
+
+	clear(): void {
+		this.currencies = createDefaultCurrencies();
+		this.recalcTarget();
+	}
+
+	private recalcTarget(): void {
+		if (!this.isReady) return;
+
+		const base = this.currencies[0];
+		const targetCode = this.currencies[1].code;
+		const newTarget = this.convertCurrency(base.value, base.code, targetCode);
+		this.updateCurrencies(1, 'value', newTarget);
+	}
+
+	private getRate(code: string): number {
+		if (!this.rates?.rates) return code === 'RUB' ? 1 : 0;
+		return this.rates.rates[code] ?? (code === 'RUB' ? 1 : 0);
+	}
+
+	private convertCurrency(amount: number, from: string, to: string): number {
+		const fromRate = this.getRate(from);
+		const toRate = this.getRate(to);
+
+		if (!Number.isFinite(amount) || fromRate <= 0 || toRate <= 0) return 0;
+
+		return Number((amount * (toRate / fromRate)).toFixed(2));
+	}
+
+	private async fetchRates(): Promise<void> {
+		if (!this.userStore?.id || this.isLoading) return;
+
+		this.setLoading();
+
+		try {
+			const result = await fetchRates();
+			if (result) this.setReady(result);
+		} catch (error) {
+			this.setError(error);
+		}
+	}
+
+	private async updateRates(): Promise<void> {
+		const last = this.rates?.lastUpdate ?? 0;
+		const ageMs = Date.now() - last * 1000;
+		const TTL = 12 * 60 * 60 * 1000;
+
+		if (ageMs > TTL) await this.fetchRates();
+	}
+
+	constructor(private readonly userStore: IBaseUserPort) {
+		makeAutoObservable<this, 'userStore' | 'inited' | 'disposers'>(this, {
+			userStore: false,
+			inited: false,
+			disposers: false,
+		});
+	}
+
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+
+		this.track(
+			reaction(
+				() => this.userStore.id,
+				(id) => (id ? void this.updateRates() : this.reset()),
+				{ fireImmediately: true }
+			)
+		);
+	}
+
+	destroy(): void {
+		this.disposers.forEach((dispose) => {
+			try {
+				dispose();
+			} catch {}
+		});
+		this.disposers.clear();
+		this.inited = false;
+	}
+
+	private setLoading(): void {
+		this.status = 'loading';
+		this.error = null;
+	}
+
+	private setReady(rates: RatesResponse): void {
+		this.status = 'ready';
+		this.error = null;
+		this.rates = rates;
+		this.recalcTarget();
+	}
+
+	private setError(error: unknown): void {
+		this.status = this.rates ? 'ready' : 'error';
+		this.error = error instanceof Error ? error.message : String(error);
+	}
+
+	private reset(): void {
+		this.status = 'idle';
+		this.error = null;
+		this.rates = null;
+		this.currencies = createDefaultCurrencies();
+	}
+
+	private track(disposer?: (() => void) | void): void {
+		if (!disposer) return;
+		this.disposers.add(disposer);
 	}
 }
-
-export const currencyStore = new CurrencyStore();

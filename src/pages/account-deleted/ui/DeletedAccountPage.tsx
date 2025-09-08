@@ -1,6 +1,6 @@
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
+import { useStore } from '@/app/providers';
 import { Logo } from '@/shared/assets/images';
 import { usePageTitle, useRemainingTime } from '@/shared/lib/hooks';
 import { msFromDays } from '@/shared/lib/utils';
@@ -10,9 +10,10 @@ import { useDeletedAccount } from '../model';
 
 const DeletedAccountPage = () => {
 	usePageTitle('Аккаунт удален');
+	const { userProfileStore, userStore } = useStore();
 
 	const { handleRestore, handleExit } = useDeletedAccount();
-	const { days } = useRemainingTime(userStore.deletedAt, msFromDays(30));
+	const { days } = useRemainingTime(userProfileStore.deletedAt, msFromDays(30));
 
 	return (
 		<div className="mx-4 flex min-h-screen flex-col items-center justify-center gap-2">

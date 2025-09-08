@@ -25,3 +25,17 @@ export class EmptyResultError extends Error {
 		this.name = 'EmptyResultError';
 	}
 }
+
+export class RestrictedAccess extends Error {
+	constructor() {
+		super('Недоступно в демо-версии');
+		this.name = 'RestrictedAccess';
+	}
+}
+
+export class PermissionError extends Error {
+	constructor(message: string) {
+		super(message);
+		this.name = 'PermissionError';
+	}
+}

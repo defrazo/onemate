@@ -11,12 +11,15 @@
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
+	--warning-default: #871919;
+	--warning-hover: #a10404;
 
 	/* Фоны */
 	--bg-primary: #19191a;
 	--bg-secondary: #222224;
 	--bg-tertiary: #39393a;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
+	--bg-warning: #1d1412;
 
 	/* Статусные цвета */
 	--status-success: #039140;
@@ -44,13 +47,15 @@
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
+	--warning-default: #871919;
+	--warning-hover: #a10404;
 
 	/* Фоны */
 	--bg-primary: #edeef0;
-	/* --bg-secondary: #fafbfc; */
 	--bg-secondary: #fbfcfc;
 	--bg-tertiary: #e3e3e3;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
+	--bg-warning: #ffe0dd;
 
 	/* Статусные цвета */
 	--status-success: #039140;

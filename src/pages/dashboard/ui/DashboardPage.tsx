@@ -10,40 +10,21 @@ import { Widget } from '.';
 
 const DashboardPage = () => {
 	usePageTitle('Dashboard');
-	const { sensors, handleDragEnd, topWidgets, bottomWidgets, topRowIds, bottomRowIds } = useDashboard();
+
+	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
 
 	return (
-		<div className="flex size-full flex-col gap-4">
+		<div className="grid flex-1 grid-cols-1 grid-rows-2 gap-4 md:grid-cols-3">
 			<DndContext
 				collisionDetection={closestCenter}
 				modifiers={[restrictToParentElement]}
 				sensors={sensors}
-				onDragEnd={(e) => handleDragEnd(e, 'top')}
+				onDragEnd={(e) => handleDragEnd(e)}
 			>
-				<SortableContext items={topRowIds} strategy={rectSortingStrategy}>
-					<div className="grid h-full min-h-fit grid-cols-3 gap-4">
-						{topWidgets.map((widget) => (
-							<Widget key={widget.id} id={widget.id}>
-								<div className="size-full">{widget.content}</div>
-							</Widget>
-						))}
-					</div>
-				</SortableContext>
-			</DndContext>
-			<DndContext
-				collisionDetection={closestCenter}
-				modifiers={[restrictToParentElement]}
-				sensors={sensors}
-				onDragEnd={(e) => handleDragEnd(e, 'bottom')}
-			>
-				<SortableContext items={bottomRowIds} strategy={rectSortingStrategy}>
-					<div className="grid h-full min-h-fit grid-cols-3 gap-4">
-						{bottomWidgets.map((widget) => (
-							<Widget key={widget.id} id={widget.id}>
-								<div className="size-full">{widget.content}</div>
-							</Widget>
-						))}
-					</div>
+				<SortableContext items={rowIds} strategy={rectSortingStrategy}>
+					{widgetsOrder.map((widget) => (
+						<Widget key={widget.id} content={widget.content} id={widget.id} />
+					))}
 				</SortableContext>
 			</DndContext>
 		</div>

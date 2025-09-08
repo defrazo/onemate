@@ -1,15 +1,15 @@
 import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
-import { authStore } from '@/features/user-auth';
+import { useStore } from '@/app/providers';
 import { IconContacts, IconDay, IconLogout, IconMain, IconNight, IconShield, IconUser } from '@/shared/assets/icons';
-import { modalStore, uiStore } from '@/shared/stores';
 import { Button, Divider } from '@/shared/ui';
 
 import type { UserButton } from '../model';
 import { UserMenuInfo } from '.';
 
 export const DesktopUserMenu = observer(() => {
+	const { authStore, modalStore, themeStore } = useStore();
 	const navigate = useNavigate();
 
 	const userButtons: UserButton[] = [
@@ -35,12 +35,15 @@ export const DesktopUserMenu = observer(() => {
 		},
 		{
 			id: 'theme',
-			icon: uiStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
-			action: () => uiStore.toggleTheme(),
+			icon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
+			action: () => {
+				themeStore.toggleTheme();
+				modalStore.closeModal();
+			},
 			label: (
 				<>
 					Тема оформления:
-					<span className="ml-1 font-semibold">{uiStore.currentTheme}</span>
+					<span className="ml-1 font-semibold">{themeStore.currentTheme}</span>
 				</>
 			),
 		},
@@ -76,8 +79,8 @@ export const DesktopUserMenu = observer(() => {
 			<Button
 				className="h-10 justify-start rounded-none"
 				leftIcon={<IconLogout className="size-6" />}
-				onClick={async () => {
-					await authStore.logout();
+				onClick={() => {
+					authStore.logout();
 					modalStore.closeModal();
 					navigate('/');
 				}}

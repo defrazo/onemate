@@ -21,7 +21,7 @@ export const dayOfWeek = (timestamp: number, length: 'short' | 'long'): string =
 };
 
 // Форматирует строку даты в полную дату + время в локали ru-RU (например: "31.07.2025, 14:05")
-export const fullDate = (date: string) =>
+export const fullDate = (date: string): string =>
 	new Date(date).toLocaleString('ru-RU', {
 		day: '2-digit',
 		month: '2-digit',
@@ -32,7 +32,7 @@ export const fullDate = (date: string) =>
 
 // Генерирует массив годов (для select), начиная с текущего и обратно count лет
 // Формат: { value: '2025', label: '2025' }
-export const generateYears = (count = 100) =>
+export const generateYears = (count = 100): { value: string; label: string }[] =>
 	Array.from({ length: count }, (_, i) => {
 		const y = (new Date().getFullYear() - i).toString();
 		return { value: y, label: y };
@@ -40,7 +40,7 @@ export const generateYears = (count = 100) =>
 
 // Генерирует массив месяцев (для select)
 // value: номер месяца (0-11), label: название месяца с заглавной буквы на русском
-export const generateMonth = (count = 12) =>
+export const generateMonth = (count = 12): { value: string; label: string }[] =>
 	Array.from({ length: count }, (_, i) => ({
 		value: i.toString(),
 		label: capitalizeFirstLetter(new Date(0, i).toLocaleString('ru', { month: 'long' })),

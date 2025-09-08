@@ -1,13 +1,16 @@
-import { useState } from 'react';
+import { type ChangeEvent, useState } from 'react';
+
+import { useStore } from '@/app/providers';
 
 import { calculateDisplaySizes, cleanSvgContent, extractSvgDimensions } from '../lib';
-import { genStore, useContainerSize } from '.';
+import { useContainerSize } from '.';
 
 export const useGenModel = () => {
+	const { genStore } = useStore();
 	const { ref, size: containerSize } = useContainerSize(32);
 	const [selectedFileName, setSelectedFileName] = useState<string>('');
 
-	const handleUpload = (e: React.ChangeEvent<HTMLInputElement>): void => {
+	const handleUpload = (e: ChangeEvent<HTMLInputElement>): void => {
 		const file = e.target.files?.[0];
 		if (!file || file.type !== 'image/svg+xml') return;
 

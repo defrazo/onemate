@@ -1,4 +1,4 @@
-import { PasswordRule } from '../model';
+import type { PasswordRule } from '../model';
 
 export const passwordRules: PasswordRule[] = [
 	{ label: 'Минимум 8 символов', test: (pass: string) => pass.length >= 8 },

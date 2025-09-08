@@ -1,5 +1,7 @@
+import type { Dispatch, SetStateAction } from 'react';
+
 import { IconChecked, IconCopy, IconTrash, IconUnchecked } from '@/shared/assets/icons';
-import { copyExt } from '@/shared/lib/utils';
+import { useCopy } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { hasWeekendInRange } from '../lib';
@@ -9,8 +11,8 @@ interface CalendarControlsProps {
 	range: DateRange;
 	rangeState: string;
 	includeWeekends: boolean;
-	setIncludeWeekends: React.Dispatch<React.SetStateAction<boolean>>;
-	setRange: React.Dispatch<React.SetStateAction<DateRange>>;
+	setIncludeWeekends: Dispatch<SetStateAction<boolean>>;
+	setRange: Dispatch<SetStateAction<DateRange>>;
 }
 
 export const CalendarControls = ({
@@ -20,8 +22,10 @@ export const CalendarControls = ({
 	setIncludeWeekends,
 	setRange,
 }: CalendarControlsProps) => {
+	const copy = useCopy();
+
 	return (
-		<div className="grid grid-cols-3 grid-rows-2 items-center gap-2">
+		<div className="grid-rows-[auto, 1fr] grid grid-cols-3 items-center gap-2">
 			<div className="col-span-3 text-center">{rangeState}</div>
 			<Button
 				active={hasWeekendInRange(range) && includeWeekends}
@@ -36,7 +40,7 @@ export const CalendarControls = ({
 				className="w-full text-sm"
 				disabled={!range[0] || !range[1]}
 				leftIcon={<IconCopy className="size-4" />}
-				onClick={() => copyExt(rangeState, 'Диапазон скопирован!')}
+				onClick={() => copy(rangeState, 'Диапазон скопирован!')}
 			>
 				Скопировать
 			</Button>

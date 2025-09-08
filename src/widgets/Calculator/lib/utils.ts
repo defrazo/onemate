@@ -7,7 +7,8 @@ export const formatNumber = (num: number): string => {
 
 export const sanitizeExpression = (display: string): string => {
 	let expression = display.replace(/×/g, '*').replace(/÷/g, '/');
-	return !/[0-9)]$/.test(expression) ? expression.slice(0, -1) : expression;
+	while (expression && !/[0-9)]$/.test(expression)) expression = expression.slice(0, -1);
+	return expression;
 };
 
 export const renderResult = (result: ResultItem[]): string => {
@@ -16,4 +17,18 @@ export const renderResult = (result: ResultItem[]): string => {
 		.reverse()
 		.map((item) => `${item.expression} = ${item.result}`)
 		.join('\n');
+};
+
+export const calculateResult = (display: string): ResultItem => {
+	let expression = sanitizeExpression(display);
+	let result = 'Error';
+
+	if (!/^[-+*/().0-9\s√]+$/.test(expression)) throw new Error('Недопустимые символы в выражении');
+
+	const jsExpression = expression.replace(/√/g, 'Math.sqrt');
+	const evalResult = new Function(`return ${jsExpression}`)();
+
+	if (typeof evalResult === 'number' && !isNaN(evalResult)) result = formatNumber(evalResult);
+
+	return { expression, result };
 };

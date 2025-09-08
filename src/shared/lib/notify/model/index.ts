@@ -1,2 +1,2 @@
 export { notify } from './notify';
-export type { NotifyType, ToastOptions, ToastProps } from './types';
+export type { Notification, NotifyType, ToastOptions, ToastProps } from './types';

@@ -1,14 +1,16 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { Day, Night } from '@/shared/assets/images';
-import { uiStore } from '@/shared/stores';
 
 const ThemeSwitcher = () => {
-	const isDark = uiStore.theme === 'dark';
+	const { themeStore } = useStore();
+
+	const isDark = themeStore.theme === 'dark';
 	const alt = isDark ? 'Светлая тема' : 'Темная тема';
 	const image = isDark ? Day : Night;
 	const title = isDark ? 'Активировать светлую тему' : 'Активировать темную тему';
-	const handleToogle = () => uiStore.toggleTheme();
+	const handleToogle = () => themeStore.toggleTheme();
 
 	return (
 		<div className="hidden size-7 md:flex">

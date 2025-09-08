@@ -9,6 +9,7 @@ import {
 	mathOperation,
 	openBracket,
 	plusMinus,
+	sanitizeExpression,
 	sqrt,
 } from '../lib';
 import type { ResultItem } from '.';
@@ -39,27 +40,18 @@ export const useCalculator = () => {
 
 		/* prettier-ignore */
 		switch (value) {
-			case 'ON/C': 
-				reset(); break;
-			case 'OFF': 
-				off(); break;
-			case '√': 
-				handleSqrt(); break;
-			case '⌫': 
-				handleBackspace(); break;
-			case '(': 
-				handleOpenBracket(); break;
-			case ')': 
-				handleCloseBracket(); break;
-			case '±': 
-				handlePlusMinus(); break;
-			case '.': 
-				handleMathDot(); break;
+			case 'ON/C': reset(); break;
+			case 'OFF': off(); break;
+			case '√': handleSqrt(); break;
+			case '⌫': handleBackspace(); break;
+			case '(': handleOpenBracket(); break;
+			case ')': handleCloseBracket(); break;
+			case '±': handlePlusMinus(); break;
+			case '.': handleMathDot(); break;
 			case '÷':
 			case '×':
 			case '-':
-			case '+':
-				handleMathOperation(value); break;
+			case '+': handleMathOperation(value); break;
 			case '0':
 			case '1':
 			case '2':
@@ -69,22 +61,55 @@ export const useCalculator = () => {
 			case '6':
 			case '7':
 			case '8':
-			case '9':
-				handleDigit(value); break;
-			case '=':
-				handleResult(display); break;
-			default:
-				break;
+			case '9': handleDigit(value); break;
+			case '=': handleResult(display); break;
+			default: break;
 		}
 	};
 
 	const handleResult = (display: string): string => {
-		const { expression, result } = calculateResult(display);
-		const safeResult = result ?? 'Error';
+		const expr = sanitizeExpression(display);
 
-		setResult((prev) => [...prev, { expression, result: safeResult }]);
-		setDisplay(safeResult);
-		return safeResult;
+		if (!expr) {
+			setDisplay('0');
+			return '0';
+		}
+
+		const isNumberLike = (string: string): boolean => /^-?\d+(?:\.\d+)?$/.test(string);
+		const stripOuterParens = (string: string): string => {
+			let out = string.trim();
+			const balanced = (text: string) => {
+				let counter = 0;
+				for (const char of text) {
+					if (char === '(') counter++;
+					else if (char === ')') {
+						counter--;
+						if (counter < 0) return false;
+					}
+				}
+				return counter === 0;
+			};
+			while (out.startsWith('(') && out.endsWith(')') && balanced(out)) out = out.slice(1, -1).trim();
+
+			return out;
+		};
+
+		const core = stripOuterParens(expr);
+		if (isNumberLike(core)) {
+			setDisplay(expr);
+			return expr;
+		}
+
+		try {
+			const { expression, result } = calculateResult(expr);
+			const safeResult = result ?? 'Error';
+			setResult((prev) => [...prev, { expression, result: safeResult }]);
+			setDisplay(safeResult);
+			return safeResult;
+		} catch {
+			setDisplay('Error');
+			return 'Error';
+		}
 	};
 
 	return { handleButtonClick, display, result };

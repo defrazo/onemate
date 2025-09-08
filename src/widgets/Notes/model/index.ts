@@ -1,3 +1,5 @@
 export { notesService } from './notesService';
-export { notesStore } from './notesStore';
-export type { NewNote, Note } from './types';
+export { NotesStore } from './notesStore';
+export type { INotesRepo } from './ports';
+export type { Note } from './types';
+export { useNotesChannel } from './useNotesChannel';

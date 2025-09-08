@@ -13,7 +13,7 @@ interface StyleParams<T extends Component> {
 	loading?: boolean;
 }
 
-export function getComponentStyles<T extends Component>({
+export const getComponentStyles = <T extends Component>({
 	component,
 	variant = 'default',
 	size = 'md',
@@ -21,7 +21,7 @@ export function getComponentStyles<T extends Component>({
 	active = false,
 	disabled = false,
 	loading = false,
-}: StyleParams<T>) {
+}: StyleParams<T>) => {
 	const baseClass = base[component] ?? '';
 	const variantClass = variants[component][variant];
 	const sizeClass = sizes[component][size];
@@ -35,4 +35,4 @@ export function getComponentStyles<T extends Component>({
 		error && states.error,
 		loading && states.loading
 	);
-}
+};

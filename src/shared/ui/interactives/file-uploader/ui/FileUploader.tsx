@@ -1,9 +1,11 @@
+import type { ChangeEvent } from 'react';
+
 import { Input } from '@/shared/ui';
 
 interface FileUploaderProps {
 	selectedFileName: string;
 	accept: string;
-	onUpload: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onUpload: (e: ChangeEvent<HTMLInputElement>) => void;
 }
 
 const FileUploader = ({ selectedFileName, accept, onUpload }: FileUploaderProps) => (

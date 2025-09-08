@@ -1,5 +1,4 @@
-import { userStore } from '@/entities/user';
-import { DEFAULT_CITY } from '@/shared/lib/constants';
+import { createDefaultCity } from '@/shared/lib/constants';
 import { supabase } from '@/shared/lib/supabase';
 
 import type { City } from '.';
@@ -7,28 +6,25 @@ import type { City } from '.';
 const TABLE = 'user_cities';
 
 export const cityService = {
-	async loadCity(): Promise<City | null> {
-		const id = userStore.getIdOrThrow();
-
+	async loadCity(id: string): Promise<City> {
 		const { data, error } = await supabase.from(TABLE).select('*').eq('id', id).maybeSingle();
-		if (error) throw new Error(`Ошибка получения города: ${error.message}`);
+		if (error) throw new Error(`Произошла ошибка при загрузке местоположения: ${error.message}`);
 
 		if (!data) {
-			const inserted = await this.saveCity(DEFAULT_CITY);
-			return inserted;
+			void cityService.saveCity(id, createDefaultCity());
+			return createDefaultCity();
 		}
 
-		return data;
+		return data as City;
 	},
 
-	async saveCity(city: City): Promise<City> {
-		const id = userStore.getIdOrThrow();
+	async saveCity(id: string, city: City): Promise<void> {
+		const { error } = await supabase.from(TABLE).upsert({ ...city, id }, { onConflict: 'id' });
+		if (error) throw new Error(`Произошла ошибка при сохранении местоположения: ${error.message}`);
+	},
 
-		const cityWithId = { ...city, id };
-
-		const { data, error } = await supabase.from(TABLE).upsert(cityWithId, { onConflict: 'id' }).select().single();
-		if (error) throw new Error(`Ошибка сохранения города: ${error.message}`);
-
-		return data;
+	async deleteCity(id: string): Promise<void> {
+		const { error } = await supabase.from(TABLE).upsert({ ...createDefaultCity(), id }, { onConflict: 'id' });
+		if (error) throw new Error(`Произошла ошибка при удалении местоположения: ${error.message}`);
 	},
 };

@@ -1,73 +1,152 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import type { Provider } from '@supabase/supabase-js';
+import { makeAutoObservable } from 'mobx';
 
-import { userStore } from '@/entities/user';
-import { userProfileStore } from '@/entities/user-profile';
-import { deviceActivityStore } from '@/features/device-activity';
+import type { IUserAuthPort } from '@/entities/user';
+import type { Status } from '@/shared/stores';
 
-import { authFormStore, authService } from '.';
+import type { IAuthAccountPort, IAuthDevicePort } from '.';
+import { authService } from '.';
 
-export class AuthStore {
-	isAuthChecked = false;
+export class AuthStore implements IAuthAccountPort, IAuthDevicePort {
+	private inited: boolean = false;
+	private status: Status = 'idle';
+	private error: string | null = null;
 
-	async oAuth({ data, error }: { data: any; error: any }): Promise<boolean> {
+	private isAuth: boolean = false;
+
+	lastAuthTime: number = 0;
+
+	get isLoading(): boolean {
+		return this.status === 'loading';
+	}
+
+	get isReady(): boolean {
+		return this.status === 'ready' && this.isAuth === true;
+	}
+
+	get isError(): boolean {
+		return this.status === 'error';
+	}
+
+	get errorMessage(): string | null {
+		return this.error;
+	}
+
+	async startOAuth(provider: Provider): Promise<void> {
+		await authService.oAuth(provider);
+	}
+
+	async finishOAuth(): Promise<boolean> {
+		await this.userStore.loadUser();
+
+		// ⚠️ Ограничение доступа для предотвращения обработки персональных данных
+		const email = Array.isArray(this.userStore.email) ? this.userStore.email[0] : this.userStore.email;
+		let currentEmail = email?.toLowerCase().trim() ?? null;
+
+		if (!currentEmail) {
+			const email = await authService.getCurrentEmail();
+			currentEmail = email?.toLowerCase().trim() ?? null;
+		}
+
+		const env = (import.meta.env.VITE_ALLOWED_EMAILS ?? '') as string;
+		const allowed = env
+			.split(',')
+			.map((s) => s.trim().toLowerCase())
+			.filter(Boolean);
+
+		if (!currentEmail || !allowed.includes(currentEmail)) {
+			await authService.logout();
+			throw new Error('Доступ только для разработчика');
+		}
+
+		this.setReady();
+		this.updateAuthTime();
+
+		return true;
+	}
+
+	async login(login: string, password: string): Promise<boolean> {
+		const result = await authService.login(login, password);
+		if (result) {
+			this.setReady();
+			this.updateAuthTime();
+		}
+		return result;
+	}
+
+	async register(username: string, email: string, password: string, passwordConfirm: string): Promise<boolean> {
+		return await authService.register(username, email, password, passwordConfirm);
+	}
+
+	logout(): void {
+		this.reset();
+		void authService.logout();
+	}
+
+	async resendConfirmation(email: string): Promise<boolean> {
+		return await authService.resendConfirmation(email);
+	}
+
+	async resetPassword(password: string): Promise<boolean> {
+		return await authService.resetPassword(password);
+	}
+
+	private updateAuthTime(): void {
+		this.lastAuthTime = Date.now();
+	}
+
+	private async checkAuth(): Promise<void> {
+		if (this.isLoading) return;
+
+		this.setLoading();
+
 		try {
-			const result = await authService.oAuth({ data, error });
-			if (result) {
-				await userStore.loadUser();
-				await userProfileStore.loadProfile();
-				await deviceActivityStore.logAuthOnce();
-				authFormStore.reset();
-			}
-			return result;
+			await this.userStore.loadUser();
+			this.userStore.id ? this.setReady() : this.reset();
 		} catch (error) {
-			throw error;
+			this.setError(error);
 		}
 	}
 
-	async login(): Promise<boolean> {
-		const { login, password } = authFormStore;
-		try {
-			const result = await authService.login(login, password);
-			if (result) {
-				await userStore.loadUser();
-				await userProfileStore.loadProfile();
-				await deviceActivityStore.logAuthOnce();
-				authFormStore.reset();
-			}
-			return result;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async register(): Promise<boolean> {
-		const data = authFormStore.authForm;
-		try {
-			const result = await authService.register(data);
-			if (result) {
-				await userStore.loadUser();
-				authFormStore.reset();
-			}
-			return result;
-		} catch (error) {
-			throw error;
-		}
-	}
-
-	async logout() {
-		await authService.logout();
-	}
-
-	async init() {
-		await userStore.loadSession();
-		runInAction(() => {
-			this.isAuthChecked = true;
+	constructor(private readonly userStore: IUserAuthPort) {
+		makeAutoObservable<this, 'userStore' | 'inited'>(this, {
+			userStore: false,
+			inited: false,
 		});
 	}
 
-	constructor() {
-		makeAutoObservable(this);
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+
+		void this.checkAuth();
+	}
+
+	destroy(): void {
+		this.inited = false;
+	}
+
+	private setLoading(): void {
+		this.status = 'loading';
+		this.error = null;
+	}
+
+	private setReady(): void {
+		this.status = 'ready';
+		this.error = null;
+		this.isAuth = true;
+	}
+
+	private setError(error: unknown): void {
+		this.status = 'error';
+		this.error = error instanceof Error ? error.message : String(error);
+		this.isAuth = false;
+	}
+
+	private reset(): void {
+		this.status = 'idle';
+		this.error = null;
+		this.isAuth = false;
+		this.userStore.reset();
 	}
 }
-
-export const authStore = new AuthStore();

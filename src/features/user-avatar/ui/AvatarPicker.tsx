@@ -1,16 +1,15 @@
+import { useStore } from '@/app/providers';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 import { cn } from '@/shared/lib/utils';
-import { modalStore } from '@/shared/stores';
 import { Divider } from '@/shared/ui';
 
-interface AvatarPickerProps {
-	onSelect: (src: string) => void;
-}
+export const AvatarPicker = () => {
+	const { modalStore, notifyStore, userProfileStore } = useStore();
 
-export const AvatarPicker = ({ onSelect }: AvatarPickerProps) => {
 	const handleSelect = (src: string) => {
-		onSelect(src);
+		userProfileStore.updateAvatar(src);
 		modalStore.closeModal();
+		notifyStore.setNotice('Аватар обновлен!', 'success');
 	};
 
 	return (

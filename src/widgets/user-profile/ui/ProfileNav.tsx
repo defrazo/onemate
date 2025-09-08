@@ -1,12 +1,12 @@
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
+import { useStore } from '@/app/providers';
 import UserAvatar from '@/features/user-avatar';
 import { cn } from '@/shared/lib/utils';
-import { Button, Divider, Preloader } from '@/shared/ui';
+import { Button, Divider, LoadFallback, Preloader } from '@/shared/ui';
 
 import type { ProfileNavButton } from '../model';
-import { profileStore, useProfile } from '../model';
+import { useProfile } from '../model';
 
 const buttons: ProfileNavButton[] = [
 	{ id: 'overview', title: 'Главная' },
@@ -16,19 +16,23 @@ const buttons: ProfileNavButton[] = [
 ];
 
 export const ProfileNav = observer(() => {
+	const { profileStore, userStore } = useStore();
 	const { searchParams, navigate } = useProfile();
+
 	const currentTab = searchParams.get('tab') || 'preview';
+
+	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
 		<div className="flex w-full flex-col gap-4 select-none">
-			{!profileStore.isProfileUploaded ? (
+			{!profileStore.isReady ? (
 				<div className="flex min-h-[19.625rem] items-center justify-center">
 					<Preloader className="size-25" />
 				</div>
 			) : (
-				<div className="core-base flex flex-col items-center gap-4 rounded-xl p-4">
+				<div className="core-elements flex flex-col items-center gap-4 rounded-xl p-4">
 					<UserAvatar />
-					<Divider className="w-full" />
+					<Divider className="w-full bg-[var(--color-secondary)]" />
 					<div className="flex cursor-default flex-col items-center justify-center">
 						<div>{userStore.username}</div>
 						<div>{userStore.email}</div>

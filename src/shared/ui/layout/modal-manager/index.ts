@@ -1,2 +1,2 @@
-export type { ModalType } from './model';
+export type { ModalConfig, ModalType } from './model';
 export { default } from './ui';

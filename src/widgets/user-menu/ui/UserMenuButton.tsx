@@ -1,17 +1,19 @@
-import { useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 
+import { useStore } from '@/app/providers';
 import UserAvatar from '@/features/user-avatar';
-import { modalStore } from '@/shared/stores';
 import { Button } from '@/shared/ui';
 
 import { DesktopUserMenu, MobileUserMenu } from '.';
 
 interface UserMenuButtonProps {
 	isMobile: boolean;
-	headerRef: React.RefObject<HTMLDivElement | null>;
+	headerRef: RefObject<HTMLDivElement | null>;
 }
 
 export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => {
+	const { modalStore } = useStore();
+
 	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
 
 	const handleUserMenuClick = () => {
@@ -24,10 +26,7 @@ export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => 
 			return;
 		}
 
-		const position = {
-			top: rect.bottom + window.scrollY - 10,
-			left: rect.right + window.scrollX,
-		};
+		const position = { top: rect.bottom + window.scrollY - 10, left: rect.right + window.scrollX };
 
 		isMobile
 			? modalStore.setModal(<MobileUserMenu />, 'sheet')

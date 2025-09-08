@@ -1,8 +1,10 @@
+import type { MouseEvent, ReactElement, ReactNode } from 'react';
+
 export type UserButton = {
 	id: string;
-	icon?: React.ReactElement;
-	leftIcon?: React.ReactNode;
+	icon?: ReactElement;
+	leftIcon?: ReactNode;
 	to?: string;
-	action?: (e: React.MouseEvent<HTMLButtonElement>) => void;
-	label: React.ReactNode;
+	action?: (e: MouseEvent<HTMLButtonElement>) => void;
+	label: ReactNode;
 };

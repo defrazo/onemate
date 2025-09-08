@@ -1,50 +1,56 @@
-import { userStore } from '@/entities/user';
 import { supabase } from '@/shared/lib/supabase';
 
 import type { ActivityLog } from '.';
 
 const TABLE = 'user_auth_log';
+const MAX_LOGS = 10;
 
 export const deviceActivityService = {
-	async loadActivityLog(): Promise<ActivityLog[]> {
-		const id = userStore.getIdOrThrow();
-
+	async loadActivityLog(id: string): Promise<ActivityLog[]> {
 		const { data, error } = await supabase
 			.from(TABLE)
 			.select('*')
 			.eq('user_id', id)
-			.order('created_at', { ascending: false });
+			.order('created_at', { ascending: false })
+			.limit(MAX_LOGS);
 
-		if (error) throw new Error(`Ошибка получения истории активности: ${error.message}`);
+		if (error) throw new Error(`Произошла ошибка при загрузке истории активности: ${error.message}`);
 
-		return data;
+		return (data ?? []) as ActivityLog[];
 	},
 
-	async saveActivityLog(log: Omit<ActivityLog, 'id' | 'created_at' | 'user_id'>): Promise<ActivityLog> {
-		const id = userStore.getIdOrThrow();
-
-		const logWithUser = { ...log, user_id: id };
-
-		const { data: inserted, error: insertError } = await supabase
+	async saveActivityLog(id: string, log: Omit<ActivityLog, 'id' | 'created_at' | 'user_id'>): Promise<ActivityLog> {
+		const { data, error } = await supabase
 			.from(TABLE)
-			.insert([logWithUser])
+			.insert([{ ...log, user_id: id }])
 			.select()
 			.single();
 
-		if (insertError) throw new Error(`Ошибка сохранения истории активности: ${insertError.message}`);
+		if (error) throw new Error(`Произошла ошибка при сохранении истории активности: ${error.message}`);
 
-		const { data: allLogs, error: selectError } = await supabase
+		void deviceActivityService.pruneActivityLog(id);
+
+		return data as ActivityLog;
+	},
+
+	async pruneActivityLog(id: string): Promise<void> {
+		const { data, error } = await supabase
 			.from(TABLE)
 			.select('id')
 			.eq('user_id', id)
 			.order('created_at', { ascending: false });
 
-		if (!selectError && allLogs.length > 10) {
-			const logsToDelete = allLogs.slice(10);
+		if (error) throw new Error(`Произошла ошибка при обновлении истории активности: ${error.message}`);
+
+		if (data.length > MAX_LOGS) {
+			const logsToDelete = data.slice(MAX_LOGS);
 			const ids = logsToDelete.map((entry) => entry.id);
 			await supabase.from(TABLE).delete().in('id', ids);
 		}
+	},
 
-		return inserted;
+	async deleteActivityLog(id: string): Promise<void> {
+		const { error } = await supabase.from(TABLE).delete().eq('user_id', id);
+		if (error) throw new Error(`Произошла ошибка при очистке истории активности: ${error.message}`);
 	},
 };

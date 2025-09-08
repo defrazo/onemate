@@ -1,21 +1,70 @@
-import { ReactNode } from 'react';
+import type { ReactNode } from 'react';
+import { createPortal } from 'react-dom';
 
 import { cn } from '@/shared/lib/utils';
 
+import type { Placement } from '../model';
+import { useTooltip } from '../model';
+
 interface TooltipProps {
-	text?: string;
+	content?: ReactNode;
 	className?: string;
 	children: ReactNode;
+	preferredPlacements?: Placement[];
+	offset?: number;
+	portalContainer?: Element;
 }
 
-const Tooltip = ({ text, className, children }: TooltipProps) => {
-	return (
-		<div className={cn('group relative inline-block cursor-help', className)}>
-			{children}
-			<div className="pointer-events-none absolute bottom-full left-1/2 hidden w-max -translate-x-1/2 transform rounded bg-[var(--bg-overlay)] px-2 py-1 text-center text-base group-hover:block">
-				{text}
-			</div>
+const Tooltip = ({
+	content,
+	className,
+	children,
+	preferredPlacements = ['top', 'bottom', 'right', 'left'],
+	offset = 8,
+	portalContainer,
+}: TooltipProps) => {
+	if (!content) return <>{children}</>;
+
+	const { show, coords, placement, triggerRef, tipRef, setShow } = useTooltip(preferredPlacements, offset, content);
+
+	const tip = (
+		<div
+			ref={tipRef}
+			aria-hidden={!show}
+			className="fixed z-100 max-w-lg rounded-xl bg-black px-4 py-2 text-sm leading-snug text-[var(--accent-text)] shadow transition-opacity"
+			role="tooltip"
+			style={{ top: coords.top, left: coords.left }}
+		>
+			<span
+				className={cn(
+					'pointer-events-none absolute block h-2 w-2 rotate-45 bg-black',
+					(placement === 'top' || placement === 'bottom') && 'left-1/2 -translate-x-1/2',
+					placement === 'top' && '-bottom-1',
+					placement === 'bottom' && '-top-1',
+					placement === 'left' && 'top-1/2 -right-1 -translate-y-1/2',
+					placement === 'right' && 'top-1/2 -left-1 -translate-y-1/2'
+				)}
+			/>
+			{content}
 		</div>
+	);
+
+	return (
+		<>
+			<div
+				ref={triggerRef}
+				className={cn('inline-flex cursor-help', className)}
+				tabIndex={0}
+				onBlur={() => setShow(false)}
+				onFocus={() => setShow(true)}
+				onMouseEnter={() => setShow(true)}
+				onMouseLeave={() => setShow(false)}
+			>
+				{children}
+			</div>
+
+			{show && createPortal(tip, portalContainer ?? document.body)}
+		</>
 	);
 };
 

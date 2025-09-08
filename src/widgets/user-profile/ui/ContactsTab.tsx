@@ -1,39 +1,38 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconTrash, IconWarning } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
 import { validateEmail, validatePhone } from '@/shared/lib/validators';
-import { modalStore, notifyStore } from '@/shared/stores';
-import { Button, Input, LoadFallback } from '@/shared/ui';
+import { Button, Input, LoadFallback, PhoneInput } from '@/shared/ui';
 
-import { profileStore, useProfile } from '../model';
+import { useProfile } from '../model';
 
 export const ContactsTab = observer(() => {
+	const { modalStore, notifyStore, profileStore: store } = useStore();
 	const { isMobile, navigate } = useProfile();
-	const store = profileStore;
 
 	const handleSave = async () => {
 		try {
-			for (const phone of store.phone) {
-				const trimmed = phone.trim();
-				if (trimmed) await validatePhone(trimmed);
+			for (const phone of store.phone) if (phone.trim()) await validatePhone(phone.trim());
+
+			if (!store.mainEmail.trim()) {
+				notifyStore.setNotice('Основной e-mail обязателен', 'info');
+				return;
 			}
 
-			if (!store.mainEmail.trim()) throw new Error('Основной e-mail обязателен');
 			await validateEmail(store.mainEmail.trim());
 
-			for (const email of store.email) {
-				const trimmed = email.trim();
-				if (trimmed) await validateEmail(trimmed);
-			}
+			for (const email of store.email) if (email.trim()) await validateEmail(email.trim());
 
 			await store.saveChanges();
+			notifyStore.setNotice('Данные успешно сохранены', 'success');
 		} catch (error: any) {
 			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
-	if (!store.isProfileUploaded) return <LoadFallback />;
+	if (!store.isReady) return <LoadFallback />;
 
 	return (
 		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
@@ -48,13 +47,10 @@ export const ContactsTab = observer(() => {
 
 						return (
 							<div key={idx} className="flex gap-2">
-								<Input
-									className={cn(isLast && 'mr-8')}
-									placeholder="Введите номер телефона"
+								<PhoneInput
+									className={cn(!canRemove && 'mr-8')}
 									value={phone}
-									variant="ghost"
-									onBlur={(e) => store.updateArrayField('phone', idx, e.target.value.trim())}
-									onChange={(e) => store.updateArrayField('phone', idx, e.target.value)}
+									onChange={(value: string) => store.updateArrayField('phone', idx, value)}
 								/>
 								{canRemove && (
 									<Button
@@ -74,7 +70,7 @@ export const ContactsTab = observer(() => {
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Почта</h2>
 				<div className="flex w-full flex-col gap-1">
-					<h3>Основная почта</h3>
+					<h3 className="opacity-60">Основная почта</h3>
 					<div className="flex gap-2">
 						<Input
 							error={!store.mainEmail}
@@ -101,7 +97,7 @@ export const ContactsTab = observer(() => {
 					</div>
 				</div>
 				<div className="flex w-full flex-col gap-2">
-					<h3>Резервная почта</h3>
+					<h3 className="opacity-60">Резервная почта</h3>
 					{store.email.map((email, idx) => {
 						const isLast = idx === store.email.length - 1;
 						const isEmpty = email.trim() === '';
@@ -110,6 +106,7 @@ export const ContactsTab = observer(() => {
 						return (
 							<div key={idx} className="flex gap-2">
 								<Input
+									autoComplete="new-password"
 									className={cn(isLast && 'mr-8')}
 									placeholder="Введите e-mail"
 									value={email}
@@ -132,7 +129,13 @@ export const ContactsTab = observer(() => {
 					})}
 				</div>
 				<div className="mt-2 flex gap-4">
-					<Button disabled={!store.mainEmail} variant="accent" onClick={handleSave}>
+					<Button
+						className="w-28"
+						disabled={!store.mainEmail || !store.isDirty}
+						loading={store.isLoading}
+						variant="accent"
+						onClick={handleSave}
+					>
 						Сохранить
 					</Button>
 					<Button

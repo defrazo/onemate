@@ -1,165 +1,183 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { makeAutoObservable, reaction } from 'mobx';
 
-import { DEFAULT_CITY, STORAGE_LAST_CITY } from '@/shared/lib/constants';
+import type { IBaseUserPort } from '@/entities/user';
+import { locationChannel } from '@/shared/lib/broadcast';
+import { createDefaultCity } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
-import { notifyStore } from '@/shared/stores';
+import { key } from '@/shared/lib/utils';
+import type { Status } from '@/shared/stores';
 
-import { fetchCityByCoordinates, fetchCityByIP } from '../api';
-import type { City } from '.';
-import { cityService } from '.';
+import { fetchCityByIP } from '../api';
+import type { City, IBaseCityPort, ICityDeviceActivityPort, ICityLocationPort, ICityRepo } from '.';
 
-export class CityStore {
-	isLoading = false;
-	currentCity: City = DEFAULT_CITY;
+export class CityStore implements IBaseCityPort, ICityDeviceActivityPort, ICityLocationPort {
+	private debounce: ReturnType<typeof setTimeout> | null = null;
+	private disposers = new Set<() => void>();
+	private inited: boolean = false;
+	private status: Status = 'idle';
+	private error: string | null = null;
 
-	get cityName(): string {
-		return this.currentCity?.name || '';
+	private data: City | null = null;
+
+	get isLoading(): boolean {
+		return this.status === 'loading';
 	}
 
-	get cityRegion(): string {
-		return this.currentCity?.region || '';
+	get isReady(): boolean {
+		return this.status === 'ready' && this.data !== null;
 	}
 
-	get cityCoordinates(): { lat: number; lon: number } {
-		return { lat: this.currentCity.lat, lon: this.currentCity.lon };
+	get isError(): boolean {
+		return this.status === 'error';
 	}
 
-	isDefaultCity(): boolean {
-		return (
-			this.currentCity.name === DEFAULT_CITY.name &&
-			this.currentCity.lat === DEFAULT_CITY.lat &&
-			this.currentCity.lon === DEFAULT_CITY.lon
-		);
+	get errorMessage(): string | null {
+		return this.error;
 	}
 
-	clearCity(): void {
-		storage.remove(STORAGE_LAST_CITY);
+	get city(): City {
+		return this.data ?? createDefaultCity();
 	}
 
-	async setCurrentCity(city: City) {
-		this.currentCity = city;
-		await this.saveCity(city);
+	get name(): string {
+		return this.city.name ?? '';
 	}
 
-	async resetCurrentCity() {
-		await this.setCurrentCity(DEFAULT_CITY);
-		await this.detectCityByIP();
+	get region(): string {
+		return this.city.region ?? '';
 	}
 
-	async detectCityByGeolocation() {
-		this.isLoading = true;
+	setCity(city: City): void {
+		if (this.sameCity(this.city, city)) return;
 
-		if (!navigator.geolocation) {
-			runInAction(() => {
-				this.isLoading = false;
-			});
+		this.setReady(city);
+		locationChannel.emit({ type: 'location_updated', city: this.name });
+		this.scheduleServerUpdate(city);
+	}
 
-			notifyStore.setNotice('Геолокация не поддерживается вашим браузером', 'error');
-			return;
+	deleteCity(): void {
+		this.setCity(createDefaultCity());
+
+		if (this.userStore.id) {
+			this.clearDebounce();
+			void this.repo.deleteCity(this.userStore.id);
 		}
-
-		navigator.geolocation.getCurrentPosition(
-			async (position) => {
-				const { latitude, longitude } = position.coords;
-
-				try {
-					const city = await fetchCityByCoordinates(latitude, longitude);
-					if (!city) throw new Error('Город не найден по координатам');
-
-					await this.setCurrentCity(city);
-
-					runInAction(() => {
-						this.isLoading = false;
-					});
-
-					notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
-				} catch (error: any) {
-					runInAction(() => {
-						this.isLoading = false;
-					});
-
-					notifyStore.setNotice(error.message || 'Ошибка при определении текущего местоположения', 'error');
-				}
-			},
-			() => {
-				runInAction(() => {
-					this.isLoading = false;
-				});
-
-				notifyStore.setNotice('Не удалось получить геолокацию', 'error');
-			}
-		);
 	}
 
-	async loadCity() {
-		this.isLoading = true;
+	private scheduleServerUpdate(city: City): void {
+		if (!this.userStore.id) return;
+
+		this.clearDebounce();
+		this.debounce = setTimeout(() => void this.repo.saveCity(this.userStore.id!, city), 500);
+	}
+
+	private sameCity(a: City, b: City): boolean {
+		return a.name === b.name && a.lat === b.lat && a.lon === b.lon && (a.region ?? '') === (b.region ?? '');
+	}
+
+	private async loadCity(): Promise<void> {
+		if (!this.userStore.id || this.isLoading) return;
+
+		this.setLoading();
 
 		try {
-			const city = await cityService.loadCity();
-
-			runInAction(() => {
-				if (city) {
-					this.currentCity = city;
-					storage.set(STORAGE_LAST_CITY, city);
-				} else {
-					const cachedCity = storage.get(STORAGE_LAST_CITY);
-					this.currentCity = cachedCity ?? DEFAULT_CITY;
-				}
-			});
-		} catch (error: any) {
-			notifyStore.setNotice(error.message, 'error');
-		} finally {
-			runInAction(() => {
-				this.isLoading = false;
-			});
+			const city = await this.repo.loadCity(this.userStore.id!);
+			city ? this.setReady(city) : await this.detectCityByIP();
+		} catch (error) {
+			this.setError(error);
+			await this.detectCityByIP();
 		}
 	}
 
-	async saveCity(city: City) {
-		this.isLoading = true;
+	private async detectCityByIP(): Promise<void> {
+		if (!this.userStore.id) return;
 
-		try {
-			const savedCity = await cityService.saveCity(city);
-
-			runInAction(() => {
-				this.currentCity = savedCity;
-				storage.set(STORAGE_LAST_CITY, savedCity);
-			});
-		} catch (error: any) {
-			notifyStore.setNotice(error.message, 'error');
-		} finally {
-			runInAction(() => {
-				this.isLoading = false;
-			});
-		}
-	}
-
-	async init() {
-		const savedCity = storage.get(STORAGE_LAST_CITY);
-
-		if (savedCity) await this.setCurrentCity(savedCity);
-
-		if (!savedCity && this.isDefaultCity()) await this.detectCityByIP();
-	}
-
-	private async detectCityByIP() {
-		this.isLoading = true;
+		this.setLoading();
 
 		try {
 			const city = await fetchCityByIP();
-
-			await this.setCurrentCity(city ?? DEFAULT_CITY);
-		} catch {
-		} finally {
-			runInAction(() => {
-				this.isLoading = false;
-			});
+			this.setReady(city ?? createDefaultCity());
+		} catch (error) {
+			this.setError(error);
 		}
 	}
 
-	constructor() {
-		makeAutoObservable(this);
+	constructor(
+		private readonly userStore: IBaseUserPort,
+		private readonly repo: ICityRepo
+	) {
+		makeAutoObservable<this, 'userStore' | 'repo' | 'inited' | 'disposers' | 'debounce'>(this, {
+			userStore: false,
+			repo: false,
+			inited: false,
+			disposers: false,
+			debounce: false,
+		});
+	}
+
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+
+		this.track(
+			reaction(
+				() => this.userStore.id,
+				async (id) => (id ? await this.loadCity() : this.reset()),
+				{ fireImmediately: true }
+			)
+		);
+	}
+
+	destroy(): void {
+		this.disposers.forEach((dispose) => {
+			try {
+				dispose();
+			} catch {}
+		});
+		this.disposers.clear();
+		this.clearDebounce();
+		this.inited = false;
+	}
+
+	restart(): void {
+		this.destroy();
+		this.init();
+	}
+
+	private setLoading(): void {
+		this.status = 'loading';
+		this.error = null;
+	}
+
+	private setReady(data: City): void {
+		this.status = 'ready';
+		this.error = null;
+		this.data = data;
+	}
+
+	private setError(error: unknown): void {
+		this.status = this.data ? 'ready' : 'error';
+		this.error = error instanceof Error ? error.message : String(error);
+	}
+
+	private reset(): void {
+		this.status = 'idle';
+		this.error = null;
+		this.data = null;
+		this.clearDebounce();
+
+		if (this.userStore.lastId) storage.remove(key(this.userStore.lastId, 'city'));
+	}
+
+	private clearDebounce(): void {
+		if (this.debounce) {
+			clearTimeout(this.debounce);
+			this.debounce = null;
+		}
+	}
+
+	private track(disposer?: (() => void) | void): void {
+		if (!disposer) return;
+		this.disposers.add(disposer);
 	}
 }
-
-export const cityStore = new CityStore();

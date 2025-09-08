@@ -1,42 +1,79 @@
+import { useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconArrows } from '@/shared/assets/icons';
-import { Button } from '@/shared/ui';
+import { WIDGET_TIPS } from '@/shared/content';
+import { Button, Tooltip } from '@/shared/ui';
 
-import { translatorStore } from '../model';
 import { TranslatorBox } from '.';
 
 const TranslatorWidget = () => {
+	const { notifyStore, translatorStore: store } = useStore();
+
+	const handleClear = () => {
+		store.updateTextbox(0, 'text', '');
+		store.updateTextbox(1, 'text', '');
+	};
+
+	useEffect(() => {
+		if (!store.sourceText) return;
+
+		let active = true;
+		const timeout = setTimeout(() => {
+			store.translateText().catch((e) => {
+				if (active) notifyStore.setNotice(e.message || 'Произошла ошибка при переводе', 'error');
+			});
+		}, 1000);
+
+		return () => {
+			active = false;
+			clearTimeout(timeout);
+		};
+	}, [store.sourceText, store.sourceLang, store.targetLang]);
+
+	const location = useLocation();
+
+	useEffect(() => {
+		return () => store.reset();
+	}, [location.pathname]);
+
+	useEffect(() => () => store.destroy(), [store]);
+
 	return (
-		<div className="core-card core-base flex h-full flex-col gap-2 shadow-[var(--shadow)]">
-			<h1 className="core-header">Переводчик</h1>
+		<>
+			<div className="flex items-center">
+				<Tooltip content={WIDGET_TIPS.translator}>
+					<h1 className="core-header">Переводчик</h1>
+				</Tooltip>
+			</div>
 			<div className="flex flex-1 flex-col">
 				<div className="relative flex flex-1 gap-2">
 					<TranslatorBox
-						language={translatorStore.sourceLang}
-						text={translatorStore.sourceText}
+						language={store.sourceLang}
+						store={store}
+						text={store.sourceText}
 						type="source"
-						onChangeLanguage={(value) => translatorStore.updateTextboxes(0, 'language', value)}
-						onChangeText={(value) => translatorStore.updateTextboxes(0, 'text', value)}
-						onClearTextbox={() => translatorStore.updateTextboxes(0, 'text', '')}
+						onChangeLang={(value) => store.updateTextbox(0, 'language', value)}
+						onClear={handleClear}
 					/>
 					<Button
 						centerIcon={<IconArrows className="size-4" />}
 						className="core-elements absolute bottom-6 left-1/2 z-10 size-8 -translate-x-1/2 rotate-90 rounded-full"
-						title="Поменять местами валюты"
-						onClick={() => translatorStore.swapLanguages()}
+						title="Поменять языки местами"
+						onClick={() => store.swapLanguages()}
 					/>
 					<TranslatorBox
-						language={translatorStore.targetLang}
-						loading={translatorStore.isLoading}
-						text={translatorStore.targetText}
+						language={store.targetLang}
+						store={store}
+						text={store.targetText}
 						type="target"
-						onChangeLanguage={(value) => translatorStore.updateTextboxes(1, 'language', value)}
-						onClearTextbox={() => translatorStore.updateTextboxes(1, 'text', '')}
+						onChangeLang={(value) => store.updateTextbox(1, 'language', value)}
 					/>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

@@ -1,37 +1,35 @@
 import { observer } from 'mobx-react-lite';
 
-import SearchCity from '@/features/search-city';
+import { useStore } from '@/app/providers';
+import type { Gender } from '@/entities/user-profile';
+import LocationSearch from '@/features/location';
 import { AvatarPicker } from '@/features/user-avatar';
-import { AVATAR_OPTIONS } from '@/shared/lib/constants';
+import { IconTrash } from '@/shared/assets/icons';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
-import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input, LoadFallback, Radio, SelectExt, Thumbnail } from '@/shared/ui';
 
 import { genderOptions } from '../lib';
-import type { DraftProfile } from '../model';
-import { profileStore, useProfile } from '../model';
+import { useProfile } from '../model';
 
 export const PersonalTab = observer(() => {
+	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
 	const { isMobile, navigate } = useProfile();
-	const store = profileStore;
-
-	const openAvatarPicker = () => {
-		modalStore.setModal(<AvatarPicker onSelect={(newAvatar) => store.updateField('avatar', newAvatar)} />);
-	};
 
 	const handleSave = async () => {
 		try {
-			await validateName(store.firstName);
-			await validateName(store.lastName);
-			await validateUsername(store.username);
+			if (store.firstName) await validateName(store.firstName);
+			if (store.lastName) await validateName(store.lastName);
+			if (store.username) await validateUsername(store.username);
+
 			await store.saveChanges();
+			notifyStore.setNotice('Данные успешно сохранены', 'success');
 		} catch (error: any) {
 			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
 		}
 	};
 
-	if (!store.isProfileUploaded) return <LoadFallback />;
+	if (!store.isReady) return <LoadFallback />;
 
 	return (
 		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
@@ -41,37 +39,41 @@ export const PersonalTab = observer(() => {
 					<Thumbnail
 						alt="avatar"
 						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-1 md:size-fit"
-						src={store.avatar || AVATAR_OPTIONS[0]}
+						src={userProfileStore.avatar}
 						title="Сменить аватар"
-						onClick={openAvatarPicker}
+						onClick={() => modalStore.setModal(<AvatarPicker />)}
 					/>
-					<Button className="w-full" onClick={openAvatarPicker}>
+					<Button className="w-full" onClick={() => modalStore.setModal(<AvatarPicker />)}>
 						Изменить
 					</Button>
 				</div>
 				<div className="flex w-full flex-col justify-center gap-4">
 					<div className="flex flex-col gap-1">
-						<h3>Имя</h3>
-						<Input
-							placeholder="Ваше имя"
-							value={store.firstName}
-							variant="ghost"
-							onBlur={(e) => store.updateField('firstName', e.target.value.trim())}
-							onChange={(e) => store.updateField('firstName', e.target.value)}
-						/>
+						<h3 className="opacity-60">Имя</h3>
+						<div className="flex gap-2">
+							<Input
+								autoComplete="new-password"
+								placeholder="Ваше имя"
+								value={store.firstName}
+								variant="ghost"
+								onBlur={(e) => store.updateField('first_name', e.target.value.trim())}
+								onChange={(e) => store.updateField('first_name', e.target.value)}
+							/>
+						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3>Фамилия</h3>
+						<h3 className="opacity-60">Фамилия</h3>
 						<Input
+							autoComplete="new-password"
 							placeholder="Ваша фамилия"
 							value={store.lastName}
 							variant="ghost"
-							onBlur={(e) => store.updateField('lastName', e.target.value.trim())}
-							onChange={(e) => store.updateField('lastName', e.target.value)}
+							onBlur={(e) => store.updateField('last_name', e.target.value.trim())}
+							onChange={(e) => store.updateField('last_name', e.target.value)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3>Никнейм</h3>
+						<h3 className="opacity-60">Никнейм</h3>
 						<Input
 							placeholder="Ваш никнейм"
 							value={store.username}
@@ -81,7 +83,7 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3>Дата рождения</h3>
+						<h3 className="opacity-60">Дата рождения</h3>
 						<div className="flex gap-2">
 							<SelectExt
 								justify="center"
@@ -90,8 +92,8 @@ export const PersonalTab = observer(() => {
 								value={store.birthYear}
 								variant="ghost"
 								onChange={(value) => {
-									store.updateField('birthYear', value);
-									store.updateField('birthDay', '');
+									store.updateField('birth_year', value);
+									store.updateField('birth_day', '');
 								}}
 							/>
 							<SelectExt
@@ -101,8 +103,8 @@ export const PersonalTab = observer(() => {
 								value={store.birthMonth}
 								variant="ghost"
 								onChange={(value) => {
-									store.updateField('birthMonth', value);
-									store.updateField('birthDay', '');
+									store.updateField('birth_month', value);
+									store.updateField('birth_day', '');
 								}}
 							/>
 							<SelectExt
@@ -112,26 +114,45 @@ export const PersonalTab = observer(() => {
 								placeholder="День"
 								value={store.birthDay}
 								variant="ghost"
-								onChange={(value) => store.updateField('birthDay', value)}
+								onChange={(value) => store.updateField('birth_day', value)}
 							/>
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3>Пол:</h3>
+						<h3 className="opacity-60">Пол:</h3>
 						<Radio
 							className="gap-4"
 							name="gender"
 							options={genderOptions}
 							value={store.gender}
-							onChange={(e) => store.updateField('gender', e.target.value as DraftProfile['gender'])}
+							onChange={(e) => store.updateField('gender', e.target.value as Gender)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3>Город</h3>
-						<SearchCity />
+						<h3 className="opacity-60">Город</h3>
+						<div className="flex gap-2">
+							<LocationSearch />
+							<Button
+								centerIcon={<IconTrash className="size-6" />}
+								className="hover:text-[var(--status-error)]"
+								size="custom"
+								title="Удалить"
+								variant="custom"
+								onClick={() => {
+									cityStore.deleteCity();
+									notifyStore.setNotice('Данные о местоположении удалены!', 'success');
+								}}
+							/>
+						</div>
 					</div>
 					<div className="flex justify-center gap-4 md:justify-start">
-						<Button variant="accent" onClick={handleSave}>
+						<Button
+							className="w-28"
+							disabled={!store.isDirty}
+							loading={store.isLoading}
+							variant="accent"
+							onClick={handleSave}
+						>
 							Сохранить
 						</Button>
 						<Button

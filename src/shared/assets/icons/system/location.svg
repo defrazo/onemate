@@ -1,12 +1,13 @@
 <svg
-    xmlns="http://www.w3.org/2000/svg"
-    viewBox="0 0 32 32"
-    width="100%"
-    height="100%"
-    preserveAspectRatio="xMidYMid meet"
-    fill="currentColor"
-    stroke="currentColor"
-    stroke-width="0"
+	xmlns="http://www.w3.org/2000/svg"
+	viewBox="0 0 32 32"
+	width="100%"
+	height="100%"
+	preserveAspectRatio="xMidYMid meet"
+	fill="currentColor"
+	stroke="currentColor"
+	stroke-width="0"
 >
-    <path d="M25.497 6.503l.001-.003-.004.005L3.5 15.901l11.112 1.489 1.487 11.11 9.396-21.992.005-.006z" />
+	<title>Определить мое местоположение</title>
+	<path d="M25.497 6.503l.001-.003-.004.005L3.5 15.901l11.112 1.489 1.487 11.11 9.396-21.992.005-.006z" />
 </svg>

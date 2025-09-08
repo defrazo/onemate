@@ -1,9 +1,9 @@
-import { IPIFY_API_URL } from '@/shared/lib/constants';
+import { API_URLS } from '@/shared/lib/constants';
 
 // Получение IP адреса
-export const getIP = async (): Promise<string> => {
+export const fetchIP = async (): Promise<string> => {
 	try {
-		const url = `${IPIFY_API_URL}`;
+		const url = `${API_URLS.IPIFY}`;
 		const response = await fetch(url);
 		const data = await response.json();
 

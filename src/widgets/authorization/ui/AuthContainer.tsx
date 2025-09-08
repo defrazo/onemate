@@ -1,98 +1,25 @@
-import { JSX, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { JSX } from 'react';
 import { observer } from 'mobx-react-lite';
 
-import { userStore } from '@/entities/user';
 import type { AuthType } from '@/features/user-auth';
-import {
-	authFormStore,
-	authService,
-	authStore,
-	ConfirmForm,
-	LoginForm,
-	RegisterForm,
-	ResetForm,
-} from '@/features/user-auth';
-import { modalStore, notifyStore } from '@/shared/stores';
-import { Preloader } from '@/shared/ui';
+import { ConfirmForm, LoginForm, RegisterForm, ResetForm } from '@/features/user-auth';
+
+import { useAuth } from '../model';
 
 const AuthContainer = () => {
-	const [isLoading, setIsLoading] = useState<boolean>(false);
-
-	const navigate = useNavigate();
-	const store = authFormStore;
-	const handleSuccessAuth = () => {
-		notifyStore.setNotice(`Добро пожаловать, ${userStore.username}!`, 'success');
-		modalStore.closeModal();
-		navigate('/dashboard');
-	};
-
-	const handleLogin = async () => {
-		setIsLoading(true);
-
-		try {
-			const success = await authStore.login();
-			if (success) handleSuccessAuth();
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка при входе', 'error');
-		} finally {
-			setIsLoading(false);
-		}
-	};
-
-	const handleRegister = async () => {
-		try {
-			const success = await authStore.register();
-			if (success) {
-				const loggedIn = await authStore.login();
-				if (loggedIn) handleSuccessAuth();
-			} else notifyStore.setNotice('Письмо для подтверждения отправлено, проверьте почту', 'success');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка при регистрации', 'error');
-		}
-	};
-
-	const handleConfirm = async () => {
-		try {
-			!store.resetMode
-				? await authService.handleResend(store.email)
-				: await authService.resetPassword(store.email);
-			notifyStore.setNotice('Письмо отправлено, проверьте почту', 'success');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка при отправке письма', 'error');
-		}
-	};
-
-	const handleReset = async () => {
-		try {
-			await authService.updatePassword(store.password, store.passwordConfirm);
-			store.setResetMode(false);
-			modalStore.closeModal();
-			navigate('/dashboard');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка при отправке письма', 'error');
-		}
-	};
+	const { authFormStore, isLoading, authType, handleOAuth, handleLogin, handleRegister, handleConfirm, handleReset } =
+		useAuth();
 
 	const formMap: Record<AuthType, JSX.Element> = {
-		login: <LoginForm onSubmit={handleLogin} />,
-		register: <RegisterForm onSubmit={handleRegister} />,
-		confirm: <ConfirmForm onSubmit={handleConfirm} />,
-		reset: <ResetForm onSubmit={handleReset} />,
+		login: <LoginForm isLoading={isLoading} oAuth={handleOAuth} store={authFormStore} onSubmit={handleLogin} />,
+		register: (
+			<RegisterForm isLoading={isLoading} oAuth={handleOAuth} store={authFormStore} onSubmit={handleRegister} />
+		),
+		confirm: <ConfirmForm isLoading={isLoading} store={authFormStore} onSubmit={handleConfirm} />,
+		reset: <ResetForm isLoading={isLoading} store={authFormStore} onSubmit={handleReset} />,
 	};
 
-	return (
-		<>
-			{formMap[store.authType]}
-
-			{isLoading && (
-				<div className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-[var(--bg-primary)]">
-					<span className="mb-4 animate-pulse text-xl font-medium">Подождите, выполняется вход...</span>
-					<Preloader className="size-15" />
-				</div>
-			)}
-		</>
-	);
+	return <>{formMap[authType]}</>;
 };
 
 export default observer(AuthContainer);

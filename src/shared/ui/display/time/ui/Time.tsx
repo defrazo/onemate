@@ -5,10 +5,7 @@ const Time = () => {
 	const [time, setTime] = useState<string>(getCurrentTime());
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			setTime(getCurrentTime());
-		}, 60000); // Обновление каждую минуту
-
+		const interval = setInterval(() => setTime(getCurrentTime()), 60000); // Обновление каждую минуту
 		return () => clearInterval(interval);
 	}, []);
 

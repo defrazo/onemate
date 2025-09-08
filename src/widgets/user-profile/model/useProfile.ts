@@ -1,20 +1,17 @@
-import { useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { format, formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
-import { userStore } from '@/entities/user';
-import { deviceActivityStore } from '@/features/device-activity';
+import { useStore } from '@/app/providers';
 import { useIsMobile } from '@/shared/lib/hooks';
 
-import { profileStore } from '.';
-
 export const useProfile = () => {
-	const isMobile = useIsMobile();
+	const { profileStore: store, userProfileStore, userStore } = useStore();
 	const navigate = useNavigate();
+	const isMobile = useIsMobile();
 	const [searchParams] = useSearchParams();
 
-	const rawDate = userStore.passwordChangedAt || userStore.user?.created_at;
+	const rawDate = userProfileStore.passwordChangedAt || userStore.user?.created_at;
 	const passChangedDate = rawDate ? new Date(rawDate) : null;
 	const formattedDate = passChangedDate
 		? `${format(passChangedDate, 'dd.MM.yyyy', { locale: ru })} г. (${formatDistanceToNow(passChangedDate, {
@@ -24,20 +21,14 @@ export const useProfile = () => {
 		: 'Не указано';
 
 	const isValidDate =
-		profileStore.birthYear !== undefined &&
-		profileStore.birthMonth !== undefined &&
-		profileStore.birthDay !== undefined &&
-		!Number.isNaN(+profileStore.birthYear) &&
-		!Number.isNaN(+profileStore.birthMonth) &&
-		!Number.isNaN(+profileStore.birthDay);
-	const date = isValidDate
-		? new Date(+profileStore.birthYear, +profileStore.birthMonth, +profileStore.birthDay)
-		: null;
+		store.birthYear !== undefined &&
+		store.birthMonth !== undefined &&
+		store.birthDay !== undefined &&
+		!Number.isNaN(+store.birthYear) &&
+		!Number.isNaN(+store.birthMonth) &&
+		!Number.isNaN(+store.birthDay);
+	const date = isValidDate && new Date(+store.birthYear, +store.birthMonth, +store.birthDay);
 	const formattedBirthDate = date ? `${format(date, 'dd.MM.yyyy', { locale: ru })} г.` : 'Не указано';
-
-	useEffect(() => {
-		deviceActivityStore.setupDeviceLog();
-	}, []);
 
 	return { isMobile, searchParams, formattedBirthDate, formattedDate, navigate };
 };

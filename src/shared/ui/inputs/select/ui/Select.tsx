@@ -1,3 +1,5 @@
+import type { SelectHTMLAttributes } from 'react';
+
 import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
@@ -8,7 +10,7 @@ interface SelectOption {
 	disabled?: boolean;
 }
 
-interface SelectProps extends Omit<React.SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
 	options: SelectOption[];
 	placeholder: string;
 	variant?: keyof typeof variants.select;

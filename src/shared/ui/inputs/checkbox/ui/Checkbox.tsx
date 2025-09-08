@@ -1,3 +1,5 @@
+import type { InputHTMLAttributes } from 'react';
+
 import { IconChecked, IconUnchecked } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
@@ -8,7 +10,7 @@ interface CheckboxOption {
 	disabled?: boolean;
 }
 
-interface CheckboxProps extends Omit<React.InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> {
+interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> {
 	value: string[];
 	options: CheckboxOption[];
 	variant?: keyof typeof variants.checkbox;

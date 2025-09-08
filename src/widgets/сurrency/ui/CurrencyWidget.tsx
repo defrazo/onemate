@@ -1,32 +1,48 @@
 import { observer } from 'mobx-react-lite';
 
-import { copyExt } from '@/shared/lib/utils';
+import { useStore } from '@/app/providers';
+import { WIDGET_TIPS } from '@/shared/content';
+import { useCopy } from '@/shared/lib/hooks';
+import { ErrorFallback, Tooltip } from '@/shared/ui';
 
 import { useCurrency } from '../model';
 import { CurrencyControls } from '.';
 
 const CurrencyWidget = () => {
+	const { currencyStore } = useStore();
+	const copy = useCopy();
 	const { exchangeRate, exchangeResult } = useCurrency();
 
 	return (
-		<div className="core-card core-base flex h-full flex-col shadow-[var(--shadow)]">
-			<h1 className="core-header">Конвертер валют</h1>
-			<div
-				className="m-auto flex cursor-copy text-4xl hover:text-[var(--accent-default)]"
-				title="Скопировать курс обмена"
-				onClick={() => copyExt(exchangeRate, 'Курс обмена скопирован!')}
-			>
-				{exchangeRate}
+		<>
+			<div className="flex items-center">
+				<Tooltip content={WIDGET_TIPS.currency}>
+					<h1 className="core-header">Конвертер валют</h1>
+				</Tooltip>
 			</div>
-			<CurrencyControls />
-			<div
-				className="mx-auto flex h-9 cursor-copy items-end text-[var(--color-disabled)] hover:text-[var(--accent-default)]"
-				title="Скопировать результат обмена"
-				onClick={() => copyExt(exchangeResult, 'Результат обмена скопирован!')}
-			>
-				{exchangeResult}
-			</div>
-		</div>
+			{!currencyStore.isReady ? (
+				<ErrorFallback onRetry={() => currencyStore.init()} />
+			) : (
+				<>
+					<div
+						className="m-auto flex cursor-copy text-center text-4xl hover:text-[var(--accent-default)]"
+						title="Скопировать курс обмена"
+						onClick={() => copy(exchangeResult, 'Курс обмена скопирован!')}
+					>
+						{exchangeResult}
+					</div>
+
+					<CurrencyControls store={currencyStore} />
+					<div
+						className="mx-auto flex h-9 cursor-copy items-end text-[var(--color-disabled)] hover:text-[var(--accent-default)]"
+						title="Скопировать результат обмена"
+						onClick={() => copy(exchangeRate, 'Результат обмена скопирован!')}
+					>
+						{exchangeRate}
+					</div>
+				</>
+			)}
+		</>
 	);
 };
 

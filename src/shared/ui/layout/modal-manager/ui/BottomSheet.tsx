@@ -1,3 +1,5 @@
+import type { ReactNode } from 'react';
+
 import { IconBack } from '@/shared/assets/icons';
 
 import { useDragger } from '../model';
@@ -6,7 +8,7 @@ import { DragHandle } from '.';
 interface BottomSheetProps {
 	onBack?: () => void;
 	onClose: () => void;
-	children: React.ReactNode;
+	children: ReactNode;
 }
 
 export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => {

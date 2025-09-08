@@ -1,7 +1,15 @@
 .print-container {
-	@apply print:m-0 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-base print:text-black;
+	@apply print:mx-0 print:my-8 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-black;
+}
+
+.print-header {
+	@apply print:gap-0 print:text-2xl;
 }
 
 .print-content {
-	@apply print:gap-0 print:text-black;
+	@apply print:gap-0 print:text-base;
+}
+
+.print-content h2 {
+	@apply print:text-base;
 }

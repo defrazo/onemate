@@ -1,4 +1,4 @@
-export const availableLanguages = [
+export const availableLanguages: { code: string; name: string }[] = [
 	{ code: 'af', name: 'Африкаанс' },
 	{ code: 'sq', name: 'Албанский' },
 	{ code: 'am', name: 'Амхарский' },

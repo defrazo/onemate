@@ -23,7 +23,7 @@ export const useCalendar = () => {
 
 	const getRangeDescription = (): string => {
 		const [start, end] = range;
-		if (!start || !end) return 'Пожалуйста, задайте диапазон дат';
+		if (!start || !end) return '';
 
 		let text = `${formattedRange}: ${rangeWithWeekend} дней`;
 		if (hasWeekendInRange(range)) text += includeWeekends ? ' (вкл. выходные)' : ' (без выходных)';
@@ -31,9 +31,7 @@ export const useCalendar = () => {
 		return text;
 	};
 
-	useEffect(() => {
-		setRangeState(getRangeDescription());
-	}, [range, includeWeekends]);
+	useEffect(() => setRangeState(getRangeDescription()), [range, includeWeekends]);
 
 	return {
 		currentDate,

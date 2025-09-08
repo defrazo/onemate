@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import { type HTMLAttributes, useEffect, useRef, useState } from 'react';
 
 import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
@@ -12,7 +12,7 @@ interface SelectExtOption {
 	disabled?: boolean;
 }
 
-interface SelectExtProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
+interface SelectExtProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
 	options: SelectExtOption[];
 	value: string;
 	onChange: (value: string) => void;
@@ -21,6 +21,7 @@ interface SelectExtProps extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onC
 	size?: keyof typeof sizes.selectExt;
 	error?: boolean;
 	justify?: 'start' | 'center' | 'end';
+	direction?: 'auto' | 'up' | 'down';
 	visibleKey?: boolean;
 	visibleDown?: boolean;
 	disabled?: boolean;
@@ -35,6 +36,7 @@ const SelectExt = ({
 	size = 'md',
 	error = false,
 	justify = 'start',
+	direction = 'auto',
 	visibleKey = true,
 	visibleDown = true,
 	disabled = false,
@@ -49,6 +51,18 @@ const SelectExt = ({
 	const handleOpen = () => {
 		if (isOpen) {
 			setIsOpen(false);
+			return;
+		}
+
+		if (direction === 'up') {
+			setOpenUpwards(true);
+			setIsOpen(true);
+			return;
+		}
+
+		if (direction === 'down') {
+			setOpenUpwards(false);
+			setIsOpen(true);
 			return;
 		}
 
@@ -115,12 +129,28 @@ const SelectExt = ({
 			{isOpen && !disabled && (
 				<ul
 					className={cn(
-						'core-elements core-border absolute right-0 z-30 max-h-60 w-full min-w-max overflow-y-auto rounded-l-xl text-center',
+						'core-elements hide-scrollbar core-border absolute right-0 z-30 max-h-52 w-full min-w-max overflow-y-auto rounded-xl text-center',
 						openUpwards ? 'bottom-full' : 'top-full'
 					)}
 					role="listbox"
 					tabIndex={-1}
 				>
+					<li
+						aria-selected={value === ''}
+						className={cn(
+							'flex w-full cursor-pointer items-center gap-2 p-2 text-sm whitespace-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
+							justifies[justify],
+							value === '' && 'text-[var(--accent-hover)]'
+						)}
+						role="option"
+						onClick={() => {
+							onChange('');
+							setIsOpen(false);
+						}}
+					>
+						<span className="text-muted-foreground font-bold">Отменить выбор</span>
+					</li>
+
 					{options.map((opt) => (
 						<li
 							key={opt.value}
@@ -139,7 +169,7 @@ const SelectExt = ({
 						>
 							{opt.icon && <img alt="" className="size-6 rounded-lg" src={opt.icon} />}
 							<span className="font-bold">{opt.label}</span>
-							{visibleKey && <span className="opacity-50">{opt.key}</span>}
+							{visibleKey && <span>{opt.key}</span>}
 						</li>
 					))}
 				</ul>

@@ -1,172 +1,195 @@
 import { makeAutoObservable, reaction } from 'mobx';
 
-import { cityStore } from '@/entities/city';
-import { userStore } from '@/entities/user';
-import type { UserProfile } from '@/entities/user-profile';
-import { userProfileService, userProfileStore } from '@/entities/user-profile';
-import { notifyStore } from '@/shared/stores';
+import type { IUserProfilePort } from '@/entities/user';
+import type { Gender, IUserProfileProfilePort, UserProfile } from '@/entities/user-profile';
+import { createDefaultProfile } from '@/shared/lib/constants';
+import type { Status } from '@/shared/stores';
 
 import { getAvailableDays } from '../lib';
-import type { DraftProfile } from '.';
 
 export class ProfileStore {
-	draft: DraftProfile = {
-		avatar: '',
-		firstName: '',
-		lastName: '',
-		username: '',
-		birthYear: '',
-		birthMonth: '',
-		birthDay: '',
-		gender: null,
-		location: '',
-		phone: [''],
-		email: [''],
-		mainEmail: '',
-	};
+	private disposers = new Set<() => void>();
+	private inited: boolean = false;
+	private status: Status = 'idle';
+	private error: string | null = null;
 
-	isProfileUploaded: boolean = false;
 	days: string[] = [];
+	draft: UserProfile = createDefaultProfile();
 
-	get avatar() {
-		return this.draft.avatar;
+	get isLoading(): boolean {
+		return this.status === 'loading';
 	}
 
-	get firstName() {
-		return this.draft.firstName;
+	get isReady(): boolean {
+		return (
+			(this.status === 'ready' || this.status === 'loading') &&
+			this.draft !== null &&
+			this.userProfileStore.isReady
+		);
 	}
 
-	get lastName() {
-		return this.draft.lastName;
+	get isError(): boolean {
+		return this.status === 'error';
 	}
 
-	get username() {
-		return this.draft.username;
+	get errorMessage(): string | null {
+		return this.error;
 	}
 
-	get birthYear() {
-		return this.draft.birthYear;
+	get firstName(): string {
+		return this.draft.first_name;
 	}
 
-	get birthMonth() {
-		return this.draft.birthMonth;
+	get lastName(): string {
+		return this.draft.last_name;
 	}
 
-	get birthDay() {
-		return this.draft.birthDay;
+	get username(): string {
+		return this.draft.username ?? '';
 	}
 
-	get gender() {
+	get birthYear(): string {
+		return this.draft.birth_year;
+	}
+
+	get birthMonth(): string {
+		return this.draft.birth_month;
+	}
+
+	get birthDay(): string {
+		return this.draft.birth_day;
+	}
+
+	get gender(): Gender {
 		return this.draft.gender;
 	}
 
-	get genderLabel() {
-		const map: Record<string, string> = { male: 'Мужской', female: 'Женский' };
-		return map[this.draft.gender ?? ''] || 'Не указано';
+	get genderLabel(): string {
+		const map: Record<Gender, string> = { male: 'Мужской', female: 'Женский', '': '' };
+		return this.gender ? map[this.gender] : 'Не указано';
 	}
 
-	get location() {
-		return this.draft.location;
-	}
-
-	get phone() {
+	get phone(): string[] {
 		return this.draft.phone;
 	}
 
-	get email() {
+	get email(): string[] {
 		return this.draft.email;
 	}
 
-	get mainEmail() {
-		return this.draft.mainEmail;
+	get mainEmail(): string {
+		return this.draft.mainEmail ?? '';
 	}
 
-	updateField<K extends keyof DraftProfile>(key: K, value: DraftProfile[K]) {
-		this.draft[key] = value;
+	get isDirty(): boolean {
+		const draftComparable = JSON.stringify({
+			first_name: this.draft.first_name,
+			last_name: this.draft.last_name,
+			birth_year: this.draft.birth_year,
+			birth_month: this.draft.birth_month,
+			birth_day: this.draft.birth_day,
+			gender: this.draft.gender,
+			phone: this.draft.phone,
+			email: this.draft.email,
+			username: this.draft.username,
+			mainEmail: this.draft.mainEmail,
+		});
+
+		const truthComparable = JSON.stringify({
+			first_name: this.userProfileStore.firstName,
+			last_name: this.userProfileStore.lastName,
+			birth_year: this.userProfileStore.birthYear,
+			birth_month: this.userProfileStore.birthMonth,
+			birth_day: this.userProfileStore.birthDay,
+			gender: this.userProfileStore.gender,
+			phone: this.userProfileStore.phone,
+			email: this.userProfileStore.email,
+			username: this.userStore.username,
+			mainEmail: this.userStore.email,
+		});
+
+		return draftComparable !== truthComparable;
 	}
 
-	updateArrayField = (key: 'phone' | 'email', index: number, value: string) => {
+	private get canAddMore(): Record<'phone' | 'email', boolean> {
+		return {
+			phone: this.draft.phone.length < 4,
+			email: this.draft.email.length < 3,
+		};
+	}
+
+	updateField<K extends keyof UserProfile>(key: K, value: UserProfile[K]): void {
+		this.draft = { ...this.draft, [key]: value };
+	}
+
+	updateArrayField(key: 'phone' | 'email', index: number, value: string): void {
 		const updated = [...this.draft[key]];
 		updated[index] = value;
 		this.updateField(key, updated);
-	};
+	}
 
-	addField = (key: 'phone' | 'email') => {
-		this.updateField(key, [...this.draft[key], '']);
-	};
-
-	removeField = (key: 'phone' | 'email', index: number) => {
+	removeField(key: 'phone' | 'email', index: number): void {
 		const updated = this.draft[key].filter((_, i) => i !== index);
 		this.updateField(key, updated.length ? updated : ['']);
-	};
+	}
 
-	syncArrayFields(): void {
+	async saveChanges(): Promise<void> {
+		if (!this.draft || !this.userStore.id || this.isLoading) return;
+
+		this.setLoading();
+
+		try {
+			const { username, mainEmail, ...profile } = this.draft;
+
+			await this.userProfileStore.updateProfile(profile);
+			if (this.userStore.username !== username) await this.userStore.updateUsername(this.username);
+			if (this.userStore.email !== mainEmail) await this.userStore.updateEmail(this.mainEmail);
+		} catch (error: any) {
+			this.setError(error);
+			throw new Error(error.message || 'Произошла ошибка при сохранении');
+		} finally {
+			await this.userProfileStore.loadProfile();
+			this.loadDraft();
+		}
+	}
+
+	private loadDraft(): void {
+		this.draft = {
+			first_name: this.userProfileStore.firstName,
+			last_name: this.userProfileStore.lastName,
+			username: this.userStore.username,
+			birth_year: this.userProfileStore.birthYear,
+			birth_month: this.userProfileStore.birthMonth,
+			birth_day: this.userProfileStore.birthDay,
+			gender: this.userProfileStore.gender,
+			phone: this.userProfileStore.phone,
+			email: this.userProfileStore.email,
+			mainEmail: this.userStore.email,
+		};
+
+		this.setReady();
+	}
+
+	private addField(key: 'phone' | 'email'): void {
+		if (this.canAddMore[key]) this.updateField(key, [...this.draft[key], '']);
+	}
+
+	private syncDays(): void {
+		this.days = getAvailableDays(this.birthYear, this.birthMonth);
+	}
+
+	private syncArrayFields(): void {
 		this.syncSingleArrayField('phone');
 		this.syncSingleArrayField('email');
 	}
 
-	syncDays(): void {
-		this.days = getAvailableDays(this.birthYear, this.birthMonth);
-	}
-
-	loadFromProfile(): void {
-		const profile = userProfileStore.profile;
-		if (!profile) return;
-
-		this.draft = {
-			avatar: profile.avatar_url,
-			firstName: profile.first_name,
-			lastName: profile.last_name,
-			username: userStore.username,
-			birthYear: profile.birth_year,
-			birthMonth: profile.birth_month,
-			birthDay: profile.birth_day,
-			gender: profile.gender,
-			mainEmail: userStore.email,
-			phone: profile.phone.length ? profile.phone : [''],
-			email: profile.email.length ? profile.email : [''],
-			location: cityStore.cityName,
-		};
-
-		this.isProfileUploaded = true;
-	}
-
-	init() {
-		this.loadFromProfile();
-	}
-
-	async saveChanges() {
-		try {
-			const userProfileData: UserProfile = {
-				id: userProfileStore.profile!.id,
-				avatar_url: this.avatar || '',
-				first_name: this.firstName,
-				last_name: this.lastName,
-				birth_year: this.birthYear,
-				birth_month: this.birthMonth,
-				birth_day: this.birthDay,
-				gender: this.gender,
-				phone: this.phone,
-				email: this.email,
-			};
-
-			await userProfileService.saveProfile(userProfileData);
-
-			if (userStore.username !== this.username) await userStore.updateUsername(this.username);
-			if (userStore.email !== this.mainEmail) await userStore.updateEmail(this.mainEmail);
-
-			notifyStore.setNotice('Данные успешно сохранены', 'success');
-		} catch {
-			notifyStore.setNotice('Произошла ошибка при сохранении данных', 'error');
-		}
-	}
-
-	private syncSingleArrayField(field: 'phone' | 'email') {
-		const values = this[field];
+	private syncSingleArrayField(field: 'phone' | 'email'): void {
+		const values = this.draft[field];
 		const nonEmpty = values.filter((val) => val.trim() !== '');
 
 		if (values.length > 1) {
 			const cleaned = values.filter((val, i) => val.trim() !== '' || i === values.length - 1);
+
 			if (cleaned.length !== values.length) {
 				this.updateField(field, cleaned);
 				return;
@@ -176,19 +199,95 @@ export class ProfileStore {
 		if (nonEmpty.length === values.length) this.addField(field);
 	}
 
-	constructor() {
-		makeAutoObservable(this);
+	constructor(
+		private readonly userStore: IUserProfilePort,
+		private readonly userProfileStore: IUserProfileProfilePort
+	) {
+		makeAutoObservable<this, 'userStore' | 'userProfileStore' | 'inited' | 'disposers'>(this, {
+			userStore: false,
+			userProfileStore: false,
+			inited: false,
+			disposers: false,
+		});
 
-		reaction(
-			() => [this.birthYear, this.birthMonth],
-			() => this.syncDays()
+		this.track(
+			reaction(
+				() => [this.birthYear, this.birthMonth],
+				() => this.syncDays(),
+				{ fireImmediately: true }
+			)
 		);
 
-		reaction(
-			() => [this.phone.slice(), this.email.slice()],
-			() => this.syncArrayFields()
+		this.track(
+			reaction(
+				() => [this.phone.slice(), this.email.slice()],
+				() => this.syncArrayFields()
+			)
+		);
+
+		this.track(
+			reaction(
+				() => [this.userStore.username, this.userStore.email],
+				() => this.loadDraft(),
+				{ fireImmediately: true }
+			)
 		);
 	}
-}
 
-export const profileStore = new ProfileStore();
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+
+		this.track(
+			reaction(
+				() => this.userStore.id,
+				(id) => !id && this.reset(),
+				{ fireImmediately: true }
+			)
+		);
+
+		this.track(
+			reaction(
+				() => this.userProfileStore.isReady,
+				(isReady) => isReady && this.loadDraft(),
+				{ fireImmediately: true }
+			)
+		);
+	}
+
+	destroy(): void {
+		this.disposers.forEach((dispose) => {
+			try {
+				dispose();
+			} catch {}
+		});
+		this.disposers.clear();
+		this.inited = false;
+	}
+
+	private setLoading(): void {
+		this.status = 'loading';
+		this.error = null;
+	}
+
+	private setReady(): void {
+		this.status = 'ready';
+		this.error = null;
+	}
+
+	private setError(error: unknown): void {
+		this.status = 'error';
+		this.error = error instanceof Error ? error.message : String(error);
+	}
+
+	private reset(): void {
+		this.status = 'idle';
+		this.error = null;
+		this.draft = createDefaultProfile();
+	}
+
+	private track(disposer?: (() => void) | void): void {
+		if (!disposer) return;
+		this.disposers.add(disposer);
+	}
+}

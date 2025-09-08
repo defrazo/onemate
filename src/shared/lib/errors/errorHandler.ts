@@ -1,4 +1,4 @@
-import { AbortRequestError, ApiError, EmptyResultError, NetworkError } from './errors';
+import { AbortRequestError, ApiError, EmptyResultError, NetworkError, RestrictedAccess } from '.';
 
 export const handleError = (error: unknown): never => {
 	if (error instanceof AbortRequestError) throw error;
@@ -8,6 +8,8 @@ export const handleError = (error: unknown): never => {
 	if (error instanceof ApiError) throw error;
 
 	if (error instanceof EmptyResultError) throw error;
+
+	if (error instanceof Error && error.message?.includes('демо')) throw new RestrictedAccess();
 
 	if (error instanceof Error) throw error;
 

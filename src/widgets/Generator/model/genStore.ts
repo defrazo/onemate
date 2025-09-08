@@ -1,22 +1,14 @@
 import { makeAutoObservable, reaction } from 'mobx';
 
+import { createDefaultGenerator } from '@/shared/lib/constants';
+
 import { insertTextBlocks } from '../lib';
 import type { CutLine, TextBlock } from '.';
 
-const initialState = {
-	count: 1,
-	sizePt: [0, 0] as [number, number],
-	grid: [1, 1] as [number, number],
-	cutLine: { paddingMm: 5, radiusMm: 10, visible: true } as CutLine,
-	textBlocks: [
-		{ id: 0, text: 'Текст надписи', isEnabled: true, x: 0, y: 0 },
-		{ id: 1, text: 'Текст надписи', isEnabled: true, x: 0, y: 0 },
-	] as TextBlock[],
-	svgRaw: null as string | null,
-	svgWithText: null as string | null,
-};
-
 export class GenStore {
+	private disposers = new Set<() => void>();
+	private inited: boolean = false;
+
 	svgRaw: string | null = null;
 	svgWithText: string | null = null;
 	count: number = 1;
@@ -28,85 +20,81 @@ export class GenStore {
 		{ id: 1, text: 'Текст надписи', isEnabled: true, x: 0, y: 0 },
 	];
 
-	get width() {
+	get width(): number {
 		return this.sizePt[0];
 	}
 
-	get widthMm() {
+	get widthMm(): number {
 		return Number((this.sizePt[0] * 0.352778).toFixed(2));
 	}
 
-	get height() {
+	get height(): number {
 		return this.sizePt[1];
 	}
 
-	get heightMm() {
+	get heightMm(): number {
 		return Number((this.sizePt[1] * 0.352778).toFixed(2));
 	}
 
-	get cols() {
+	get cols(): number {
 		return this.grid[0];
 	}
 
-	get rows() {
+	get rows(): number {
 		return this.grid[1];
 	}
 
-	get firstText() {
+	get firstText(): TextBlock {
 		return this.textBlocks[0];
 	}
 
-	get secondText() {
+	get secondText(): TextBlock {
 		return this.textBlocks[1];
 	}
 
-	get padding() {
+	get padding(): number {
 		return this.cutLine.paddingMm;
 	}
 
-	get radius() {
+	get radius(): number {
 		return this.cutLine.radiusMm;
 	}
 
-	get isCutLine() {
+	get isCutLine(): boolean {
 		return this.cutLine.visible;
 	}
 
-	get innerSvg() {
+	get innerSvg(): string {
 		return this.svgWithText?.replace(/<svg[^>]*>|<\/svg>/g, '') ?? '';
 	}
 
-	setCount(value: number) {
+	setCount(value: number): void {
 		this.count = value;
 	}
 
-	setSizePt([x, y]: [number, number]) {
+	setSizePt([x, y]: [number, number]): void {
 		this.sizePt = [x, y];
 	}
 
-	setGrid([cols, rows]: [number, number]) {
+	setGrid([cols, rows]: [number, number]): void {
 		this.grid = [cols, rows];
 	}
 
-	updateTextBlock = <K extends keyof TextBlock>(index: number, key: K, value: TextBlock[K]) => {
+	updateTextBlock<K extends keyof TextBlock>(index: number, key: K, value: TextBlock[K]): void {
 		const updated = [...this.textBlocks];
 		updated[index] = { ...updated[index], [key]: value };
 		this.textBlocks = updated;
-	};
+	}
 
-	updateCutLine = <K extends keyof CutLine>(key: K, value: CutLine[K]) => {
+	updateCutLine<K extends keyof CutLine>(key: K, value: CutLine[K]): void {
 		this.cutLine = { ...this.cutLine, [key]: value };
-	};
+	}
 
-	setRawSvg(svg: string) {
+	setRawSvg(svg: string): void {
 		this.svgRaw = svg;
 	}
 
-	resetGenerator() {
-		Object.assign(this, initialState);
-	}
-
-	private rowsCorrection() {
+	private rowsCorrection(): void {
 		const [cols, rows] = this.grid;
 		const requiredRows = Math.ceil(this.count / cols);
 
@@ -114,38 +102,64 @@ export class GenStore {
 	}
 
 	constructor() {
-		makeAutoObservable(this);
-		reaction(
-			() => [this.svgRaw, this.textBlocks.map((b) => ({ ...b }))] as [string | null, TextBlock[]],
-			([raw]) => {
-				if (!raw) {
-					this.svgWithText = null;
-					return;
-				}
+		makeAutoObservable<this, 'inited' | 'disposers'>(this, {
+			inited: false,
+			disposers: false,
+		});
 
-				const enabledBlocks = this.textBlocks.filter((b) => b.isEnabled);
-				this.svgWithText = insertTextBlocks(
-					raw,
-					enabledBlocks.map((b) => ({
-						text: b.text,
-						x: b.x,
-						y: b.y,
-						fontSize: 20,
-					}))
-				);
-			},
-			{
-				fireImmediately: true,
-			}
+		this.track(
+			reaction(
+				() => [this.svgRaw, this.textBlocks.map((b) => ({ ...b }))] as [string | null, TextBlock[]],
+				([raw]) => {
+					if (!raw) {
+						this.svgWithText = null;
+						return;
+					}
+
+					const enabledBlocks = this.textBlocks.filter((b) => b.isEnabled);
+					this.svgWithText = insertTextBlocks(
+						raw,
+						enabledBlocks.map((b) => ({
+							text: b.text,
+							x: b.x,
+							y: b.y,
+							fontSize: 20,
+						}))
+					);
+				},
+				{ fireImmediately: true }
+			)
 		);
 
-		reaction(
-			() => [this.count, this.grid[0]],
-			() => {
-				this.rowsCorrection();
-			}
+		this.track(
+			reaction(
+				() => [this.count, this.grid[0]],
+				() => this.rowsCorrection()
+			)
 		);
 	}
-}
 
-export const genStore = new GenStore();
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+	}
+
+	destroy(): void {
+		this.disposers.forEach((dispose) => {
+			try {
+				dispose();
+			} catch {}
+		});
+		this.disposers.clear();
+		this.inited = false;
+	}
+
+	reset(): void {
+		Object.assign(this, createDefaultGenerator());
+	}
+
+	private track(disposer?: (() => void) | void): void {
+		if (!disposer) return;
+		this.disposers.add(disposer);
+	}
+}

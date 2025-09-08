@@ -1,4 +1,4 @@
-import { NOMINATIM_API_URL } from '@/shared/lib/constants';
+import { API_URLS } from '@/shared/lib/constants';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 import type { City } from '../model';
@@ -6,7 +6,7 @@ import type { City } from '../model';
 // Получение города по координатам (для определения местоположения через браузер)
 export const fetchCityByCoordinates = async (lat: number, lon: number): Promise<City | null> => {
 	try {
-		const url = `${NOMINATIM_API_URL}/reverse?lat=${lat}&lon=${lon}&format=json`;
+		const url = `${API_URLS.NOMINATIM}/reverse?lat=${lat}&lon=${lon}&format=json`;
 		const response = await fetch(url);
 
 		if (!response.ok) throw new ApiError();

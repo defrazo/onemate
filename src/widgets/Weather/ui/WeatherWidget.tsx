@@ -1,34 +1,44 @@
 import { observer } from 'mobx-react-lite';
 
-import { cityStore } from '@/entities/city';
-import { Button, Preloader } from '@/shared/ui';
+import { useStore } from '@/app/providers';
+import LocationSearch from '@/features/location/ui/LocationSearch';
+import { WIDGET_TIPS } from '@/shared/content';
+import { Button, ErrorFallback, LoadFallback, Tooltip } from '@/shared/ui';
 
-import { useWeather } from '../model';
-import { WeatherCurrent, WeatherForecast } from '.';
+import { Current, Forecast } from '.';
 
 const WeatherWidget = () => {
-	const { currentWeather, forecastWeather, isOpenWeather, toggleView } = useWeather(cityStore.cityName);
+	const { cityStore, weatherStore: store } = useStore();
 
 	return (
-		<div className="core-card core-base flex h-full flex-col gap-2 shadow-[var(--shadow)] select-none">
-			<h1 className="core-header">Погода</h1>
-			{!currentWeather ? (
-				<div className="flex flex-1 items-center justify-center">
-					<Preloader className="size-25" />
-				</div>
+		<>
+			<div className="flex items-center">
+				<Tooltip content={WIDGET_TIPS.weather}>
+					<h1 className="core-header">Погода</h1>
+				</Tooltip>
+			</div>
+			{!store.isReady ? (
+				<ErrorFallback onRetry={() => cityStore.restart()} />
 			) : (
 				<div className="flex h-full flex-col justify-between">
-					{isOpenWeather ? (
-						<WeatherCurrent currentWeather={currentWeather} />
+					<LocationSearch />
+					{store.isRefresh ? (
+						<LoadFallback />
 					) : (
-						<WeatherForecast city={cityStore.cityName} forecastWeather={forecastWeather} />
+						<>
+							{store.isOpenCurrent ? (
+								<Current current={store.current!} />
+							) : (
+								<Forecast forecast={store.forecast} />
+							)}
+						</>
 					)}
-					<Button className="w-full text-sm" onClick={toggleView}>
-						{isOpenWeather ? 'Прогноз на 5 дней' : 'Текущая погода'}
+					<Button className="w-full text-sm" onClick={() => store.setIsOpenCurrent()}>
+						{store.isOpenCurrent ? 'Прогноз на 5 дней' : 'Текущая погода'}
 					</Button>
 				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

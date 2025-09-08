@@ -1,31 +1,39 @@
-import { useEffect } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconAdd } from '@/shared/assets/icons';
-import { notesChannel } from '@/shared/lib/broadcast';
-import { Button, Preloader } from '@/shared/ui';
+import { WIDGET_TIPS } from '@/shared/content';
+import { Button, ErrorFallback, Tooltip } from '@/shared/ui';
 
-import { notesStore } from '../model';
+import { useNotesChannel } from '../model';
 import { NotesCard, NotesList } from '.';
 
 const NotesWidget = () => {
-	useEffect(() => {
-		const handleMessage = () => notesStore.loadNotes();
+	const { notesStore, notifyStore } = useStore();
 
-		notesChannel.onMessage(handleMessage);
+	useNotesChannel();
 
-		return () => notesChannel.offMessage(handleMessage);
-	}, []);
+	const handleAdd = () => {
+		try {
+			notesStore.addNote();
+		} catch (error: any) {
+			notifyStore.setNotice(error.message, 'error');
+		}
+	};
 
 	return (
-		<div className="core-card core-base flex h-full flex-col gap-2 shadow-[var(--shadow)]">
-			<h1 className="core-header">Заметки</h1>
-			{notesStore.isLoading ? (
-				<div className="flex flex-1 items-center justify-center">
-					<Preloader className="size-25" />
-				</div>
+		<>
+			<div className="flex items-center">
+				<Tooltip content={WIDGET_TIPS.notes}>
+					<h1 className="core-header">Заметки</h1>
+				</Tooltip>
+			</div>
+			{!notesStore.isReady ? (
+				<ErrorFallback
+					onRetry={() => notesStore.loadNotes().catch((err) => notifyStore.setNotice(err.message, 'error'))}
+				/>
 			) : (
-				<div className="flex flex-1 flex-col justify-between">
+				<div className="flex h-full flex-col justify-between gap-2 overflow-hidden md:max-h-full">
 					<NotesList>{(item) => <NotesCard key={item.id} id={item.id} />}</NotesList>
 					<div className="relative flex justify-center">
 						<Button
@@ -33,7 +41,7 @@ const NotesWidget = () => {
 							className="rounded-full p-2"
 							size="custom"
 							title="Добавить заметку"
-							onClick={() => notesStore.addNote()}
+							onClick={() => handleAdd()}
 						/>
 						<div className="pointer-events-none absolute bottom-4 left-0 text-sm leading-0 text-[var(--color-disabled)]">
 							Всего записей: {notesStore.notes.length}
@@ -41,7 +49,7 @@ const NotesWidget = () => {
 					</div>
 				</div>
 			)}
-		</div>
+		</>
 	);
 };
 

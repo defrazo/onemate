@@ -1,5 +1,5 @@
 /* prettier-ignore */
-export type WeatherCode =
+export type ConditionCode =
 	| '01d' | '01n'
 	| '02d' | '02n'
 	| '03d' | '03n'
@@ -19,7 +19,7 @@ export type ForecastApiItem = {
 	dt_txt: string;
 };
 
-export type WeatherData = {
+export type CurrentType = {
 	name: string;
 	main: WeatherMain;
 	wind: WeatherWind;
@@ -28,7 +28,7 @@ export type WeatherData = {
 	weather: WeatherDescription[];
 };
 
-export type ForecastItem = {
+export type ForecastType = {
 	date: string;
 	day: string;
 	minTemp: number;

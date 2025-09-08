@@ -1,25 +1,28 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconEmail, IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
-import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
-import { authFormStore } from '../model';
+import { AuthFormStore } from '../model';
 import { AuthSocial, PasswordHint } from '.';
 
 interface RegisterFormProps {
+	store: AuthFormStore;
+	isLoading: boolean;
+	oAuth: () => void;
 	onSubmit: () => void;
 }
 
-export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
+export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: RegisterFormProps) => {
+	const { notifyStore } = useStore();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showHint, setShowHint] = useState<boolean>(false);
 	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
-	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
 		show: showPassword,
@@ -27,13 +30,14 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 		visible: !!store.password,
 	});
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		try {
 			await validateUsername(store.username);
 			await validateEmail(store.email);
 			await validatePasswords(store.password, store.passwordConfirm);
+
 			onSubmit();
 		} catch (error: any) {
 			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
@@ -46,7 +50,7 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 				<img alt="Логотип" className="size-20" src={Logo} />
 				<h1 className="core-header">Зарегистрировать аккаунт OneMate</h1>
 			</div>
-			<AuthSocial />
+			<AuthSocial isLoading={isLoading} oAuth={oAuth} />
 			<div className="flex w-full items-center select-none">
 				<div className="grow border-t border-[var(--border-color)]" />
 				<span className="px-4">ИЛИ</span>
@@ -110,7 +114,7 @@ export const RegisterForm = observer(({ onSubmit }: RegisterFormProps) => {
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} type="submit">
+				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} loading={isLoading} type="submit">
 					Зарегистрироваться
 				</Button>
 			</form>

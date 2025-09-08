@@ -14,6 +14,7 @@ export type CurrencyOption = {
 export type RatesList = Record<string, { code: string; icon: string; name: string; value: number }>;
 
 export type RatesResponse = {
+	base: string;
 	lastUpdate: number;
 	rates: Record<string, number>;
 };

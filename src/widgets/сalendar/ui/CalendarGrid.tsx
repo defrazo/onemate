@@ -37,7 +37,7 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 					<Button
 						key={idx}
 						className={cn(
-							'aspect-square rounded-full text-sm leading-none md:p-1',
+							'aspect-square rounded-full text-sm leading-4',
 							today && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
 							start && isSameDay(date, start) && calendarAccent,
 							end && isSameDay(date, end) && calendarAccent,

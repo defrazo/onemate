@@ -1,32 +1,35 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateLogin } from '@/shared/lib/validators';
-import { modalStore, notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
-import { authFormStore } from '../model';
+import { AuthFormStore } from '../model';
 import { AuthSocial } from '.';
 
 interface LoginFormProps {
+	store: AuthFormStore;
+	isLoading: boolean;
+	oAuth: () => void;
 	onSubmit: () => void;
 }
 
-export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
+export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit }: LoginFormProps) => {
+	const { modalStore, notifyStore } = useStore();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
-	const store = authFormStore;
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		try {
 			await validateLogin(store.login);
 
 			if (!store.password) {
-				notifyStore.setNotice('Введите пароль', 'error');
+				notifyStore.setNotice('Введите пароль', 'info');
 				return;
 			}
 
@@ -42,7 +45,7 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 				<img alt="Логотип" className="size-20" src={Logo} />
 				<h1 className="core-header">Войти в аккаунт OneMate</h1>
 			</div>
-			<AuthSocial />
+			<AuthSocial isLoading={isLoading} oAuth={oAuth} />
 			<div className="flex w-full items-center select-none">
 				<div className="grow border-t border-[var(--border-color)]" />
 				<span className="px-4">ИЛИ</span>
@@ -89,7 +92,7 @@ export const LoginForm = observer(({ onSubmit }: LoginFormProps) => {
 				>
 					Забыли пароль?
 				</Button>
-				<Button className="mt-4 h-10 w-full" type="submit">
+				<Button className="mt-4 h-10 w-full" loading={isLoading} type="submit">
 					Войти
 				</Button>
 			</form>

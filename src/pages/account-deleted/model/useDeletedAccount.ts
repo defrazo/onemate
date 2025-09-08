@@ -1,16 +1,16 @@
 import { useNavigate } from 'react-router-dom';
 
-import { userStore } from '@/entities/user';
-import { authService } from '@/features/user-auth';
-import { notifyStore } from '@/shared/stores';
+import { useStore } from '@/app/providers';
 
 export const useDeletedAccount = () => {
+	const { accountStore, authStore, notifyStore, userStore } = useStore();
 	const navigate = useNavigate();
 
 	const handleRestore = async () => {
 		try {
-			await authService.restoreAccount();
-			await userStore.checkDeleted();
+			await accountStore.restoreAccount();
+			await userStore.loadUser();
+
 			notifyStore.setNotice('Аккаунт успешно восстановлен!', 'success');
 			navigate('/');
 		} catch {
@@ -19,7 +19,7 @@ export const useDeletedAccount = () => {
 	};
 
 	const handleExit = async () => {
-		await authService.logout();
+		authStore.logout();
 		navigate('/');
 	};
 

@@ -1,22 +1,39 @@
-import { DraggableSyntheticListeners } from '@dnd-kit/core';
+import type { HTMLAttributes } from 'react';
+import type { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconCopy, IconMove, IconTrash } from '@/shared/assets/icons';
-import { cn, copyExt } from '@/shared/lib/utils';
+import { useCopy } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
-
-import { notesStore } from '../model';
 
 interface NotesCardActionsProps {
 	id: string;
 	text: string;
-	attributes: React.HTMLAttributes<HTMLElement>;
+	attributes: HTMLAttributes<HTMLElement>;
 	listeners: DraggableSyntheticListeners;
 }
 
 export const NotesCardActions = observer(({ id, text, attributes, listeners }: NotesCardActionsProps) => {
+	const { notesStore, notifyStore } = useStore();
+	const copy = useCopy();
+
+	const handleRemove = (id: string) => {
+		try {
+			notesStore.removeNote(id);
+		} catch (error: any) {
+			notifyStore.setNotice(error.message, 'error');
+		}
+	};
+
 	return (
-		<div className="flex w-10 flex-col border-l border-[var(--border-color)]">
+		<div
+			className={cn(
+				'w-10 flex-col border-l border-[var(--border-color)]',
+				notesStore.focusedId === id ? 'hidden' : 'flex'
+			)}
+		>
 			<Button
 				centerIcon={<IconMove className="size-4 rotate-90" />}
 				className={cn(notesStore.focusedId && 'hidden', 'flex-1 cursor-move hover:text-[var(--accent-hover)]')}
@@ -33,7 +50,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 				size="sm"
 				title="Скопировать"
 				variant="mobile"
-				onClick={() => copyExt(text, 'Заметка скопирована!')}
+				onClick={() => copy(text, 'Заметка скопирована!')}
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-4" />}
@@ -41,7 +58,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 				size="sm"
 				title="Удалить заметку"
 				variant="mobile"
-				onClick={() => notesStore.removeNote(id)}
+				onClick={() => handleRemove(id)}
 			/>
 		</div>
 	);

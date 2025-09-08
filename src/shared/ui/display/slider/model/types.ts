@@ -1,4 +1,6 @@
+import type { FC, SVGProps } from 'react';
+
 export type Slide = {
-	image: React.FC<React.SVGProps<SVGSVGElement>>;
+	image: FC<SVGProps<SVGSVGElement>>;
 	text: string;
 };

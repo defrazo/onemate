@@ -1,11 +1,13 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { useIsMobile } from '@/shared/lib/hooks';
-import { modalStore } from '@/shared/stores';
 
 import { BottomSheet, Dropdown, Modal } from '.';
 
 const ModalManager = () => {
+	const { modalStore } = useStore();
+
 	const modal = modalStore.modal;
 	const isMobile = useIsMobile();
 

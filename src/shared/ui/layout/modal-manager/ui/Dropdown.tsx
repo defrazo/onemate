@@ -1,10 +1,11 @@
+import type { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useEscapeClose } from '../model';
 
 interface DropdownProps {
-	children: React.ReactNode;
+	children: ReactNode;
 	position?: { top: number; left: number };
 	onClose?: () => void;
 }

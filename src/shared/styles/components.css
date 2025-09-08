@@ -2,8 +2,4 @@
 	.core-card {
 		@apply rounded-xl p-4;
 	}
-
-	a {
-		@apply cursor-pointer select-none hover:text-[var(--accent-hover)];
-	}
 }

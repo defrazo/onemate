@@ -1,27 +1,30 @@
-import React from 'react';
+import type { CSSProperties, ReactNode } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 
 import { IconMove } from '@/shared/assets/icons';
-import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 interface WidgetProps {
 	id: string;
-	children: React.ReactElement<any>;
-	disabled?: boolean;
+	content: ReactNode;
 }
 
-export const Widget = ({ id, children, disabled }: WidgetProps) => {
-	const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id, disabled });
+export const Widget = ({ id, content }: WidgetProps) => {
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
-	const combinedStyle: React.CSSProperties = {
+	const combinedStyle: CSSProperties = {
 		transform: CSS.Transform.toString(transform),
 		transition,
+		zIndex: isDragging ? 10 : 0,
 	};
 
 	return (
-		<div ref={setNodeRef} className={cn('relative flex h-full min-h-0 flex-col')} style={combinedStyle}>
+		<div
+			ref={setNodeRef}
+			className="core-card core-base relative flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none"
+			style={combinedStyle}
+		>
 			<Button
 				centerIcon={<IconMove className="size-4 rotate-90" />}
 				className="absolute top-2 right-0 cursor-move touch-none"
@@ -31,7 +34,7 @@ export const Widget = ({ id, children, disabled }: WidgetProps) => {
 				{...listeners}
 				{...attributes}
 			/>
-			{children}
+			{content}
 		</div>
 	);
 };

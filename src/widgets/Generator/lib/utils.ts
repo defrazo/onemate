@@ -1,5 +1,6 @@
+import { useStore } from '@/app/providers';
+
 import type { ContainerSize, DimensionsPt, DisplaySizes } from '../model';
-import { genStore } from '../model';
 import { stringifyCutLine } from '.';
 
 // Конвертирует миллиметры в поинты
@@ -114,6 +115,8 @@ export const calculateDisplaySizes = (
 
 // Генерирует и скачивает сетку SVG-карточек
 export const downloadGridSvg = (svgContent: string | null): void => {
+	const { genStore } = useStore();
+
 	if (!svgContent) return;
 
 	const parser = new DOMParser();

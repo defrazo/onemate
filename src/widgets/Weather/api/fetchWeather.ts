@@ -1,9 +1,9 @@
-import { OPENWEATHER_API_KEY, OPENWEATHER_API_URL } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/lib/constants';
 
 // Валидация введенного города через запрос к серверу
 export const fetchWeather = async (city: string): Promise<boolean> => {
 	try {
-		const url = `${OPENWEATHER_API_URL}find?q=${city}&units=metric&lang=ru&appid=${OPENWEATHER_API_KEY}`;
+		const url = `${API_URLS.OPENWEATHER_BASE}find?q=${city}&units=metric&lang=ru&appid=${env.OPENWEATHER_API_KEY}`;
 		const response = await fetch(url);
 
 		if (!response.ok) return false;

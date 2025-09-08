@@ -5,7 +5,7 @@ const AboutPage = () => {
 	usePageTitle('О проекте');
 
 	return (
-		<div className="mx-auto flex max-w-3xl flex-col gap-8 px-4 py-12">
+		<div className="mx-auto flex max-w-4xl flex-col gap-8 px-4 py-12">
 			<h1 className="cursor-default text-center text-4xl font-bold">О проекте OneMate</h1>
 			<section className="text">
 				<p className="text-justify leading-relaxed">

@@ -11,8 +11,8 @@ const Slider = ({ slides }: SliderProps) => {
 	return (
 		<div className="relative overflow-hidden">
 			<div className="animate-slider flex w-max gap-4">
-				{doubledSlides.map((slide) => (
-					<SlideItem key={slide.text} slide={slide} />
+				{doubledSlides.map((slide, idx) => (
+					<SlideItem key={`${slide.text}-${idx}`} slide={slide} />
 				))}
 			</div>
 		</div>

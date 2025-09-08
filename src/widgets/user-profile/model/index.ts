@@ -1,3 +1,3 @@
-export { profileStore } from './profileStore';
-export type { DraftProfile, GenderOption, ProfileNavButton, TabId } from './types';
+export { ProfileStore } from './profileStore';
+export type { GenderOption, ProfileNavButton, TabId } from './types';
 export { useProfile } from './useProfile';

@@ -1,4 +1,5 @@
-export { authFormStore } from './authFormStore';
+export { AuthFormStore } from './authFormStore';
 export { authService } from './authService';
-export { authStore } from './authStore';
+export { AuthStore } from './authStore';
+export type { IAuthAccountPort, IAuthDevicePort } from './ports';
 export type { AuthData, AuthType, PasswordRule, SupabaseUserCheck } from './types';

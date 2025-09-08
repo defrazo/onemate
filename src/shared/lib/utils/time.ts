@@ -17,8 +17,5 @@ export const msFromDays = (days: number): number => days * MS_IN_DAY;
 
 // Форматирует timestamp (секунды) в строку "часы:минуты" (например, "14:05")
 export const formatTime = (timestamp: number): string => {
-	return new Date(timestamp * 1000).toLocaleTimeString([], {
-		hour: '2-digit',
-		minute: '2-digit',
-	});
+	return new Date(timestamp * 1000).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 };

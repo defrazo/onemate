@@ -1,15 +1,16 @@
+import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
 
-interface LinkProps extends React.AnchorHTMLAttributes<HTMLAnchorElement> {
+interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 	to: string;
 	active?: boolean;
 	disabled?: boolean;
-	leftIcon?: React.ReactNode;
-	centerIcon?: React.ReactNode;
-	rightIcon?: React.ReactNode;
+	leftIcon?: ReactNode;
+	centerIcon?: ReactNode;
+	rightIcon?: ReactNode;
 	variant?: keyof typeof variants.button;
 	size?: keyof typeof sizes.button;
 }

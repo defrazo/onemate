@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { default, PhoneInput } from './ui';

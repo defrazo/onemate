@@ -1,21 +1,29 @@
-import { genStore } from '../model';
-import { mmToPt } from './utils';
+import { useStore } from '@/app/providers';
 
-export const renderCutLine = () => (
-	<rect
-		fill="none"
-		height={genStore.height - 2 * mmToPt(genStore.padding)}
-		rx={mmToPt(genStore.radius)}
-		ry={mmToPt(genStore.radius)}
-		stroke="black"
-		strokeWidth="1"
-		width={genStore.width - 2 * mmToPt(genStore.padding)}
-		x={mmToPt(genStore.padding)}
-		y={mmToPt(genStore.padding)}
-	/>
-);
+import { mmToPt } from '.';
 
-export const stringifyCutLine = () => `
+export const renderCutLine = () => {
+	const { genStore } = useStore();
+
+	return (
+		<rect
+			fill="none"
+			height={genStore.height - 2 * mmToPt(genStore.padding)}
+			rx={mmToPt(genStore.radius)}
+			ry={mmToPt(genStore.radius)}
+			stroke="black"
+			strokeWidth="1"
+			width={genStore.width - 2 * mmToPt(genStore.padding)}
+			x={mmToPt(genStore.padding)}
+			y={mmToPt(genStore.padding)}
+		/>
+	);
+};
+
+export const stringifyCutLine = () => {
+	const { genStore } = useStore();
+
+	return `
 	<rect
 		fill="none"
 		height="${genStore.height - 2 * mmToPt(genStore.padding)}"
@@ -28,3 +36,4 @@ export const stringifyCutLine = () => `
 		y="${mmToPt(genStore.padding)}"
 	/>
 `;
+};

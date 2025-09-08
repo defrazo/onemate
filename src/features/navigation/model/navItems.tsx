@@ -1,11 +1,12 @@
-import { authFormStore } from '@/features/user-auth';
+import { useStore } from '@/app/providers';
 import { IconDash, IconGen, IconKanban, IconLogin, IconMain, IconTodo } from '@/shared/assets/icons';
-import { modalStore } from '@/shared/stores';
 import AuthContainer from '@/widgets/authorization';
 
 import type { NavItem } from '.';
 
 export const getNavItems = (isAuth: boolean): NavItem[] => {
+	const { authFormStore, modalStore } = useStore();
+
 	const openAuth = () => {
 		authFormStore.update('authType', 'login');
 		authFormStore.setResetMode(false);

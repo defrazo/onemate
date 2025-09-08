@@ -1,3 +1,5 @@
+import type { ChangeEvent } from 'react';
+
 export type ContainerSize = {
 	width: number;
 	height: number;
@@ -26,7 +28,7 @@ export type SettingsPanels = {
 	min?: number;
 	type: string;
 	value: number;
-	onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+	onChange: (e: ChangeEvent<HTMLInputElement>) => void;
 };
 
 export type TextBlock = {

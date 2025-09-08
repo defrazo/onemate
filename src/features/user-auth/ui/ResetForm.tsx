@@ -1,25 +1,27 @@
-import { useState } from 'react';
+import { type FormEvent, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { IconPass } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validatePasswords } from '@/shared/lib/validators';
-import { notifyStore } from '@/shared/stores';
 import { Button, Input } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
-import { authFormStore } from '../model';
+import { AuthFormStore } from '../model';
 import { PasswordHint } from '.';
 
 interface ResetFormProps {
+	store: AuthFormStore;
+	isLoading: boolean;
 	onSubmit: () => void;
 }
 
-export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
+export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProps) => {
+	const { notifyStore } = useStore();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 	const [showHint, setShowHint] = useState<boolean>(false);
 	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
-	const store = authFormStore;
 
 	const passwordToggleIcon = renderPasswordToggle({
 		show: showPassword,
@@ -27,11 +29,12 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 		visible: !!store.password,
 	});
 
-	const handleSubmit = async (e: React.FormEvent) => {
+	const handleSubmit = async (e: FormEvent) => {
 		e.preventDefault();
 
 		try {
 			await validatePasswords(store.password, store.passwordConfirm);
+
 			onSubmit();
 		} catch (error: any) {
 			notifyStore.setNotice(error.message || 'Произошла ошибка', 'error');
@@ -85,7 +88,7 @@ export const ResetForm = observer(({ onSubmit }: ResetFormProps) => {
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} type="submit">
+				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} loading={isLoading} type="submit">
 					Сохранить пароль
 				</Button>
 			</form>

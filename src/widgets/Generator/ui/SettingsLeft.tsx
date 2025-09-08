@@ -1,12 +1,14 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { Divider, ZoomOnHover } from '@/shared/ui';
 
 import { renderCutLine } from '../lib';
-import { genStore, useGenModel } from '../model';
+import { useGenModel } from '../model';
 import { TextBlock } from '.';
 
 export const SettingsLeft = observer(() => {
+	const { genStore } = useStore();
 	const { cardWidth, cardHeight } = useGenModel();
 
 	return (

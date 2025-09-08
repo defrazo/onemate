@@ -10,9 +10,9 @@ export type Language = {
 	value: string;
 };
 
-export interface TranslateOptions {
+export type TranslateRequest = {
 	text: string;
 	source: string;
 	target: string;
 	signal?: AbortSignal;
-}
+};

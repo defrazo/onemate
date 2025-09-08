@@ -11,6 +11,7 @@ export const base: Record<Component, string> = {
 	radio: cn(
 		'border-[var(--border-color)]',
 		'transition-colors',
+		'focus:enabled:border-[var(--accent-default)]',
 		'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]',
 		'cursor-pointer appearance-none outline-none'
 	),

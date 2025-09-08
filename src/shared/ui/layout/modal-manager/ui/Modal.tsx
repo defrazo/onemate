@@ -1,3 +1,4 @@
+import type { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react-lite';
 
@@ -6,7 +7,7 @@ import { IconBack, IconClose } from '@/shared/assets/icons';
 import { useEscapeClose } from '../model';
 
 interface ModalProps {
-	children: React.ReactNode;
+	children: ReactNode;
 	onBack?: () => void;
 	onClose?: () => void;
 }

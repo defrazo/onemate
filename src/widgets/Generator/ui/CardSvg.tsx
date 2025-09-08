@@ -1,9 +1,12 @@
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
+
 import { renderCutLine } from '../lib';
-import { genStore } from '../model';
 
 export const CardSvg = observer(({ width, height }: { width: number; height: number }) => {
+	const { genStore } = useStore();
+
 	return (
 		<svg
 			height={`${height}px`}
