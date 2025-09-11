@@ -11,8 +11,8 @@ export const HeaderLogo = () => {
 			title="Перейти на главную страницу"
 			onClick={() => navigate('/')}
 		>
-			<img alt="Логотип" className="w-10" src={Logo} />
-			<span className="text-2xl font-bold md:text-3xl">OneMate</span>
+			<img alt="Логотип" className="size-10" src={Logo} />
+			<span className="text-xl font-bold md:text-3xl">OneMate</span>
 		</div>
 	);
 };

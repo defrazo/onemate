@@ -75,7 +75,7 @@ const DemoInfoPage = () => {
 					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="faq">
 						FAQ
 					</h2>
-					<details className="mb-2 rounded-xl border border-[var(--border-color)] px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
+					<details className="core-border mb-2 px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
 						<summary className="cursor-pointer font-medium">
 							Почему мои данные пропадают после перезагрузки?
 						</summary>
@@ -84,15 +84,15 @@ const DemoInfoPage = () => {
 							хранилище.
 						</p>
 					</details>
-					<details className="mb-2 rounded-xl border border-[var(--border-color)] px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
+					<details className="core-border mb-2 px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
 						<summary className="cursor-pointer font-medium">Как получить доступ ко всем функциям?</summary>
 						<p className="mt-2 text-sm">Оформите полную версию — после входа ограничения будут сняты.</p>
 					</details>
-					<details className="mb-2 rounded-xl border border-[var(--border-color)] px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
+					<details className="core-border mb-2 px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
 						<summary className="cursor-pointer font-medium">Как получить доступ ко всем функциям?</summary>
 						<p className="mt-2 text-sm">Оформите полную версию — после входа ограничения будут сняты.</p>
 					</details>
-					<details className="mb-2 rounded-xl border border-[var(--border-color)] px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
+					<details className="core-border mb-2 px-3 py-2 transition-colors hover:border-[var(--accent-hover)]">
 						<summary className="cursor-pointer font-medium">Как получить доступ ко всем функциям?</summary>
 						<p className="mt-2 text-sm">Оформите полную версию — после входа ограничения будут сняты.</p>
 					</details>

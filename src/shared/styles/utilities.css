@@ -1,4 +1,8 @@
 @layer utilities {
+	.core-card {
+		@apply rounded-xl p-4;
+	}
+
 	.core-base {
 		@apply bg-[var(--bg-secondary)] text-[var(--color-primary)];
 	}
@@ -8,11 +12,11 @@
 	}
 
 	.core-border {
-		@apply border-1 border-[var(--border-color)];
+		@apply rounded-xl border border-solid border-[var(--border-color)];
 	}
 
 	.core-header {
-		@apply text-center text-2xl font-bold select-none md:mr-auto md:ml-0;
+		@apply text-center text-xl font-bold select-none md:mr-auto md:ml-0 md:text-2xl;
 	}
 
 	.loader {

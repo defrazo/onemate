@@ -22,7 +22,7 @@ const Header = () => {
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">
-				<div className="hidden md:flex">
+				<div className="hidden lg:flex">
 					<NavigationLinks
 						className="flex h-10 gap-4 font-bold"
 						isAuth={Boolean(userStore.id)}

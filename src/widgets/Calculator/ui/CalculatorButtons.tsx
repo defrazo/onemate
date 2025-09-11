@@ -13,7 +13,7 @@ export const CalculatorButtons = ({ onClick }: CalculatorButtonsProps) => {
 			{calculatorButtons.map(({ label, colSpan = 1 }) => (
 				<Button
 					key={label}
-					className={cn('py-[3px] text-sm', colSpan === 2 ? 'col-span-2' : 'col-span-1')}
+					className={cn('py-2 text-sm leading-none md:py-1', colSpan === 2 ? 'col-span-2' : 'col-span-1')}
 					size="custom"
 					onClick={() => onClick(label)}
 				>

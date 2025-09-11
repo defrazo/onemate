@@ -25,7 +25,7 @@ const CalendarWidget = () => {
 				</Tooltip>
 			</div>
 			<div className="flex size-full flex-col justify-between gap-2">
-				<div className="core-border flex h-full flex-col rounded-xl py-2">
+				<div className="flex flex-1 flex-col gap-2 rounded-xl border border-solid border-[var(--border-color)] pt-2">
 					<CalendarNav currentDate={currentDate} handleNext={handleNext} handlePrev={handlePrev} />
 					<CalendarGrid currentDate={currentDate} handleDayClick={handleDayClick} range={range} />
 				</div>

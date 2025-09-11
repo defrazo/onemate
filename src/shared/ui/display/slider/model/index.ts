@@ -1,1 +1,1 @@
-export type { Slide } from './types';
+export type { Slide, TabOption } from './types';

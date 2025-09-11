@@ -18,7 +18,7 @@ export const PreviewGrid = observer(() => {
 				{genStore.svgWithText && (
 					<div style={{ width: `${fullGridWidth}px`, height: `${fullGridHeight}px` }}>
 						<div
-							className="core-border rounded-xl p-4"
+							className="core-border p-4"
 							style={{
 								display: 'grid',
 								gap: `${gap}px`,

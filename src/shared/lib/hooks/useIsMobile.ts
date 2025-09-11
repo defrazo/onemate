@@ -11,7 +11,7 @@ export const useIsMobile = () => {
 	const [isMobile, setIsMobile] = useState<boolean>(false);
 
 	useEffect(() => {
-		const check = () => setIsMobile(window.matchMedia('(max-width: 768px)').matches);
+		const check = () => setIsMobile(window.matchMedia('(max-width: 1023px)').matches);
 
 		check();
 		window.addEventListener('resize', check);

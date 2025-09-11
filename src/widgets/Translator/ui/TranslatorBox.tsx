@@ -21,30 +21,31 @@ export const TranslatorBox = observer(({ store, text, language, type, onChangeLa
 	const copy = useCopy();
 
 	return (
-		<div className="core-border relative flex flex-1 flex-col rounded-xl">
-			<div className="flex-1">
+		<div className="core-border relative flex flex-1 flex-col">
+			<div className="flex h-full min-h-28 flex-1 items-center justify-center">
 				{store.isLoading && !isSource ? (
-					<div className="flex h-full items-center justify-center">
-						<Preloader className="size-15" />
-					</div>
+					<Preloader className="z-20 size-15" />
 				) : (
-					<Textarea
-						className="hide-scrollbar h-full min-h-28 overflow-auto px-2 pt-10 text-sm"
-						readOnly={!isSource}
-						size="custom"
-						value={text}
-						variant="custom"
-						onChange={(e) => store.updateTextbox(0, 'text', e.target.value)}
-					/>
+					<>
+						<Textarea
+							className="hide-scrollbar flex-1 overflow-auto px-2 pt-4 text-sm xl:pt-10"
+							readOnly={!isSource}
+							size="custom"
+							value={text}
+							variant="custom"
+							onChange={(e) => store.updateTextbox(0, 'text', e.target.value)}
+						/>
+
+						<TranslatorBoxActions
+							disabled={text === '' || store.isLoading}
+							type={type}
+							onClear={onClear}
+							onCopy={() => copy(text, `${isSource ? 'Оригинал' : 'Перевод'} скопирован!`)}
+						/>
+					</>
 				)}
-				<TranslatorBoxActions
-					disabled={text === '' || store.isLoading}
-					type={type}
-					onClear={onClear}
-					onCopy={() => copy(text, `${isSource ? 'Оригинал' : 'Перевод'} скопирован!`)}
-				/>
 			</div>
-			<div className={cn(isSource ? 'pr-4 pl-2' : 'pr-2 pl-4')}>
+			<div className={cn(isSource ? 'pr-2 pl-2 md:pr-4' : 'pr-2 pl-2 md:pl-4')}>
 				<SelectExt
 					className="rounded-none border-t border-[var(--border-color)] text-sm"
 					options={store.languages}

@@ -8,8 +8,8 @@ const HomePage = () => {
 	usePageTitle('Главная');
 
 	return (
-		<div className="flex flex-1 flex-col justify-evenly select-none md:flex-row md:justify-between">
-			<div className="flex flex-col items-center justify-center md:flex-1 md:gap-4">
+		<div className="flex flex-1 flex-col justify-evenly select-none xl:flex-row xl:justify-between">
+			<div className="flex flex-col items-center justify-center xl:flex-1 xl:gap-4">
 				<h1 className="text-center text-5xl font-medium md:text-8xl">
 					Work Smarter <br /> Not Harder
 				</h1>
@@ -17,8 +17,8 @@ const HomePage = () => {
 					<Slider slides={slides} />
 				</div>
 			</div>
-			<div className="flex items-center justify-center md:flex-1">
-				<img alt="" className="max-h-[65vh]" src={Home} />
+			<div className="flex items-center justify-center xl:flex-1">
+				<img alt="" className="md:max-h-[45vh] xl:max-h-[65vh]" src={Home} />
 			</div>
 		</div>
 	);

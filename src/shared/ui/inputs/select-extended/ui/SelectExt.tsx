@@ -129,7 +129,7 @@ const SelectExt = ({
 			{isOpen && !disabled && (
 				<ul
 					className={cn(
-						'core-elements hide-scrollbar core-border absolute right-0 z-30 max-h-52 w-full min-w-max overflow-y-auto rounded-xl text-center',
+						'core-elements hide-scrollbar absolute right-0 z-30 max-h-52 w-full min-w-max overflow-y-auto rounded-xl border border-solid border-[var(--color-secondary)] text-center',
 						openUpwards ? 'bottom-full' : 'top-full'
 					)}
 					role="listbox"

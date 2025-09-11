@@ -20,7 +20,7 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
 			<div
 				className={cn(
-					'flex min-w-60 items-center justify-center gap-2 rounded-xl border border-l-4 border-[var(--border-color)] bg-[rgba(255,255,255,0.3)] p-2 shadow-lg backdrop-blur-md select-none',
+					'flex min-w-60 items-center justify-center gap-2 rounded-xl border border-l-4 border-solid border-[var(--border-color)] bg-[rgba(255,255,255,0.3)] p-2 shadow-lg backdrop-blur-md select-none',
 					leftBorder(type)
 				)}
 			>
@@ -31,6 +31,7 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 				</div>
 				{options?.button && <div>{options.button}</div>}
 			</div>
+			<div className=""></div>
 		</div>
 	);
 };

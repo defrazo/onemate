@@ -113,15 +113,16 @@ export const MobileUserMenu = observer(() => {
 	];
 
 	return (
-		<div className="top-6 z-60 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto overscroll-contain p-4">
+		<div className="top-6 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto overscroll-contain px-4 pb-4">
 			<UserMenuInfo />
 			<Divider />
 			{userButtons.map((item) => {
 				return (
 					<Button
 						key={item.id}
-						className="h-10"
+						className="h-10 text-sm"
 						leftIcon={item.leftIcon}
+						size="custom"
 						variant="mobile"
 						onClick={item.action}
 					>
@@ -134,6 +135,7 @@ export const MobileUserMenu = observer(() => {
 			<Button
 				className="h-10 justify-start"
 				leftIcon={<IconLogout className="size-6" />}
+				size="custom"
 				variant="mobile"
 				onClick={() => {
 					authStore.logout();

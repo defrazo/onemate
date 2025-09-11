@@ -31,7 +31,7 @@ const Tooltip = ({
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 max-w-lg rounded-xl bg-black px-4 py-2 text-sm leading-snug text-[var(--accent-text)] shadow transition-opacity"
+			className="z-100 hidden max-w-lg rounded-xl bg-black px-4 py-2 text-sm leading-snug text-[var(--accent-text)] shadow transition-opacity xl:fixed"
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>

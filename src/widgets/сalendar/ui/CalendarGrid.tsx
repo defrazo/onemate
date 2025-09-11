@@ -31,17 +31,16 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 				const date = getDateFromDay(currentDate, day);
 				const today = isToday(date);
 				const inRange = isInRange(date, range);
-				const calendarAccent = 'ring-1 ring-[var(--accent-default)] ring-inset';
 
 				return (
 					<Button
 						key={idx}
 						className={cn(
-							'aspect-square rounded-full text-sm leading-4',
+							'aspect-square rounded-full border border-solid border-transparent p-1.5 text-sm leading-none',
 							today && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
-							start && isSameDay(date, start) && calendarAccent,
-							end && isSameDay(date, end) && calendarAccent,
-							inRange && calendarAccent
+							start && isSameDay(date, start) && 'border-[var(--accent-default)]',
+							end && isSameDay(date, end) && 'border-[var(--accent-default)]',
+							inRange && 'border-[var(--accent-default)]'
 						)}
 						size="custom"
 						variant="custom"

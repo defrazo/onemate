@@ -20,7 +20,7 @@ const WeatherWidget = () => {
 			{!store.isReady ? (
 				<ErrorFallback onRetry={() => cityStore.restart()} />
 			) : (
-				<div className="flex h-full flex-col justify-between">
+				<div className="flex flex-1 flex-col justify-between">
 					<LocationSearch />
 					{store.isRefresh ? (
 						<LoadFallback />

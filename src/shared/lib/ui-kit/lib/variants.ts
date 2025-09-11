@@ -10,7 +10,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'ring-inset'
 		),
 		ghost: cn(
-			'rounded-xl border-1 border-[var(--border-color)] bg-transparent',
+			'rounded-xl border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:enabled:border-[var(--accent-hover)] hover:enabled:bg-[var(--accent-hover)] hover:enabled:text-[var(--bg-accent-text)] focus-visible:enabled:border-[var(--accent-default)]'
 		),
 		accent: cn(
@@ -27,7 +27,7 @@ export const variants: Record<Component, Record<string, string>> = {
 		),
 		warning: cn(
 			'enabled:text-[var(--status-error)]',
-			'rounded-xl border-1 enabled:border-[var(--status-error)] bg-transparent border-[var(--border-color)]',
+			'rounded-xl border  border-[var(--border-color)] bg-transparent enabled:border-[var(--status-error)]',
 			'hover:enabled:border-[var(--status-error)] hover:enabled:bg-[var(--status-error)] hover:enabled:text-[var(--color-primary)] focus-visible:enabled:border-[var(--accent-default)]'
 		),
 		mobile: cn('text-[var(--color-primary)]', 'bg-transparent'),
@@ -40,7 +40,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'ring-inset'
 		),
 		ghost: cn(
-			'border-1 border-[var(--border-color)] bg-transparent',
+			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]'
 		),
 		custom: '',
@@ -52,7 +52,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'ring-inset'
 		),
 		ghost: cn(
-			'border-1 border-[var(--border-color)] bg-transparent',
+			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]'
 		),
 		custom: '',
@@ -71,7 +71,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'ring-inset'
 		),
 		ghost: cn(
-			'border-1 border-[var(--border-color)] bg-transparent',
+			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]'
 		),
 		custom: '',
@@ -83,7 +83,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'ring-inset'
 		),
 		ghost: cn(
-			'border-1 border-[var(--border-color)] bg-transparent',
+			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]'
 		),
 		custom: '',

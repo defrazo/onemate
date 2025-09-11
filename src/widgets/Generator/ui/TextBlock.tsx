@@ -27,7 +27,7 @@ export const TextBlock = ({
 	const { genStore } = useStore();
 
 	return (
-		<div className="core-border flex flex-col gap-1 rounded-xl p-2">
+		<div className="core-border flex flex-col gap-1 p-2">
 			<label className="flex w-full flex-col gap-1">
 				<div className="flex items-center justify-between">
 					<span>{label}</span>

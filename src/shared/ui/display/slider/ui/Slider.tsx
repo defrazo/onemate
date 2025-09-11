@@ -5,7 +5,7 @@ interface SliderProps {
 	slides: Slide[];
 }
 
-const Slider = ({ slides }: SliderProps) => {
+export const Slider = ({ slides }: SliderProps) => {
 	const doubledSlides = [...slides, ...slides];
 
 	return (
@@ -18,5 +18,3 @@ const Slider = ({ slides }: SliderProps) => {
 		</div>
 	);
 };
-
-export default Slider;

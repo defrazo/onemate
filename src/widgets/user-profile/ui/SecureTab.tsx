@@ -123,7 +123,7 @@ export const SecureTab = observer(() => {
 					<DeviceActivityOverview />
 				</div>
 			</div>
-			<div className="core-card flex flex-col gap-2 border-1 border-[#871919] bg-[var(--bg-warning)] select-none">
+			<div className="core-card flex flex-col gap-2 border border-solid border-[#871919] bg-[var(--bg-warning)] select-none">
 				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>
 				<p className="text-justify text-sm">
 					Вы можете удалить свой аккаунт. У вас будет <b>30 дней</b> на его восстановление. По истечении этого

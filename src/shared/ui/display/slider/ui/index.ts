@@ -1,2 +1,3 @@
 export { SlideItem } from './SlideItem';
-export { default } from './Slider';
+export { Slider } from './Slider';
+export { TabSlider } from './TabSlider';

@@ -16,7 +16,7 @@ export const SettingsLeft = observer(() => {
 			{genStore.svgWithText && (
 				<ZoomOnHover>
 					<svg
-						className="core-border rounded-xl p-2"
+						className="core-border p-2"
 						height={cardHeight}
 						style={{ display: 'block', maxWidth: '100%', height: 'auto', width: 'auto' }}
 						viewBox={`0 0 ${genStore.width} ${genStore.height}`}

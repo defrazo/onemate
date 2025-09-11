@@ -29,7 +29,7 @@ const Layout = ({
 	const right = hideRightOnMobile && isMobile ? null : rightSide;
 
 	return (
-		<div className="mx-auto flex min-h-full w-full max-w-[95vw] flex-1 flex-col px-4 py-4 text-sm sm:max-w-[80vw] md:text-base lg:max-w-[70vw] xl:max-w-[1600px]">
+		<div className="mx-auto flex min-h-full w-full flex-1 flex-col px-4 py-4 text-sm xl:max-w-[1600px] xl:text-base">
 			<Header />
 			<div
 				className={cn(

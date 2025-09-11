@@ -20,7 +20,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 		<>
 			{isMobile ? (
 				<Textarea
-					className="h-full border-1 border-[var(--border-color)] text-right"
+					className="hide-scrollbar h-full min-h-22 border border-solid border-[var(--border-color)] text-right"
 					placeholder="Журнала еще нет"
 					readOnly
 					value={renderResult(result)}

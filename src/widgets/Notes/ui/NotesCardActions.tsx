@@ -30,13 +30,16 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 	return (
 		<div
 			className={cn(
-				'w-10 flex-col border-l border-[var(--border-color)]',
+				'w-10 flex-col justify-between border-l border-[var(--border-color)]',
 				notesStore.focusedId === id ? 'hidden' : 'flex'
 			)}
 		>
 			<Button
 				centerIcon={<IconMove className="size-4 rotate-90" />}
-				className={cn(notesStore.focusedId && 'hidden', 'flex-1 cursor-move hover:text-[var(--accent-hover)]')}
+				className={cn(
+					notesStore.focusedId && 'hidden',
+					'hidden cursor-move hover:text-[var(--accent-hover)] md:block'
+				)}
 				size="sm"
 				title="Переместить"
 				variant="mobile"
@@ -45,7 +48,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 			/>
 			<Button
 				centerIcon={<IconCopy className="size-4" />}
-				className="flex-1 cursor-copy hover:text-[var(--accent-hover)]"
+				className="cursor-copy hover:text-[var(--accent-hover)]"
 				disabled={!text}
 				size="sm"
 				title="Скопировать"
@@ -54,7 +57,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-4" />}
-				className="flex-1 hover:text-[var(--status-error)]"
+				className="hover:text-[var(--status-error)]"
 				size="sm"
 				title="Удалить заметку"
 				variant="mobile"

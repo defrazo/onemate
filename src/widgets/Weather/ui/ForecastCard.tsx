@@ -18,7 +18,7 @@ export const ForecastCard = ({ date, day, icon, description, maxTemp, minTemp }:
 			</Tooltip>
 			<div className="flex flex-col items-center justify-center">
 				<div className="text-xl font-bold text-[var(--accent-default)]">{maxTemp}°</div>
-				<div className="text-sm">ночь {minTemp}°</div>
+				<div className="text-xs xl:text-sm">ночь {minTemp}°</div>
 			</div>
 		</div>
 	);

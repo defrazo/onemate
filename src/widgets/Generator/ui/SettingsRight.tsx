@@ -16,7 +16,7 @@ export const SettingsRight = observer(() => {
 			<Divider />
 			{genStore.width > 0 && genStore.height > 0 && (
 				<>
-					<div className="core-border flex flex-col gap-2 rounded-xl p-2">
+					<div className="core-border flex flex-col gap-2 p-2">
 						<div className="text-sm text-[var(--color-disabled)]">
 							<div>Размеры файла:</div>
 							<div>Ширина: {genStore.widthMm} мм</div>
@@ -26,7 +26,7 @@ export const SettingsRight = observer(() => {
 					<Divider />
 				</>
 			)}
-			<div className="core-border flex flex-col gap-1 rounded-xl p-2">
+			<div className="core-border flex flex-col gap-1 p-2">
 				<label className="flex w-full flex-col gap-1">
 					<div className="flex items-center justify-between">
 						<span>Линия реза:</span>
@@ -67,7 +67,7 @@ export const SettingsRight = observer(() => {
 				</label>
 			</div>
 			<Divider />
-			<div className="core-border flex flex-col gap-1 rounded-xl p-2">
+			<div className="core-border flex flex-col gap-1 p-2">
 				<label className="flex w-full flex-col gap-1">
 					<div className="flex justify-between">
 						<span>Итоговая сетка:</span>

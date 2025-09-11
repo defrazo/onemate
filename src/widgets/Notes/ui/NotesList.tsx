@@ -37,7 +37,7 @@ export const NotesList = observer(({ children }: NotesListProps) => {
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext items={store.notes.map((n) => n.id)} strategy={verticalListSortingStrategy}>
-				<div className="hide-scrollbar flex flex-1 flex-col gap-2 overflow-y-auto xl:max-h-[29dvh] 2xl:max-h-[27.5dvh]">
+				<div className="hide-scrollbar flex max-h-[35dvh] flex-1 flex-col gap-2 overflow-y-auto xl:max-h-[29dvh] 2xl:max-h-[27.5dvh]">
 					{visibleNotes.map((note, idx) => children(note, idx))}
 				</div>
 			</SortableContext>

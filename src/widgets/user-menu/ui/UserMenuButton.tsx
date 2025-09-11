@@ -42,8 +42,7 @@ export const UserMenuButton = ({ isMobile, headerRef }: UserMenuButtonProps) => 
 
 	return (
 		<Button
-			centerIcon={<UserAvatar className="size-9 ring-[var(--accent-hover)] hover:ring-1" />}
-			className="size-9"
+			centerIcon={<UserAvatar className="size-10 ring-[var(--accent-hover)] hover:ring-1" />}
 			size="custom"
 			title="Открыть меню пользователя"
 			variant="custom"

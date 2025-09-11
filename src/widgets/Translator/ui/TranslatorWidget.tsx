@@ -49,7 +49,7 @@ const TranslatorWidget = () => {
 				</Tooltip>
 			</div>
 			<div className="flex flex-1 flex-col">
-				<div className="relative flex flex-1 gap-2">
+				<div className="relative flex flex-1 flex-col gap-2 xl:flex-row">
 					<TranslatorBox
 						language={store.sourceLang}
 						store={store}
@@ -59,8 +59,8 @@ const TranslatorWidget = () => {
 						onClear={handleClear}
 					/>
 					<Button
-						centerIcon={<IconArrows className="size-4" />}
-						className="core-elements absolute bottom-6 left-1/2 z-10 size-8 -translate-x-1/2 rotate-90 rounded-full"
+						centerIcon={<IconArrows className="size-4 xl:rotate-90" />}
+						className="core-elements bottom-6 left-1/2 z-10 size-8 w-full rounded-xl xl:absolute xl:w-4 xl:-translate-x-1/2 xl:rounded-full"
 						title="Поменять языки местами"
 						onClick={() => store.swapLanguages()}
 					/>

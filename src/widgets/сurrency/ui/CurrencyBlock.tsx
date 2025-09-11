@@ -25,7 +25,7 @@ export const CurrencyBlock = observer(
 		useEffect(() => setInput(String(currencyValue)), [currencyValue]);
 
 		return (
-			<div className="core-border flex w-full rounded-xl p-2">
+			<div className="core-border flex w-full p-2">
 				<div className="flex-1">
 					<Input
 						className="border-none text-right"

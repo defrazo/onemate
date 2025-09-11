@@ -1,7 +1,7 @@
 import type { Dispatch, SetStateAction } from 'react';
 
 import { IconChecked, IconCopy, IconTrash, IconUnchecked } from '@/shared/assets/icons';
-import { useCopy } from '@/shared/lib/hooks';
+import { useCopy, useIsMobile } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { hasWeekendInRange } from '../lib';
@@ -22,6 +22,7 @@ export const CalendarControls = ({
 	setIncludeWeekends,
 	setRange,
 }: CalendarControlsProps) => {
+	const isMobile = useIsMobile();
 	const copy = useCopy();
 
 	return (
@@ -29,25 +30,29 @@ export const CalendarControls = ({
 			<div className="col-span-3 text-center">{rangeState}</div>
 			<Button
 				active={hasWeekendInRange(range) && includeWeekends}
-				className="w-full text-sm"
+				className="w-full text-xs md:text-sm"
 				disabled={!hasWeekendInRange(range)}
-				leftIcon={includeWeekends ? <IconChecked className="size-4" /> : <IconUnchecked className="size-4" />}
+				leftIcon={
+					includeWeekends
+						? !isMobile && <IconChecked className="size-4" />
+						: !isMobile && <IconUnchecked className="size-4" />
+				}
 				onClick={() => setIncludeWeekends((prev) => !prev)}
 			>
 				Выходные
 			</Button>
 			<Button
-				className="w-full text-sm"
+				className="w-full text-xs md:text-sm"
 				disabled={!range[0] || !range[1]}
-				leftIcon={<IconCopy className="size-4" />}
-				onClick={() => copy(rangeState, 'Диапазон скопирован!')}
+				leftIcon={!isMobile && <IconCopy className="size-4" />}
+				onClick={() => copy(rangeState, 'Период скопирован!')}
 			>
 				Скопировать
 			</Button>
 			<Button
-				className="w-full text-sm hover:enabled:bg-[var(--status-error)]"
+				className="w-full text-xs hover:enabled:bg-[var(--status-error)] md:text-sm"
 				disabled={!range[0]}
-				leftIcon={<IconTrash className="size-4" />}
+				leftIcon={!isMobile && <IconTrash className="size-4" />}
 				onClick={() => setRange([null, null])}
 			>
 				Сбросить
