@@ -39,9 +39,7 @@ export const MobileUserMenu = observer(() => {
 	const goTo = (tab: TabId) => {
 		if (isMobile) {
 			const component = tabs[tab];
-			modalStore.setModal(component, 'sheet', {
-				back: () => modalStore.setModal(<MobileUserMenu />, 'sheet'),
-			});
+			modalStore.setModal(component, 'sheet', { back: () => modalStore.setModal(<MobileUserMenu />, 'sheet') });
 		} else {
 			navigate(`/account/profile?tab=${tab}`);
 		}
@@ -71,10 +69,10 @@ export const MobileUserMenu = observer(() => {
 			leftIcon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
 			action: () => themeStore.toggleTheme(),
 			label: (
-				<>
-					Тема оформления:
-					<span className="ml-auto text-[var(--accent-default)]">{themeStore.currentTheme}</span>
-				</>
+				<div className="flex justify-between">
+					<span>Тема оформления:</span>
+					<span className="text-[var(--accent-default)]">{themeStore.currentTheme}</span>
+				</div>
 			),
 		},
 		{
@@ -122,12 +120,12 @@ export const MobileUserMenu = observer(() => {
 						key={item.id}
 						className="h-10 text-sm"
 						leftIcon={item.leftIcon}
+						rightIcon={<IconForward className="size-4" />}
 						size="custom"
 						variant="mobile"
 						onClick={item.action}
 					>
-						{item.label}
-						<IconForward className="ml-auto size-4" />
+						<span className="w-full text-left">{item.label}</span>
 					</Button>
 				);
 			})}

@@ -18,7 +18,7 @@ const Header = () => {
 	return (
 		<header
 			ref={headerRef}
-			className="core-card core-elements sticky z-10 flex justify-between px-4 py-3 select-none print:hidden"
+			className="core-elements z-10 flex justify-between rounded-xl px-4 py-2 select-none md:py-4 print:hidden"
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">
@@ -29,11 +29,8 @@ const Header = () => {
 						variant="desktop"
 					/>
 				</div>
-
 				{userStore.id && authStore.isReady && <UserMenuButton headerRef={headerRef} isMobile={isMobile} />}
-
 				<Time />
-
 				{!userStore.id && <ThemeSwitcher />}
 			</div>
 		</header>

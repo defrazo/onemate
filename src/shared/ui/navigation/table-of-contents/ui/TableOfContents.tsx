@@ -52,7 +52,7 @@ const TableOfContents = () => {
 	}, []);
 
 	return (
-		<nav className="group sticky top-1/2 -mr-4 hidden -translate-y-1/2 md:flex print:hidden">
+		<nav className="group sticky top-1/2 z-10 hidden self-start md:flex print:hidden">
 			<div className="relative">
 				<div className="flex cursor-pointer items-center justify-center rounded-full text-[var(--color-secondary)]">
 					<IconScroll className="size-16 opacity-50" />

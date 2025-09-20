@@ -1,30 +1,24 @@
-import { usePageTitle } from '@/shared/lib/hooks';
-import { Divider, PrintButton, TableOfContents } from '@/shared/ui';
+import { ArticleSection, PrintButton } from '@/shared/ui';
 
 const TermsOfServicePage = () => {
-	usePageTitle('Пользовательское соглашение');
-
 	return (
-		<div className="relative mx-auto flex max-w-4xl items-start">
-			<TableOfContents />
-			<div className="print-container flex flex-col items-center gap-4 px-4 py-12">
-				<header className="flex flex-col items-center justify-between">
-					<div className="mb-2 flex items-center justify-center gap-2">
-						<h1 className="print-header cursor-default text-4xl font-bold">Пользовательское соглашение</h1>
-						<PrintButton />
-					</div>
-					<p className="print-content text-justify text-sm text-[var(--color-disabled)]">
-						Настоящее Пользовательское соглашение устанавливает правила использования веб-приложения
-						OneMate. Ознакомление и принятие условий Соглашения обязательно для всех пользователей. Если вы
-						не согласны с условиями, пожалуйста, прекратите использование Приложения.
-					</p>
-				</header>
-				<Divider />
-				<section className="print-content flex w-full flex-col gap-4 text-justify">
-					<h2 className="scroll-mt-72 text-xl font-semibold md:scroll-mt-72" id="terms-general">
-						1. Общие положения
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+		<>
+			<header className="flex flex-col items-center">
+				<div className="flex items-center justify-center gap-2">
+					<h1 className="print-header cursor-default text-center text-xl leading-tight font-bold md:text-3xl">
+						Пользовательское соглашение
+					</h1>
+					<PrintButton />
+				</div>
+				<p className="print-content text-justify text-[var(--color-disabled)]">
+					Настоящее Пользовательское соглашение устанавливает правила использования веб-приложения OneMate.
+					Ознакомление и принятие условий Соглашения обязательно для всех пользователей. Если вы не согласны с
+					условиями, пожалуйста, прекратите использование Приложения.
+				</p>
+			</header>
+			<article className="print-content flex flex-col gap-4 text-justify">
+				<ArticleSection first id="terms-general" title="1. Общие положения">
+					<ul className="list-default">
 						<li>
 							Настоящее Пользовательское соглашение (далее — «Соглашение») регулирует отношения между
 							администрацией веб-приложения OneMate (далее — «Администрация») и физическим лицом (далее —
@@ -45,11 +39,9 @@ const TermsOfServicePage = () => {
 							Соглашения, ему следует воздержаться от использования Приложения.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-registration">
-						2. Регистрация и учетная запись
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-registration" title="2. Регистрация и учетная запись">
+					<ul className="list-default">
 						<li>Для доступа к полному функционалу Приложения необходима регистрация учетной записи.</li>
 						<li>
 							При регистрации Пользователь обязуется предоставить достоверную и актуальную информацию,
@@ -64,11 +56,9 @@ const TermsOfServicePage = () => {
 							произошедший по вине Пользователя.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-responsibility">
-						3. Ответственность и гарантии
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-responsibility" title="3. Ответственность и гарантии">
+					<ul className="list-default">
 						<li>
 							Приложение предоставляется «как есть», без каких-либо гарантий или обязательств с стороны
 							Администрации по качеству, точности, надежности или доступности.
@@ -82,11 +72,9 @@ const TermsOfServicePage = () => {
 							использованием Приложения, и за соблюдение законодательства Российской Федерации.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-restrictions">
-						4. Ограничения
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-restrictions" title="4. Ограничения">
+					<ul className="list-default">
 						<li>
 							Пользователю запрещается использовать Приложение для размещения, передачи или
 							распространения контента, нарушающего законодательство Российской Федерации, содержащего
@@ -97,11 +85,9 @@ const TermsOfServicePage = () => {
 							вмешательства в его работу, модификации или декомпиляции.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-privacy">
-						5. Конфиденциальность и защита данных
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-privacy" title="5. Конфиденциальность и защита данных">
+					<ul className="list-default">
 						<li>
 							Администрация обрабатывает только те данные Пользователя, которые предоставляются при
 							регистрации, и не передает их третьим лицам.
@@ -111,11 +97,9 @@ const TermsOfServicePage = () => {
 							Пользователя от несанкционированного доступа.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-changes">
-						6. Изменения и прекращение использования
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-changes" title="6. Изменения и прекращение использования">
+					<ul className="list-default">
 						<li>
 							Администрация оставляет за собой право в любой момент изменить условия настоящего Соглашения
 							без предварительного уведомления Пользователя.
@@ -128,21 +112,17 @@ const TermsOfServicePage = () => {
 							Администрация оставляет за собой право прекратить доступ к Приложению без объяснения причин.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-support">
-						7. Обратная связь и поддержка
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-support" title="7. Обратная связь и поддержка">
+					<ul className="list-default">
 						<li>
 							Приложение не предоставляет официальной поддержки, но любые предложения и вопросы могут быть
 							отправлены через соответствующие каналы обратной связи.
 						</li>
 					</ul>
-					<Divider />
-					<h2 className="scroll-mt-24 text-xl font-semibold md:scroll-mt-32" id="terms-final">
-						8. Заключительные положения
-					</h2>
-					<ul className="list-disc space-y-1 pl-5">
+				</ArticleSection>
+				<ArticleSection id="terms-final" title="8. Заключительные положения">
+					<ul className="list-default">
 						<li>
 							К отношениям между Пользователем и Администрацией применяется право Российской Федерации.
 							Все возможные споры разрешаются в соответствии с действующим законодательством Российской
@@ -158,19 +138,21 @@ const TermsOfServicePage = () => {
 						</li>
 						<li>
 							Дополнительную информацию о сборе и хранении персональных данных см. в{' '}
-							<a className="text-[var(--accent-default)] underline" href="/privacy-policy">
+							<a
+								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								href="/privacy-policy"
+							>
 								Политике конфиденциальности
 							</a>
 							.
 						</li>
 					</ul>
-					<Divider />
-					<p className="text-center text-sm text-[var(--color-disabled)]">
-						Версия: 1.1. Обновлено: 01 августа 2025 года. Актуально с 01 августа 2025 года.
-					</p>
-				</section>
-			</div>
-		</div>
+				</ArticleSection>
+				<p className="text-center text-xs text-[var(--color-disabled)] md:text-sm">
+					Версия: 1.1. Обновлено: 01 августа 2025 года. Актуально с 01 августа 2025 года.
+				</p>
+			</article>
+		</>
 	);
 };
 

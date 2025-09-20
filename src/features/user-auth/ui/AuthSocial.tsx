@@ -8,7 +8,12 @@ interface AuthSocialProps {
 
 export const AuthSocial = ({ isLoading, oAuth }: AuthSocialProps) => {
 	return (
-		<Button className="flex h-10 w-full gap-2" loading={isLoading} variant="ghost" onClick={oAuth}>
+		<Button
+			className="flex h-10 w-full gap-2 text-sm md:text-base"
+			loading={isLoading}
+			variant="ghost"
+			onClick={oAuth}
+		>
 			Продолжить с аккаунтом Google <IconGoogle className="size-5" />
 		</Button>
 	);

@@ -1,0 +1,45 @@
+import { Construction } from '@/shared/assets/images';
+import { Link } from '@/shared/ui';
+
+interface Props {
+	title?: string;
+	suggestions?: React.ReactNode;
+}
+
+const UnderConstruction = ({ title = 'Страница в разработке', suggestions }: Props) => {
+	return (
+		<div className="mobile-pad flex flex-1 flex-col justify-evenly select-none md:flex-row md:justify-between">
+			<div className="flex flex-col items-center justify-center gap-4 md:flex-1 md:gap-8">
+				<h1 className="text-center text-2xl leading-tight font-medium md:text-6xl">{title}</h1>
+				<div className="md:w-2xl md:text-xl">
+					<p className="text-justify leading-relaxed">
+						Страница, на которую вы попали, находится в разработке. Она будет доступна позже, а пока вы
+						можете попробовать:
+					</p>
+					<ul className="list-dash">
+						{suggestions ?? (
+							<>
+								<li className="flex items-center">
+									<Link
+										className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline"
+										size="custom"
+										to="/"
+										variant="mobile"
+									>
+										Перейти на главную страницу OneMate
+									</Link>
+								</li>
+								<li>Вернуться назад через кнопку в браузере</li>
+							</>
+						)}
+					</ul>
+				</div>
+			</div>
+			<div className="flex items-center justify-center md:flex-1">
+				<img alt="" className="max-h-[45vh] xl:max-h-[65vh]" src={Construction} />
+			</div>
+		</div>
+	);
+};
+
+export default UnderConstruction;

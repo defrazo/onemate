@@ -15,7 +15,7 @@ interface LayoutProps {
 	showFooter?: boolean;
 }
 
-const Layout = ({
+export const Layout = ({
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
 	leftSide,
@@ -44,12 +44,10 @@ const Layout = ({
 				)}
 			>
 				{left && <aside className="flex">{left}</aside>}
-				<main className="flex flex-1 pb-16 md:pb-0">{children}</main>
+				<main className="flex flex-1">{children}</main>
 				{right && <aside className="flex">{right}</aside>}
 			</div>
 			{showFooter && (isMobile ? <MobileTabBar /> : <Footer />)}
 		</div>
 	);
 };
-
-export default Layout;

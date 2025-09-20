@@ -1,3 +1,4 @@
+export { default as ArticleSection } from './article-section';
 export { default as Divider } from './divider';
 export type { ModalConfig, ModalType } from './modal-manager';
 export { default as ModalManager } from './modal-manager';

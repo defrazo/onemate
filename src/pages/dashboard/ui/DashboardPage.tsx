@@ -35,7 +35,7 @@ const DashboardPage = () => {
 					</DndContext>
 				</div>
 			) : (
-				<div className="-mb-4 flex flex-col justify-between gap-2">
+				<div className="mobile-pad flex flex-col justify-between gap-2">
 					<div className="core-base flex flex-col gap-2 rounded-xl p-2">
 						<TabSlider
 							className="rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"

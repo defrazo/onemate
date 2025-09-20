@@ -1,4 +1,4 @@
-import { RouteObject } from 'react-router-dom';
+import type { RouteObject } from 'react-router-dom';
 
 import AboutPage from '@/pages/about';
 import DeletedAccountPage from '@/pages/account-deleted';
@@ -13,7 +13,7 @@ import NotFoundPage from '@/pages/not-found';
 import PrivacyPolicyPage from '@/pages/privacy-policy';
 import TermsOfServicePage from '@/pages/terms-of-service';
 import TodoPage from '@/pages/to-do';
-import Layout from '@/shared/layouts';
+import { Layout, StaticPageLayout } from '@/shared/layouts';
 import { SettingsLeft, SettingsRight } from '@/widgets/generator';
 import { ProfileNav } from '@/widgets/user-profile';
 
@@ -115,9 +115,9 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<StaticPageLayout showToc={false} title="О проекте">
 						<AboutPage />
-					</Layout>
+					</StaticPageLayout>
 				}
 				requireAuth={false}
 			/>
@@ -128,9 +128,9 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<StaticPageLayout title="О демо-режиме OneMate">
 						<DemoInfoPage />
-					</Layout>
+					</StaticPageLayout>
 				}
 				requireAuth={false}
 			/>
@@ -141,9 +141,9 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<StaticPageLayout title="Пользовательское соглашение">
 						<TermsOfServicePage />
-					</Layout>
+					</StaticPageLayout>
 				}
 				requireAuth={false}
 			/>
@@ -154,9 +154,9 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<StaticPageLayout title="Политика конфиденциальности">
 						<PrivacyPolicyPage />
-					</Layout>
+					</StaticPageLayout>
 				}
 				requireAuth={false}
 			/>

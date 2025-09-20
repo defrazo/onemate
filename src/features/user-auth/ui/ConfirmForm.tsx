@@ -19,12 +19,11 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 	const { notifyStore } = useStore();
 
 	const isBlocked = store.timer > 0;
-
 	const infoText = !store.resetMode ? (
 		<>
 			<p>
 				Мы отправили письмо с подтверждением на адрес электронной почты. Пожалуйста, проверьте свою почту,
-				включая папку «Спам». <br />
+				включая папку «Спам».
 			</p>
 			<p className="text-[var(--color-disabled)]">
 				Если письмо не пришло, убедитесь, что адрес указан правильно и попробуйте запросить письмо повторно.
@@ -33,12 +32,12 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 	) : (
 		<>
 			<p>
-				Введите e-mail, к которому привязан ваш аккаунт OneMate. <br />
-				Мы отправим на него письмо с инструкциями по восстановлению пароля.
+				Введите e-mail, к которому привязан ваш аккаунт OneMate. Мы отправим на него письмо с инструкциями по
+				восстановлению пароля.
 			</p>
 			<p className="text-[var(--color-disabled)]">
-				Пожалуйста, проверьте почту, включая папку «Спам». <br />
-				Если письмо не придет, убедитесь, что адрес указан правильно и попробуйте запросить письмо повторно.
+				Пожалуйста, проверьте почту, включая папку «Спам». Если письмо не придет, убедитесь, что адрес указан
+				правильно и попробуйте запросить письмо повторно.
 			</p>
 		</>
 	);
@@ -56,7 +55,7 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 	};
 
 	return (
-		<div className="-mb-10 flex flex-col items-center gap-4 lg:mb-0 lg:w-lg">
+		<div className="flex flex-col items-center gap-4 px-2 pb-4 lg:w-lg">
 			<div className="flex flex-col items-center gap-2 select-none">
 				<img alt="Логотип" className="size-20" src={Logo} />
 				<h1 className="core-header">
