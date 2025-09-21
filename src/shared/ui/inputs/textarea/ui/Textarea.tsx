@@ -18,13 +18,7 @@ const Textarea = ({
 	className,
 	...props
 }: TextareaProps) => {
-	const styles = getComponentStyles({
-		variant,
-		size,
-		error,
-		disabled: props.disabled,
-		component: 'textarea',
-	});
+	const styles = getComponentStyles({ variant, size, error, disabled: props.disabled, component: 'textarea' });
 
 	const resizeStyles = {
 		none: 'resize-none',

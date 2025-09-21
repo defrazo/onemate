@@ -22,13 +22,7 @@ const Input = ({
 	className,
 	...props
 }: InputProps) => {
-	const styles = getComponentStyles({
-		variant,
-		size,
-		error,
-		disabled: props.disabled,
-		component: 'input',
-	});
+	const styles = getComponentStyles({ variant, size, error, disabled: props.disabled, component: 'input' });
 
 	const justifies = {
 		start: 'justify-start',

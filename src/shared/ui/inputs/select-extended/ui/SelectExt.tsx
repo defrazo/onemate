@@ -76,13 +76,7 @@ const SelectExt = ({
 		setIsOpen(true);
 	};
 
-	const styles = getComponentStyles({
-		variant,
-		size,
-		error,
-		disabled: disabled,
-		component: 'selectExt',
-	});
+	const styles = getComponentStyles({ variant, size, error, disabled: disabled, component: 'selectExt' });
 
 	const justifies = {
 		start: 'justify-start',

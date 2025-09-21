@@ -31,13 +31,7 @@ const Select = ({
 	className,
 	...props
 }: SelectProps) => {
-	const styles = getComponentStyles({
-		variant,
-		size,
-		error,
-		disabled: props.disabled,
-		component: 'select',
-	});
+	const styles = getComponentStyles({ variant, size, error, disabled: props.disabled, component: 'select' });
 
 	const alignment = {
 		left: 'text-start',

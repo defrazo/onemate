@@ -5,9 +5,11 @@ import type { Gender } from '@/entities/user-profile';
 import LocationSearch from '@/features/location';
 import { AvatarPicker } from '@/features/user-avatar';
 import { IconTrash } from '@/shared/assets/icons';
+import { useModalBack } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
 import { Button, Input, LoadFallback, Radio, SelectExt, Thumbnail } from '@/shared/ui';
+import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { genderOptions } from '../lib';
 import { useProfile } from '../model';
@@ -15,6 +17,7 @@ import { useProfile } from '../model';
 export const PersonalTab = observer(() => {
 	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
 	const { isMobile, navigate } = useProfile();
+	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
 		try {
@@ -32,7 +35,7 @@ export const PersonalTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 select-none md:p-4">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
@@ -41,9 +44,12 @@ export const PersonalTab = observer(() => {
 						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-1 md:size-fit"
 						src={userProfileStore.avatar}
 						title="Сменить аватар"
-						onClick={() => modalStore.setModal(<AvatarPicker />)}
+						onClick={() => modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined)}
 					/>
-					<Button className="w-full" onClick={() => modalStore.setModal(<AvatarPicker />)}>
+					<Button
+						className="w-full"
+						onClick={() => modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined)}
+					>
 						Изменить
 					</Button>
 				</div>
@@ -84,7 +90,7 @@ export const PersonalTab = observer(() => {
 					</div>
 					<div className="flex flex-col gap-1">
 						<h3 className="opacity-60">Дата рождения</h3>
-						<div className="flex gap-2">
+						<div className="flex flex-col gap-2 md:flex-row">
 							<SelectExt
 								justify="center"
 								options={generateYears()}
@@ -121,7 +127,7 @@ export const PersonalTab = observer(() => {
 					<div className="flex flex-col gap-1">
 						<h3 className="opacity-60">Пол:</h3>
 						<Radio
-							className="gap-4"
+							className="flex-col gap-4 md:flex-row"
 							name="gender"
 							options={genderOptions}
 							value={store.gender}
@@ -159,7 +165,9 @@ export const PersonalTab = observer(() => {
 							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
 							onClick={() =>
-								isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+								isMobile
+									? modalStore.setModal(<MobileUserMenu />, 'sheet')
+									: navigate('/account/profile?tab=overview')
 							}
 						>
 							Отменить

@@ -134,7 +134,7 @@ export class ProfileStore {
 	}
 
 	async saveChanges(): Promise<void> {
-		if (!this.draft || !this.userStore.id || this.isLoading) return;
+		if (!this.draft || !this.userStore.id || this.isLoading || !this.isDirty) return;
 
 		this.setLoading();
 

@@ -4,14 +4,17 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import DeviceActivityOverview from '@/features/device-activity';
 import { PasswordHint } from '@/features/user-auth';
+import { useModalBack } from '@/shared/lib/hooks';
 import { validatePasswords } from '@/shared/lib/validators';
 import { Button, ConfirmDialog, Divider, Input, LoadFallback } from '@/shared/ui';
+import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { useProfile } from '../model';
 
 export const SecureTab = observer(() => {
 	const { accountStore, modalStore, notifyStore, profileStore, userStore } = useStore();
 	const { isMobile, formattedDate, navigate } = useProfile();
+	useModalBack(<MobileUserMenu />);
 
 	const [showHint, setShowHint] = useState<boolean>(false);
 	const [isPasswordValid, setIsPasswordValid] = useState<boolean>(false);
@@ -61,67 +64,69 @@ export const SecureTab = observer(() => {
 	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
-		<div className="flex cursor-default flex-col gap-4">
-			<div className="core-card core-base flex flex-col gap-4">
-				<h1 className="core-header">Безопасность</h1>
-				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-bold select-none">Пароль</h2>
-					<h3 className="text-sm text-[var(--color-disabled)]">Ваш пароль был изменен {formattedDate}</h3>
-					<div className="relative">
-						<Input
-							placeholder="Новый пароль"
-							value={userStore.passwords[0]}
-							variant="ghost"
-							onBlur={(e) => {
-								setShowHint(false);
-								userStore.setPasswords(0, e.target.value.trim());
-							}}
-							onChange={(e) => userStore.setPasswords(0, e.target.value)}
-							onFocus={() => setShowHint(true)}
-						/>
-						<PasswordHint
-							password={userStore.passwords[0]}
-							showHint={showHint}
-							onValidityChange={(value) => setIsPasswordValid(value)}
-						/>
-					</div>
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 md:p-4">
+			<h1 className="core-header">Безопасность</h1>
+			<div className="flex flex-col gap-2">
+				<h2 className="text-xl font-bold select-none">Пароль</h2>
+				<h3 className="text-xs text-[var(--color-disabled)] md:text-sm">
+					Ваш пароль был изменен {formattedDate}
+				</h3>
+				<div className="relative">
 					<Input
-						placeholder="Подтвердите новый пароль"
-						value={userStore.passwords[1]}
+						placeholder="Новый пароль"
+						value={userStore.passwords[0]}
 						variant="ghost"
-						onBlur={(e) => userStore.setPasswords(1, e.target.value.trim())}
-						onChange={(e) => userStore.setPasswords(1, e.target.value)}
-						onPaste={(e) => {
-							e.preventDefault();
-							notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
+						onBlur={(e) => {
+							setShowHint(false);
+							userStore.setPasswords(0, e.target.value.trim());
 						}}
+						onChange={(e) => userStore.setPasswords(0, e.target.value)}
+						onFocus={() => setShowHint(true)}
 					/>
-					<div className="mt-2 flex justify-center gap-2">
-						<Button
-							className="w-28"
-							disabled={!isPasswordValid}
-							loading={profileStore.isLoading}
-							variant="accent"
-							onClick={handleSave}
-						>
-							Сохранить
-						</Button>
-						<Button
-							className="rounded-xl hover:bg-[var(--status-error)]"
-							variant="custom"
-							onClick={() =>
-								isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
-							}
-						>
-							Отменить
-						</Button>
-					</div>
+					<PasswordHint
+						password={userStore.passwords[0]}
+						showHint={showHint}
+						onValidityChange={(value) => setIsPasswordValid(value)}
+					/>
 				</div>
-				<Divider />
-				<div className="flex flex-col gap-2">
-					<h2 className="text-xl font-bold select-none">Устройства и активность</h2>
-					<DeviceActivityOverview />
+				<Input
+					placeholder="Подтвердите новый пароль"
+					value={userStore.passwords[1]}
+					variant="ghost"
+					onBlur={(e) => userStore.setPasswords(1, e.target.value.trim())}
+					onChange={(e) => userStore.setPasswords(1, e.target.value)}
+					onPaste={(e) => {
+						e.preventDefault();
+						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
+					}}
+				/>
+				<div className="mt-2 flex justify-center gap-2">
+					<Button
+						className="w-28"
+						disabled={!isPasswordValid}
+						loading={profileStore.isLoading}
+						variant="accent"
+						onClick={handleSave}
+					>
+						Сохранить
+					</Button>
+					<Button
+						className="rounded-xl hover:bg-[var(--status-error)]"
+						variant="custom"
+						onClick={() =>
+							isMobile
+								? modalStore.setModal(<MobileUserMenu />, 'sheet')
+								: navigate('/account/profile?tab=overview')
+						}
+					>
+						Отменить
+					</Button>
 				</div>
+			</div>
+			<Divider />
+			<div className="flex flex-col gap-2">
+				<h2 className="text-xl font-bold select-none">Устройства и активность</h2>
+				<DeviceActivityOverview />
 			</div>
 			<div className="core-card flex flex-col gap-2 border border-solid border-[#871919] bg-[var(--bg-warning)] select-none">
 				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>

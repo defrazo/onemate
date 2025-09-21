@@ -52,7 +52,7 @@ const Radio = ({
 					>
 						<input
 							checked={value === option.value}
-							className={cn(styles, 'rounded-full border')}
+							className={cn(styles, 'rounded-full border border-solid')}
 							disabled={isDisabled}
 							type="radio"
 							value={option.value ?? ''}

@@ -28,13 +28,7 @@ const Link = ({
 	className,
 	...props
 }: LinkProps) => {
-	const styles = getComponentStyles({
-		variant,
-		size,
-		active,
-		disabled: disabled,
-		component: 'button',
-	});
+	const styles = getComponentStyles({ variant, size, active, disabled: disabled, component: 'button' });
 
 	return (
 		<RouterLink className={cn(styles, className)} to={to} {...props}>

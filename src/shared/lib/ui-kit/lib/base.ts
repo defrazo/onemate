@@ -4,15 +4,15 @@ import type { Component } from '../model';
 
 export const base: Record<Component, string> = {
 	button: cn('flex items-center justify-center', 'transition-colors', 'cursor-pointer outline-none select-none'),
-	input: cn('w-full', 'rounded-xl ', 'transition-colors', 'outline-none'),
+	input: cn('w-full', 'rounded-xl', 'transition-colors', 'outline-none'),
 	textarea: cn('w-full', 'rounded-xl ', 'transition-colors', 'outline-none'),
 	checkbox: '',
 	checkboxBool: '',
 	radio: cn(
 		'border-[var(--border-color)]',
 		'transition-colors',
-		'focus:enabled:border-[var(--accent-default)]',
-		'hover:enabled:border-[var(--accent-hover)] focus:enabled:border-[var(--accent-default)]',
+		'focus:border-[var(--accent-default)]',
+		'hover:border-[var(--accent-hover)] focus:border-[var(--accent-default)]',
 		'cursor-pointer appearance-none outline-none'
 	),
 	select: cn('w-full', 'rounded-xl', 'transition-colors', 'cursor-pointer appearance-none outline-none'),

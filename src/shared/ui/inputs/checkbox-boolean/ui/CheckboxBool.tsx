@@ -27,13 +27,7 @@ const CheckboxBool = ({
 	className,
 	...props
 }: CheckboxBoolProps) => {
-	const styles = getComponentStyles({
-		variant,
-		size,
-		error,
-		disabled: disabled,
-		component: 'checkboxBool',
-	});
+	const styles = getComponentStyles({ variant, size, error, disabled: disabled, component: 'checkboxBool' });
 
 	return (
 		<label

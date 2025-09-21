@@ -38,7 +38,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				<div {...bind()} style={{ touchAction: 'none' }}>
 					<DragHandle getLineClass={getLineClass} />
 				</div>
-				<div className="absolute top-4 flex h-4 w-full justify-between px-4">
+				<div className="absolute top-4 flex h-4 w-full justify-between px-2">
 					{onBack && (
 						<IconBack className="size-5 cursor-pointer hover:text-[var(--accent-hover)]" onClick={onBack} />
 					)}

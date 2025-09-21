@@ -2,15 +2,18 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { IconTrash, IconWarning } from '@/shared/assets/icons';
+import { useModalBack } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { validateEmail, validatePhone } from '@/shared/lib/validators';
 import { Button, Input, LoadFallback, PhoneInput } from '@/shared/ui';
+import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { useProfile } from '../model';
 
 export const ContactsTab = observer(() => {
 	const { modalStore, notifyStore, profileStore: store } = useStore();
 	const { isMobile, navigate } = useProfile();
+	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
 		try {
@@ -35,7 +38,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-card core-base flex cursor-default flex-col gap-4 select-none">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 select-none md:p-4">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -142,7 +145,9 @@ export const ContactsTab = observer(() => {
 						className="rounded-xl hover:bg-[var(--status-error)]"
 						variant="custom"
 						onClick={() =>
-							isMobile ? modalStore.modal?.back?.() : navigate('/account/profile?tab=overview')
+							isMobile
+								? modalStore.setModal(<MobileUserMenu />, 'sheet')
+								: navigate('/account/profile?tab=overview')
 						}
 					>
 						Отменить

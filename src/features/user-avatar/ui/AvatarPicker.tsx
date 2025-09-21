@@ -1,19 +1,23 @@
 import { useStore } from '@/app/providers';
 import { AVATAR_OPTIONS } from '@/shared/lib/constants';
+import { useIsMobile, useModalBack } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Divider } from '@/shared/ui';
+import { PersonalTab } from '@/widgets/user-profile';
 
 export const AvatarPicker = () => {
 	const { modalStore, notifyStore, userProfileStore } = useStore();
+	const isMobile = useIsMobile();
+	useModalBack(<PersonalTab />);
 
 	const handleSelect = (src: string) => {
 		userProfileStore.updateAvatar(src);
-		modalStore.closeModal();
+		isMobile ? modalStore.setModal(<PersonalTab />, 'sheet') : modalStore.closeModal();
 		notifyStore.setNotice('Аватар обновлен!', 'success');
 	};
 
 	return (
-		<div className="core-base flex flex-col">
+		<div className="flex flex-col rounded-xl px-2 pb-2 md:p-4">
 			<h1 className="core-header">Выберите аватар</h1>
 			<Divider margY="sm" />
 			<div className="grid grid-cols-4 gap-2 px-2 pb-2 md:w-lg md:p-0">

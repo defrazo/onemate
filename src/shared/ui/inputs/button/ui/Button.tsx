@@ -34,15 +34,7 @@ const Button = ({
 }: ButtonProps) => {
 	const navigate = useNavigate();
 	const isDisabled = props.disabled || loading;
-
-	const styles = getComponentStyles({
-		variant,
-		size,
-		active,
-		error,
-		disabled: isDisabled,
-		component: 'button',
-	});
+	const styles = getComponentStyles({ variant, size, active, error, disabled: isDisabled, component: 'button' });
 
 	const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
 		if (isDisabled) return e.preventDefault();

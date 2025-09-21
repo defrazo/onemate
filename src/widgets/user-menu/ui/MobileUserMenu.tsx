@@ -37,12 +37,7 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	const goTo = (tab: TabId) => {
-		if (isMobile) {
-			const component = tabs[tab];
-			modalStore.setModal(component, 'sheet', { back: () => modalStore.setModal(<MobileUserMenu />, 'sheet') });
-		} else {
-			navigate(`/account/profile?tab=${tab}`);
-		}
+		isMobile ? modalStore.setModal(tabs[tab], 'sheet') : navigate(`/account/profile?tab=${tab}`);
 	};
 
 	const userButtons: UserButton[] = [
