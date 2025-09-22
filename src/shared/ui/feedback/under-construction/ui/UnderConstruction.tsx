@@ -36,7 +36,12 @@ const UnderConstruction = ({ title = 'Страница в разработке',
 				</div>
 			</div>
 			<div className="flex items-center justify-center md:flex-1">
-				<img alt="" className="max-h-[45vh] xl:max-h-[65vh]" src={Construction} />
+				<img
+					alt="Иллюстрация: страница в разработке"
+					className="no-touch-callout max-h-[45vh] xl:max-h-[65vh]"
+					src={Construction}
+					onContextMenu={(e) => e.preventDefault()}
+				/>
 			</div>
 		</div>
 	);

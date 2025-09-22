@@ -16,7 +16,7 @@
 	}
 
 	.core-header {
-		@apply text-center text-xl font-bold select-none md:mr-auto md:ml-0 md:text-2xl;
+		@apply text-center text-xl leading-tight font-bold select-none md:mr-auto md:ml-0 md:text-2xl md:leading-normal;
 	}
 
 	.loader {

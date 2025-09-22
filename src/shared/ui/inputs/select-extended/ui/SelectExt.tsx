@@ -104,7 +104,14 @@ const SelectExt = ({
 				type="button"
 				onClick={handleOpen}
 			>
-				{selectedOption?.icon && <img alt="" className="mr-2 size-6 rounded-xl" src={selectedOption.icon} />}
+				{selectedOption?.icon && (
+					<img
+						alt=""
+						className="no-touch-callout mr-2 size-6 rounded-xl"
+						src={selectedOption.icon}
+						onContextMenu={(e) => e.preventDefault()}
+					/>
+				)}
 				<span
 					className={cn(
 						'w-full text-center',
@@ -161,7 +168,14 @@ const SelectExt = ({
 								setIsOpen(false);
 							}}
 						>
-							{opt.icon && <img alt="" className="size-6 rounded-lg" src={opt.icon} />}
+							{opt.icon && (
+								<img
+									alt=""
+									className="no-touch-callout size-6 rounded-lg"
+									src={opt.icon}
+									onContextMenu={(e) => e.preventDefault()}
+								/>
+							)}
 							<span className="font-bold">{opt.label}</span>
 							{visibleKey && <span>{opt.key}</span>}
 						</li>

@@ -128,6 +128,7 @@ export const SecureTab = observer(() => {
 				<h2 className="text-xl font-bold select-none">Устройства и активность</h2>
 				<DeviceActivityOverview />
 			</div>
+			<Divider />
 			<div className="core-card flex flex-col gap-2 border border-solid border-[#871919] bg-[var(--bg-warning)] select-none">
 				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>
 				<p className="text-justify text-sm">

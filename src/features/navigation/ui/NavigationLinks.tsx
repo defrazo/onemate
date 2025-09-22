@@ -43,11 +43,16 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 					);
 
 					return onClick ? (
-						<Button key={label} {...commonProps} onClick={onClick}>
+						<Button
+							key={label}
+							onContextMenu={(e) => e.preventDefault()}
+							{...commonProps}
+							onClick={onClick}
+						>
 							{content}
 						</Button>
 					) : (
-						<Link key={label} {...commonProps} to={to}>
+						<Link key={label} onContextMenu={(e) => e.preventDefault()} {...commonProps} to={to}>
 							{content}
 						</Link>
 					);

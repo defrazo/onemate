@@ -45,3 +45,11 @@
 .mobile-pad {
 	@apply mb-12 md:mb-0;
 }
+
+/* Отключение touch эффекта на элементе */
+.no-touch-callout {
+	-webkit-touch-callout: none;
+	-webkit-user-select: none;
+	user-select: none;
+	-webkit-tap-highlight-color: transparent;
+}

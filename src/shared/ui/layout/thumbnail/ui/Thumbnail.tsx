@@ -15,11 +15,17 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 		<div
 			className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}
 			onClick={onClick}
+			onContextMenu={(e) => e.preventDefault()}
 		>
 			{isLoading ? (
 				<Preloader className="size-6 border-3 border-t-[var(--color-secondary)]" />
 			) : (
-				<img alt={alt} className="aspect-square size-full object-cover" src={src} title={title} />
+				<img
+					alt={alt}
+					className="no-touch-callout aspect-square size-full object-cover"
+					src={src}
+					title={title}
+				/>
 			)}
 		</div>
 	);
