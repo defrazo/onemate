@@ -12,7 +12,7 @@ import { useProfile } from '../model';
 
 export const ContactsTab = observer(() => {
 	const { modalStore, notifyStore, profileStore: store } = useStore();
-	const { isMobile, navigate } = useProfile();
+	const { device, navigate } = useProfile();
 	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
@@ -145,7 +145,7 @@ export const ContactsTab = observer(() => {
 						className="rounded-xl hover:bg-[var(--status-error)]"
 						variant="custom"
 						onClick={() =>
-							isMobile
+							device === 'mobile'
 								? modalStore.setModal(<MobileUserMenu />, 'sheet')
 								: navigate('/account/profile?tab=overview')
 						}

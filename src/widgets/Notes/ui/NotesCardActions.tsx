@@ -38,7 +38,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 				centerIcon={<IconMove className="size-4 rotate-90" />}
 				className={cn(
 					notesStore.focusedId && 'hidden',
-					'hidden cursor-move hover:text-[var(--accent-hover)] md:block'
+					'hidden cursor-move hover:text-[var(--accent-hover)] xl:block'
 				)}
 				size="sm"
 				title="Переместить"

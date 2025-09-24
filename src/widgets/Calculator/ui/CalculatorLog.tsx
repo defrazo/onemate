@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { IconBack, IconForward } from '@/shared/assets/icons';
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, Textarea } from '@/shared/ui';
 
@@ -13,14 +13,14 @@ interface CalculatorLogProps {
 }
 
 export const CalculatorLog = ({ result }: CalculatorLogProps) => {
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 	const [isVisible, setIsVisible] = useState<boolean>(false);
 
 	return (
 		<>
-			{isMobile ? (
+			{device === 'mobile' || device === 'tablet' ? (
 				<Textarea
-					className="hide-scrollbar h-full min-h-22 border border-solid border-[var(--border-color)] text-right"
+					className="hide-scrollbar h-full max-h-[12dvh] min-h-22 border border-solid border-[var(--border-color)] text-right"
 					placeholder="Журнала еще нет"
 					readOnly
 					value={renderResult(result)}
@@ -33,7 +33,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 					<div className="relative flex h-full items-center">
 						<Textarea
 							className={cn(
-								'hide-scrollbar h-full rounded-none border-l border-[var(--border-color)] py-2 pr-4 text-right md:border-l',
+								'hide-scrollbar h-full rounded-none border-l border-[var(--border-color)] py-2 pr-4 text-right',
 								!isVisible && 'cursor-default border-none'
 							)}
 							placeholder={isVisible ? 'Журнала еще нет' : ''}

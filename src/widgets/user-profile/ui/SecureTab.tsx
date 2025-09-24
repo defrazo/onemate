@@ -13,7 +13,7 @@ import { useProfile } from '../model';
 
 export const SecureTab = observer(() => {
 	const { accountStore, modalStore, notifyStore, profileStore, userStore } = useStore();
-	const { isMobile, formattedDate, navigate } = useProfile();
+	const { device, formattedDate, navigate } = useProfile();
 	useModalBack(<MobileUserMenu />);
 
 	const [showHint, setShowHint] = useState<boolean>(false);
@@ -114,7 +114,7 @@ export const SecureTab = observer(() => {
 						className="rounded-xl hover:bg-[var(--status-error)]"
 						variant="custom"
 						onClick={() =>
-							isMobile
+							device === 'mobile'
 								? modalStore.setModal(<MobileUserMenu />, 'sheet')
 								: navigate('/account/profile?tab=overview')
 						}

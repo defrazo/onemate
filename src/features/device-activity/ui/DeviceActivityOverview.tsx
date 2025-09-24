@@ -20,7 +20,7 @@ const DeviceActivityOverview = () => {
 	};
 
 	return (
-		<div className="flex w-full flex-col gap-4 text-sm md:flex-row">
+		<div className="flex w-full flex-col gap-4 text-sm lg:flex-row">
 			<div className="flex flex-col">
 				<h3 className="opacity-60">Текущее устройство:</h3>
 				<div className="flex h-full items-center gap-2">

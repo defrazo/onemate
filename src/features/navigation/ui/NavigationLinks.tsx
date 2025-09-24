@@ -19,7 +19,7 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 				.filter((item) => (isMobile ? item.label !== 'OneGen' : item.label !== 'Главная'))
 				.map(({ to, icon, label, onClick, order }) => {
 					const itemClass = cn(
-						'flex-col gap-1 md:flex-row md:gap-2 hover:text-[var(--accent-hover)]',
+						'flex-col gap-0.5 lg:flex-row lg:gap-2 mt-1 lg:mt-0 hover:text-[var(--accent-hover)]',
 						isMobile &&
 							order && {
 								'order-1': order === 1,
@@ -37,8 +37,8 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 
 					const content = (
 						<>
-							<span className="size-6">{icon}</span>
-							<span className={isMobile ? 'leading-4' : undefined}>{label}</span>
+							<span className="size-5 lg:size-6">{icon}</span>
+							<span className={isMobile ? 'text-xs leading-4 lg:text-xl' : undefined}>{label}</span>
 						</>
 					);
 

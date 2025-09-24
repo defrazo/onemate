@@ -3,12 +3,12 @@ import { format, formatDistanceToNow } from 'date-fns';
 import { ru } from 'date-fns/locale';
 
 import { useStore } from '@/app/providers';
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 
 export const useProfile = () => {
 	const { profileStore: store, userProfileStore, userStore } = useStore();
 	const navigate = useNavigate();
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 	const [searchParams] = useSearchParams();
 
 	const rawDate = userProfileStore.passwordChangedAt || userStore.user?.created_at;
@@ -30,5 +30,5 @@ export const useProfile = () => {
 	const date = isValidDate && new Date(+store.birthYear, +store.birthMonth, +store.birthDay);
 	const formattedBirthDate = date ? `${format(date, 'dd.MM.yyyy', { locale: ru })} г.` : 'Не указано';
 
-	return { isMobile, searchParams, formattedBirthDate, formattedDate, navigate };
+	return { device, searchParams, formattedBirthDate, formattedDate, navigate };
 };

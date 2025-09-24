@@ -25,6 +25,7 @@ export default [
 			prettier: eslintPluginPrettier,
 			'simple-import-sort': eslintPluginSimpleImportSort,
 			react: eslintPluginReact,
+			tailwindcss: eslintPluginTailwind,
 		},
 		settings: {
 			react: {

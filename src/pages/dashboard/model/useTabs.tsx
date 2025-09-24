@@ -1,12 +1,13 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useState } from 'react';
 
 import { Calculator, Calendar, Notes, Translator, Wallet, Weather } from '@/shared/assets/icons/slider-home';
 import type { TabOption } from '@/shared/ui';
 
-export const useTabs = () => {
-	const [tabTop, setTabTop] = useState<string>('calendar');
-	const [tabBottom, setTabBottom] = useState<string>('weather');
+import type { SlotKey } from '.';
 
+const EMPTY = '__empty__';
+
+export const useTabs = () => {
 	const tabs: TabOption[] = [
 		{ value: 'calculator', label: <Calculator /> },
 		{ value: 'calendar', label: <Calendar /> },
@@ -16,36 +17,27 @@ export const useTabs = () => {
 		{ value: 'translator', label: <Translator /> },
 	];
 
-	const indexByValue = useMemo(() => new Map(tabs.map((t, i) => [t.value, i] as const)), [tabs]);
+	const [slots, setSlots] = useState<Record<SlotKey, string>>({
+		topL: 'calendar',
+		topR: 'notes',
+		botL: 'weather',
+		botR: 'translator',
+	});
 
-	const nextOf = useCallback(
-		(value: string) => {
-			const idx = indexByValue.get(value) ?? 0;
-			const nextIdx = (idx + 1) % tabs.length;
-			return tabs[nextIdx].value;
-		},
-		[indexByValue, tabs]
-	);
+	const tabsFor = (_key: SlotKey): TabOption[] => tabs;
 
-	const handleTopChange = (value: string) => {
-		setTabTop(value);
-		setTabBottom(nextOf(value));
+	const setSlot = (key: SlotKey, value: string) => {
+		setSlots((prev) => {
+			const draft: Record<SlotKey, string> = { ...prev };
+
+			(Object.keys(draft) as SlotKey[]).forEach((k) => {
+				if (k !== key && draft[k] === value) draft[k] = EMPTY;
+			});
+
+			draft[key] = value;
+			return draft;
+		});
 	};
 
-	const handleBottomChange = (value: string) => {
-		setTabBottom(value);
-	};
-
-	useEffect(() => {
-		if (tabBottom === tabTop) setTabBottom(nextOf(tabTop));
-	}, [tabTop, tabBottom, nextOf]);
-
-	const tabsTop = useMemo<TabOption[]>(() => tabs, [tabs]);
-
-	const tabsBottom = useMemo<TabOption[]>(
-		() => tabs.map((tab) => ({ ...tab, disabled: tab.value === tabTop })),
-		[tabs, tabTop]
-	);
-
-	return { tabTop, tabsTop, tabBottom, tabsBottom, handleTopChange, handleBottomChange };
+	return { tabs, slots, setSlot, tabsFor, EMPTY };
 };

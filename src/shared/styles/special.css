@@ -43,7 +43,7 @@
 }
 
 .mobile-pad {
-	@apply mb-12 md:mb-0;
+	@apply mb-8 xl:mb-0;
 }
 
 /* Отключение touch эффекта на элементе */

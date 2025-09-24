@@ -3,23 +3,27 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
 
-import { useIsMobile, usePageTitle } from '@/shared/lib/hooks';
-import { TabSlider } from '@/shared/ui';
+import { useDeviceType, useOrientation, usePageTitle } from '@/shared/lib/hooks';
 
 import { widgets } from '../lib';
 import { useDashboard, useTabs } from '../model';
-import { Widget } from '.';
+import { Widget, WidgetPanel } from '.';
+import { useMemo } from 'react';
 
 const DashboardPage = () => {
 	usePageTitle('Dashboard');
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
+	const orientation = useOrientation();
 
 	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
-	const { tabTop, tabsTop, tabBottom, tabsBottom, handleTopChange, handleBottomChange } = useTabs();
+	const { tabsFor, slots, setSlot, EMPTY } = useTabs();
+
+	const widgetById = useMemo(() => new Map(widgets.map((w) => [w.id, w.content] as const)), []);
+	const slotContent = (id: string | undefined) => (id === EMPTY ? null : (widgetById.get(id ?? '') ?? null));
 
 	return (
 		<>
-			{!isMobile ? (
+			{device === 'desktop' || (device === 'tablet' && orientation === 'landscape') ? (
 				<div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
 					<DndContext
 						collisionDetection={closestCenter}
@@ -34,36 +38,50 @@ const DashboardPage = () => {
 						</SortableContext>
 					</DndContext>
 				</div>
+			) : device === 'tablet' ? (
+				<div className="mobile-pad grid grid-cols-2 grid-rows-2 justify-evenly gap-x-2 gap-y-8 py-4">
+					<WidgetPanel
+						content={slotContent(slots.topL)}
+						tabs={tabsFor('topL')}
+						value={slots.topL}
+						onChange={(value) => setSlot('topL', value)}
+					/>
+					<WidgetPanel
+						content={slotContent(slots.topR)}
+						tabs={tabsFor('topR')}
+						value={slots.topR}
+						onChange={(value) => setSlot('topR', value)}
+					/>
+					<WidgetPanel
+						content={slotContent(slots.botL)}
+						reverse
+						tabs={tabsFor('botL')}
+						value={slots.botL}
+						onChange={(value) => setSlot('botL', value)}
+					/>
+					<WidgetPanel
+						content={slotContent(slots.botR)}
+						reverse
+						tabs={tabsFor('botR')}
+						value={slots.botR}
+						onChange={(value) => setSlot('botR', value)}
+					/>
+				</div>
 			) : (
-				<div className="mobile-pad flex flex-col justify-between gap-2">
-					<div className="core-base flex flex-col gap-2 rounded-xl p-2">
-						<TabSlider
-							className="rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"
-							tabs={tabsTop}
-							value={tabTop}
-							onChange={handleTopChange}
-						/>
-						<div className="relative flex min-h-[40dvh] flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
-							{(() => {
-								const widget = widgets.find((widget) => widget.id === tabTop);
-								return widget ? widget.content : <div>Виджет не найден</div>;
-							})()}
-						</div>
-					</div>
-					<div className="core-base flex flex-col gap-2 rounded-xl p-2">
-						<div className="relative flex min-h-[40dvh] flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
-							{(() => {
-								const widget = widgets.find((widget) => widget.id === tabBottom);
-								return widget ? widget.content : <div>Виджет не найден</div>;
-							})()}
-						</div>
-						<TabSlider
-							className="rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"
-							tabs={tabsBottom}
-							value={tabBottom}
-							onChange={handleBottomChange}
-						/>
-					</div>
+				<div className="mobile-pad grid grid-cols-1 grid-rows-2 justify-between gap-2">
+					<WidgetPanel
+						content={slotContent(slots.topL)}
+						tabs={tabsFor('topL')}
+						value={slots.topL}
+						onChange={(value) => setSlot('topL', value)}
+					/>
+					<WidgetPanel
+						content={slotContent(slots.botL)}
+						reverse
+						tabs={tabsFor('botL')}
+						value={slots.botL}
+						onChange={(value) => setSlot('botL', value)}
+					/>
 				</div>
 			)}
 		</>

@@ -16,7 +16,7 @@ import { useProfile } from '../model';
 
 export const PersonalTab = observer(() => {
 	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
-	const { isMobile, navigate } = useProfile();
+	const { device, navigate } = useProfile();
 	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
@@ -44,11 +44,11 @@ export const PersonalTab = observer(() => {
 						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-1 md:size-fit"
 						src={userProfileStore.avatar}
 						title="Сменить аватар"
-						onClick={() => modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined)}
+						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
 					/>
 					<Button
 						className="w-full"
-						onClick={() => modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined)}
+						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
 					>
 						Изменить
 					</Button>
@@ -165,7 +165,7 @@ export const PersonalTab = observer(() => {
 							className="rounded-xl hover:bg-[var(--status-error)]"
 							variant="custom"
 							onClick={() =>
-								isMobile
+								device === 'mobile'
 									? modalStore.setModal(<MobileUserMenu />, 'sheet')
 									: navigate('/account/profile?tab=overview')
 							}

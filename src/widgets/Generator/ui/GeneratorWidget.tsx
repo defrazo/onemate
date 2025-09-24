@@ -1,12 +1,12 @@
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { MobileBlocker } from '@/shared/ui';
 
 import { PreviewGrid } from '.';
 
 const GeneratorWidget = () => {
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 
-	return isMobile ? <MobileBlocker /> : <PreviewGrid />;
+	return device === 'mobile' ? <MobileBlocker /> : <PreviewGrid />;
 };
 
 export default GeneratorWidget;

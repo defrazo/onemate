@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 
 import { BottomSheet, Dropdown, Modal } from '.';
 
@@ -9,7 +9,7 @@ const ModalManager = () => {
 	const { modalStore } = useStore();
 
 	const modal = modalStore.modal;
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 
 	if (!modal || modal.type === 'none') return null;
 
@@ -17,7 +17,7 @@ const ModalManager = () => {
 		modal: Modal,
 		sheet: BottomSheet,
 		dropdown: Dropdown,
-		auto: isMobile ? BottomSheet : Modal,
+		auto: device === 'mobile' ? BottomSheet : Modal,
 	};
 
 	const Wrapper = componentMap[modal.type] ?? Modal;

@@ -28,14 +28,13 @@ export const TranslatorBox = observer(({ store, text, language, type, onChangeLa
 				) : (
 					<>
 						<Textarea
-							className="hide-scrollbar flex-1 overflow-auto px-2 pt-4 text-sm xl:pt-10"
+							className="hide-scrollbar h-full overflow-auto px-2 pt-10 text-base"
 							readOnly={!isSource}
 							size="custom"
 							value={text}
 							variant="custom"
 							onChange={(e) => store.updateTextbox(0, 'text', e.target.value)}
 						/>
-
 						<TranslatorBoxActions
 							disabled={text === '' || store.isLoading}
 							type={type}
@@ -45,7 +44,7 @@ export const TranslatorBox = observer(({ store, text, language, type, onChangeLa
 					</>
 				)}
 			</div>
-			<div className={cn(isSource ? 'pr-2 pl-2 md:pr-4' : 'pr-2 pl-2 md:pl-4')}>
+			<div className={cn('pr-2 pl-2', isSource ? 'md:pr-4' : 'md:pl-4')}>
 				<SelectExt
 					className="rounded-none border-t border-[var(--border-color)] text-sm"
 					options={store.languages}

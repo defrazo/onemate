@@ -31,10 +31,10 @@ const LocationSearch = () => {
 	};
 
 	return (
-		<div className="relative z-10 w-full">
+		<div className="relative w-full">
 			<Input
 				autoComplete="off"
-				className="z-10 bg-[var(--bg-secondary)]"
+				className="bg-[var(--bg-secondary)]"
 				name="fake-location"
 				placeholder="Введите город"
 				rightIcon={

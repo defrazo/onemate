@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { ArrowUp } from 'lucide-react';
 
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui/inputs';
 
@@ -10,7 +10,7 @@ const BASE_BOTTOM = 16;
 const ScrollToTop = ({ footerSelector = 'footer' }) => {
 	const [visible, setVisible] = useState<boolean>(false);
 	const [extraBottom, setExtraBottom] = useState<number>(0);
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 
 	useEffect(() => {
 		const onScroll = () => setVisible(window.scrollY > 300);
@@ -49,7 +49,7 @@ const ScrollToTop = ({ footerSelector = 'footer' }) => {
 			centerIcon={<ArrowUp className="size-6" />}
 			className={cn(
 				'right-4 z-50 rounded-full p-3 shadow transition-all',
-				isMobile ? 'hidden' : 'fixed',
+				device === 'mobile' ? 'hidden' : 'fixed',
 				visible ? 'opacity-100' : 'pointer-events-none opacity-0'
 			)}
 			size="custom"

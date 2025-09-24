@@ -23,7 +23,7 @@ export const useCalendar = () => {
 
 	const getRangeDescription = (): string => {
 		const [start, end] = range;
-		if (!start || !end) return '';
+		if (!start || !end) return '\u2800';
 
 		let text = `${formattedRange}: ${rangeWithWeekend} дней`;
 		if (hasWeekendInRange(range)) text += includeWeekends ? ' (вкл. выходные)' : ' (без выходных)';

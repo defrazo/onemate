@@ -10,7 +10,7 @@ interface ErrorFallbackProps {
 	onRetry?: () => void;
 }
 
-const DELAY = 10000; // 10 секунд
+const DELAY = 5000; // 10 секунд
 
 const ErrorFallback = ({
 	icon = true,
@@ -37,7 +37,7 @@ const ErrorFallback = ({
 		<div className="flex h-full flex-col items-center">
 			{icon && <IconNoData className="size-55 flex-1 text-[#100f0f]" />}
 			<div className="flex flex-col items-center">
-				<h2 className="text-xl">{message}</h2>
+				<h2 className="text-base md:text-lg xl:text-xl">{message}</h2>
 				{onRetry && (
 					<Button className="mt-2 w-40 text-sm" variant="default" onClick={onRetry}>
 						Повторить

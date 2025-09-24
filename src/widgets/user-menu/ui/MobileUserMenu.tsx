@@ -16,7 +16,7 @@ import {
 	IconShield,
 	IconUser,
 } from '@/shared/assets/icons';
-import { useIsMobile } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { Button, Divider } from '@/shared/ui';
 import type { TabId } from '@/widgets/user-profile';
 import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
@@ -26,7 +26,7 @@ import { UserMenuInfo } from '.';
 
 export const MobileUserMenu = observer(() => {
 	const { authStore, cityStore, modalStore, themeStore } = useStore();
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 	const navigate = useNavigate();
 
 	const tabs: Record<TabId, ReactElement> = {
@@ -37,7 +37,7 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	const goTo = (tab: TabId) => {
-		isMobile ? modalStore.setModal(tabs[tab], 'sheet') : navigate(`/account/profile?tab=${tab}`);
+		device === 'mobile' ? modalStore.setModal(tabs[tab], 'sheet') : navigate(`/account/profile?tab=${tab}`);
 	};
 
 	const userButtons: UserButton[] = [

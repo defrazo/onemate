@@ -22,7 +22,7 @@ const CalculatorWidget = () => {
 				value={display}
 				variant="ghost"
 			/>
-			<div className="flex h-full flex-col gap-2 lg:flex-row">
+			<div className="flex h-full flex-col gap-2 xl:flex-row">
 				<CalculatorButtons onClick={handleButtonClick} />
 				<CalculatorLog result={result} />
 			</div>

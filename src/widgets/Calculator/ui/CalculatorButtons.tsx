@@ -9,11 +9,11 @@ interface CalculatorButtonsProps {
 
 export const CalculatorButtons = ({ onClick }: CalculatorButtonsProps) => {
 	return (
-		<div className="grid grid-cols-4 gap-2 md:flex-1">
+		<div className="grid flex-1 grid-cols-4 gap-2">
 			{calculatorButtons.map(({ label, colSpan = 1 }) => (
 				<Button
 					key={label}
-					className={cn('py-2 text-sm leading-none md:py-1', colSpan === 2 ? 'col-span-2' : 'col-span-1')}
+					className={cn('text-base', colSpan === 2 ? 'col-span-2' : 'col-span-1')}
 					size="custom"
 					onClick={() => onClick(label)}
 				>

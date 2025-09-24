@@ -10,7 +10,7 @@ const Time = () => {
 	}, []);
 
 	return (
-		<div className="hidden min-w-21 font-[DS-Digital] text-4xl font-bold text-[var(--accent-default)] md:flex md:justify-center">
+		<div className="hidden min-w-21 font-[DS-Digital] text-4xl font-bold text-[var(--accent-default)] xl:flex xl:justify-center">
 			{time}
 		</div>
 	);

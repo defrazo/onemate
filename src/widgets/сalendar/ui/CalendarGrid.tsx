@@ -17,39 +17,47 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 	const [start, end] = range;
 	const calendarDays = generateCalendarDays(currentDate);
 
+	const weeks: (number | null)[][] = [];
+	for (let i = 0; i < calendarDays.length; i += 7) weeks.push(calendarDays.slice(i, i + 7));
+
 	return (
-		<div className="grid h-full grid-cols-7 justify-items-center gap-0.5">
-			{WEEKDAYS_RU_SHORT.map((day) => (
-				<div key={day} className="flex items-center">
-					{day}
+		<div className="flex flex-1 flex-col justify-between">
+			<div className="grid grid-cols-7 justify-items-center">
+				{WEEKDAYS_RU_SHORT.map((day) => (
+					<div key={day} className="flex items-center text-base">
+						{day}
+					</div>
+				))}
+			</div>
+			{weeks.map((week, wIdx) => (
+				<div key={wIdx} className="grid grid-cols-7 justify-items-center">
+					{week.map((day, idx) => {
+						if (!day) return <div key={idx} />;
+
+						const date = getDateFromDay(currentDate, day);
+						const today = isToday(date);
+						const inRange = isInRange(date, range);
+
+						return (
+							<Button
+								key={idx}
+								className={cn(
+									'my-0.5 aspect-square rounded-full border border-solid border-transparent p-1.5 leading-none',
+									today && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
+									start && isSameDay(date, start) && 'border-[var(--accent-default)]',
+									end && isSameDay(date, end) && 'border-[var(--accent-default)]',
+									inRange && 'border-[var(--accent-default)]'
+								)}
+								size="custom"
+								variant="custom"
+								onClick={() => handleDayClick(day)}
+							>
+								{day}
+							</Button>
+						);
+					})}
 				</div>
 			))}
-
-			{calendarDays.map((day, idx) => {
-				if (!day) return <div key={idx} />;
-
-				const date = getDateFromDay(currentDate, day);
-				const today = isToday(date);
-				const inRange = isInRange(date, range);
-
-				return (
-					<Button
-						key={idx}
-						className={cn(
-							'aspect-square rounded-full border border-solid border-transparent p-1.5 text-sm leading-none',
-							today && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
-							start && isSameDay(date, start) && 'border-[var(--accent-default)]',
-							end && isSameDay(date, end) && 'border-[var(--accent-default)]',
-							inRange && 'border-[var(--accent-default)]'
-						)}
-						size="custom"
-						variant="custom"
-						onClick={() => handleDayClick(day)}
-					>
-						{day}
-					</Button>
-				);
-			})}
 		</div>
 	);
 };

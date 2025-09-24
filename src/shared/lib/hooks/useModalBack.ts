@@ -12,15 +12,15 @@ import { type ReactNode, useEffect } from 'react';
 
 import { useStore } from '@/app/providers';
 
-import { useIsMobile } from '.';
+import { useDeviceType } from '.';
 
 export const useModalBack = (target: ReactNode) => {
 	const { modalStore } = useStore();
-	const isMobile = useIsMobile();
+	const device = useDeviceType();
 
 	useEffect(() => {
-		if (!isMobile) return;
+		if (device !== 'mobile') return;
 		modalStore.setBack(() => modalStore.setModal(target, 'sheet'));
 		return () => modalStore.resetBack();
-	}, [isMobile, modalStore, target]);
+	}, [device, modalStore, target]);
 };
