@@ -1,6 +1,6 @@
 import { useState } from 'react';
 
-import { Calculator, Calendar, Notes, Translator, Wallet, Weather } from '@/shared/assets/icons/slider-home';
+import { Calculator, Calendar, Notes, Translator, Currency, Weather } from '@/shared/assets/icons/slider-home';
 import type { TabOption } from '@/shared/ui';
 
 import type { SlotKey } from '.';
@@ -12,7 +12,7 @@ export const useTabs = () => {
 		{ value: 'calculator', label: <Calculator /> },
 		{ value: 'calendar', label: <Calendar /> },
 		{ value: 'notes', label: <Notes /> },
-		{ value: 'currency', label: <Wallet /> },
+		{ value: 'currency', label: <Currency /> },
 		{ value: 'weather', label: <Weather /> },
 		{ value: 'translator', label: <Translator /> },
 	];

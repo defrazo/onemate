@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { IconBack, IconForward } from '@/shared/assets/icons';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, Textarea } from '@/shared/ui';
 
@@ -14,11 +14,12 @@ interface CalculatorLogProps {
 
 export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 	const device = useDeviceType();
+	const ortientation = useOrientation();
 	const [isVisible, setIsVisible] = useState<boolean>(false);
 
 	return (
 		<>
-			{device === 'mobile' || device === 'tablet' ? (
+			{device === 'mobile' || device === 'tablet' || ortientation === 'portrait' ? (
 				<Textarea
 					className="hide-scrollbar h-full max-h-[12dvh] min-h-22 border border-solid border-[var(--border-color)] text-right"
 					placeholder="Журнала еще нет"

@@ -17,7 +17,7 @@ const App = () => {
 			{userStore.id && userStore.userRole !== 'user' && !storage.get(LS_CACHE_UI).demo && <DemoBanner />}
 			<RouterProvider />
 			<ModalManager />
-			<Toaster duration={5000} position={device === 'mobile' ? 'top-center' : 'bottom-right'} />
+			<Toaster duration={5000} position={device === 'desktop' ? 'bottom-right' : 'top-left'} />
 		</BrowserRouter>
 	);
 };

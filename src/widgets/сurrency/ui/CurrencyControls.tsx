@@ -32,7 +32,7 @@ export const CurrencyControls = observer(({ store }: CurrencyControlsProps) => {
 				/>
 				<Button
 					centerIcon={<IconArrows className="size-4" />}
-					className="core-elements absolute top-1/2 left-4 size-8 -translate-y-1/2 rounded-full"
+					className="core-elements absolute top-1/2 left-4 -mt-4 size-8 rounded-full"
 					title="Поменять местами валюты"
 					onClick={() => store.swapCurrencies()}
 				/>

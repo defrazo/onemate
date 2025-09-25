@@ -5,7 +5,7 @@ import Notes from './notes.svg?react';
 import Tasks from './tasks.svg?react';
 import Time from './time.svg?react';
 import Translator from './translator.svg?react';
-import Wallet from './wallet.svg?react';
+import Currency from './currency.svg?react';
 import Weather from './weather.svg?react';
 
-export { Calculator, Calendar, Kanban, Notes, Tasks, Time, Translator, Wallet, Weather };
+export { Calculator, Calendar, Kanban, Notes, Tasks, Time, Translator, Currency, Weather };

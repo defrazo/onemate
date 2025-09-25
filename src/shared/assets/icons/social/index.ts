@@ -3,6 +3,5 @@ import IconGoogle from './google.svg?react';
 import IconOK from './ok.svg?react';
 import IconTG from './tg.svg?react';
 import IconVK from './vk.svg?react';
-import IconYandex from './yandex.svg?react';
 
-export { IconDZ, IconGoogle, IconOK, IconTG, IconVK, IconYandex };
+export { IconDZ, IconGoogle, IconOK, IconTG, IconVK };

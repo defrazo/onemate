@@ -9,7 +9,6 @@ import {
 	IconContacts,
 	IconDay,
 	IconForward,
-	IconLocation,
 	IconLogout,
 	IconNight,
 	IconSecure,
@@ -25,7 +24,7 @@ import type { UserButton } from '../model';
 import { UserMenuInfo } from '.';
 
 export const MobileUserMenu = observer(() => {
-	const { authStore, cityStore, modalStore, themeStore } = useStore();
+	const { authStore, modalStore, themeStore } = useStore();
 	const device = useDeviceType();
 	const navigate = useNavigate();
 
@@ -69,12 +68,6 @@ export const MobileUserMenu = observer(() => {
 					<span className="text-[var(--accent-default)]">{themeStore.currentTheme}</span>
 				</div>
 			),
-		},
-		{
-			id: 'location',
-			leftIcon: <IconLocation className="size-6" />,
-			action: () => goTo('personal'),
-			label: `${cityStore.name || 'Не указано'}`,
 		},
 		{
 			id: 'terms',

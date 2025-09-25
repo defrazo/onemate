@@ -20,9 +20,12 @@ export const CurrencyBlock = observer(
 	({ currency, currencyValue, options, onChangeCurrency, onChangeValue }: CurrencyBlockProps) => {
 		const { notifyStore } = useStore();
 
-		const [input, setInput] = useState(String(currencyValue));
+		const [input, setInput] = useState<string>(String(currencyValue));
+		const [isEditing, setIsEditing] = useState<boolean>(false);
 
-		useEffect(() => setInput(String(currencyValue)), [currencyValue]);
+		useEffect(() => {
+			if (!isEditing) setInput(String(currencyValue));
+		}, [currencyValue, isEditing]);
 
 		return (
 			<div className="core-border flex w-full p-2">
@@ -33,11 +36,16 @@ export const CurrencyBlock = observer(
 						min="0"
 						size="md"
 						type="number"
+						onFocus={() => {
+							setIsEditing(true);
+							setInput('');
+						}}
 						value={input}
 						variant="custom"
 						onBlur={() => {
+							setIsEditing(false);
 							if (input.trim() === '' || input === '0' || input.startsWith('00')) {
-								setInput('1');
+								setInput(String(currencyValue));
 								onChangeValue(1);
 							}
 						}}

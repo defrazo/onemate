@@ -3,6 +3,7 @@ import type { ReactNode } from 'react';
 import { cn } from '@/shared/lib/utils';
 import type { TabOption } from '@/shared/ui';
 import { TabSlider } from '@/shared/ui';
+import { IconEmpty } from '@/shared/assets/icons';
 
 interface WidgetPanel {
 	tabs: TabOption[];
@@ -23,8 +24,9 @@ export const WidgetPanel = ({ tabs, value, content, onChange, reverse, className
 		/>
 		<div className="relative flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
 			{content ?? (
-				<div className="flex flex-1 items-center justify-center text-[var(--color-disabled)]">
-					Выберите виджет
+				<div className="flex flex-1 flex-col items-center justify-evenly">
+					<IconEmpty className="size-60 opacity-10" />
+					<div className="text-[var(--color-disabled)] opacity-40">Выберите виджет</div>
 				</div>
 			)}
 		</div>

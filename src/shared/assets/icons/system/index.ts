@@ -14,10 +14,12 @@ import IconNight from './night.svg?react';
 import IconNoData from './nodata.svg?react';
 import IconScroll from './scroll.svg?react';
 import IconTrash from './trash.svg?react';
+import IconEmpty from './empty.svg?react';
 import IconUnchecked from './unchecked.svg?react';
 
 export {
 	IconAdd,
+	IconEmpty,
 	IconArrows,
 	IconBack,
 	IconChecked,

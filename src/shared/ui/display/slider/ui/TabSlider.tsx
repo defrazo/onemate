@@ -85,7 +85,7 @@ export const TabSlider = ({ tabs, value, className, onChange }: TabSliderProps) 
 							}}
 							aria-selected={isActive}
 							className={cn(
-								'group relative z-10 rounded-lg px-2.5 py-1 text-[var(--color-primary)] transition-opacity',
+								'group relative z-10 rounded-lg px-1.5 py-0.5 text-[var(--color-primary)] transition-opacity md:px-2.5 md:py-1',
 								isActive ? 'font-semibold opacity-100' : hasActive ? 'opacity-80' : 'opacity-100',
 								tab.disabled && 'cursor-not-allowed opacity-30'
 							)}

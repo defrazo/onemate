@@ -50,9 +50,9 @@ export const DesktopUserMenu = observer(() => {
 	];
 
 	return (
-		<div className="core-elements absolute right-2.5 z-50 flex w-xs flex-col rounded-xl rounded-t-none border border-[bg-[var(--color-secondary)] py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
+		<div className="core-elements absolute right-2.5 z-50 flex w-xs flex-col rounded-xl rounded-t-none border border-[var(--color-disabled)] py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
 			<UserMenuInfo className="mt-2.5 px-4 py-2" />
-			<Divider className="mx-2 bg-[var(--color-secondary)]" margY="sm" />
+			<Divider className="mx-2 bg-[var(--color-disabled)]" margY="sm" />
 			{userButtons.map((item) => {
 				const isThemeToggle = item.id === 'theme';
 				const handleClick = isThemeToggle
@@ -73,7 +73,7 @@ export const DesktopUserMenu = observer(() => {
 					</Button>
 				);
 			})}
-			<Divider className="mx-2 bg-[var(--color-secondary)]" margY="sm" />
+			<Divider className="mx-2 bg-[var(--color-disabled)]" margY="sm" />
 			<Button
 				className="h-10 justify-start rounded-none"
 				leftIcon={<IconLogout className="size-6" />}

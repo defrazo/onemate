@@ -25,7 +25,7 @@ const CurrencyWidget = () => {
 			) : (
 				<>
 					<div
-						className="m-auto flex cursor-copy py-10 text-center text-2xl hover:text-[var(--accent-default)] md:text-4xl xl:p-0"
+						className="m-auto flex cursor-copy py-10 text-center text-2xl hover:text-[var(--accent-default)] xl:p-0 xl:text-3xl 2xl:text-4xl"
 						title="Скопировать курс обмена"
 						onClick={() => copy(exchangeResult, 'Курс обмена скопирован!')}
 					>
@@ -33,7 +33,7 @@ const CurrencyWidget = () => {
 					</div>
 					<CurrencyControls store={currencyStore} />
 					<div
-						className="mx-auto flex h-9 cursor-copy items-end text-xs text-[var(--color-disabled)] hover:text-[var(--accent-default)] md:text-base"
+						className="mx-auto flex h-9 cursor-copy items-end text-xs text-[var(--color-disabled)] hover:text-[var(--accent-default)] lg:text-sm xl:text-base"
 						title="Скопировать результат обмена"
 						onClick={() => copy(exchangeRate, 'Результат обмена скопирован!')}
 					>
