@@ -1,5 +1,3 @@
-import type { Theme } from '@/features/theme-switcher';
-
 export type Gender = 'male' | 'female' | '';
 
 export type UserProfile = {
@@ -14,8 +12,9 @@ export type UserProfile = {
 	gender: Gender;
 	phone: string[];
 	email: string[];
-	theme?: Theme;
+	theme?: 'light' | 'dark';
 	widgets_sequence?: string[];
+	widgets_slots?: string[];
 	mainEmail?: string;
 	deleted_at?: string | null;
 	password_changed_at?: string | null;

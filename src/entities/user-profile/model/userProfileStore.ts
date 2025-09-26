@@ -4,7 +4,13 @@ import type { IBaseUserPort } from '@/entities/user';
 import type { Theme } from '@/features/theme-switcher';
 import type { Cache } from '@/shared/lib/cache';
 import { cache, clearCache, readCache } from '@/shared/lib/cache';
-import { createDefaultProfile, createDefaultWidgets, DEFAULT_AVATAR, DEFAULT_THEME } from '@/shared/lib/constants';
+import {
+	createDefaultProfile,
+	createDefaultSlots,
+	createDefaultWidgets,
+	DEFAULT_AVATAR,
+	DEFAULT_THEME,
+} from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { key } from '@/shared/lib/utils';
 import type { Status } from '@/shared/stores';
@@ -89,6 +95,10 @@ export class UserProfileStore implements IUserProfileAccountPort, IUserProfilePr
 
 	get widgets(): string[] {
 		return this.profile?.widgets_sequence || createDefaultWidgets();
+	}
+
+	get slots(): string[] {
+		return this.profile?.widgets_slots || createDefaultSlots();
 	}
 
 	get isDeleted(): boolean {
@@ -194,6 +204,27 @@ export class UserProfileStore implements IUserProfileAccountPort, IUserProfilePr
 			try {
 				if (!id || this.userStore.id !== id) return;
 				await this.repo.updateWidgets(id, widgets);
+			} catch (error) {
+				this.setError(error);
+			}
+		}, 2000);
+	}
+
+	async updateWidgetSlots(slots: string[]): Promise<void> {
+		if (!this.userStore.id) return;
+
+		if (this.arraysEqual(this.profile?.widgets_slots, slots)) return;
+
+		runInAction(() => this.profile && (this.profile.widgets_slots = slots));
+		cache.setSlots(this.userStore.id, slots);
+
+		if (this.debounce.widgets) clearTimeout(this.debounce.widgets);
+
+		const id = this.userStore.id;
+		this.debounce.widgets = setTimeout(async () => {
+			try {
+				if (!id || this.userStore.id !== id) return;
+				await this.repo.updateSlots(id, slots);
 			} catch (error) {
 				this.setError(error);
 			}

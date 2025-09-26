@@ -16,9 +16,9 @@ const DashboardPage = () => {
 	const orientation = useOrientation();
 
 	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
-	const { tabsFor, slots, setSlot, EMPTY } = useTabs();
+	const { slots, setSlot, tabsFor, EMPTY } = useTabs();
 
-	const widgetById = useMemo(() => new Map(widgets.map((w) => [w.id, w.content] as const)), []);
+	const widgetById = useMemo(() => new Map(widgets.map((widget) => [widget.id, widget.content] as const)), []);
 	const slotContent = (id: string | undefined) => (id === EMPTY ? null : (widgetById.get(id ?? '') ?? null));
 
 	return (
@@ -40,48 +40,29 @@ const DashboardPage = () => {
 				</div>
 			) : device === 'tablet' ? (
 				<div className="mobile-pad grid grid-cols-2 grid-rows-2 justify-evenly gap-x-2 gap-y-8 py-4">
-					<WidgetPanel
-						content={slotContent(slots.topL)}
-						tabs={tabsFor('topL')}
-						value={slots.topL}
-						onChange={(value) => setSlot('topL', value)}
-					/>
-					<WidgetPanel
-						content={slotContent(slots.topR)}
-						tabs={tabsFor('topR')}
-						value={slots.topR}
-						onChange={(value) => setSlot('topR', value)}
-					/>
-					<WidgetPanel
-						content={slotContent(slots.botL)}
-						reverse
-						tabs={tabsFor('botL')}
-						value={slots.botL}
-						onChange={(value) => setSlot('botL', value)}
-					/>
-					<WidgetPanel
-						content={slotContent(slots.botR)}
-						reverse
-						tabs={tabsFor('botR')}
-						value={slots.botR}
-						onChange={(value) => setSlot('botR', value)}
-					/>
+					{slots.map((slot, index) => (
+						<WidgetPanel
+							key={index}
+							content={slotContent(slot)}
+							tabs={tabsFor()}
+							value={slot}
+							reverse={index === 2 || index === 3}
+							onChange={(value) => setSlot(index, value)}
+						/>
+					))}
 				</div>
 			) : (
 				<div className="mobile-pad grid grid-cols-1 grid-rows-2 justify-between gap-2">
-					<WidgetPanel
-						content={slotContent(slots.topL)}
-						tabs={tabsFor('topL')}
-						value={slots.topL}
-						onChange={(value) => setSlot('topL', value)}
-					/>
-					<WidgetPanel
-						content={slotContent(slots.botL)}
-						reverse
-						tabs={tabsFor('botL')}
-						value={slots.botL}
-						onChange={(value) => setSlot('botL', value)}
-					/>
+					{slots.slice(0, 2).map((slot, index) => (
+						<WidgetPanel
+							key={index}
+							content={slotContent(slot)}
+							tabs={tabsFor()}
+							value={slot}
+							reverse={index === 1}
+							onChange={(value) => setSlot(index, value)}
+						/>
+					))}
 				</div>
 			)}
 		</>

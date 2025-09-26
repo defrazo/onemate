@@ -23,14 +23,14 @@ export const Current = ({ current }: CurrentProps) => {
 	return (
 		<>
 			<div className="flex flex-1 py-4 xl:py-2">
-				<div className="flex flex-1 flex-col gap-4 px-1">
+				<div className="flex flex-1 flex-col px-1">
 					<div className="flex h-full flex-col items-center justify-center">
 						<ConditionIcon
-							className="-mb-2 size-25 lg:mb-0 xl:size-32"
+							className="-mb-2 size-25"
 							condition={weather[0].icon as ConditionCode}
 							description={weather[0].description}
 						/>
-						<span className="text-4xl font-bold xl:text-5xl">{Math.round(temp)}°C</span>
+						<span className="text-4xl text-[40px] font-bold xl:text-5xl">{Math.round(temp)}°C</span>
 					</div>
 					<div className="flex flex-col items-center justify-center gap-2 text-center leading-4">
 						<div>{capitalizeFirstLetter(weather[0].description)}</div>

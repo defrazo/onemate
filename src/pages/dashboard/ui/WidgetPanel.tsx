@@ -26,7 +26,7 @@ export const WidgetPanel = ({ tabs, value, content, onChange, reverse, className
 			{content ?? (
 				<div className="flex flex-1 flex-col items-center justify-evenly">
 					<IconEmpty className="size-60 opacity-10" />
-					<div className="text-[var(--color-disabled)] opacity-40">Выберите виджет</div>
+					<div className="font-semibold text-[var(--color-disabled)] opacity-40">Выберите виджет</div>
 				</div>
 			)}
 		</div>

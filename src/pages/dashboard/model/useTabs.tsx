@@ -1,13 +1,12 @@
-import { useState } from 'react';
-
-import { Calculator, Calendar, Notes, Translator, Currency, Weather } from '@/shared/assets/icons/slider-home';
+import { Calculator, Calendar, Notes, Translator, Currency, Weather } from '@/shared/assets/icons/slider';
 import type { TabOption } from '@/shared/ui';
 
-import type { SlotKey } from '.';
+import { useStore } from '@/app/providers';
 
 const EMPTY = '__empty__';
 
 export const useTabs = () => {
+	const { userProfileStore: store } = useStore();
 	const tabs: TabOption[] = [
 		{ value: 'calculator', label: <Calculator /> },
 		{ value: 'calendar', label: <Calendar /> },
@@ -17,27 +16,18 @@ export const useTabs = () => {
 		{ value: 'translator', label: <Translator /> },
 	];
 
-	const [slots, setSlots] = useState<Record<SlotKey, string>>({
-		topL: 'calendar',
-		topR: 'notes',
-		botL: 'weather',
-		botR: 'translator',
-	});
+	const slots = store.slots;
+	const tabsFor = () => tabs;
 
-	const tabsFor = (_key: SlotKey): TabOption[] => tabs;
+	const setSlot = (index: number, value: string) => {
+		const newSlots = [...slots];
 
-	const setSlot = (key: SlotKey, value: string) => {
-		setSlots((prev) => {
-			const draft: Record<SlotKey, string> = { ...prev };
+		const conflictIdx = newSlots.indexOf(value);
+		if (conflictIdx !== -1 && conflictIdx !== index) newSlots[conflictIdx] = EMPTY;
 
-			(Object.keys(draft) as SlotKey[]).forEach((k) => {
-				if (k !== key && draft[k] === value) draft[k] = EMPTY;
-			});
-
-			draft[key] = value;
-			return draft;
-		});
+		newSlots[index] = value;
+		store.updateWidgetSlots(newSlots);
 	};
 
-	return { tabs, slots, setSlot, tabsFor, EMPTY };
+	return { slots, setSlot, tabsFor, EMPTY };
 };

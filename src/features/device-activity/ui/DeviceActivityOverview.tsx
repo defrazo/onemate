@@ -71,7 +71,7 @@ const DeviceActivityOverview = () => {
 									{idx + 1}
 								</div>
 								{log.is_mobile ? (
-									<IconPhone className="size-15 text-[var(--color-disabled)]" />
+									<IconPhone className="size-15 py-1 text-[var(--color-disabled)]" />
 								) : (
 									<IconDesktop className="size-15 text-[var(--color-disabled)]" />
 								)}

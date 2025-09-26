@@ -47,6 +47,11 @@ export const userProfileService = {
 		if (error) throw new Error(`Произошла ошибка при сохранении порядка виджетов: ${error.message}`);
 	},
 
+	async updateSlots(id: string, widgets_slots: string[]): Promise<void> {
+		const { error } = await supabase.from(TABLE).upsert({ id, widgets_slots }, { onConflict: 'id' });
+		if (error) throw new Error(`Произошла ошибка при сохранении виджетов: ${error.message}`);
+	},
+
 	async markPasswordChanged(id: string): Promise<string | null> {
 		const iso = new Date().toISOString();
 

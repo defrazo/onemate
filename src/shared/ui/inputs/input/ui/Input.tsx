@@ -36,9 +36,9 @@ const Input = ({
 	};
 
 	return (
-		<div className={cn('relative flex w-full items-center', justify && justifies[justify])}>
+		<div className={cn('relative z-10 flex w-full items-center', justify && justifies[justify])}>
 			{leftIcon && <span className="absolute left-0 px-1.5">{leftIcon}</span>}
-			{rightIcon && <span className="absolute right-0 px-1.5">{rightIcon}</span>}
+			{rightIcon && <span className="absolute right-0 z-20 px-1.5">{rightIcon}</span>}
 			<input className={cn(styles, iconPadding.leftPadding, iconPadding.rightPadding, className)} {...props} />
 		</div>
 	);

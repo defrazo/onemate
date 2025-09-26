@@ -16,7 +16,7 @@ const Header = () => {
 	return (
 		<header
 			ref={headerRef}
-			className="core-elements z-10 flex justify-between rounded-xl px-4 py-2 select-none md:py-3 print:hidden"
+			className="core-elements z-20 flex justify-between rounded-xl px-4 py-2 select-none md:py-3 print:hidden"
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">

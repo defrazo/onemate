@@ -13,7 +13,7 @@ const ThemeSwitcher = () => {
 	const handleToogle = () => themeStore.toggleTheme();
 
 	return (
-		<div className="hidden size-7 md:flex">
+		<div className="size-7">
 			<img alt={alt} className="cursor-pointer" src={image} title={title} onClick={handleToogle} />
 		</div>
 	);

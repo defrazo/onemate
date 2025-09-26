@@ -32,8 +32,10 @@ export const NotesList = observer(({ children }: NotesListProps) => {
 		}
 	};
 
-	const portraitStyle = 'max-h-[46dvh] md:max-h-[30dvh] lg:max-h-[27.5dvh]';
-	const landscapeStyle = 'max-h-[45dvw] md:max-h-[36.5dvw] lg:max-h-[40dvh] xl:max-h-[20dvw] 2xl:max-h-[29.5dvh]';
+	const portraitStyle = 'max-h-[46dvh] md:max-h-[30dvh] lg:max-h-[34dvh]';
+	// const portraitStyle = 'max-h-[46dvh] md:max-h-[30dvh] lg:max-h-[27.5dvh]';
+	const landscapeStyle = 'max-h-[45dvw] md:max-h-[36.5dvw] lg:max-h-[40dvh] xl:max-h-[20dvw] 2xl:max-h-[27dvh]';
+	// const landscapeStyle = 'max-h-[45dvw] md:max-h-[36.5dvw] lg:max-h-[40dvh] xl:max-h-[20dvw] 2xl:max-h-[29.5dvh]';
 
 	return (
 		<DndContext

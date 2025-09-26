@@ -36,6 +36,7 @@ export interface IUserProfileRepo {
 	updateAvatar(id: string, avatar: string): Promise<void>;
 	updateTheme(id: string, theme: Theme): Promise<void>;
 	updateWidgets(id: string, widgets: string[]): Promise<void>;
+	updateSlots(id: string, slots: string[]): Promise<void>;
 	markPasswordChanged(id: string): Promise<string | null>;
 	deleteAccount(id: string): Promise<string | null>;
 	restoreAccount(id: string): Promise<void>;

@@ -14,6 +14,10 @@ export const cache = {
 		writeCache(id, { ui: { widgets_sequence } });
 	},
 
+	setSlots(id: string, widgets_slots: string[]) {
+		writeCache(id, { ui: { widgets_slots } });
+	},
+
 	setUserId(id: string) {
 		writeCache(id, { auth: { user_id: id } });
 	},

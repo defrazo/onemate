@@ -10,6 +10,7 @@ export const cleanup = (cache: Cache): Cache => {
 	if (cache.ui) {
 		const ui: NonNullable<Cache['ui']> = {};
 		if (cache.ui.widgets_sequence !== undefined) ui.widgets_sequence = cache.ui.widgets_sequence;
+		if (cache.ui.widgets_slots !== undefined) ui.widgets_slots = cache.ui.widgets_slots;
 		if (cache.ui.avatar_url !== undefined) ui.avatar_url = cache.ui.avatar_url;
 		if (Object.keys(ui).length) out.ui = ui;
 	}

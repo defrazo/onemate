@@ -24,6 +24,10 @@ export class ProfileRepoSupabase implements IUserProfileRepo {
 		return userProfileService.updateWidgets(id, widgets);
 	}
 
+	async updateSlots(id: string, slots: string[]): Promise<void> {
+		return userProfileService.updateSlots(id, slots);
+	}
+
 	async markPasswordChanged(id: string): Promise<string | null> {
 		return userProfileService.markPasswordChanged(id);
 	}

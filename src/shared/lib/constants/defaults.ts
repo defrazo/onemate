@@ -21,6 +21,9 @@ const DEFAULT_WIDGETS = ['calculator', 'calendar', 'notes', 'currency', 'weather
 type WidgetId = (typeof DEFAULT_WIDGETS)[number];
 export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
 
+const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
+export const createDefaultSlots = (): string[] => [...DEFAULT_SLOTS];
+
 // --- Шаблоны
 
 const DEFAULT_AUTHFORM: AuthData = {

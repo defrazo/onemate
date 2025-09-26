@@ -1,4 +1,4 @@
-import * as Slide from '@/shared/assets/icons/slider-home';
+import * as Slide from '@/shared/assets/icons/slider';
 
 export const slides = [
 	{ image: Slide.Calculator, text: 'Калькулятор' },

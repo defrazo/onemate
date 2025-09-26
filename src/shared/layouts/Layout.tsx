@@ -30,7 +30,7 @@ export const Layout = ({
 	const right = hideRightOnMobile && device === 'mobile' ? null : rightSide;
 
 	return (
-		<div className="mx-auto flex min-h-full w-full flex-1 flex-col px-4 py-4 text-sm xl:max-w-[1600px] xl:text-base">
+		<div className="mx-auto flex min-h-full w-full flex-col px-4 py-4 text-sm xl:max-w-[1600px] xl:text-base">
 			<Header />
 			<div
 				className={cn(
@@ -46,7 +46,7 @@ export const Layout = ({
 				)}
 			>
 				{left && <aside className="flex">{left}</aside>}
-				<main className="flex flex-1">{children}</main>
+				<main className="flex min-h-full">{children}</main>
 				{right && <aside className="flex">{right}</aside>}
 			</div>
 			{showFooter &&

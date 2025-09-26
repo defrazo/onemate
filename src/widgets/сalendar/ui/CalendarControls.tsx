@@ -28,7 +28,7 @@ export const CalendarControls = ({
 
 	return (
 		<div className="grid-rows-[auto, 1fr] grid grid-cols-3 items-center gap-2">
-			<div className="col-span-3 text-center text-sm 2xl:text-base">{rangeState}</div>
+			<div className="col-span-3 min-h-6 text-center text-sm 2xl:text-base">{rangeState}</div>
 			<Button
 				active={hasWeekendInRange(range) && includeWeekends}
 				className="w-full text-xs xl:text-sm"

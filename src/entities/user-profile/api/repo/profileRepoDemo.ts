@@ -41,6 +41,13 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		storage.set(key(id, 'profile'), toPlain({ ...base, widgets_sequence: widgets }));
 	}
 
+	async updateSlots(id: string, slots: string[]): Promise<void> {
+		const stored = storage.get(key(id, 'profile'));
+		const base = stored && typeof stored === 'object' ? stored : createDefaultProfile();
+
+		storage.set(key(id, 'profile'), toPlain({ ...base, widgets_slots: slots }));
+	}
+
 	async markPasswordChanged(id: string): Promise<string | null> {
 		const stored = storage.get(key(id, 'profile'));
 		const base = stored && typeof stored === 'object' ? stored : createDefaultProfile();

@@ -7,7 +7,7 @@ const MobileTabBar = () => {
 	const { userStore } = useStore();
 
 	return (
-		<div className="core-elements fixed bottom-0 left-0 z-50 flex h-12 w-full items-center justify-around border-t border-[var(--color-secondary)] shadow">
+		<div className="core-elements fixed bottom-0 left-0 z-50 flex h-12 w-full items-center justify-around border-t border-[var(--color-disabled)] shadow">
 			<NavigationLinks
 				className="no-touch-callout flex h-full w-full items-center justify-around"
 				isAuth={Boolean(userStore.id)}

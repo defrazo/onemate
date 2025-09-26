@@ -4,7 +4,7 @@ import { links, socials } from '../lib';
 
 const FooterWidget = () => (
 	<footer className="core-card core-elements hidden items-center justify-between p-4 select-none md:flex print:hidden">
-		<ul className="flex flex-col items-center text-sm md:flex-row md:gap-x-4 lg:text-base">
+		<ul className="flex flex-col items-center text-center text-xs md:flex-row md:gap-x-4 lg:text-base">
 			{links.map((item) => (
 				<li key={item.title} className="cursor-pointer select-none hover:text-[var(--accent-hover)]">
 					{item.to ? <Link to={item.to}>{item.title}</Link> : item.title}
