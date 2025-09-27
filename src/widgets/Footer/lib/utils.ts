@@ -1,7 +1,6 @@
 import { IconDZ, IconOK, IconTG, IconVK } from '@/shared/assets/icons';
 
 export const links = [
-	{ title: '© 2025 Евгений Летунов' },
 	{ to: '/about', title: 'О проекте' },
 	{ to: '/terms-of-service', title: 'Пользовательское соглашение' },
 	{ to: '/privacy-policy', title: 'Политика конфиденциальности' },

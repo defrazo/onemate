@@ -56,7 +56,7 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 				<span className="px-4">ИЛИ</span>
 				<div className="grow border-t border-[var(--border-color)]" />
 			</div>
-			<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+			<form className="flex w-full flex-col gap-4">
 				<Input
 					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="Имя пользователя"
@@ -114,7 +114,12 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} loading={isLoading} type="submit">
+				<Button
+					className="mt-4 h-10 w-full"
+					disabled={!isPasswordValid}
+					loading={isLoading}
+					onClick={() => notifyStore.setNotice('Регистрация временно приостановлена', 'info')}
+				>
 					Зарегистрироваться
 				</Button>
 			</form>

@@ -16,9 +16,10 @@ interface LoginFormProps {
 	isLoading: boolean;
 	oAuth: () => void;
 	onSubmit: () => void;
+	demoAuth?: () => void;
 }
 
-export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit }: LoginFormProps) => {
+export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth }: LoginFormProps) => {
 	const { modalStore, notifyStore } = useStore();
 	const [showPassword, setShowPassword] = useState<boolean>(false);
 
@@ -45,7 +46,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit }: LoginF
 				<img alt="Логотип" className="size-20" src={Logo} />
 				<h1 className="core-header">Войти в аккаунт OneMate</h1>
 			</div>
-			<AuthSocial isLoading={isLoading} oAuth={oAuth} />
+			<AuthSocial isLoading={isLoading} oAuth={oAuth} demoAuth={demoAuth} />
 			<div className="flex w-full items-center select-none">
 				<div className="grow border-t border-[var(--border-color)]" />
 				<span className="px-4">ИЛИ</span>
@@ -99,7 +100,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit }: LoginF
 			<p className="select-none">
 				Нет аккаунта?{' '}
 				<a
-					className="text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
+					className="cursor-pointer text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
 					onClick={() => {
 						store.update('authType', 'register');
 						modalStore.setBack(() => {

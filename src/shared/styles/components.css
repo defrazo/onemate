@@ -1,0 +1,47 @@
+/* Стили для скроллбара */
+::-webkit-scrollbar {
+	width: 15px;
+}
+
+::-webkit-scrollbar-thumb {
+	border-radius: 5px;
+	background-color: var(--bg-primary);
+}
+
+::-webkit-scrollbar-track {
+	border-radius: 5px;
+	background-color: var(--field-bg);
+}
+
+.hide-scrollbar {
+	scrollbar-width: none;
+	-ms-overflow-style: none;
+}
+
+.hide-scrollbar::-webkit-scrollbar {
+	display: none;
+}
+
+/* Стили для инпутов */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--color-primary);
+	-webkit-box-shadow: 0 0 0px 40rem var(--bg-primary) inset;
+	background-color: #080807 !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+input[type='radio']:checked {
+	background-color: var(--accent-hover);
+}

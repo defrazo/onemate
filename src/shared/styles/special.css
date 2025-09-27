@@ -1,55 +1,46 @@
-.print-container {
-	@apply print:mx-0 print:my-8 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-black;
-}
+@layer utilities {
+	/* Стили для печати */
+	.print-container {
+		@apply print:mx-0 print:my-8 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-black;
+	}
 
-.print-header {
-	@apply print:gap-0 print:text-2xl;
-}
+	.print-header {
+		@apply print:gap-0 print:text-2xl;
+	}
 
-.print-content {
-	@apply print:gap-0 print:text-base;
-}
+	.print-content {
+		@apply print:gap-0 print:text-base;
+	}
 
-.print-content h2 {
-	@apply print:text-base;
-}
+	.print-content h2 {
+		@apply print:text-base;
+	}
 
-/* Маркер точка */
-.list-default {
-	@apply list-none;
-}
+	/* Маркер точка */
+	.list-default {
+		@apply list-none;
+	}
 
-.list-default li {
-	@apply relative pl-4;
-}
+	.list-default li {
+		@apply relative pl-4;
+	}
 
-.list-default li::before {
-	content: '•';
-	@apply absolute left-0;
-}
+	.list-default li::before {
+		content: '•';
+		@apply absolute left-0;
+	}
 
-/* Маркер тире */
-.list-dash {
-	@apply list-none;
-}
+	/* Маркер тире */
+	.list-dash {
+		@apply list-none;
+	}
 
-.list-dash li {
-	@apply relative pl-4 md:pl-6;
-}
+	.list-dash li {
+		@apply relative pl-4 md:pl-6;
+	}
 
-.list-dash li::before {
-	content: '—';
-	@apply absolute left-0;
-}
-
-.mobile-pad {
-	@apply mb-8 xl:mb-0;
-}
-
-/* Отключение touch эффекта на элементе */
-.no-touch-callout {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	user-select: none;
-	-webkit-tap-highlight-color: transparent;
+	.list-dash li::before {
+		content: '—';
+		@apply absolute left-0;
+	}
 }

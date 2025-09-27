@@ -10,6 +10,9 @@
 /* Импорт тем */
 @import './src/shared/styles/themes.css';
 
+/* Импорт компонентов */
+@import './src/shared/styles/components.css';
+
 /* Импорт утилит */
 @import './src/shared/styles/utilities.css';
 

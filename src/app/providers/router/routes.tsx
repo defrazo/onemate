@@ -115,9 +115,9 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<StaticPageLayout showToc={false} title="О проекте">
+					<Layout showFooter>
 						<AboutPage />
-					</StaticPageLayout>
+					</Layout>
 				}
 				requireAuth={false}
 			/>

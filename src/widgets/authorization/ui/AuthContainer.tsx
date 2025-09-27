@@ -7,11 +7,28 @@ import { ConfirmForm, LoginForm, RegisterForm, ResetForm } from '@/features/user
 import { useAuth } from '../model';
 
 const AuthContainer = () => {
-	const { authFormStore, isLoading, authType, handleOAuth, handleLogin, handleRegister, handleConfirm, handleReset } =
-		useAuth();
+	const {
+		authFormStore,
+		isLoading,
+		authType,
+		handleOAuth,
+		handleDemo,
+		handleLogin,
+		handleRegister,
+		handleConfirm,
+		handleReset,
+	} = useAuth();
 
 	const formMap: Record<AuthType, JSX.Element> = {
-		login: <LoginForm isLoading={isLoading} oAuth={handleOAuth} store={authFormStore} onSubmit={handleLogin} />,
+		login: (
+			<LoginForm
+				isLoading={isLoading}
+				oAuth={handleOAuth}
+				store={authFormStore}
+				demoAuth={handleDemo}
+				onSubmit={handleLogin}
+			/>
+		),
 		register: (
 			<RegisterForm isLoading={isLoading} oAuth={handleOAuth} store={authFormStore} onSubmit={handleRegister} />
 		),

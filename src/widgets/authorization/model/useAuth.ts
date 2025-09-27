@@ -71,6 +71,28 @@ export const useAuth = () => {
 		}
 	};
 
+	const handleDemo = async () => {
+		const login = 'demo1@example.com';
+		const password = '123456Om';
+
+		setIsLoading(true);
+		try {
+			if (!(await handleExisting(login, authType))) return;
+
+			if (await authStore.login(login, password)) {
+				navigate('/dashboard');
+
+				notifyStore.setNotice(`Добро пожаловать, ${userStore.username}!`, 'success');
+				authFormStore.reset();
+				modalStore.closeModal();
+			}
+		} catch (error: any) {
+			notifyStore.setNotice(error.message || 'Произошла ошибка при входе', 'error');
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
 	const handleLogin = async () => {
 		setIsLoading(true);
 		try {
@@ -146,5 +168,15 @@ export const useAuth = () => {
 		}
 	};
 
-	return { authFormStore, isLoading, authType, handleOAuth, handleLogin, handleRegister, handleConfirm, handleReset };
+	return {
+		authFormStore,
+		isLoading,
+		authType,
+		handleOAuth,
+		handleDemo,
+		handleLogin,
+		handleRegister,
+		handleConfirm,
+		handleReset,
+	};
 };
