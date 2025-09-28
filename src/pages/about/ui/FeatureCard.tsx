@@ -7,12 +7,10 @@ interface FeatureCardProps {
 }
 
 export const FeatureCard = ({ title, desc, Icon }: FeatureCardProps) => (
-	<div className="core-base core-card cursor-default border border-solid border-[var(--border-color)]/40 shadow-[var(--shadow)] transition-transform duration-500 select-none hover:z-10 hover:scale-[1.15]">
-		<div className="flex-row items-center gap-2">
-			<div className="flex items-center gap-2">
-				<Icon className="size-5" />
-				<h1 className="leading-4 font-semibold">{title}</h1>
-			</div>
+	<div className="core-base core-card core-border cursor-default shadow-[var(--shadow)] transition-transform duration-500 select-none hover:z-10 hover:scale-[1.15]">
+		<div className="flex items-center gap-2">
+			<Icon className="size-5" />
+			<h2 className="text-base leading-4 font-bold">{title}</h2>
 		</div>
 		<Divider margY="sm" />
 		<p className="text-justify text-sm opacity-80 md:text-center">{desc}</p>

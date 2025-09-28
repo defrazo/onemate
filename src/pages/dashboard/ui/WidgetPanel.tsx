@@ -22,7 +22,7 @@ export const WidgetPanel = ({ tabs, value, content, onChange, reverse, className
 			value={value}
 			onChange={onChange}
 		/>
-		<div className="relative flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
+		<div className="flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
 			{content ?? (
 				<div className="flex flex-1 flex-col items-center justify-evenly">
 					<IconEmpty className="size-60 opacity-10" />

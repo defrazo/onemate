@@ -19,10 +19,6 @@
 		@apply text-center text-xl leading-tight font-bold select-none md:mr-auto md:ml-0 md:text-2xl md:leading-normal;
 	}
 
-	.mobile-pad {
-		@apply mb-8 xl:mb-0;
-	}
-
 	/* Отключение touch эффекта на элементе */
 	.no-touch-callout {
 		@apply select-none;

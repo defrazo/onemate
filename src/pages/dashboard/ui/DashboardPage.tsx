@@ -39,7 +39,7 @@ const DashboardPage = () => {
 					</DndContext>
 				</div>
 			) : device === 'tablet' ? (
-				<div className="mobile-pad grid grid-cols-2 grid-rows-2 justify-evenly gap-x-2 gap-y-8 py-4">
+				<div className="grid grid-cols-2 grid-rows-2 justify-evenly gap-4">
 					{slots.map((slot, index) => (
 						<WidgetPanel
 							key={index}
@@ -52,7 +52,7 @@ const DashboardPage = () => {
 					))}
 				</div>
 			) : (
-				<div className="mobile-pad grid grid-cols-1 grid-rows-2 justify-between gap-2">
+				<div className="grid grid-cols-1 grid-rows-2 justify-between gap-2">
 					{slots.slice(0, 2).map((slot, index) => (
 						<WidgetPanel
 							key={index}

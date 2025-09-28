@@ -8,10 +8,15 @@ import { Time } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 import { HeaderLogo } from '.';
+import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 
 const Header = () => {
 	const { authStore, userStore } = useStore();
+	const device = useDeviceType();
+	const orientation = useOrientation();
+
 	const headerRef = useRef<HTMLDivElement>(null);
+	const showNavBar = device === 'desktop' || (device === 'tablet' && orientation === 'landscape');
 
 	return (
 		<header
@@ -20,7 +25,7 @@ const Header = () => {
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">
-				<div className="hidden xl:flex">
+				<div className={`${showNavBar ? 'flex' : 'hidden'}`}>
 					<NavigationLinks
 						className="flex h-10 gap-4 font-bold"
 						isAuth={Boolean(userStore.id)}

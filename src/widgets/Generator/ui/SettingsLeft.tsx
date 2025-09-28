@@ -12,7 +12,7 @@ export const SettingsLeft = observer(() => {
 	const { cardWidth, cardHeight } = useGenModel();
 
 	return (
-		<div className="core-base core-card top-4 flex w-full flex-col gap-2">
+		<div className="core-base core-card top-4 hidden w-full flex-col gap-2 lg:flex">
 			{genStore.svgWithText && (
 				<ZoomOnHover>
 					<svg

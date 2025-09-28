@@ -15,8 +15,8 @@ export const StaticPageLayout = ({ children, title, showToc = true }: StaticPage
 	usePageTitle(title);
 
 	return (
-		<Layout hideLeftOnMobile hideRightOnMobile showFooter>
-			<div className="mobile-pad mx-auto flex max-w-4xl">
+		<Layout hideLeftOnMobile hideRightOnMobile>
+			<div className="mx-auto flex max-w-4xl">
 				{showToc && <TableOfContents />}
 				<div className="print-container flex flex-col items-center gap-4">{children}</div>
 				<ScrollToTop />

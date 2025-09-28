@@ -8,7 +8,7 @@ interface Props {
 
 const UnderConstruction = ({ title = 'Страница в разработке', suggestions }: Props) => {
 	return (
-		<div className="mobile-pad flex flex-1 flex-col justify-evenly select-none lg:flex-row lg:justify-between">
+		<div className="flex flex-1 flex-col justify-evenly select-none lg:flex-row lg:justify-between">
 			<div className="flex flex-col items-center justify-center gap-4 xl:flex-1 xl:gap-8">
 				<h1 className="text-center text-2xl leading-tight font-medium md:text-6xl">{title}</h1>
 				<div className="md:w-2xl md:text-xl">

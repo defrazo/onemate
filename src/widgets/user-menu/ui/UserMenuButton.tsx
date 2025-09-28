@@ -2,7 +2,7 @@ import { type RefObject, useEffect } from 'react';
 
 import { useStore } from '@/app/providers';
 import UserAvatar from '@/features/user-avatar';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { DesktopUserMenu, MobileUserMenu } from '.';
@@ -13,7 +13,9 @@ interface UserMenuButtonProps {
 
 export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
 	const { modalStore } = useStore();
+
 	const device = useDeviceType();
+	const orientation = useOrientation();
 
 	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
 
@@ -29,7 +31,7 @@ export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
 
 		const position = { top: rect.bottom + window.scrollY - 10, left: rect.right + window.scrollX };
 
-		device === 'mobile'
+		device === 'mobile' || (device === 'tablet' && orientation === 'portrait')
 			? modalStore.setModal(<MobileUserMenu />, 'sheet')
 			: modalStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
 	};

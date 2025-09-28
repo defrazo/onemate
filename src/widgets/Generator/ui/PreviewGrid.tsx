@@ -10,7 +10,7 @@ export const PreviewGrid = observer(() => {
 	const { cardWidth, cardHeight, fullGridWidth, fullGridHeight, gap, ref } = useGenModel();
 
 	return (
-		<div className="flex w-full flex-col gap-2">
+		<div className="hidden w-full flex-col gap-2 lg:flex">
 			<div
 				ref={ref}
 				className="core-base core-card flex min-h-full w-full items-center justify-center overflow-hidden"

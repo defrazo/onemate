@@ -35,7 +35,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout hideLeftOnMobile leftSide={<ProfileNav />} showFooter>
+					<Layout hideLeftOnMobile leftSide={<ProfileNav />}>
 						<UserProfilePage />
 					</Layout>
 				}
@@ -47,7 +47,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<DashboardPage />
 					</Layout>
 				}
@@ -59,7 +59,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<TodoPage />
 					</Layout>
 				}
@@ -71,7 +71,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<KanbanPage />
 					</Layout>
 				}
@@ -88,7 +88,6 @@ export const routes: RouteObject[] = [
 						hideRightOnMobile
 						leftSide={<SettingsLeft />}
 						rightSide={<SettingsRight />}
-						showFooter
 					>
 						<GeneratorPage />
 					</Layout>
@@ -102,7 +101,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<HomePage />
 					</Layout>
 				}
@@ -115,7 +114,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<AboutPage />
 					</Layout>
 				}
@@ -167,7 +166,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout showFooter>
+					<Layout>
 						<NotFoundPage />
 					</Layout>
 				}

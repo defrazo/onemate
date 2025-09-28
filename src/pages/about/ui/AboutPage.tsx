@@ -8,22 +8,31 @@ const AboutPage = () => {
 	usePageTitle('О проекте');
 
 	return (
-		<div className="mobile-pad mx-auto flex max-w-4xl flex-col justify-between gap-2 xl:gap-6">
-			<header className="relative flex cursor-default flex-col items-center gap-2 overflow-hidden rounded-3xl border border-[var(--border-color)]/50 bg-[var(--bg-primary)]/40 p-6 text-center shadow-[var(--shadow)] select-none md:p-10">
-				<div className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--accent-default)]/30 via-transparent to-[var(--accent-hover)]/20" />
-				<h1 className="text-2xl leading-tight font-bold text-balance md:text-4xl">
+		<div className="mx-auto flex flex-col justify-between gap-4 xl:max-w-4xl xl:gap-6">
+			<div className="core-border relative flex cursor-default flex-col items-center gap-2 overflow-hidden !rounded-3xl p-6 text-center shadow-[var(--shadow)] select-none md:p-10">
+				<div
+					style={{
+						background:
+							'linear-gradient(to bottom right, rgba(197,98,45,0.3), transparent, rgba(209,104,28,0.2))',
+					}}
+					className="absolute inset-0 -z-10"
+				/>
+				<h1 className="text-xl leading-tight font-bold text-balance md:text-4xl">
 					OneMate – ваш центр личной продуктивности
 				</h1>
 				<p className="max-w-3xl opacity-80">
 					Управляйте временем, задачами и заметками в одном месте. Гибкие виджеты, чистый интерфейс и
 					отзывчивый дизайн помогают фокусироваться на важном и успевать больше без лишнего стресса.
 				</p>
-				<div className="flex items-center gap-2 rounded-full bg-[var(--bg-tertiary)]/50 px-3 py-1 text-sm">
-					<Rocket className="size-4" /> <span>v1.1</span> <span>•</span> <span>активно развивается</span>
+				<div className="flex items-center gap-2 rounded-full bg-[var(--bg-tertiary)] px-3 py-1 text-xs leading-tight md:text-sm">
+					<Rocket className="size-4 hover:animate-spin" />
+					<span>v1.1</span>
+					<span>•</span>
+					<span>активно развивается</span>
 				</div>
-			</header>
+			</div>
 			<Section title="Что внутри">
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{features.map((feature) => (
 						<FeatureCard key={feature.title} {...feature} />
 					))}
@@ -31,26 +40,34 @@ const AboutPage = () => {
 			</Section>
 			<Section title="Технологический стек">
 				<p className="cursor-default text-justify leading-relaxed opacity-80 select-none">
-					В OneMate используется современный фронтенд-стек: React + TypeScript для предсказуемой разработки,
-					MobX для реактивного состояния и Supabase как быстрый способ развернуть хранение данных и
-					авторизацию. Vite обеспечивает мгновенную сборку и комфортную разработку.
+					В OneMate используется современный фронтенд-стек: <b>React</b> + <b>TypeScript</b> для предсказуемой
+					разработки, <b>MobX</b> для реактивного состояния и <b>Supabase</b> как быстрый способ развернуть
+					хранение данных и авторизацию. <b>Vite</b> обеспечивает мгновенную сборку и комфортную разработку, а
+					<b> Tailwind CSS</b> помогает быстро и гибко создавать адаптивный интерфейс с акцентом на чистоту и
+					единообразие дизайна.
 				</p>
-				<div className="grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{stack.map((tech) => (
 						<TechIcon key={tech.label} label={tech.label} hint={tech.hint} svg={tech.svg} />
 					))}
 				</div>
 			</Section>
 			<Section title="Принципы дизайна и качества">
-				<div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
+				<div className="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
 					{principles.map((principle) => (
 						<FeatureCard key={principle.title} {...principle} />
 					))}
 				</div>
 			</Section>
 			<Section title="Обратная связь">
-				<div className="relative flex cursor-default flex-col items-center justify-between overflow-hidden rounded-3xl border border-[var(--border-color)]/50 bg-[var(--bg-primary)]/40 shadow-[var(--shadow)] select-none">
-					<div className="absolute inset-0 -z-10 bg-gradient-to-br from-[var(--accent-default)]/30 via-transparent to-[var(--accent-hover)]/20" />
+				<div className="core-border relative flex cursor-default flex-col items-center overflow-hidden !rounded-3xl text-center shadow-[var(--shadow)] select-none">
+					<div
+						style={{
+							background:
+								'linear-gradient(to bottom right, rgba(197,98,45,0.3), transparent, rgba(209,104,28,0.2))',
+						}}
+						className="absolute inset-0 -z-10"
+					/>
 					<div className="flex w-full flex-col items-center gap-2 p-6 md:flex-row md:justify-between md:p-10">
 						<div className="flex flex-col">
 							<div className="mb-1 text-base font-semibold">Есть идея или нашли баг?</div>
@@ -60,7 +77,7 @@ const AboutPage = () => {
 						</div>
 						<div className="flex items-center gap-2">
 							<a
-								className="inline-flex items-center gap-2 rounded-xl border border-[var(--accent-default)]/40 px-3 py-2 text-sm hover:bg-[var(--accent-default)]/10"
+								className="inline-flex items-center gap-2 rounded-xl border border-[var(--accent-default)] px-3 py-2 text-sm font-semibold transition-transform duration-500 hover:scale-[1.15] hover:bg-[var(--accent-default)]/10"
 								href="mailto:defrazo@inbox.ru"
 							>
 								<Mail className="size-4" />
