@@ -3,9 +3,12 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import NavigationLinks from '@/features/navigation';
 import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 
 const MobileTabBar = () => {
 	const { userStore } = useStore();
+
+	const location = useLocation();
 
 	const [hidden, setHidden] = useState<boolean>(false);
 	const lastScroll = useRef(0);
@@ -13,6 +16,11 @@ const MobileTabBar = () => {
 
 	useEffect(() => {
 		const handleScroll = () => {
+			if (location.pathname === '/') {
+				setHidden(false);
+				return;
+			}
+
 			const currentScroll = window.scrollY;
 
 			if (currentScroll > lastScroll.current + 5) setHidden(true);

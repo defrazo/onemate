@@ -32,7 +32,7 @@ export const SettingsRight = observer(() => {
 						<span>Линия реза:</span>
 						<CheckboxBool
 							checked={genStore.isCutLine}
-							className="h-5"
+							className="h-5 bg-transparent"
 							disabled={!genStore.svgWithText}
 							label=""
 							onChange={() => genStore.updateCutLine('visible', !genStore.isCutLine)}

@@ -1,4 +1,4 @@
-import { createDefaultCity } from '@/shared/lib/constants';
+import { createDemoCity } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
@@ -9,9 +9,9 @@ export class CityRepoDemo implements ICityRepo {
 		const stored = storage.get(key(id, 'city'));
 		if (stored && typeof stored === 'object') return structuredClone(stored);
 
-		const defaultCity = createDefaultCity();
-		storage.set(key(id, 'city'), defaultCity);
-		return defaultCity;
+		const demoCity = createDemoCity();
+		storage.set(key(id, 'city'), demoCity);
+		return demoCity;
 	}
 
 	async saveCity(id: string, city: City): Promise<void> {

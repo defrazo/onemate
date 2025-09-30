@@ -14,7 +14,7 @@ export const Dropdown = observer(({ children, position, onClose }: DropdownProps
 	useEscapeClose(onClose);
 
 	return ReactDOM.createPortal(
-		<div className="fixed inset-0 z-10" onClick={onClose}>
+		<div className="fixed inset-0 z-20" onClick={onClose}>
 			<div
 				className="fixed w-fit"
 				style={{ top: position?.top, left: position?.left }}

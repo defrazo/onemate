@@ -34,7 +34,11 @@ export const variants: Record<Component, Record<string, string>> = {
 		custom: '',
 	},
 	input: {
-		default: cn('bg-[var(--bg-tertiary)] ring-[var(--accent-default)]', 'hover:ring-1 focus:ring-1', 'ring-inset'),
+		default: cn(
+			'bg-[var(--bg-tertiary)] ring-[var(--accent-default)]',
+			'hover:enabled:ring-1 focus:ring-1',
+			'ring-inset'
+		),
 		ghost: cn(
 			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:border-[var(--accent-hover)] focus:border-[var(--accent-default)]'
@@ -66,10 +70,11 @@ export const variants: Record<Component, Record<string, string>> = {
 	},
 	selectExt: {
 		default: cn('bg-[var(--bg-tertiary)] ring-[var(--accent-default)]', 'hover:ring-1 focus:ring-1', 'ring-inset'),
-		ghost: cn(
+		embedded: cn(
 			'border border-solid border-[var(--border-color)] bg-transparent',
 			'hover:border-[var(--accent-hover)] focus:border-[var(--accent-default)]'
 		),
+		detached: '',
 		custom: '',
 	},
 };

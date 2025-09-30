@@ -21,7 +21,7 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 	for (let i = 0; i < calendarDays.length; i += 7) weeks.push(calendarDays.slice(i, i + 7));
 
 	return (
-		<div className="flex flex-1 flex-col justify-between">
+		<div className="flex flex-1 flex-col justify-between gap-0.5">
 			<div className="grid grid-cols-7 justify-items-center">
 				{WEEKDAYS_RU_SHORT.map((day) => (
 					<div key={day} className="flex items-center text-base">
@@ -42,11 +42,11 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 							<Button
 								key={idx}
 								className={cn(
-									'my-0.2 aspect-square rounded-full border border-solid border-transparent p-1.5 text-sm leading-none',
-									today && 'bg-[var(--accent-default)] text-[var(--accent-text)]',
-									start && isSameDay(date, start) && 'border-[var(--accent-default)]',
-									end && isSameDay(date, end) && 'border-[var(--accent-default)]',
-									inRange && 'border-[var(--accent-default)]'
+									'aspect-square rounded-full border border-solid border-transparent p-1.5 font-mono text-sm leading-4',
+									today && 'border-[var(--accent-default)]',
+									start && isSameDay(date, start) && 'border-[var(--accent-active)]',
+									end && isSameDay(date, end) && 'border-[var(--accent-active)]',
+									inRange && 'border-[var(--accent-active)]'
 								)}
 								size="custom"
 								variant="custom"

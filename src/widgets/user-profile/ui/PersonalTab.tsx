@@ -41,7 +41,7 @@ export const PersonalTab = observer(() => {
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
 					<Thumbnail
 						alt="avatar"
-						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-1 md:size-fit"
+						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-2 md:size-fit"
 						src={userProfileStore.avatar}
 						title="Сменить аватар"
 						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
@@ -93,10 +93,11 @@ export const PersonalTab = observer(() => {
 						<div className="flex flex-col gap-2 md:flex-row">
 							<SelectExt
 								justify="center"
+								nullable
 								options={generateYears()}
 								placeholder="Год"
 								value={store.birthYear}
-								variant="ghost"
+								variant="embedded"
 								onChange={(value) => {
 									store.updateField('birth_year', value);
 									store.updateField('birth_day', '');
@@ -104,10 +105,12 @@ export const PersonalTab = observer(() => {
 							/>
 							<SelectExt
 								justify="center"
+								nullable
 								options={generateMonth()}
 								placeholder="Месяц"
+								direction="up"
 								value={store.birthMonth}
-								variant="ghost"
+								variant="embedded"
 								onChange={(value) => {
 									store.updateField('birth_month', value);
 									store.updateField('birth_day', '');
@@ -116,10 +119,11 @@ export const PersonalTab = observer(() => {
 							<SelectExt
 								disabled={!store.birthYear || store.birthMonth === ''}
 								justify="center"
+								nullable
 								options={store.days.map((d) => ({ value: d, label: d }))}
 								placeholder="День"
 								value={store.birthDay}
-								variant="ghost"
+								variant="embedded"
 								onChange={(value) => store.updateField('birth_day', value)}
 							/>
 						</div>

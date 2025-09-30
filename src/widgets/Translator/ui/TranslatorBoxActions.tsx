@@ -18,7 +18,7 @@ export const TranslatorBoxActions = ({ type, disabled, onClear, onCopy }: Transl
 				<div className="flex justify-end gap-2">
 					<Button
 						centerIcon={<IconCopy className="size-4" />}
-						className="opacity-20 transition hover:text-[var(--accent-hover)] hover:opacity-100"
+						className="bg-transparent opacity-20 transition hover:text-[var(--accent-hover)] hover:opacity-100"
 						disabled={disabled}
 						size="custom"
 						title="Скопировать"
@@ -28,7 +28,7 @@ export const TranslatorBoxActions = ({ type, disabled, onClear, onCopy }: Transl
 					{type === 'source' && (
 						<Button
 							centerIcon={<IconClose className="size-4" />}
-							className="opacity-20 transition hover:text-[var(--status-error)] hover:opacity-100"
+							className="bg-transparent opacity-20 transition hover:text-[var(--status-error)] hover:opacity-100"
 							disabled={disabled}
 							size="custom"
 							title="Очистить"

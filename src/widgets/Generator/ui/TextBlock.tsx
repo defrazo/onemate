@@ -33,7 +33,7 @@ export const TextBlock = ({
 					<span>{label}</span>
 					<CheckboxBool
 						checked={isChecked}
-						className="h-5"
+						className="h-5 bg-transparent"
 						disabled={!genStore.svgWithText}
 						onChange={onCheckToggle}
 					/>

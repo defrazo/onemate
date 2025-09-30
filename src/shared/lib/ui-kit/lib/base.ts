@@ -11,8 +11,8 @@ export const base: Record<Component, string> = {
 	radio: cn(
 		'border-[var(--border-color)]',
 		'transition-colors',
-		'focus:border-[var(--accent-default)]',
-		'hover:border-[var(--accent-hover)] focus:border-[var(--accent-default)]',
+		'focus:border-none',
+		'hover:border-[var(--accent-default)] ',
 		'cursor-pointer appearance-none outline-none'
 	),
 	select: cn('w-full', 'rounded-xl', 'transition-colors', 'cursor-pointer appearance-none outline-none'),

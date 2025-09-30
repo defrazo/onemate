@@ -5,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { IconEmail, IconPass, IconUser } from '@/shared/assets/icons';
 import { Logo } from '@/shared/assets/images';
 import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
-import { Button, Input } from '@/shared/ui';
+import { Button, Input, Tooltip } from '@/shared/ui';
 
 import { renderPasswordToggle } from '../lib';
 import { AuthFormStore } from '../model';
@@ -114,14 +114,16 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button
-					className="mt-4 h-10 w-full"
-					disabled={!isPasswordValid}
-					loading={isLoading}
-					onClick={() => notifyStore.setNotice('Регистрация временно приостановлена', 'info')}
-				>
-					Зарегистрироваться
-				</Button>
+				<Tooltip className="mt-4 w-full" content="Регистрация временно приостановлена">
+					<Button
+						className="h-10 w-full"
+						disabled={!isPasswordValid}
+						loading={isLoading}
+						onClick={() => notifyStore.setNotice('Регистрация временно приостановлена', 'info')}
+					>
+						Зарегистрироваться
+					</Button>
+				</Tooltip>
 			</form>
 		</div>
 	);

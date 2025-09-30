@@ -14,7 +14,7 @@ export const CurrencyControls = observer(({ store }: CurrencyControlsProps) => {
 	return (
 		<div className="flex flex-col">
 			<Button
-				className="ml-auto text-xs text-[var(--color-disabled)] hover:text-[var(--accent-hover)] xl:text-sm"
+				className="ml-auto bg-transparent text-xs text-[var(--color-disabled)] hover:text-[var(--accent-hover)] xl:text-sm"
 				disabled={store.isDefault}
 				size="custom"
 				variant="custom"

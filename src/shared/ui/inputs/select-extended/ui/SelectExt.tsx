@@ -1,16 +1,11 @@
-import { type HTMLAttributes, useEffect, useRef, useState } from 'react';
+import type { HTMLAttributes } from 'react';
 
 import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
-
-interface SelectExtOption {
-	key?: string;
-	value: string;
-	label: string;
-	icon?: string;
-	disabled?: boolean;
-}
+import { useSelect } from '../model';
+import type { Direction, Justify, SelectExtOption } from '../model';
+import { SelectList } from '.';
 
 interface SelectExtProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
 	options: SelectExtOption[];
@@ -20,11 +15,13 @@ interface SelectExtProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'
 	variant?: keyof typeof variants.selectExt;
 	size?: keyof typeof sizes.selectExt;
 	error?: boolean;
-	justify?: 'start' | 'center' | 'end';
-	direction?: 'auto' | 'up' | 'down';
+	justify?: Justify;
+	direction?: Direction;
+	nullable?: boolean;
 	visibleKey?: boolean;
 	visibleDown?: boolean;
 	disabled?: boolean;
+	addStyle?: string;
 }
 
 const SelectExt = ({
@@ -37,61 +34,18 @@ const SelectExt = ({
 	error = false,
 	justify = 'start',
 	direction = 'auto',
+	nullable = false,
 	visibleKey = true,
 	visibleDown = true,
 	disabled = false,
+	addStyle = '',
 	className,
 }: SelectExtProps) => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
+	const { toggle, isOpen, setIsOpen, openUpwards, wrapperRef, buttonRef } = useSelect(direction);
 	const selectedOption = options.find((opt) => opt.value === value);
-	const buttonRef = useRef<HTMLButtonElement>(null);
-	const wrapperRef = useRef<HTMLDivElement>(null);
-	const [openUpwards, setOpenUpwards] = useState<boolean>(false);
-
-	const handleOpen = () => {
-		if (isOpen) {
-			setIsOpen(false);
-			return;
-		}
-
-		if (direction === 'up') {
-			setOpenUpwards(true);
-			setIsOpen(true);
-			return;
-		}
-
-		if (direction === 'down') {
-			setOpenUpwards(false);
-			setIsOpen(true);
-			return;
-		}
-
-		if (!buttonRef.current) return;
-
-		const rect = buttonRef.current.getBoundingClientRect();
-		const spaceBelow = window.innerHeight - rect.bottom;
-		const spaceAbove = rect.top;
-
-		setOpenUpwards(spaceBelow < 200 && spaceAbove > spaceBelow);
-		setIsOpen(true);
-	};
+	const isEmbedded = variant === 'embedded';
 
 	const styles = getComponentStyles({ variant, size, error, disabled: disabled, component: 'selectExt' });
-
-	const justifies = {
-		start: 'justify-start',
-		center: 'justify-center',
-		end: 'justify-end',
-	};
-
-	useEffect(() => {
-		const handleClickOutside = (event: MouseEvent) => {
-			if (wrapperRef.current && !wrapperRef.current.contains(event.target as Node)) setIsOpen(false);
-		};
-
-		document.addEventListener('mousedown', handleClickOutside);
-		return () => document.removeEventListener('mousedown', handleClickOutside);
-	}, []);
 
 	return (
 		<div ref={wrapperRef} className="relative flex size-full">
@@ -99,10 +53,15 @@ const SelectExt = ({
 				ref={buttonRef}
 				aria-expanded={isOpen}
 				aria-haspopup="listbox"
-				className={cn(styles, className)}
+				className={cn(
+					styles,
+					className,
+					isOpen && isEmbedded && 'border border-solid border-[var(--accent-default)] transition-none',
+					isOpen && (openUpwards ? isEmbedded && 'rounded-t-none' : isEmbedded && 'rounded-b-none')
+				)}
 				disabled={disabled}
 				type="button"
-				onClick={handleOpen}
+				onClick={toggle}
 			>
 				{selectedOption?.icon && (
 					<img
@@ -115,8 +74,9 @@ const SelectExt = ({
 				<span
 					className={cn(
 						'w-full text-center',
-						visibleDown && 'pr-6',
-						!selectedOption && 'text-muted-foreground'
+						visibleDown && 'pr-2',
+						!selectedOption && 'text-[var(--color-primary)]',
+						isOpen && 'text-[var(--accent-hover)]'
 					)}
 				>
 					{selectedOption?.label ?? placeholder}
@@ -128,59 +88,18 @@ const SelectExt = ({
 				)}
 			</button>
 			{isOpen && !disabled && (
-				<ul
-					className={cn(
-						'core-elements hide-scrollbar absolute right-0 z-30 max-h-52 w-full min-w-max overflow-y-auto rounded-xl border border-solid border-[var(--color-secondary)] text-center',
-						openUpwards ? 'bottom-full' : 'top-full'
-					)}
-					role="listbox"
-					tabIndex={-1}
-				>
-					<li
-						aria-selected={value === ''}
-						className={cn(
-							'flex w-full cursor-pointer items-center gap-2 p-2 text-sm whitespace-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
-							justifies[justify],
-							value === '' && 'text-[var(--accent-hover)]'
-						)}
-						role="option"
-						onClick={() => {
-							onChange('');
-							setIsOpen(false);
-						}}
-					>
-						<span className="text-muted-foreground font-bold">Отменить выбор</span>
-					</li>
-
-					{options.map((opt) => (
-						<li
-							key={opt.value}
-							aria-selected={opt.value === value}
-							className={cn(
-								'flex w-full cursor-pointer items-center gap-2 p-2 text-sm whitespace-nowrap hover:bg-[var(--accent-hover)] hover:text-[var(--color-primary)]',
-								justifies[justify],
-								opt.value === value && 'text-[var(--accent-hover)]'
-							)}
-							role="option"
-							onClick={() => {
-								if (opt.disabled) return;
-								onChange(opt.value);
-								setIsOpen(false);
-							}}
-						>
-							{opt.icon && (
-								<img
-									alt=""
-									className="no-touch-callout size-6 rounded-lg"
-									src={opt.icon}
-									onContextMenu={(e) => e.preventDefault()}
-								/>
-							)}
-							<span className="font-bold">{opt.label}</span>
-							{visibleKey && <span>{opt.key}</span>}
-						</li>
-					))}
-				</ul>
+				<SelectList
+					variant={variant}
+					addStyle={addStyle}
+					value={value}
+					options={options}
+					justify={justify}
+					openUpwards={openUpwards}
+					onChange={onChange}
+					setIsOpen={setIsOpen}
+					nullable={nullable}
+					visibleKey={visibleKey}
+				/>
 			)}
 		</div>
 	);

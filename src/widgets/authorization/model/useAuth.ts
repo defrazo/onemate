@@ -72,8 +72,8 @@ export const useAuth = () => {
 	};
 
 	const handleDemo = async () => {
-		const login = 'demo1@example.com';
-		const password = '123456Om';
+		const login = 'demo@example.com';
+		const password = '12345678';
 
 		setIsLoading(true);
 		try {

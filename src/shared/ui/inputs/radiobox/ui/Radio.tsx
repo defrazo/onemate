@@ -59,7 +59,9 @@ const Radio = ({
 							onChange={onChange}
 							{...props}
 						/>
-						<span className={cn(styles, 'flex w-fit items-center group-hover:text-[var(--accent-hover)]')}>
+						<span
+							className={cn(styles, 'flex w-fit items-center group-hover:text-[var(--accent-default)]')}
+						>
 							{option.label}
 						</span>
 					</label>

@@ -67,11 +67,12 @@ export const CurrencyBlock = observer(
 				<div className="shrink">
 					<SelectExt
 						className="w-30 rounded-none border-l-1 border-[var(--border-color)]"
+						addStyle="-mr-2 my-2"
 						direction="up"
 						options={options}
 						placeholder="Выберите валюту"
 						value={currency}
-						variant="mobile"
+						variant="detached"
 						onChange={(value) => onChangeCurrency(value)}
 					/>
 				</div>

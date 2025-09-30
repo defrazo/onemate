@@ -6,8 +6,9 @@ import IconDesktop from './desktop.svg?react';
 import IconPhone from './phone.svg?react';
 import IconEmail from './email.svg?react';
 import IconPass from './password.svg?react';
+import IconDemo from './user.svg?react';
 
-export { IconArrows, IconDots, IconLocation, IconScroll, IconPhone, IconDesktop, IconEmail, IconPass };
+export { IconArrows, IconDemo, IconDots, IconLocation, IconScroll, IconPhone, IconDesktop, IconEmail, IconPass };
 export * from './indicators';
 export * from './social';
 export * from './status';

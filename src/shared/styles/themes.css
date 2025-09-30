@@ -5,9 +5,9 @@
 	--color-disabled: #666666;
 
 	/* Акцентные цвета */
-	--accent-default: #c5622d;
-	--accent-hover: #d1681c;
-	--accent-active: #8a3f1f;
+	--accent-default: #f77e0d;
+	--accent-hover: #e15300;
+	--accent-active: #7d6fe4;
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
@@ -41,9 +41,9 @@
 	--color-disabled: #666666;
 
 	/* Акцентные цвета */
-	--accent-default: #c5622d;
-	--accent-hover: #d1681c;
-	--accent-active: #8a3f1f;
+	--accent-default: #f77e0d;
+	--accent-hover: #e15300;
+	--accent-active: #7d6fe4;
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
