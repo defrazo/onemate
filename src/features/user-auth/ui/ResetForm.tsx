@@ -56,6 +56,8 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 						leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
 						placeholder="Пароль"
 						required
+						name="password"
+						autoComplete="new-password"
 						rightIcon={passwordToggleIcon}
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
@@ -78,9 +80,11 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 					placeholder="Подтвердите пароль"
 					required
 					rightIcon={passwordToggleIcon}
+					autoComplete="new-password"
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}
 					variant="ghost"
+					name="password-confirm"
 					onBlur={(e) => store.update('passwordConfirm', e.target.value.trim())}
 					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {

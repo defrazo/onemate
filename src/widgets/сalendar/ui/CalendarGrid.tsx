@@ -42,7 +42,7 @@ export const CalendarGrid = ({ currentDate, range, handleDayClick }: CalendarGri
 							<Button
 								key={idx}
 								className={cn(
-									'aspect-square rounded-full border border-solid border-transparent p-1 font-mono leading-4',
+									'aspect-square size-6 rounded-full border border-solid border-transparent p-1 font-mono leading-4',
 									today && 'border-[var(--accent-default)]',
 									start && isSameDay(date, start) && 'border-[var(--accent-active)]',
 									end && isSameDay(date, end) && 'border-[var(--accent-active)]',

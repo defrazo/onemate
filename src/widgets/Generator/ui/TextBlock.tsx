@@ -44,6 +44,7 @@ export const TextBlock = ({
 				className="core-border text-center leading-4"
 				disabled={!genStore.svgWithText}
 				size="sm"
+				name={`${label}`}
 				type="text"
 				value={textValue}
 				onChange={onTextChange}

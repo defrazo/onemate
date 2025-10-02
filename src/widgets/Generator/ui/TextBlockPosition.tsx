@@ -14,7 +14,7 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 	return (
 		<div className="flex flex-col gap-1">
 			<div className="flex items-center justify-between">
-				<label className="select-none">Позиция:</label>
+				<span className="select-none">Позиция:</span>
 				<span
 					className={`text-xs ${!genStore.svgWithText ? 'text-[var(--color-disabled)] opacity-30' : 'text-[var(--color-secondary)]'}`}
 				>
@@ -22,7 +22,7 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 				</span>
 			</div>
 			<div className="flex items-center gap-2">
-				<label className="whitespace-nowrap select-none">По X:</label>
+				<span className="whitespace-nowrap select-none">По X:</span>
 				<Input
 					className="accent-[var(--accent-default)]"
 					disabled={!genStore.svgWithText}
@@ -35,7 +35,7 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 				/>
 			</div>
 			<div className="flex items-center gap-2">
-				<label className="whitespace-nowrap select-none">По Y:</label>
+				<span className="whitespace-nowrap select-none">По Y:</span>
 				<Input
 					disabled={!genStore.svgWithText}
 					max={maxY}

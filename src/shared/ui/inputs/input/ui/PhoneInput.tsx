@@ -12,9 +12,10 @@ interface PhoneInputProps {
 	value: string;
 	onChange: (value: string) => void;
 	className?: string;
+	name: string;
 }
 
-export const PhoneInput = ({ value, onChange, className }: PhoneInputProps) => {
+export const PhoneInput = ({ value, onChange, className, name }: PhoneInputProps) => {
 	const handleChange = (e: InputChangeEvent) => {
 		const isErase = e.nativeEvent.inputType === 'deleteContentBackward';
 		const formatted = formatPhone(e.target.value, isErase);
@@ -27,6 +28,7 @@ export const PhoneInput = ({ value, onChange, className }: PhoneInputProps) => {
 	return (
 		<Input
 			className={className}
+			name={name}
 			placeholder="+7"
 			value={value}
 			variant="ghost"

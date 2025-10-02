@@ -17,10 +17,10 @@ export const AvatarPicker = () => {
 	};
 
 	return (
-		<div className="flex flex-col rounded-xl px-2 pb-2 md:p-0">
+		<div className="flex flex-col rounded-xl pb-2 md:pb-0">
 			<h1 className="core-header">Выберите аватар</h1>
 			<Divider margY="sm" />
-			<div className="grid grid-cols-4 gap-2 px-2 pb-2 md:w-lg md:p-0">
+			<div className="grid grid-cols-4 gap-2 pb-2 md:w-lg md:pb-0">
 				{AVATAR_OPTIONS.map((src, idx) => (
 					<img
 						key={src}

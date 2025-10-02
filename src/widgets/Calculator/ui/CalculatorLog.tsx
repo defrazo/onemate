@@ -39,6 +39,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 							)}
 							placeholder={isVisible ? 'Журнала еще нет' : ''}
 							readOnly
+							name="calc-log"
 							size="custom"
 							value={isVisible ? renderResult(result) : ''}
 							variant="custom"

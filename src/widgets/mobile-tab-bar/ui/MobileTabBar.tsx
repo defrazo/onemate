@@ -51,7 +51,7 @@ const MobileTabBar = () => {
 
 	return (
 		<div
-			className="sticky z-50 flex h-12 w-full items-center justify-around border-t border-solid border-[var(--border-alt)] bg-[var(--bg-tertiary)] shadow transition-all duration-300"
+			className="fixed inset-x-0 z-40 flex h-12 w-full items-center justify-around border-t border-solid border-[var(--border-alt)] bg-[var(--bg-tertiary)] shadow transition-all duration-300"
 			style={{ bottom: 0, transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
 		>
 			<NavigationLinks

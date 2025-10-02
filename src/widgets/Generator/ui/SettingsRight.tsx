@@ -78,7 +78,7 @@ export const SettingsRight = observer(() => {
 			</div>
 			<div className="core-border flex flex-col gap-1 p-2">
 				<div className="flex items-center justify-between">
-					<label className="select-none">Итоговая сетка:</label>
+					<span className="select-none">Итоговая сетка:</span>
 					<span
 						className={`${!genStore.svgWithText ? 'text-[var(--color-disabled)] opacity-30' : 'text-[var(--color-secondary)]'}`}
 					>

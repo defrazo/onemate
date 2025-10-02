@@ -18,7 +18,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 	return (
 		<>
 			<div
-				className="fixed inset-0 z-40 bg-[var(--bg-overlay)]"
+				className="fixed inset-0 z-50 bg-[var(--bg-overlay)]"
 				onClick={(e) => {
 					if (e.target === e.currentTarget) onClose();
 				}}
@@ -38,12 +38,12 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				<div {...bind()} style={{ touchAction: 'none' }}>
 					<DragHandle getLineClass={getLineClass} />
 				</div>
-				<div className="absolute top-[34px] flex w-full justify-between px-2">
-					{onBack && (
-						<IconBack className="size-5 cursor-pointer hover:text-[var(--accent-hover)]" onClick={onBack} />
-					)}
-				</div>
-				<div {...bind()} style={{ touchAction: 'pan-y' }}>
+				{onBack && (
+					<div className="absolute top-[34px] w-1/4 pl-2" onClick={onBack}>
+						<IconBack className="size-5 cursor-pointer hover:text-[var(--accent-hover)]" />
+					</div>
+				)}
+				<div className="px-2" {...bind()} style={{ touchAction: 'pan-y' }}>
 					{children}
 				</div>
 			</div>

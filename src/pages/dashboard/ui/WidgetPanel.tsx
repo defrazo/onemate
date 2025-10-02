@@ -17,7 +17,7 @@ interface WidgetPanel {
 export const WidgetPanel = ({ tabs, value, content, onChange, reverse, className }: WidgetPanel) => (
 	<div className={cn('core-base flex flex-col gap-2 rounded-xl p-2', reverse && 'flex-col-reverse', className)}>
 		<TabSlider
-			className="rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"
+			className="z-0 rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"
 			tabs={tabs}
 			value={value}
 			onChange={onChange}

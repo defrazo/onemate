@@ -34,6 +34,7 @@ export const CurrencyBlock = observer(
 						className="border-none text-right"
 						inputMode="decimal"
 						min="0"
+						name={`currency-${currency}`}
 						size="md"
 						type="number"
 						onFocus={() => {

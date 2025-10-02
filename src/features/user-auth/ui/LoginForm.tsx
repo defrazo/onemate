@@ -57,6 +57,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="Имя пользователя или e-mail"
 					required
+					name="login"
 					type="text"
 					value={store.login}
 					variant="ghost"
@@ -67,6 +68,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="Пароль"
 					required
+					name="password"
 					rightIcon={renderPasswordToggle({
 						show: showPassword,
 						toggle: () => setShowPassword((p) => !p),

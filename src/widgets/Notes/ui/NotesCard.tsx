@@ -40,6 +40,7 @@ export const NotesCard = observer(({ id }: NotesCardProps) => {
 				<Textarea
 					className="hide-scrollbar h-full min-h-20 overscroll-contain pt-1 text-base"
 					resize="none"
+					name={`note-${id}`}
 					rows={1}
 					size="custom"
 					value={draft.text}

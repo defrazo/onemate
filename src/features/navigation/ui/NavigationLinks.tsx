@@ -20,6 +20,7 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 				.map(({ to, icon, label, onClick, order }) => {
 					const itemClass = cn(
 						'flex-col gap-0.5 lg:flex-row lg:gap-2 mt-1 lg:mt-0',
+						!isMobile && 'min-w-24 lg:px-0 ',
 						isMobile &&
 							order && {
 								'order-1': order === 1,

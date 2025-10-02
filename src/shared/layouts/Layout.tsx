@@ -51,7 +51,7 @@ export const Layout = ({
 				</div>
 				{!showMobileTabBar && <Footer />}
 			</div>
-			{showMobileTabBar && <MobileTabBar />}
+			<div className="h-12">{showMobileTabBar && <MobileTabBar />}</div>
 		</div>
 	);
 };

@@ -25,7 +25,7 @@ const DemoBanner = () => {
 	return (
 		<div className="sticky top-0 z-100 bg-[var(--accent-default)] shadow">
 			<div className="relative flex items-center justify-center gap-2 py-3 text-[var(--color-primary)] select-none md:py-2">
-				<div className="mx-auto flex flex-col justify-center gap-0 text-xs leading-4 md:text-base">
+				<div className="mx-auto flex flex-col justify-center gap-0 text-xs leading-4 text-[var(--accent-text)] md:text-base">
 					{device !== 'mobile' ? (
 						<>
 							Вы используете демонстрационную версию без обработки персональных данных.

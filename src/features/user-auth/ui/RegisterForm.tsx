@@ -61,6 +61,8 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="Имя пользователя"
 					required
+					name="username"
+					autoComplete="username"
 					type="text"
 					value={store.username}
 					variant="ghost"
@@ -71,6 +73,8 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 					leftIcon={<IconEmail className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="E-mail"
 					required
+					autoComplete="email"
+					name="email"
 					type="email"
 					value={store.email}
 					variant="ghost"
@@ -82,6 +86,7 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 						leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
 						placeholder="Пароль"
 						required
+						name="password"
 						rightIcon={passwordToggleIcon}
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
@@ -103,6 +108,7 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
 					placeholder="Подтвердите пароль"
 					required
+					name="password-confirm"
 					rightIcon={passwordToggleIcon}
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}

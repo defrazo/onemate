@@ -64,7 +64,7 @@ export const SecureTab = observer(() => {
 	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 shadow-[var(--shadow)] md:p-4">
 			<h1 className="core-header">Безопасность</h1>
 			<div className="flex flex-col gap-2">
 				<h2 className="text-xl font-bold select-none">Пароль</h2>
@@ -73,6 +73,7 @@ export const SecureTab = observer(() => {
 				</p>
 				<div className="relative">
 					<Input
+						name="password"
 						placeholder="Новый пароль"
 						value={userStore.passwords[0]}
 						variant="ghost"
@@ -91,6 +92,7 @@ export const SecureTab = observer(() => {
 				</div>
 				<Input
 					placeholder="Подтвердите новый пароль"
+					name="password-confirm"
 					value={userStore.passwords[1]}
 					variant="ghost"
 					onBlur={(e) => userStore.setPasswords(1, e.target.value.trim())}

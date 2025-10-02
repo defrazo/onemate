@@ -17,14 +17,14 @@ const AboutPage = () => {
 					}}
 					className="absolute inset-0 -z-10"
 				/>
-				<h1 className="text-xl leading-tight font-bold text-balance md:text-4xl">
+				<h1 className="text-xl leading-tight font-bold text-balance text-[var(--accent-text)] md:text-4xl">
 					OneMate – ваш центр личной продуктивности
 				</h1>
-				<p className="max-w-3xl opacity-80">
+				<p className="max-w-3xl leading-snug text-[var(--accent-text)] opacity-80">
 					Управляйте временем, задачами и заметками в одном месте. Гибкие виджеты, чистый интерфейс и
 					отзывчивый дизайн помогают фокусироваться на важном и успевать больше без лишнего стресса.
 				</p>
-				<div className="flex items-center gap-2 rounded-full bg-[var(--bg-tertiary)] px-3 py-1 text-xs leading-tight md:text-sm">
+				<div className="mt-2 flex items-center gap-2 rounded-full bg-[var(--accent-text)] px-3 py-1 text-xs leading-tight text-[#39393a] md:text-sm">
 					<Rocket className="size-4 hover:animate-spin" />
 					<span>v1.1</span>
 					<span>•</span>
@@ -69,15 +69,15 @@ const AboutPage = () => {
 						className="absolute inset-0 -z-10"
 					/>
 					<div className="flex w-full flex-col items-center gap-2 p-6 md:flex-row md:justify-between md:p-10">
-						<div className="flex flex-col">
-							<div className="mb-1 text-base font-semibold">Есть идея или нашли баг?</div>
+						<div className="flex flex-col text-[var(--accent-text)]">
+							<div className="mb-1 text-xl font-semibold">Есть идея или нашли баг?</div>
 							<p className="text-justify text-sm opacity-80">
 								Пишите мне – ваши предложения и замечания помогают сделать OneMate лучше для всех.
 							</p>
 						</div>
 						<div className="flex items-center gap-2">
 							<a
-								className="inline-flex items-center gap-2 rounded-xl bg-[var(--bg-tertiary)] px-3 py-2 text-sm font-semibold transition-transform duration-500 hover:scale-[1.15]"
+								className="inline-flex items-center gap-2 rounded-xl bg-[var(--accent-text)] px-3 py-2 text-sm font-semibold text-[#39393a] transition-transform duration-500 hover:scale-[1.15]"
 								href="mailto:defrazo@inbox.ru"
 							>
 								<Mail className="size-4" />

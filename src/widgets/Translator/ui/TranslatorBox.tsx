@@ -31,6 +31,7 @@ export const TranslatorBox = observer(({ store, text, language, type, onChangeLa
 							className="hide-scrollbar h-full overflow-auto px-2 pt-10 text-base"
 							readOnly={!isSource}
 							size="custom"
+							name={`${type}-textbox`}
 							value={text}
 							variant="custom"
 							onChange={(e) => store.updateTextbox(0, 'text', e.target.value)}

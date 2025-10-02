@@ -35,7 +35,7 @@ export const PersonalTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 shadow-[var(--shadow)] select-none md:p-4">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
@@ -87,6 +87,7 @@ export const PersonalTab = observer(() => {
 							Никнейм
 						</label>
 						<Input
+							autoComplete="username"
 							id="username"
 							placeholder="Ваш никнейм"
 							value={store.username}
@@ -96,7 +97,7 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<label className="text-[var(--color-secondary)] opacity-70">Дата рождения</label>
+						<span className="text-[var(--color-secondary)] opacity-70">Дата рождения</span>
 						<div className="flex flex-col gap-2 md:flex-row">
 							<SelectExt
 								justify="center"
@@ -136,7 +137,7 @@ export const PersonalTab = observer(() => {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<label className="text-[var(--color-secondary)] opacity-70">Пол</label>
+						<span className="text-[var(--color-secondary)] opacity-70">Пол</span>
 						<Radio
 							className="flex-col gap-4 md:flex-row"
 							name="gender"

@@ -70,6 +70,8 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 					readOnly={isBlocked}
 					required
 					type="email"
+					autoComplete="email"
+					name="email"
 					value={store.email}
 					variant="ghost"
 					onBlur={(e) => store.update('email', e.target.value.trim())}

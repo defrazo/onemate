@@ -5,8 +5,8 @@
 	--color-disabled: #666666;
 
 	/* Акцентные цвета */
-	--accent-default: #f77e0d;
-	--accent-default-op: #f77e0d80;
+	--accent-default: #e18127;
+	--accent-default-op: #e1812780;
 	--accent-hover: #e15300;
 	--accent-hover-op: #e1530080;
 	--accent-active: #7d6fe4;
@@ -23,10 +23,10 @@
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
 	/* Статусные цвета */
-	--status-success: #0b5f30;
-	--status-error: #d33131;
-	--status-warning: #f9a825;
-	--status-info: #0288d1;
+	--status-success: #2a8d30;
+	--status-error: #ff2828;
+	--status-warning: #ffa515;
+	--status-info: #2c90c7;
 
 	/* Разделители и бордеры */
 	--border-color: #39393a;
@@ -63,10 +63,10 @@
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
 	/* Статусные цвета */
-	--status-success: #039140;
-	--status-error: #d33131;
-	--status-warning: #f9a825;
-	--status-info: #0288d1;
+	--status-success: #31ad3f;
+	--status-error: #ff2f2f;
+	--status-warning: #ffa509;
+	--status-info: #31b7ff;
 
 	/* Разделители и бордеры */
 	--border-color: #d4d7df;

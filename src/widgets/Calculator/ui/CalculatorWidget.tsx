@@ -17,6 +17,7 @@ const CalculatorWidget = () => {
 			<Input
 				className="pointer-events-none px-2 text-right text-2xl"
 				readOnly
+				name="calc-output"
 				tabIndex={-1}
 				type="text"
 				value={display}

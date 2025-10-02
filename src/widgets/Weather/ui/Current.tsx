@@ -26,7 +26,7 @@ export const Current = ({ current }: CurrentProps) => {
 				<div className="flex flex-1 flex-col px-1">
 					<div className="flex h-full flex-col items-center justify-center">
 						<ConditionIcon
-							className="-mb-2 size-25"
+							className="-my-2 size-25"
 							condition={weather[0].icon as ConditionCode}
 							description={weather[0].description}
 						/>

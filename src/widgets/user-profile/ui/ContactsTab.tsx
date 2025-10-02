@@ -38,7 +38,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 shadow-[var(--shadow)] select-none md:p-4">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -53,6 +53,7 @@ export const ContactsTab = observer(() => {
 								<PhoneInput
 									className={cn(!canRemove && 'mr-8')}
 									value={phone}
+									name={`phone-${idx}`}
 									onChange={(value: string) => store.updateArrayField('phone', idx, value)}
 								/>
 								{canRemove && (
@@ -81,6 +82,7 @@ export const ContactsTab = observer(() => {
 							id="mainEmail"
 							error={!store.mainEmail}
 							placeholder="Введите e-mail"
+							name="email-main"
 							rightIcon={
 								!store.mainEmail && (
 									<IconWarning className="mr-1.5 size-5 animate-pulse text-[var(--status-error)]" />
@@ -103,7 +105,7 @@ export const ContactsTab = observer(() => {
 					</div>
 				</div>
 				<div className="flex w-full flex-col gap-1">
-					<label className="text-[var(--color-secondary)] opacity-70">Резервная почта</label>
+					<span className="text-[var(--color-secondary)] opacity-70">Резервная почта</span>
 					<div className="flex w-full flex-col gap-2">
 						{store.email.map((email, idx) => {
 							const isLast = idx === store.email.length - 1;
@@ -117,6 +119,7 @@ export const ContactsTab = observer(() => {
 										className={cn(isLast && 'mr-8')}
 										placeholder="Введите e-mail"
 										value={email}
+										name={`email-${idx}`}
 										variant="ghost"
 										onBlur={(e) => store.updateArrayField('email', idx, e.target.value.trim())}
 										onChange={(e) => store.updateArrayField('email', idx, e.target.value)}
