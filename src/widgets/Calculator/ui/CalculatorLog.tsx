@@ -21,7 +21,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 		<>
 			{device === 'mobile' || device === 'tablet' || ortientation === 'portrait' ? (
 				<Textarea
-					className="hide-scrollbar h-full max-h-[12dvh] min-h-22 border border-solid border-[var(--border-color)] text-right"
+					className="hide-scrollbar core-border h-full max-h-[12dvh] min-h-22 text-right"
 					placeholder="Журнала еще нет"
 					readOnly
 					value={renderResult(result)}
@@ -47,7 +47,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 							centerIcon={
 								isVisible ? <IconForward className="size-4" /> : <IconBack className="size-4" />
 							}
-							className="absolute right-0 h-full cursor-pointer select-none hover:text-[var(--accent-hover)]"
+							className="absolute right-0 h-full cursor-pointer text-[var(--accent-default)] select-none hover:text-[var(--accent-hover)]"
 							size="custom"
 							title={isVisible ? 'Свернуть журнал' : 'Развернуть журнал'}
 							variant="mobile"

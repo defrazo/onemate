@@ -116,7 +116,7 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 				/>
 				<Tooltip className="mt-4 w-full" content="Регистрация временно приостановлена">
 					<Button
-						className="h-10 w-full"
+						className="core-elements h-10 w-full"
 						disabled={!isPasswordValid}
 						loading={isLoading}
 						onClick={() => notifyStore.setNotice('Регистрация временно приостановлена', 'info')}

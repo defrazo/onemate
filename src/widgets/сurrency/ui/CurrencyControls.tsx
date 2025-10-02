@@ -14,7 +14,7 @@ export const CurrencyControls = observer(({ store }: CurrencyControlsProps) => {
 	return (
 		<div className="flex flex-col">
 			<Button
-				className="ml-auto bg-transparent text-xs text-[var(--color-disabled)] hover:text-[var(--accent-hover)] xl:text-sm"
+				className="ml-auto bg-transparent text-xs text-[var(--color-disabled)] hover:text-[var(--status-error)] xl:text-sm"
 				disabled={store.isDefault}
 				size="custom"
 				variant="custom"
@@ -32,7 +32,8 @@ export const CurrencyControls = observer(({ store }: CurrencyControlsProps) => {
 				/>
 				<Button
 					centerIcon={<IconArrows className="size-4" />}
-					className="core-elements absolute top-1/2 left-4 -mt-4 size-8 rounded-full"
+					className="absolute top-1/2 left-4 -mt-4 size-8 rounded-full"
+					variant="accent"
 					title="Поменять местами валюты"
 					onClick={() => store.swapCurrencies()}
 				/>

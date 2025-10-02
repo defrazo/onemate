@@ -48,9 +48,15 @@ const Button = ({
 	};
 
 	return (
-		<button className={cn(styles, className)} disabled={isDisabled} type="button" onClick={handleClick} {...props}>
+		<button
+			className={cn(styles, className, 'group')}
+			disabled={isDisabled}
+			type="button"
+			onClick={handleClick}
+			{...props}
+		>
 			{loading ? (
-				<Preloader className="size-6 border-3 border-t-[var(--color-secondary)]" />
+				<Preloader className="size-6 border-3 border-t-[var(--border-alt)]" />
 			) : (
 				<>
 					{leftIcon && <span className="mr-2">{leftIcon}</span>}

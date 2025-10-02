@@ -22,7 +22,7 @@ const DeviceActivityOverview = () => {
 	return (
 		<div className="flex w-full flex-col gap-4 text-sm lg:flex-row">
 			<div className="flex flex-col">
-				<h3 className="opacity-60">Текущее устройство:</h3>
+				<h3 className="text-[var(--color-secondary)] opacity-70">Текущее устройство:</h3>
 				<div className="flex h-full items-center gap-2">
 					{store.isMobile ? (
 						<IconPhone className="size-30 text-[var(--color-disabled)]" />
@@ -47,9 +47,9 @@ const DeviceActivityOverview = () => {
 			<div className="h-px w-full bg-[var(--border-color)] md:h-auto md:w-px md:self-stretch" />
 			<div className="flex max-h-[10rem] flex-1 flex-col">
 				<div className="mb-1 flex items-center justify-between gap-2">
-					<h3 className="opacity-60">История активности:</h3>
+					<h3 className="text-[var(--color-secondary)] opacity-70">История активности:</h3>
 					<Button
-						className="py-0.5 text-sm text-[var(--color-disabled)] hover:text-[var(--accent-hover)]"
+						className="py-0.5 text-sm text-[var(--color-secondary)] opacity-70 hover:text-[var(--status-error)]"
 						disabled={store.activityLog.length === 0}
 						size="custom"
 						variant="custom"

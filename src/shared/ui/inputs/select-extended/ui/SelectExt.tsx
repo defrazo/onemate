@@ -56,7 +56,7 @@ const SelectExt = ({
 				className={cn(
 					styles,
 					className,
-					isOpen && isEmbedded && 'border border-solid border-[var(--accent-default)] transition-none',
+					isOpen && isEmbedded && 'border border-solid border-[var(--accent-default-op)] transition-none',
 					isOpen && (openUpwards ? isEmbedded && 'rounded-t-none' : isEmbedded && 'rounded-b-none')
 				)}
 				disabled={disabled}

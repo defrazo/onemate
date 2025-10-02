@@ -13,7 +13,7 @@ const HomePage = () => {
 				<h1 className="text-center text-[40px] leading-tight font-medium md:text-8xl">
 					Work Smarter <br /> Not Harder
 				</h1>
-				<div className="hidden w-xl md:block">
+				<div className="hidden w-xl lg:block">
 					<Slider slides={slides} />
 				</div>
 			</div>

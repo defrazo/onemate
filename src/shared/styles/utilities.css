@@ -8,11 +8,15 @@
 	}
 
 	.core-elements {
-		@apply bg-[var(--bg-tertiary)];
+		@apply border border-solid border-[var(--border-light)] bg-[var(--bg-tertiary)];
 	}
 
 	.core-border {
 		@apply rounded-xl border border-solid border-[var(--border-color)];
+	}
+
+	.core-semiborder {
+		@apply rounded-xl border border-solid border-[var(--border-color-op)];
 	}
 
 	.core-header {

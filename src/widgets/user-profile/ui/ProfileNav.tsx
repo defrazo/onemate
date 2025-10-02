@@ -24,27 +24,28 @@ export const ProfileNav = observer(() => {
 	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
-		<div className="flex w-full flex-col gap-4 select-none">
+		<div className="core-card core-base flex h-fit w-full flex-col gap-4 shadow-[var(--shadow)] select-none">
 			{!profileStore.isReady ? (
 				<div className="flex min-h-[19.625rem] items-center justify-center">
 					<Preloader className="size-25" />
 				</div>
 			) : (
-				<div className="core-elements flex flex-col items-center gap-4 rounded-xl p-4">
+				<div className="flex flex-col items-center gap-4">
 					<UserAvatar />
-					<Divider className="w-full bg-[var(--color-secondary)]" />
-					<div className="flex cursor-default flex-col items-center justify-center">
+					<div className="flex cursor-default flex-col items-center justify-center gap-2 leading-4">
 						<div>{userStore.username}</div>
 						<div>{userStore.email}</div>
 					</div>
 				</div>
 			)}
+			<Divider className="w-full bg-[var(--border-color)]" />
 			<div className="flex flex-col gap-2">
 				{buttons.map((item) => {
 					return (
 						<Button
 							key={item.id}
 							className={cn(
+								'core-border',
 								currentTab === item.id && 'bg-[var(--accent-default)] text-[var(--accent-text)]'
 							)}
 							onClick={() => navigate(`/account/profile?tab=${item.id}`)}

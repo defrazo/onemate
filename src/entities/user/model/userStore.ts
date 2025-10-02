@@ -38,6 +38,10 @@ export class UserStore implements IBaseUserPort, IUserAccountPort, IUserAuthPort
 		this.passwords[index] = value;
 	}
 
+	clearPasswords(): void {
+		this.passwords = ['', ''];
+	}
+
 	async getSession(): Promise<User> {
 		const session = await userService.getSession();
 		if (!session) throw new Error('Произошла ошибка при загрузке сессии');
@@ -114,10 +118,6 @@ export class UserStore implements IBaseUserPort, IUserAccountPort, IUserAuthPort
 			delete cached.demo;
 			Object.keys(cached).length === 0 ? storage.remove(LS_CACHE_UI) : storage.set(LS_CACHE_UI, cached);
 		}
-	}
-
-	private clearPasswords(): void {
-		this.passwords = ['', ''];
 	}
 
 	private clearUser(): void {

@@ -16,7 +16,7 @@ import { useProfile } from '../model';
 
 export const PersonalTab = observer(() => {
 	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
-	const { device, navigate } = useProfile();
+	const { device } = useProfile();
 	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
@@ -35,7 +35,7 @@ export const PersonalTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] select-none md:p-4">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
@@ -47,7 +47,7 @@ export const PersonalTab = observer(() => {
 						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
 					/>
 					<Button
-						className="w-full"
+						className="core-elements w-full"
 						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
 					>
 						Изменить
@@ -55,21 +55,25 @@ export const PersonalTab = observer(() => {
 				</div>
 				<div className="flex w-full flex-col justify-center gap-4">
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Имя</h3>
-						<div className="flex gap-2">
-							<Input
-								autoComplete="new-password"
-								placeholder="Ваше имя"
-								value={store.firstName}
-								variant="ghost"
-								onBlur={(e) => store.updateField('first_name', e.target.value.trim())}
-								onChange={(e) => store.updateField('first_name', e.target.value)}
-							/>
-						</div>
+						<label htmlFor="firstName" className="text-[var(--color-secondary)] opacity-70">
+							Имя
+						</label>
+						<Input
+							id="firstName"
+							autoComplete="new-password"
+							placeholder="Ваше имя"
+							value={store.firstName}
+							variant="ghost"
+							onBlur={(e) => store.updateField('first_name', e.target.value.trim())}
+							onChange={(e) => store.updateField('first_name', e.target.value)}
+						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Фамилия</h3>
+						<label htmlFor="lastName" className="text-[var(--color-secondary)] opacity-70">
+							Фамилия
+						</label>
 						<Input
+							id="lastName"
 							autoComplete="new-password"
 							placeholder="Ваша фамилия"
 							value={store.lastName}
@@ -79,8 +83,11 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Никнейм</h3>
+						<label htmlFor="username" className="text-[var(--color-secondary)] opacity-70">
+							Никнейм
+						</label>
 						<Input
+							id="username"
 							placeholder="Ваш никнейм"
 							value={store.username}
 							variant="ghost"
@@ -89,7 +96,7 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Дата рождения</h3>
+						<label className="text-[var(--color-secondary)] opacity-70">Дата рождения</label>
 						<div className="flex flex-col gap-2 md:flex-row">
 							<SelectExt
 								justify="center"
@@ -129,7 +136,7 @@ export const PersonalTab = observer(() => {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Пол:</h3>
+						<label className="text-[var(--color-secondary)] opacity-70">Пол</label>
 						<Radio
 							className="flex-col gap-4 md:flex-row"
 							name="gender"
@@ -139,9 +146,11 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<h3 className="opacity-60">Город</h3>
+						<label htmlFor="location" className="text-[var(--color-secondary)] opacity-70">
+							Город
+						</label>
 						<div className="flex gap-2">
-							<LocationSearch />
+							<LocationSearch id="location" />
 							<Button
 								centerIcon={<IconTrash className="size-6" />}
 								className="hover:text-[var(--status-error)]"
@@ -166,12 +175,12 @@ export const PersonalTab = observer(() => {
 							Сохранить
 						</Button>
 						<Button
-							className="rounded-xl hover:bg-[var(--status-error)]"
-							variant="custom"
+							disabled={device !== 'mobile' && !store.isDirty}
+							variant="warning"
 							onClick={() =>
 								device === 'mobile'
 									? modalStore.setModal(<MobileUserMenu />, 'sheet')
-									: navigate('/account/profile?tab=overview')
+									: store.loadDraft()
 							}
 						>
 							Отменить

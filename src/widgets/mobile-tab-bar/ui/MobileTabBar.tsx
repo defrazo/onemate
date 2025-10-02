@@ -9,6 +9,7 @@ const MobileTabBar = () => {
 	const { userStore } = useStore();
 
 	const location = useLocation();
+	const pathes = ['/', '/terms-of-service', '/privacy-policy', '/about'];
 
 	const [hidden, setHidden] = useState<boolean>(false);
 	const lastScroll = useRef(0);
@@ -16,18 +17,28 @@ const MobileTabBar = () => {
 
 	useEffect(() => {
 		const handleScroll = () => {
-			if (location.pathname === '/') {
+			if (!pathes.includes(location.pathname)) {
 				setHidden(false);
 				return;
 			}
 
 			const currentScroll = window.scrollY;
+			const documentHeight = document.documentElement.scrollHeight;
+			const windowHeight = window.innerHeight;
+
+			const isAtBottom = currentScroll + windowHeight >= documentHeight - 10;
+
+			if (isAtBottom) {
+				setHidden(false);
+				lastScroll.current = currentScroll;
+				return;
+			}
 
 			if (currentScroll > lastScroll.current + 5) setHidden(true);
 			else if (currentScroll < lastScroll.current - 5) setHidden(false);
 
 			if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
-			scrollTimeout.current = window.setTimeout(() => (lastScroll.current = currentScroll), 100);
+			scrollTimeout.current = window.setTimeout(() => (lastScroll.current = currentScroll), 50);
 		};
 
 		window.addEventListener('scroll', handleScroll, { passive: true });
@@ -36,12 +47,12 @@ const MobileTabBar = () => {
 			window.removeEventListener('scroll', handleScroll);
 			if (scrollTimeout.current) clearTimeout(scrollTimeout.current);
 		};
-	}, []);
+	}, [location.pathname]);
 
 	return (
 		<div
-			className="core-elements fixed left-0 z-50 flex h-12 w-full items-center justify-around border-t border-solid border-[var(--color-disabled)] shadow transition-all duration-300"
-			style={{ bottom: hidden ? '-48px' : '0px' }}
+			className="sticky z-50 flex h-12 w-full items-center justify-around border-t border-solid border-[var(--border-alt)] bg-[var(--bg-tertiary)] shadow transition-all duration-300"
+			style={{ bottom: 0, transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
 		>
 			<NavigationLinks
 				className="no-touch-callout flex h-full w-full items-center justify-around"

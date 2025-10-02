@@ -29,26 +29,29 @@ export const Layout = ({
 	const showMobileTabBar = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 
 	return (
-		<div className="mx-auto flex min-h-screen w-full flex-col px-4 py-4 text-sm xl:min-h-full xl:max-w-[1600px] xl:text-base">
-			<Header />
-			<div
-				className={cn(
-					'grid flex-1 gap-4 pt-4 lg:py-4',
-					left && right
-						? 'grid-cols-[250px_1fr_250px]'
-						: left
-							? 'grid-cols-[250px_1fr]'
-							: right
-								? 'grid-cols-[1fr_250px]'
-								: '',
-					orientation === 'landscape' ? 'px-[25dvw] md:px-[10dvw] lg:px-0' : ''
-				)}
-			>
-				{left && <aside className="flex">{left}</aside>}
-				<main className="flex min-h-fit md:min-h-full">{children}</main>
-				{right && <aside className="flex">{right}</aside>}
+		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-[1600px] xl:text-base">
+			<div className="flex flex-1 flex-col px-4 pb-4">
+				<Header />
+				<div
+					className={cn(
+						'grid flex-1 gap-4 pt-4 md:pb-4',
+						left && right
+							? 'grid-cols-[250px_1fr_250px]'
+							: left
+								? 'grid-cols-[250px_1fr]'
+								: right
+									? 'grid-cols-[1fr_250px]'
+									: '',
+						orientation === 'landscape' ? 'px-[25dvw] md:px-[10dvw] lg:px-0' : ''
+					)}
+				>
+					{left && <aside className="flex">{left}</aside>}
+					<main className="flex flex-1">{children}</main>
+					{right && <aside className="flex">{right}</aside>}
+				</div>
+				{!showMobileTabBar && <Footer />}
 			</div>
-			{showMobileTabBar ? <MobileTabBar /> : <Footer />}
+			{showMobileTabBar && <MobileTabBar />}
 		</div>
 	);
 };

@@ -93,14 +93,14 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 				>
 					Забыли пароль?
 				</Button>
-				<Button className="mt-4 h-10 w-full" loading={isLoading} type="submit">
+				<Button className="core-elements mt-4 h-10 w-full" loading={isLoading} type="submit">
 					Войти
 				</Button>
 			</form>
 			<p className="select-none">
 				Нет аккаунта?{' '}
 				<a
-					className="cursor-pointer text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
+					className="cursor-pointer font-semibold text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
 					onClick={() => {
 						store.update('authType', 'register');
 						modalStore.setBack(() => {

@@ -12,12 +12,21 @@ interface CalendarNavProps {
 export const CalendarNav = ({ currentDate, handleNext, handlePrev }: CalendarNavProps) => {
 	return (
 		<div className="flex items-center justify-center">
-			<Button centerIcon={<IconBack className="size-4" />} size="custom" variant="custom" onClick={handlePrev} />
+			<Button
+				centerIcon={
+					<IconBack className="size-4 text-[var(--accent-default)] hover:text-[var(--accent-hover)]" />
+				}
+				size="custom"
+				variant="custom"
+				onClick={handlePrev}
+			/>
 			<div className="mx-4 cursor-default text-base font-semibold capitalize md:text-lg">
 				{formatMonthTitle(currentDate)}
 			</div>
 			<Button
-				centerIcon={<IconForward className="size-4" />}
+				centerIcon={
+					<IconForward className="size-4 text-[var(--accent-default)] hover:text-[var(--accent-hover)]" />
+				}
 				size="custom"
 				variant="custom"
 				onClick={handleNext}

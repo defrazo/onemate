@@ -75,7 +75,12 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 					onBlur={(e) => store.update('email', e.target.value.trim())}
 					onChange={(e) => store.update('email', e.target.value)}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={isBlocked} loading={isLoading} type="submit">
+				<Button
+					className="core-elements mt-4 h-10 w-full"
+					disabled={isBlocked}
+					loading={isLoading}
+					type="submit"
+				>
 					{isBlocked
 						? `Повторить через ${store.timer} сек.`
 						: !store.resetMode

@@ -13,12 +13,13 @@ export const Forecast = ({ forecast }: ForecastProps) => {
 			<div className="flex flex-1 py-4 xl:py-2">
 				{forecast.map((item, idx) => (
 					<div
+						key={item.date}
 						className={cn(
 							'flex flex-col justify-between',
 							idx !== forecast.length - 1 && 'border-r border-solid border-[var(--border-color)]'
 						)}
 					>
-						<div className="flex flex-col items-center justify-center gap-2 text-sm capitalize md:text-base">
+						<div className="flex flex-col items-center justify-center gap-1 text-sm capitalize md:text-base">
 							<div className="font-bold">{item.date}</div>
 							<div>{item.day}</div>
 						</div>

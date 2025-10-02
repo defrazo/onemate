@@ -18,7 +18,7 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 			onContextMenu={(e) => e.preventDefault()}
 		>
 			{isLoading ? (
-				<Preloader className="size-6 border-3 border-t-[var(--color-secondary)]" />
+				<Preloader className="size-6 border-3 border-t-[var(--border-alt)]" />
 			) : (
 				<img
 					alt={alt}

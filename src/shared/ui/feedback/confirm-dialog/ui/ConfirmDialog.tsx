@@ -24,10 +24,10 @@ const ConfirmDialog = ({
 				<p className="text-sm text-[var(--color-disabled)]">{description}</p>
 			</div>
 			<div className="flex w-full gap-2" onClick={() => onConfirm(true)}>
-				<Button className="w-full" type="submit">
+				<Button className="core-border w-full" type="submit">
 					{confirmLabel}
 				</Button>
-				<Button className="w-full" type="submit" onClick={() => onConfirm(false)}>
+				<Button className="core-border w-full" type="submit" onClick={() => onConfirm(false)}>
 					{cancelLabel}
 				</Button>
 			</div>

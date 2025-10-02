@@ -11,88 +11,103 @@ export const SettingsRight = observer(() => {
 	const { selectedFileName, setSelectedFileName, handleUpload } = useGenModel();
 
 	return (
-		<div className="core-base core-card top-4 hidden w-full flex-col gap-2 lg:flex">
+		<div className="core-base core-card top-4 hidden w-full flex-col gap-4 lg:flex">
 			<FileUploader accept=".svg" selectedFileName={selectedFileName} onUpload={handleUpload} />
 			<Divider />
 			{genStore.width > 0 && genStore.height > 0 && (
 				<>
-					<div className="core-border flex flex-col gap-2 p-2">
-						<div className="text-sm text-[var(--color-disabled)]">
-							<div>Размеры файла:</div>
-							<div>Ширина: {genStore.widthMm} мм</div>
-							<div>Высота: {genStore.heightMm} мм</div>
+					<div className="core-border flex flex-col gap-1.5 p-2">
+						<div className="self-center font-bold select-none">Размеры файла</div>
+						<div className="flex justify-between leading-4">
+							<div>Ширина:</div>
+							<div>{genStore.widthMm} мм</div>
+						</div>
+						<div className="flex justify-between">
+							<div>Высота:</div>
+							<div>{genStore.heightMm} мм</div>
 						</div>
 					</div>
-					<Divider />
 				</>
 			)}
 			<div className="core-border flex flex-col gap-1 p-2">
-				<label className="flex w-full flex-col gap-1">
-					<div className="flex items-center justify-between">
-						<span>Линия реза:</span>
-						<CheckboxBool
-							checked={genStore.isCutLine}
-							className="h-5 bg-transparent"
-							disabled={!genStore.svgWithText}
-							label=""
-							onChange={() => genStore.updateCutLine('visible', !genStore.isCutLine)}
-						/>
-					</div>
-					<div className="flex w-full items-center justify-between">
-						<span>Отступ:</span>
-						<Input
-							className="w-20 rounded-xl text-center"
-							disabled={!genStore.svgWithText}
-							justify="end"
-							min={0}
-							size="sm"
-							type="number"
-							value={genStore.padding}
-							onChange={(e) => genStore.updateCutLine('paddingMm', Number(e.target.value))}
-						/>
-					</div>
-					<div className="flex w-full items-center justify-between">
-						<span>Скругление:</span>
-						<Input
-							className="w-20 self-end rounded-xl text-center"
-							disabled={!genStore.svgWithText}
-							justify="end"
-							min={0}
-							size="sm"
-							type="number"
-							value={genStore.radius}
-							onChange={(e) => genStore.updateCutLine('radiusMm', Number(e.target.value))}
-						/>
-					</div>
-				</label>
-			</div>
-			<Divider />
-			<div className="core-border flex flex-col gap-1 p-2">
-				<label className="flex w-full flex-col gap-1">
-					<div className="flex justify-between">
-						<span>Итоговая сетка:</span>
-						<span className="text-[var(--color-disabled)]">
-							{genStore.cols} x {genStore.rows}
-						</span>
-					</div>
-					<div className="flex w-full items-center justify-between">
-						<span>Количество:</span>
-						<Input
-							className="w-20 self-end rounded-xl text-center"
-							disabled={!genStore.svgWithText}
-							justify="end"
-							min={1}
-							size="sm"
-							type="number"
-							value={genStore.count}
-							onChange={(e) => genStore.setCount(Number(e.target.value))}
-						/>
-					</div>
-				</label>
-				<label className="flex w-full items-center justify-between">
-					<span>Столбцы:</span>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="cutline">
+						Линия реза:
+					</label>
+					<CheckboxBool
+						id="cutline"
+						checked={genStore.isCutLine}
+						className="h-5 bg-transparent"
+						disabled={!genStore.svgWithText}
+						label=""
+						onChange={() => genStore.updateCutLine('visible', !genStore.isCutLine)}
+					/>
+				</div>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="padding">
+						Отступ:
+					</label>
 					<Input
-						className="w-20 self-end rounded-xl text-center"
+						id="padding"
+						className="core-border w-20 text-center leading-4"
+						disabled={!genStore.svgWithText}
+						justify="end"
+						min={0}
+						size="sm"
+						type="number"
+						value={genStore.padding}
+						onChange={(e) => genStore.updateCutLine('paddingMm', Number(e.target.value))}
+					/>
+				</div>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="rounded">
+						Cкругление:
+					</label>
+					<Input
+						id="rounded"
+						className="core-border w-20 text-center leading-4"
+						disabled={!genStore.svgWithText}
+						justify="end"
+						min={0}
+						size="sm"
+						type="number"
+						value={genStore.radius}
+						onChange={(e) => genStore.updateCutLine('radiusMm', Number(e.target.value))}
+					/>
+				</div>
+			</div>
+			<div className="core-border flex flex-col gap-1 p-2">
+				<div className="flex items-center justify-between">
+					<label className="select-none">Итоговая сетка:</label>
+					<span
+						className={`${!genStore.svgWithText ? 'text-[var(--color-disabled)] opacity-30' : 'text-[var(--color-secondary)]'}`}
+					>
+						{genStore.cols} x {genStore.rows}
+					</span>
+				</div>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="count">
+						Количество:
+					</label>
+					<Input
+						id="count"
+						className="core-border w-20 text-center leading-4"
+						disabled={!genStore.svgWithText}
+						justify="end"
+						min={1}
+						size="sm"
+						type="number"
+						value={genStore.count}
+						onChange={(e) => genStore.setCount(Number(e.target.value))}
+					/>
+				</div>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="cols">
+						Столбцы:
+					</label>
+					<Input
+						id="cols"
+						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
 						justify="end"
 						min={1}
@@ -101,11 +116,14 @@ export const SettingsRight = observer(() => {
 						value={genStore.cols}
 						onChange={(e) => genStore.setGrid([Number(e.target.value), genStore.rows])}
 					/>
-				</label>
-				<label className="flex w-full items-center justify-between">
-					<span>Строки:</span>
+				</div>
+				<div className="flex items-center justify-between">
+					<label className="select-none" htmlFor="rows">
+						Строки:
+					</label>
 					<Input
-						className="w-20 self-end rounded-xl text-center"
+						id="rows"
+						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
 						justify="end"
 						min={1}
@@ -114,25 +132,27 @@ export const SettingsRight = observer(() => {
 						value={genStore.rows}
 						onChange={(e) => genStore.setGrid([genStore.cols, Number(e.target.value)])}
 					/>
-				</label>
+				</div>
 			</div>
 			<Divider />
-			<Button disabled={!genStore.svgWithText} onClick={() => downloadGridSvg(genStore.svgWithText)}>
+			<Button
+				variant="accent"
+				disabled={!genStore.svgWithText}
+				onClick={() => downloadGridSvg(genStore.svgWithText)}
+			>
 				Скачать
 			</Button>
-			<div className="mt-auto">
-				<Button
-					className="w-full"
-					disabled={!genStore.svgWithText}
-					variant="warning"
-					onClick={() => {
-						genStore.reset();
-						setSelectedFileName('');
-					}}
-				>
-					Сбросить
-				</Button>
-			</div>
+			<Button
+				className="mt-auto"
+				disabled={!genStore.svgWithText}
+				variant="warning"
+				onClick={() => {
+					genStore.reset();
+					setSelectedFileName('');
+				}}
+			>
+				Сбросить
+			</Button>
 		</div>
 	);
 });

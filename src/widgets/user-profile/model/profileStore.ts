@@ -133,6 +133,23 @@ export class ProfileStore {
 		this.updateField(key, updated.length ? updated : ['']);
 	}
 
+	loadDraft(): void {
+		this.draft = {
+			first_name: this.userProfileStore.firstName,
+			last_name: this.userProfileStore.lastName,
+			username: this.userStore.username,
+			birth_year: this.userProfileStore.birthYear,
+			birth_month: this.userProfileStore.birthMonth,
+			birth_day: this.userProfileStore.birthDay,
+			gender: this.userProfileStore.gender,
+			phone: this.userProfileStore.phone,
+			email: this.userProfileStore.email,
+			mainEmail: this.userStore.email,
+		};
+
+		this.setReady();
+	}
+
 	async saveChanges(): Promise<void> {
 		if (!this.draft || !this.userStore.id || this.isLoading || !this.isDirty) return;
 
@@ -151,23 +168,6 @@ export class ProfileStore {
 			await this.userProfileStore.loadProfile();
 			this.loadDraft();
 		}
-	}
-
-	private loadDraft(): void {
-		this.draft = {
-			first_name: this.userProfileStore.firstName,
-			last_name: this.userProfileStore.lastName,
-			username: this.userStore.username,
-			birth_year: this.userProfileStore.birthYear,
-			birth_month: this.userProfileStore.birthMonth,
-			birth_day: this.userProfileStore.birthDay,
-			gender: this.userProfileStore.gender,
-			phone: this.userProfileStore.phone,
-			email: this.userProfileStore.email,
-			mainEmail: this.userStore.email,
-		};
-
-		this.setReady();
 	}
 
 	private addField(key: 'phone' | 'email'): void {

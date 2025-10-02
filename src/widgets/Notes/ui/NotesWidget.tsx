@@ -39,6 +39,7 @@ const NotesWidget = () => {
 						<Button
 							centerIcon={<IconAdd className="size-4" />}
 							className="rounded-full p-2"
+							variant="accent"
 							size="custom"
 							title="Добавить заметку"
 							onClick={() => handleAdd()}

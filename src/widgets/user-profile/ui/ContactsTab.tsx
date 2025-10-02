@@ -12,7 +12,7 @@ import { useProfile } from '../model';
 
 export const ContactsTab = observer(() => {
 	const { modalStore, notifyStore, profileStore: store } = useStore();
-	const { device, navigate } = useProfile();
+	const { device } = useProfile();
 	useModalBack(<MobileUserMenu />);
 
 	const handleSave = async () => {
@@ -38,7 +38,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] select-none md:p-4">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -73,9 +73,12 @@ export const ContactsTab = observer(() => {
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Почта</h2>
 				<div className="flex w-full flex-col gap-1">
-					<h3 className="opacity-60">Основная почта</h3>
+					<label htmlFor="mainEmail" className="text-[var(--color-secondary)] opacity-70">
+						Основная почта
+					</label>
 					<div className="flex gap-2">
 						<Input
+							id="mainEmail"
 							error={!store.mainEmail}
 							placeholder="Введите e-mail"
 							rightIcon={
@@ -99,37 +102,39 @@ export const ContactsTab = observer(() => {
 						/>
 					</div>
 				</div>
-				<div className="flex w-full flex-col gap-2">
-					<h3 className="opacity-60">Резервная почта</h3>
-					{store.email.map((email, idx) => {
-						const isLast = idx === store.email.length - 1;
-						const isEmpty = email.trim() === '';
-						const canRemove = !(isLast && isEmpty);
+				<div className="flex w-full flex-col gap-1">
+					<label className="text-[var(--color-secondary)] opacity-70">Резервная почта</label>
+					<div className="flex w-full flex-col gap-2">
+						{store.email.map((email, idx) => {
+							const isLast = idx === store.email.length - 1;
+							const isEmpty = email.trim() === '';
+							const canRemove = !(isLast && isEmpty);
 
-						return (
-							<div key={idx} className="flex gap-2">
-								<Input
-									autoComplete="new-password"
-									className={cn(isLast && 'mr-8')}
-									placeholder="Введите e-mail"
-									value={email}
-									variant="ghost"
-									onBlur={(e) => store.updateArrayField('email', idx, e.target.value.trim())}
-									onChange={(e) => store.updateArrayField('email', idx, e.target.value)}
-								/>
-								{canRemove && (
-									<Button
-										centerIcon={<IconTrash className="size-6" />}
-										className="hover:text-[var(--status-error)]"
-										size="custom"
-										title="Удалить"
-										variant="custom"
-										onClick={() => store.removeField('email', idx)}
+							return (
+								<div key={idx} className="flex gap-2">
+									<Input
+										autoComplete="new-password"
+										className={cn(isLast && 'mr-8')}
+										placeholder="Введите e-mail"
+										value={email}
+										variant="ghost"
+										onBlur={(e) => store.updateArrayField('email', idx, e.target.value.trim())}
+										onChange={(e) => store.updateArrayField('email', idx, e.target.value)}
 									/>
-								)}
-							</div>
-						);
-					})}
+									{canRemove && (
+										<Button
+											centerIcon={<IconTrash className="size-6" />}
+											className="hover:text-[var(--status-error)]"
+											size="custom"
+											title="Удалить"
+											variant="custom"
+											onClick={() => store.removeField('email', idx)}
+										/>
+									)}
+								</div>
+							);
+						})}
+					</div>
 				</div>
 				<div className="mt-2 flex gap-4">
 					<Button
@@ -142,12 +147,10 @@ export const ContactsTab = observer(() => {
 						Сохранить
 					</Button>
 					<Button
-						className="rounded-xl hover:bg-[var(--status-error)]"
-						variant="custom"
+						disabled={device !== 'mobile' && !store.isDirty}
+						variant="warning"
 						onClick={() =>
-							device === 'mobile'
-								? modalStore.setModal(<MobileUserMenu />, 'sheet')
-								: navigate('/account/profile?tab=overview')
+							device === 'mobile' ? modalStore.setModal(<MobileUserMenu />, 'sheet') : store.loadDraft()
 						}
 					>
 						Отменить

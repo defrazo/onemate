@@ -50,9 +50,9 @@ export const DesktopUserMenu = observer(() => {
 	];
 
 	return (
-		<div className="core-elements absolute right-2.5 flex w-xs flex-col rounded-xl rounded-t-none border border-[var(--color-disabled)] py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
+		<div className="core-border absolute right-2.5 flex w-xs flex-col !rounded-t-none bg-[var(--bg-secondary)] py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
 			<UserMenuInfo className="mt-2.5 px-4 py-2" />
-			<Divider className="mx-2 bg-[var(--color-disabled)]" margY="sm" />
+			<Divider className="mx-2 bg-[var(--border-color)]" margY="sm" />
 			{userButtons.map((item) => {
 				const isThemeToggle = item.id === 'theme';
 				const handleClick = isThemeToggle
@@ -64,7 +64,7 @@ export const DesktopUserMenu = observer(() => {
 				return (
 					<Button
 						key={item.id}
-						className="h-10 justify-start rounded-none hover:bg-[var(--accent-hover)]"
+						className="h-10 justify-start rounded-none hover:bg-[var(--accent-hover)] hover:text-[var(--accent-text)]"
 						leftIcon={item.icon}
 						variant="mobile"
 						onClick={handleClick}
@@ -73,10 +73,11 @@ export const DesktopUserMenu = observer(() => {
 					</Button>
 				);
 			})}
-			<Divider className="mx-2 bg-[var(--color-disabled)]" margY="sm" />
+			<Divider className="mx-2 bg-[var(--border-color)]" margY="sm" />
 			<Button
-				className="h-10 justify-start rounded-none"
+				className="h-10 justify-start rounded-none hover:bg-[var(--accent-hover)] hover:text-[var(--accent-text)]"
 				leftIcon={<IconLogout className="size-6" />}
+				variant="mobile"
 				onClick={() => {
 					authStore.logout();
 					modalStore.closeModal();

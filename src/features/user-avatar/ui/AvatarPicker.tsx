@@ -17,7 +17,7 @@ export const AvatarPicker = () => {
 	};
 
 	return (
-		<div className="flex flex-col rounded-xl px-2 pb-2 md:p-4">
+		<div className="flex flex-col rounded-xl px-2 pb-2 md:p-0">
 			<h1 className="core-header">Выберите аватар</h1>
 			<Divider margY="sm" />
 			<div className="grid grid-cols-4 gap-2 px-2 pb-2 md:w-lg md:p-0">
@@ -28,7 +28,7 @@ export const AvatarPicker = () => {
 						className={cn(
 							'aspect-square rounded-full object-cover ring-[var(--accent-hover)]',
 							'transition-transform duration-500',
-							'hover:z-10 hover:scale-[1.3] hover:ring-2',
+							'hover:z-10 hover:scale-[1.2] hover:ring-2',
 							'cursor-pointer'
 						)}
 						src={src}

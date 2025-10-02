@@ -7,7 +7,11 @@ import { Input, SuggestionList } from '@/shared/ui';
 
 import { useLocationChannel } from '../model';
 
-const LocationSearch = () => {
+interface LocationProps {
+	id?: string;
+}
+
+const LocationSearch = ({ id }: LocationProps) => {
 	const { locationStore: store, notifyStore } = useStore();
 
 	useLocationChannel();
@@ -33,6 +37,7 @@ const LocationSearch = () => {
 	return (
 		<div className="relative w-full">
 			<Input
+				id="location"
 				autoComplete="off"
 				className="bg-[var(--bg-secondary)]"
 				name="fake-location"

@@ -33,7 +33,7 @@ const WeatherWidget = () => {
 							)}
 						</>
 					)}
-					<Button className="w-full text-sm" onClick={() => store.setIsOpenCurrent()}>
+					<Button className="w-full text-sm" variant="accent" onClick={() => store.setIsOpenCurrent()}>
 						{store.isOpenCurrent ? 'Прогноз на 5 дней' : 'Текущая погода'}
 					</Button>
 				</div>

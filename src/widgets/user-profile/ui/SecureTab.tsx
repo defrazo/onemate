@@ -64,13 +64,13 @@ export const SecureTab = observer(() => {
 	if (!profileStore.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl px-2 pb-4 shadow-[var(--shadow)] md:p-4">
 			<h1 className="core-header">Безопасность</h1>
 			<div className="flex flex-col gap-2">
 				<h2 className="text-xl font-bold select-none">Пароль</h2>
-				<h3 className="text-xs text-[var(--color-disabled)] md:text-sm">
+				<p className="text-xs text-[var(--color-secondary)] opacity-70 md:text-sm">
 					Ваш пароль был изменен {formattedDate}
-				</h3>
+				</p>
 				<div className="relative">
 					<Input
 						placeholder="Новый пароль"
@@ -103,7 +103,7 @@ export const SecureTab = observer(() => {
 				<div className="mt-2 flex justify-center gap-2">
 					<Button
 						className="w-28"
-						disabled={!isPasswordValid}
+						disabled={!isPasswordValid || userStore.passwords[0] === '' || userStore.passwords[1] === ''}
 						loading={profileStore.isLoading}
 						variant="accent"
 						onClick={handleSave}
@@ -111,12 +111,12 @@ export const SecureTab = observer(() => {
 						Сохранить
 					</Button>
 					<Button
-						className="rounded-xl hover:bg-[var(--status-error)]"
-						variant="custom"
+						variant="warning"
+						disabled={userStore.passwords[0] === '' && userStore.passwords[1] === ''}
 						onClick={() =>
 							device === 'mobile'
 								? modalStore.setModal(<MobileUserMenu />, 'sheet')
-								: navigate('/account/profile?tab=overview')
+								: userStore.clearPasswords()
 						}
 					>
 						Отменить
@@ -129,8 +129,8 @@ export const SecureTab = observer(() => {
 				<DeviceActivityOverview />
 			</div>
 			<Divider />
-			<div className="core-card flex flex-col gap-2 border border-solid border-[#871919] bg-[var(--bg-warning)] select-none">
-				<h2 className="mr-auto text-xl font-bold select-none">Удалить аккаунт</h2>
+			<div className="core-card flex flex-col gap-2 border-2 border-solid border-[var(--warning-default)] opacity-30 transition-opacity duration-300 select-none hover:opacity-100">
+				<h2 className="mx-auto text-xl font-bold select-none">Удалить аккаунт</h2>
 				<p className="text-justify text-sm">
 					Вы можете удалить свой аккаунт. У вас будет <b>30 дней</b> на его восстановление. По истечении этого
 					срока данные будут безвозвратно удалены, и вы сможете зарегистрироваться заново, используя тот же

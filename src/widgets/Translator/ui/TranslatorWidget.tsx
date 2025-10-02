@@ -60,8 +60,9 @@ const TranslatorWidget = () => {
 					/>
 					<Button
 						centerIcon={<IconArrows className="size-4 xl:rotate-90" />}
-						className="core-elements bottom-6 left-1/2 z-10 size-8 w-full rounded-xl xl:absolute xl:w-4 xl:-translate-x-1/2 xl:rounded-full"
+						className="bottom-6 left-1/2 z-10 size-8 w-full rounded-xl xl:absolute xl:w-4 xl:-translate-x-1/2 xl:rounded-full"
 						title="Поменять языки местами"
+						variant="accent"
 						onClick={() => store.swapLanguages()}
 					/>
 					<TranslatorBox

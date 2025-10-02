@@ -20,7 +20,7 @@ export const PasswordHint = ({ password, showHint, onValidityChange }: PasswordH
 	if (!visible) return null;
 
 	return (
-		<div className="core-border absolute top-full z-40 mt-2 w-full bg-[var(--bg-secondary)] p-2 text-sm select-none md:text-base">
+		<div className="absolute top-full z-40 mt-2 w-full rounded-xl border border-solid border-[var(--accent-default)] bg-[var(--bg-secondary)] p-2 text-sm select-none">
 			<ul className="space-y-1">
 				{passwordRules.map((rule, index) => {
 					const passed = rule.test(password);

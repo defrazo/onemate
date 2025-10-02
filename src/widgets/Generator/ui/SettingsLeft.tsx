@@ -12,25 +12,28 @@ export const SettingsLeft = observer(() => {
 	const { cardWidth, cardHeight } = useGenModel();
 
 	return (
-		<div className="core-base core-card top-4 hidden w-full flex-col gap-2 lg:flex">
+		<div className="core-base core-card top-4 hidden w-full flex-col gap-4 lg:flex">
 			{genStore.svgWithText && (
-				<ZoomOnHover>
-					<svg
-						className="core-border p-2"
-						height={cardHeight}
-						style={{ display: 'block', maxWidth: '100%', height: 'auto', width: 'auto' }}
-						viewBox={`0 0 ${genStore.width} ${genStore.height}`}
-						width={cardWidth}
-					>
-						<g
-							dangerouslySetInnerHTML={{
-								__html: genStore.svgWithText.replace(/<svg[^>]*>|<\/svg>/g, ''),
-							}}
-						/>
+				<div className="flex flex-col gap-4">
+					<ZoomOnHover>
+						<svg
+							className="core-border p-2"
+							height={cardHeight}
+							style={{ display: 'block', maxWidth: '100%', height: 'auto', width: '100%' }}
+							viewBox={`0 0 ${genStore.width} ${genStore.height}`}
+							width={cardWidth}
+						>
+							<g
+								dangerouslySetInnerHTML={{
+									__html: genStore.svgWithText.replace(/<svg[^>]*>|<\/svg>/g, ''),
+								}}
+							/>
 
-						{genStore.isCutLine && renderCutLine()}
-					</svg>
-				</ZoomOnHover>
+							{genStore.isCutLine && renderCutLine()}
+						</svg>
+					</ZoomOnHover>
+					<Divider />
+				</div>
 			)}
 			<TextBlock
 				isChecked={genStore.firstText.isEnabled}
@@ -41,7 +44,6 @@ export const SettingsLeft = observer(() => {
 				onPositionChange={(axis, value) => genStore.updateTextBlock(0, axis, value)}
 				onTextChange={(e) => genStore.updateTextBlock(0, 'text', e.target.value)}
 			/>
-			<Divider />
 			<TextBlock
 				isChecked={genStore.secondText.isEnabled}
 				label="Надпись нижняя"

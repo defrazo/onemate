@@ -9,11 +9,11 @@ const AboutPage = () => {
 
 	return (
 		<div className="mx-auto flex flex-col justify-between gap-4 xl:max-w-4xl xl:gap-6">
-			<div className="core-border relative flex cursor-default flex-col items-center gap-2 overflow-hidden !rounded-3xl p-6 text-center shadow-[var(--shadow)] select-none md:p-10">
+			<div className="core-semiborder relative flex cursor-default flex-col items-center gap-2 overflow-hidden !rounded-3xl p-6 text-center shadow-[var(--shadow)] select-none md:p-10">
 				<div
 					style={{
 						background:
-							'linear-gradient(to bottom right, rgba(197,98,45,0.3), transparent, rgba(209,104,28,0.2))',
+							'linear-gradient(to bottom right, var(--accent-default), var(--accent-default-op), var(--accent-default))',
 					}}
 					className="absolute inset-0 -z-10"
 				/>
@@ -60,11 +60,11 @@ const AboutPage = () => {
 				</div>
 			</Section>
 			<Section title="Обратная связь">
-				<div className="core-border relative flex cursor-default flex-col items-center overflow-hidden !rounded-3xl text-center shadow-[var(--shadow)] select-none">
+				<div className="core-semiborder relative flex cursor-default flex-col items-center overflow-hidden !rounded-3xl text-center shadow-[var(--shadow)] select-none">
 					<div
 						style={{
 							background:
-								'linear-gradient(to bottom right, rgba(197,98,45,0.3), transparent, rgba(209,104,28,0.2))',
+								'linear-gradient(to bottom right, var(--accent-default), var(--accent-default-op), var(--accent-default))',
 						}}
 						className="absolute inset-0 -z-10"
 					/>
@@ -77,7 +77,7 @@ const AboutPage = () => {
 						</div>
 						<div className="flex items-center gap-2">
 							<a
-								className="inline-flex items-center gap-2 rounded-xl border border-[var(--accent-default)] px-3 py-2 text-sm font-semibold transition-transform duration-500 hover:scale-[1.15] hover:bg-[var(--accent-default)]/10"
+								className="inline-flex items-center gap-2 rounded-xl bg-[var(--bg-tertiary)] px-3 py-2 text-sm font-semibold transition-transform duration-500 hover:scale-[1.15]"
 								href="mailto:defrazo@inbox.ru"
 							>
 								<Mail className="size-4" />

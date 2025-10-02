@@ -3,24 +3,12 @@ import { cn } from '@/shared/lib/utils';
 import type { Component } from '../model';
 
 export const base: Record<Component, string> = {
-	button: cn('flex items-center justify-center', 'transition-colors', 'cursor-pointer outline-none select-none'),
-	input: cn('w-full', 'rounded-xl', 'transition-colors', 'outline-none'),
-	textarea: cn('w-full', 'rounded-xl ', 'transition-colors', 'outline-none'),
+	button: cn('flex items-center justify-center', 'cursor-pointer transition-colors outline-none select-none'),
+	input: cn('w-full rounded-xl', 'transition-colors outline-none'),
+	textarea: cn('w-full rounded-xl', 'transition-colors outline-none'),
 	checkbox: '',
 	checkboxBool: '',
-	radio: cn(
-		'border-[var(--border-color)]',
-		'transition-colors',
-		'focus:border-none',
-		'hover:border-[var(--accent-default)] ',
-		'cursor-pointer appearance-none outline-none'
-	),
-	select: cn('w-full', 'rounded-xl', 'transition-colors', 'cursor-pointer appearance-none outline-none'),
-	selectExt: cn(
-		'flex w-full items-center',
-		'text-nowrap',
-		'rounded-xl',
-		'transition-colors',
-		'cursor-pointer outline-none'
-	),
+	radio: 'cursor-pointer appearance-none transition-colors outline-none',
+	select: cn('w-full rounded-xl', 'cursor-pointer appearance-none transition-colors outline-none'),
+	selectExt: cn('flex w-full items-center rounded-xl', 'cursor-pointer text-nowrap transition-colors outline-none'),
 };

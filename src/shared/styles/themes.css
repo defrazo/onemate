@@ -6,29 +6,33 @@
 
 	/* Акцентные цвета */
 	--accent-default: #f77e0d;
+	--accent-default-op: #f77e0d80;
 	--accent-hover: #e15300;
+	--accent-hover-op: #e1530080;
 	--accent-active: #7d6fe4;
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
-	--warning-default: #871919;
-	--warning-hover: #a10404;
+	--warning-default: #b51111;
+	--warning-hover: #8d0404;
 
 	/* Фоны */
 	--bg-primary: #19191a;
 	--bg-secondary: #222224;
 	--bg-tertiary: #39393a;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
-	--bg-warning: #1d1412;
 
 	/* Статусные цвета */
-	--status-success: #039140;
+	--status-success: #0b5f30;
 	--status-error: #d33131;
 	--status-warning: #f9a825;
 	--status-info: #0288d1;
 
 	/* Разделители и бордеры */
 	--border-color: #39393a;
+	--border-color-op: #39393a80;
+	--border-alt: #a0a0a0;
+	--border-light: transparent;
 
 	/* Тени */
 	--shadow: none;
@@ -36,26 +40,27 @@
 
 .light-theme {
 	/* Текст */
-	--color-primary: #393939;
+	--color-primary: #2f3441;
 	--color-secondary: #1d1c1c;
 	--color-disabled: #666666;
 
 	/* Акцентные цвета */
-	--accent-default: #f77e0d;
-	--accent-hover: #e15300;
-	--accent-active: #7d6fe4;
+	--accent-default: #7d6fe4;
+	--accent-default-op: #7d6fe480;
+	--accent-hover: #6457c5;
+	--accent-hover-op: #6457c580;
+	--accent-active: #f77e0d;
 	--accent-disabled: #e0b9a3;
 	--accent-text: #ffffff;
 	--accent-text-disabled: #8b5c49;
-	--warning-default: #871919;
-	--warning-hover: #a10404;
+	--warning-default: #b51111;
+	--warning-hover: #8d0404;
 
 	/* Фоны */
-	--bg-primary: #edeef0;
-	--bg-secondary: #fbfcfc;
-	--bg-tertiary: #e3e3e3;
+	--bg-primary: #e7e7e7;
+	--bg-secondary: #f1f1f1;
+	--bg-tertiary: #f8f7f7;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
-	--bg-warning: #ffe0dd;
 
 	/* Статусные цвета */
 	--status-success: #039140;
@@ -64,8 +69,11 @@
 	--status-info: #0288d1;
 
 	/* Разделители и бордеры */
-	--border-color: #e3e3e3;
+	--border-color: #d4d7df;
+	--border-color-op: #d4d7df80;
+	--border-alt: #e3e3e3;
+	--border-light: #d4d7df;
 
 	/* Тени */
-	--shadow: 0 2px 4px 0px rgba(58, 66, 75, 0.2);
+	--shadow: 0 1px 2px 0px rgb(40 66 75 / 22%);
 }

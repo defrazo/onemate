@@ -48,7 +48,7 @@ export const NotesCardActions = observer(({ id, text, attributes, listeners }: N
 			/>
 			<Button
 				centerIcon={<IconCopy className="size-4" />}
-				className="cursor-copy hover:text-[var(--accent-hover)]"
+				className="cursor-copy hover:text-[var(--status-success)]"
 				disabled={!text}
 				size="sm"
 				title="Скопировать"

@@ -17,7 +17,7 @@ const DeletedAccountPage = () => {
 
 	return (
 		<div className="mx-4 flex min-h-screen flex-col items-center justify-center gap-2">
-			<div className="core-card core-base flex flex-col items-center gap-2 md:w-lg">
+			<div className="core-card core-base flex flex-col items-center gap-2 shadow-[var(--shadow)] md:w-lg">
 				<div className="flex flex-col items-center gap-2 select-none">
 					<img alt="Логотип" className="size-20" src={Logo} />
 					<h1 className="core-header">Аккаунт OneMate удален</h1>
@@ -34,7 +34,7 @@ const DeletedAccountPage = () => {
 					<span className="px-4 text-sm">ИЛИ</span>
 					<div className="grow border-t border-[var(--border-color)]" />
 				</div>
-				<Button className="h-10 w-full" onClick={handleExit}>
+				<Button className="core-elements h-10 w-full" onClick={handleExit}>
 					Выйти из аккаунта
 				</Button>
 			</div>

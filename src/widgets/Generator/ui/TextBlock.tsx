@@ -1,7 +1,7 @@
 import type { ChangeEvent } from 'react';
 
 import { useStore } from '@/app/providers';
-import { CheckboxBool, Divider, Input } from '@/shared/ui';
+import { CheckboxBool, Input } from '@/shared/ui';
 
 import { TextBlockPosition } from '.';
 
@@ -27,31 +27,28 @@ export const TextBlock = ({
 	const { genStore } = useStore();
 
 	return (
-		<div className="core-border flex flex-col gap-1 p-2">
-			<label className="flex w-full flex-col gap-1">
-				<div className="flex items-center justify-between">
-					<span>{label}</span>
-					<CheckboxBool
-						checked={isChecked}
-						className="h-5 bg-transparent"
-						disabled={!genStore.svgWithText}
-						onChange={onCheckToggle}
-					/>
-				</div>
-				<div className="w-full">
-					<Input
-						className="rounded-xl text-center"
-						disabled={!genStore.svgWithText}
-						size="sm"
-						type="text"
-						value={textValue}
-						onChange={onTextChange}
-					/>
-				</div>
-			</label>
-			<Divider />
+		<div className="core-border flex flex-col gap-2 p-2">
+			<div className="flex items-center justify-between">
+				<label className="select-none" htmlFor={`${label}`}>
+					{label}
+				</label>
+				<CheckboxBool
+					id={`${label}`}
+					checked={isChecked}
+					className="h-5 bg-transparent"
+					disabled={!genStore.svgWithText}
+					onChange={onCheckToggle}
+				/>
+			</div>
+			<Input
+				className="core-border text-center leading-4"
+				disabled={!genStore.svgWithText}
+				size="sm"
+				type="text"
+				value={textValue}
+				onChange={onTextChange}
+			/>
 			<TextBlockPosition
-				label="Позиция:"
 				maxX={genStore.width}
 				maxY={genStore.height}
 				position={position}

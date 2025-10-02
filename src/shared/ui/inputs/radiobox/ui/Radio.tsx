@@ -52,7 +52,13 @@ const Radio = ({
 					>
 						<input
 							checked={value === option.value}
-							className={cn(styles, 'rounded-full border border-solid')}
+							className={cn(
+								styles,
+								'rounded-full border border-solid',
+								value === option.value
+									? 'group-hover:border-none'
+									: 'group-hover:border-[var(--accent-default)]'
+							)}
 							disabled={isDisabled}
 							type="radio"
 							value={option.value ?? ''}

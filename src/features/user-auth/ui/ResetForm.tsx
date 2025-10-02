@@ -88,7 +88,12 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 						notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 					}}
 				/>
-				<Button className="mt-4 h-10 w-full" disabled={!isPasswordValid} loading={isLoading} type="submit">
+				<Button
+					className="core-elements mt-4 h-10 w-full"
+					disabled={!isPasswordValid}
+					loading={isLoading}
+					type="submit"
+				>
 					Сохранить пароль
 				</Button>
 			</form>

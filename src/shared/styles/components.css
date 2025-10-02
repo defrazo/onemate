@@ -10,7 +10,7 @@
 
 ::-webkit-scrollbar-track {
 	border-radius: 5px;
-	background-color: var(--field-bg);
+	background-color: var(--bg-tertiary);
 }
 
 .hide-scrollbar {
@@ -22,7 +22,7 @@
 	display: none;
 }
 
-/* Стили для инпутов */
+/* Стили для числовых инпутов */
 input[type='number']::-webkit-inner-spin-button,
 input[type='number']::-webkit-outer-spin-button {
 	-webkit-appearance: none;
@@ -42,6 +42,16 @@ input:-webkit-autofill:focus {
 	transition: background-color 5000s ease-in-out 0s;
 }
 
+/* Стили для радио инпутов */
+label.group:hover input[type='radio']:not(:checked) {
+	border-color: var(--accent-default);
+}
+
+label.group:hover input[type='radio']:checked {
+	border-color: transparent;
+}
+
 input[type='radio']:checked {
 	background-color: var(--accent-default);
+	border-color: transparent;
 }
