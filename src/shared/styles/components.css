@@ -1,18 +1,3 @@
-/* Стили для скроллбара */
-::-webkit-scrollbar {
-	width: 15px;
-}
-
-::-webkit-scrollbar-thumb {
-	border-radius: 5px;
-	background-color: var(--bg-primary);
-}
-
-::-webkit-scrollbar-track {
-	border-radius: 5px;
-	background-color: var(--bg-tertiary);
-}
-
 .hide-scrollbar {
 	scrollbar-width: none;
 	-ms-overflow-style: none;

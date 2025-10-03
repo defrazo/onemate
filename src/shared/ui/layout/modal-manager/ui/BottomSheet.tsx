@@ -5,6 +5,7 @@ import { cn } from '@/shared/lib/utils';
 
 import { useDragger } from '../model';
 import { DragHandle } from '.';
+import { useBodyScrollLock } from '@/shared/lib/hooks';
 
 interface BottomSheetProps {
 	onBack?: () => void;
@@ -14,6 +15,8 @@ interface BottomSheetProps {
 
 export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => {
 	const { positionY, isDragging, bind, getLineClass } = useDragger(onClose);
+
+	useBodyScrollLock(true);
 
 	return (
 		<>
@@ -26,7 +29,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 			<div
 				className={cn(
 					'core-base fixed right-0 bottom-0 left-0 z-60 h-fit max-h-dvh rounded-t-xl',
-					isDragging ? 'overflow-hidden' : 'overflow-y-auto'
+					isDragging ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain'
 				)}
 				style={{
 					transform: `translateY(${positionY}px)`,

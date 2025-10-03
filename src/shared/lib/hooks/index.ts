@@ -5,3 +5,4 @@ export { useModalBack } from './useModalBack';
 export { useOrientation } from './useOrientation';
 export { usePageTitle } from './usePageTitle';
 export { useRemainingTime } from './useRemainingTime';
+export { useBodyScrollLock } from './useBodyScrollLock';

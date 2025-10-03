@@ -5,7 +5,7 @@ export const formatDate = (timestamp: number): string => {
 	return new Date(timestamp * 1000).toISOString().split('T')[0];
 };
 
-// Преобразует строку даты в локализованный формат (short — "дд.мм", long — "дд.мм.yy")
+// Преобразует строку даты в локализованный формат (short – "дд.мм", long – "дд.мм.yy")
 export const convertDate = (timestamp: string, length: 'short' | 'long'): string => {
 	const date = new Date(timestamp);
 	const options: Intl.DateTimeFormatOptions = { day: '2-digit', month: '2-digit' };
@@ -15,7 +15,7 @@ export const convertDate = (timestamp: string, length: 'short' | 'long'): string
 	return new Intl.DateTimeFormat('ru-RU', options).format(date);
 };
 
-// Возвращает день недели по timestamp (секунды) (short — "Пн", long — "Понедельник")
+// Возвращает день недели по timestamp (секунды) (short – "Пн", long – "Понедельник")
 export const dayOfWeek = (timestamp: number, length: 'short' | 'long'): string => {
 	return new Date(timestamp * 1000).toLocaleDateString('ru-RU', { weekday: length });
 };
