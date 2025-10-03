@@ -1,0 +1,15 @@
+services:
+    web:
+        build:
+            context: .
+            dockerfile: Dockerfile
+            args:
+                VITE_SUPABASE_URL: ${VITE_SUPABASE_URL}
+                VITE_SUPABASE_ANON_KEY: ${VITE_SUPABASE_ANON_KEY}
+                VITE_IPINFO_API_KEY: ${VITE_IPINFO_API_KEY}
+                VITE_MYMEMORY_API_KEY: ${VITE_MYMEMORY_API_KEY}
+                VITE_OPENWEATHER_API_KEY: ${VITE_OPENWEATHER_API_KEY}
+                VITE_ALLOWED_EMAILS: ${VITE_ALLOWED_EMAILS}
+        ports:
+            - '80:80'
+        restart: unless-stopped
