@@ -13,7 +13,7 @@ const App = () => {
 	const device = useDeviceType();
 
 	return (
-		<BrowserRouter>
+		<BrowserRouter basename="/onemate">
 			{userStore.id && userStore.userRole !== 'user' && !storage.get(LS_CACHE_UI).demo && <DemoBanner />}
 			<RouterProvider />
 			<ModalManager />
