@@ -23,9 +23,12 @@ export const calculateResult = (display: string): ResultItem => {
 	let expression = sanitizeExpression(display);
 	let result = 'Error';
 
-	if (!/^[-+*/().0-9\s√]+$/.test(expression)) throw new Error('Недопустимые символы в выражении');
+	if (!/^[-+*/().0-9\s%]+$/.test(expression)) throw new Error('Недопустимые символы в выражении');
 
-	const jsExpression = expression.replace(/√/g, 'Math.sqrt');
+	let jsExpression = expression;
+
+	jsExpression = jsExpression.replace(/(\d+(\.\d+)?)%/g, '($1/100)');
+	jsExpression = jsExpression.replace(/(\(\d+(?:\.\d+)?\/100\))(?=\d|\()/g, '$1*');
 	const evalResult = new Function(`return ${jsExpression}`)();
 
 	if (typeof evalResult === 'number' && !isNaN(evalResult)) result = formatNumber(evalResult);

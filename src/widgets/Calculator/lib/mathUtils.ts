@@ -1,6 +1,6 @@
-export const sqrt = (prev: string): string => {
-	if (prev === '0') return prev;
-	return /\√/.test(prev) ? prev.replace('√', '') : '√' + prev;
+export const percent = (prev: string): string => {
+	if (/[0-9)]$/.test(prev)) return prev + ' % ';
+	return prev;
 };
 
 export const backspace = (prev: string): string => {
@@ -62,7 +62,7 @@ export const mathDot = (prev: string): string => {
 export const mathOperation = (prev: string, value: string): string => {
 	if (prev === '0') return '0';
 
-	if (/[0-9]$/.test(prev)) return prev + value;
+	if (/[0-9]$/.test(prev)) return prev + ` ${value} `;
 
 	return prev.slice(0, -1) + value;
 };

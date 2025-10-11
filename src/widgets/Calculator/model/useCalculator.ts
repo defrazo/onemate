@@ -8,17 +8,24 @@ import {
 	mathDot,
 	mathOperation,
 	openBracket,
+	percent,
 	plusMinus,
 	sanitizeExpression,
-	sqrt,
 } from '../lib';
 import type { ResultItem } from '.';
 
 export const useCalculator = () => {
 	const [display, setDisplay] = useState<string>('0');
 	const [result, setResult] = useState<ResultItem[]>([]);
+	const [isResultShown, setIsResultShown] = useState<boolean>(false);
 
 	const handleButtonClick = (value: string): void => {
+		if (isResultShown && /[0-9(]/.test(value)) {
+			setDisplay(value);
+			setIsResultShown(false);
+			return;
+		}
+
 		const reset = () => {
 			setDisplay('0');
 			setResult([]);
@@ -29,7 +36,7 @@ export const useCalculator = () => {
 			setResult([]);
 		};
 
-		const handleSqrt = () => setDisplay((prev) => sqrt(prev));
+		const handlePercent = () => setDisplay((prev) => percent(prev));
 		const handleBackspace = () => setDisplay((prev) => backspace(prev));
 		const handleOpenBracket = () => setDisplay((prev) => openBracket(prev));
 		const handleCloseBracket = () => setDisplay((prev) => closeBracket(prev));
@@ -42,8 +49,8 @@ export const useCalculator = () => {
 		switch (value) {
 			case 'ON/C': reset(); break;
 			case 'OFF': off(); break;
-			case '√': handleSqrt(); break;
-			case '⌫': handleBackspace(); break;
+			case '%': handlePercent(); break;
+			case '←': handleBackspace(); break;
 			case '(': handleOpenBracket(); break;
 			case ')': handleCloseBracket(); break;
 			case '±': handlePlusMinus(); break;
@@ -105,9 +112,11 @@ export const useCalculator = () => {
 			const safeResult = result ?? 'Error';
 			setResult((prev) => [...prev, { expression, result: safeResult }]);
 			setDisplay(safeResult);
+			setIsResultShown(true);
 			return safeResult;
 		} catch {
 			setDisplay('Error');
+			setIsResultShown(false);
 			return 'Error';
 		}
 	};

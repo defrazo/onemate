@@ -7,13 +7,13 @@ import type { Note } from '@/widgets/notes';
 import type { Textbox } from '@/widgets/translator';
 import type { Currency } from '@/widgets/сurrency';
 
-import { AVATAR_OPTIONS } from '.';
+import { AVATAR_OPTIONS } from './avatars';
 
 const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
 // --- Примитивы
-export const DEFAULT_REDIRECT: string = 'http://letunoff.ru/onemate/auth/callback';
+export const DEFAULT_REDIRECT: string = 'https://letunoff.ru/onemate/auth/callback';
 export const DEFAULT_THEME: Theme = 'dark';
 export const DEFAULT_AVATAR: string = AVATAR_OPTIONS[0];
 
@@ -25,7 +25,6 @@ const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
 export const createDefaultSlots = (): string[] => [...DEFAULT_SLOTS];
 
 // --- Шаблоны
-
 const DEFAULT_AUTHFORM: AuthData = {
 	username: '',
 	password: '',

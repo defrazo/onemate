@@ -13,6 +13,7 @@ import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { genderOptions } from '../lib';
 import { useProfile } from '../model';
+import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 
 export const PersonalTab = observer(() => {
 	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
@@ -42,7 +43,7 @@ export const PersonalTab = observer(() => {
 					<Thumbnail
 						alt="avatar"
 						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-2 md:size-fit"
-						src={userProfileStore.avatar}
+						src={userProfileStore.avatar || DEFAULT_AVATAR}
 						title="Сменить аватар"
 						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
 					/>

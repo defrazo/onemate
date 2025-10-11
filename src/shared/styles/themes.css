@@ -20,6 +20,7 @@
 	--bg-primary: #19191a;
 	--bg-secondary: #222224;
 	--bg-tertiary: #39393a;
+	--bg-tertiary-op: #39393a80;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
 	/* Статусные цвета */
@@ -60,6 +61,7 @@
 	--bg-primary: #e7e7e7;
 	--bg-secondary: #f1f1f1;
 	--bg-tertiary: #f8f7f7;
+	--bg-tertiary-op: #efefef;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
 	/* Статусные цвета */
