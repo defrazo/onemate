@@ -13,8 +13,7 @@ OneMate – это современное веб-приложение, кото�
 OneMate развивается в качестве пет-проекта. На нем оттачиваются навыки разработки, применяются новые экспериментальные решения и инструменты. Кроме того, он позволяет создать персональное гибкое рабочее пространство для разработчика.
 
 > [!IMPORTANT]
-> Посмотреть проект в деле:
-> [![OneMate](https://img.shields.io/badge/OneMate-LIVE_DEMO-10B981?style=for-the-badge&logo=appveyor&logoColor=white)](https://letunoff.ru/onemate)
+> Посмотреть проект в деле:<br> > [![OneMate](https://img.shields.io/badge/OneMate-LIVE_DEMO-10B981?style=for-the-badge&logo=appveyor&logoColor=white)](https://letunoff.ru/onemate)
 >
 > Регистрация временно приостановлена. Воспользуйтесь демо-режимом (Войти как гость).
 
@@ -71,11 +70,17 @@ OneMate развивается в качестве пет-проекта. На �
 
 <details>
   <summary>Показать</summary>
-  ![Home](./docs/screenshots/home.webp)
-  ![Dashboard](./docs/screenshots/dashboard.webp)
-  ![Profile](./docs/screenshots/profile.webp)
+   <p align="center">
+    <img src="./docs/screenshots/home.webp" alt="Home" width="800">
+    <br>
+    <img src="./docs/screenshots/dashboard.webp" alt="Dashboard" width="800">
+    <br>
+    <img src="./docs/screenshots/profile.webp" alt="Profile" width="800">
+  </p>
 </details>
+
 ### Автор
+
 ---
 
 > [!TIP]
