@@ -10,7 +10,7 @@ const TermsOfServicePage = () => {
 					</h1>
 					<PrintButton />
 				</div>
-				<p className="print-content text-justify text-[var(--color-disabled)]">
+				<p className="print-content text-justify text-(--color-disabled)">
 					Настоящее Пользовательское соглашение (далее – «Соглашение») регулирует отношения между
 					администрацией OneMate (далее – «Администрация») и физическим лицом (далее – «Пользователь»),
 					использующим веб-приложение OneMate (далее – «Приложение»). Используя Приложение, Пользователь
@@ -100,7 +100,7 @@ const TermsOfServicePage = () => {
 							Вся информация, вводимая пользователем, сохраняется локально в его браузере и может быть
 							удалена пользователем самостоятельно (см.{' '}
 							<a
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
 								href="/privacy-policy"
 							>
 								Политику конфиденциальности
@@ -137,7 +137,7 @@ const TermsOfServicePage = () => {
 						<li>
 							Приложение не предоставляет технической поддержки. По общим вопросам можно написать на:{' '}
 							<a
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru
@@ -160,7 +160,7 @@ const TermsOfServicePage = () => {
 						<li>Настоящее Соглашение вступает в силу с момента начала использования Приложения.</li>
 					</ul>
 				</ArticleSection>
-				<p className="text-center text-xs text-[var(--color-disabled)] md:text-sm" data-version="1.1">
+				<p className="text-center text-xs text-(--color-disabled) md:text-sm" data-version="1.1">
 					Версия: 1.1. Обновлено: 01 августа 2025 года. Актуально с 01 августа 2025 года.
 				</p>
 			</article>

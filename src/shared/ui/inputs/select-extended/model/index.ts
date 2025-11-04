@@ -1,2 +1,2 @@
+export type { Direction, Justify, SelectExtOption } from './types';
 export { useSelect } from './useSelect';
-export type { SelectExtOption, Justify, Direction } from './types';

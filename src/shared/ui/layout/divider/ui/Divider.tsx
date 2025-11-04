@@ -11,7 +11,7 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	const base = 'h-px';
 
 	const variants = {
-		default: 'bg-[var(--border-color)]',
+		default: 'bg-(--border-color)',
 		custom: '',
 	};
 

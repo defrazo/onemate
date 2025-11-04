@@ -38,7 +38,7 @@ export const ContactsTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 shadow-[var(--shadow)] select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 select-none md:p-4 md:shadow-(--shadow)">
 			<h1 className="core-header">Контактные данные</h1>
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
@@ -52,14 +52,14 @@ export const ContactsTab = observer(() => {
 							<div key={idx} className="flex gap-2">
 								<PhoneInput
 									className={cn(!canRemove && 'mr-8')}
-									value={phone}
 									name={`phone-${idx}`}
+									value={phone}
 									onChange={(value: string) => store.updateArrayField('phone', idx, value)}
 								/>
 								{canRemove && (
 									<Button
 										centerIcon={<IconTrash className="size-6" />}
-										className="hover:text-[var(--status-error)]"
+										className="hover:text-(--status-error)"
 										size="custom"
 										title="Удалить"
 										variant="custom"
@@ -74,18 +74,18 @@ export const ContactsTab = observer(() => {
 			<div className="flex flex-col items-center gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Почта</h2>
 				<div className="flex w-full flex-col gap-1">
-					<label htmlFor="mainEmail" className="text-[var(--color-secondary)] opacity-70">
+					<label className="text-(--color-secondary) opacity-70" htmlFor="mainEmail">
 						Основная почта
 					</label>
 					<div className="flex gap-2">
 						<Input
-							id="mainEmail"
 							error={!store.mainEmail}
-							placeholder="Введите e-mail"
+							id="mainEmail"
 							name="email-main"
+							placeholder="Введите e-mail"
 							rightIcon={
 								!store.mainEmail && (
-									<IconWarning className="mr-1.5 size-5 animate-pulse text-[var(--status-error)]" />
+									<IconWarning className="mr-1.5 size-5 animate-pulse text-(--status-error)" />
 								)
 							}
 							type="email"
@@ -96,7 +96,7 @@ export const ContactsTab = observer(() => {
 						/>
 						<Button
 							centerIcon={<IconTrash className="size-6" />}
-							className="hover:text-[var(--status-error)]"
+							className="hover:text-(--status-error)"
 							size="custom"
 							title="Очистить"
 							variant="custom"
@@ -105,7 +105,7 @@ export const ContactsTab = observer(() => {
 					</div>
 				</div>
 				<div className="flex w-full flex-col gap-1">
-					<span className="text-[var(--color-secondary)] opacity-70">Резервная почта</span>
+					<span className="text-(--color-secondary) opacity-70">Резервная почта</span>
 					<div className="flex w-full flex-col gap-2">
 						{store.email.map((email, idx) => {
 							const isLast = idx === store.email.length - 1;
@@ -117,9 +117,9 @@ export const ContactsTab = observer(() => {
 									<Input
 										autoComplete="new-password"
 										className={cn(isLast && 'mr-8')}
+										name={`email-${idx}`}
 										placeholder="Введите e-mail"
 										value={email}
-										name={`email-${idx}`}
 										variant="ghost"
 										onBlur={(e) => store.updateArrayField('email', idx, e.target.value.trim())}
 										onChange={(e) => store.updateArrayField('email', idx, e.target.value)}
@@ -127,7 +127,7 @@ export const ContactsTab = observer(() => {
 									{canRemove && (
 										<Button
 											centerIcon={<IconTrash className="size-6" />}
-											className="hover:text-[var(--status-error)]"
+											className="hover:text-(--status-error)"
 											size="custom"
 											title="Удалить"
 											variant="custom"

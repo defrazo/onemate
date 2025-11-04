@@ -53,11 +53,11 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 			<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
 				<div className="relative">
 					<Input
-						leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+						autoComplete="new-password"
+						leftIcon={<IconPass className="size-6 border-r border-(--border-color) pr-1" />}
+						name="password"
 						placeholder="Пароль"
 						required
-						name="password"
-						autoComplete="new-password"
 						rightIcon={passwordToggleIcon}
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
@@ -76,15 +76,15 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 					/>
 				</div>
 				<Input
-					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					autoComplete="new-password"
+					leftIcon={<IconPass className="size-6 border-r border-(--border-color) pr-1" />}
+					name="password-confirm"
 					placeholder="Подтвердите пароль"
 					required
 					rightIcon={passwordToggleIcon}
-					autoComplete="new-password"
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}
 					variant="ghost"
-					name="password-confirm"
 					onBlur={(e) => store.update('passwordConfirm', e.target.value.trim())}
 					onChange={(e) => store.update('passwordConfirm', e.target.value)}
 					onPaste={(e) => {

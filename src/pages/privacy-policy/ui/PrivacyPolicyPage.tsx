@@ -10,7 +10,7 @@ const PrivacyPolicyPage = () => {
 					</h1>
 					<PrintButton />
 				</div>
-				<p className="print-content text-justify text-[var(--color-disabled)]">
+				<p className="print-content text-justify text-(--color-disabled)">
 					Этот проект является экспериментальным, но реализован в виде публичного веб-приложения (далее –
 					«Приложение»), доступного для демонстрации. Администрация OneMate (далее – «Администрация») уважает
 					конфиденциальность пользователей и сообщает, что Приложение не обрабатывает и не хранит персональные
@@ -79,10 +79,10 @@ const PrivacyPolicyPage = () => {
 							Администрации OneMate и не используются Администрацией для идентификации пользователей.
 							Подробности см. в{' '}
 							<a
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
 								href="https://supabase.com/privacy"
-								target="_blank"
 								rel="noopener noreferrer"
+								target="_blank"
 							>
 								политике конфиденциальности Supabase
 							</a>
@@ -123,7 +123,7 @@ const PrivacyPolicyPage = () => {
 						<li>
 							По вопросам, связанным с Приложением, можно написать на:{' '}
 							<a
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru
@@ -137,7 +137,7 @@ const PrivacyPolicyPage = () => {
 						<li>
 							Настоящая Политика является частью{' '}
 							<a
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline print:text-black"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
 								href="/terms-of-service"
 							>
 								Пользовательского соглашения
@@ -146,7 +146,7 @@ const PrivacyPolicyPage = () => {
 						</li>
 					</ul>
 				</ArticleSection>
-				<p className="text-center text-xs text-[var(--color-disabled)] md:text-sm" data-version="1.1">
+				<p className="text-center text-xs text-(--color-disabled) md:text-sm" data-version="1.1">
 					Версия: 1.1. Обновлено: 01 августа 2025 года. Актуально с 01 августа 2025 года.
 				</p>
 			</article>

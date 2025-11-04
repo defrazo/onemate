@@ -1,7 +1,6 @@
-import { Calculator, Calendar, Notes, Translator, Currency, Weather } from '@/shared/assets/icons/slider';
-import type { TabOption } from '@/shared/ui';
-
 import { useStore } from '@/app/providers';
+import { Calculator, Calendar, Currency, Notes, Translator, Weather } from '@/shared/assets/icons/slider';
+import type { TabOption } from '@/shared/ui';
 
 const EMPTY = '__empty__';
 

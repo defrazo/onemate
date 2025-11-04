@@ -13,5 +13,5 @@ export const renderPasswordToggle = ({ show, toggle, visible }: PasswordTogglePr
 
 	const Icon = show ? IconEyeSlash : IconEye;
 
-	return <Icon className="mr-1 size-6 cursor-pointer hover:text-[var(--accent-hover)]" onClick={toggle} />;
+	return <Icon className="mr-1 size-6 cursor-pointer hover:text-(--accent-hover)" onClick={toggle} />;
 };

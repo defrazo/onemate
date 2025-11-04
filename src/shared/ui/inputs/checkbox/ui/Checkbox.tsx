@@ -64,14 +64,12 @@ const Checkbox = ({
 						/>
 
 						{value.includes(option.value) ? (
-							<IconChecked className={cn(styles, 'group-hover:text-[var(--accent-hover)]', className)} />
+							<IconChecked className={cn(styles, 'group-hover:text-(--accent-hover)', className)} />
 						) : (
-							<IconUnchecked
-								className={cn(styles, 'group-hover:text-[var(--accent-hover)]', className)}
-							/>
+							<IconUnchecked className={cn(styles, 'group-hover:text-(--accent-hover)', className)} />
 						)}
 
-						<span className={cn(styles, 'flex w-fit items-center group-hover:text-[var(--accent-hover)]')}>
+						<span className={cn(styles, 'flex w-fit items-center group-hover:text-(--accent-hover)')}>
 							{option.label}
 						</span>
 					</label>

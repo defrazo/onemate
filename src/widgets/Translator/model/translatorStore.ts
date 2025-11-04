@@ -13,10 +13,10 @@ export class TranslatorStore {
 	private status: Status = 'idle';
 	private error: string | null = null;
 
-	private static readonly languagesCache: Language[] = Object.values(availableLanguages).map((item) => ({
-		key: item.code,
-		label: item.name,
-		value: item.code,
+	private static readonly languagesCache: Language[] = Object.values(availableLanguages).map(({ name, code }) => ({
+		key: code,
+		label: name,
+		value: code,
 	}));
 
 	textboxes: Textbox[] = createDefaultTranslator();

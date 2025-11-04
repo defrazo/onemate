@@ -1,11 +1,11 @@
 import type { ReactNode } from 'react';
 
 import { IconBack } from '@/shared/assets/icons';
+import { useBodyScrollLock } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 
 import { useDragger } from '../model';
 import { DragHandle } from '.';
-import { useBodyScrollLock } from '@/shared/lib/hooks';
 
 interface BottomSheetProps {
 	onBack?: () => void;
@@ -21,7 +21,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 	return (
 		<>
 			<div
-				className="fixed inset-0 z-50 bg-[var(--bg-overlay)]"
+				className="fixed inset-0 z-50 bg-(--bg-overlay)"
 				onClick={(e) => {
 					if (e.target === e.currentTarget) onClose();
 				}}
@@ -43,7 +43,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				</div>
 				{onBack && (
 					<div className="absolute top-[34px] w-1/4 pl-2" onClick={onBack}>
-						<IconBack className="size-5 cursor-pointer hover:text-[var(--accent-hover)]" />
+						<IconBack className="size-5 cursor-pointer hover:text-(--accent-hover)" />
 					</div>
 				)}
 				<div className="px-2" {...bind()} style={{ touchAction: 'pan-y' }}>

@@ -25,7 +25,7 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 				Мы отправили письмо с подтверждением на адрес электронной почты. Пожалуйста, проверьте свою почту,
 				включая папку «Спам».
 			</p>
-			<p className="text-[var(--color-disabled)]">
+			<p className="text-(--color-disabled)">
 				Если письмо не пришло, убедитесь, что адрес указан правильно и попробуйте запросить письмо повторно.
 			</p>
 		</>
@@ -35,7 +35,7 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 				Введите e-mail, к которому привязан ваш аккаунт OneMate. Мы отправим на него письмо с инструкциями по
 				восстановлению пароля.
 			</p>
-			<p className="text-[var(--color-disabled)]">
+			<p className="text-(--color-disabled)">
 				Пожалуйста, проверьте почту, включая папку «Спам». Если письмо не придет, убедитесь, что адрес указан
 				правильно и попробуйте запросить письмо повторно.
 			</p>
@@ -65,13 +65,13 @@ export const ConfirmForm = observer(({ store, isLoading, onSubmit }: ConfirmForm
 			<div className="space-y-2 text-center text-sm select-none">{infoText}</div>
 			<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
 				<Input
-					leftIcon={<IconEmail className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					autoComplete="email"
+					leftIcon={<IconEmail className="size-6 border-r border-(--border-color) pr-1" />}
+					name="email"
 					placeholder="E-mail"
 					readOnly={isBlocked}
 					required
 					type="email"
-					autoComplete="email"
-					name="email"
 					value={store.email}
 					variant="ghost"
 					onBlur={(e) => store.update('email', e.target.value.trim())}

@@ -57,7 +57,7 @@ const Radio = ({
 								'rounded-full border border-solid',
 								value === option.value
 									? 'group-hover:border-none'
-									: 'group-hover:border-[var(--accent-default)]'
+									: 'group-hover:border-(--accent-default)'
 							)}
 							disabled={isDisabled}
 							type="radio"
@@ -65,9 +65,7 @@ const Radio = ({
 							onChange={onChange}
 							{...props}
 						/>
-						<span
-							className={cn(styles, 'flex w-fit items-center group-hover:text-[var(--accent-default)]')}
-						>
+						<span className={cn(styles, 'flex w-fit items-center group-hover:text-(--accent-default)')}>
 							{option.label}
 						</span>
 					</label>

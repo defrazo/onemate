@@ -37,10 +37,6 @@ export const CurrencyBlock = observer(
 						name={`currency-${currency}`}
 						size="md"
 						type="number"
-						onFocus={() => {
-							setIsEditing(true);
-							setInput('');
-						}}
 						value={input}
 						variant="custom"
 						onBlur={() => {
@@ -63,12 +59,16 @@ export const CurrencyBlock = observer(
 								notifyStore.setNotice('9 999 999 - максимум', 'info');
 							}
 						}}
+						onFocus={() => {
+							setIsEditing(true);
+							setInput('');
+						}}
 					/>
 				</div>
 				<div className="shrink">
 					<SelectExt
-						className="w-30 rounded-none border-l-1 border-[var(--border-color)]"
 						addStyle="-mr-2 my-2"
+						className="w-30 rounded-none border-l border-(--border-color)"
 						direction="up"
 						options={options}
 						placeholder="Выберите валюту"

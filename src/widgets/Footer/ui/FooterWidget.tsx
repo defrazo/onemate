@@ -3,18 +3,18 @@ import { Link } from 'react-router-dom';
 import { links, socials } from '../lib';
 
 const FooterWidget = () => (
-	<footer className="core-card flex items-center justify-between bg-[var(--bg-tertiary)] p-4 shadow-[var(--shadow)] select-none print:hidden">
+	<footer className="core-card flex items-center justify-between bg-(--bg-tertiary) p-4 shadow-(--shadow) select-none print:hidden">
 		<ul className="flex flex-col items-center text-center text-xs md:flex-row md:gap-x-4 lg:text-base">
-			{links.map((item) => (
-				<li key={item.title} className="cursor-pointer select-none hover:text-[var(--accent-hover)]">
-					{item.to ? <Link to={item.to}>{item.title}</Link> : item.title}
+			{links.map(({ title, to }) => (
+				<li key={title} className="cursor-pointer select-none hover:text-(--accent-hover)">
+					{to ? <Link to={to}>{title}</Link> : title}
 				</li>
 			))}
 		</ul>
 		<div className="flex flex-row gap-x-4">
-			{socials.map((item) => (
-				<a key={item.href} href={item.href} rel="noopener noreferrer" target="_blank">
-					<item.icon className={item.style} />
+			{socials.map(({ href, style, icon: Icon }) => (
+				<a key={href} href={href} rel="noopener noreferrer" target="_blank">
+					<Icon className={style} />
 				</a>
 			))}
 		</div>

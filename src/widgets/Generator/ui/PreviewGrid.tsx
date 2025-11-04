@@ -26,8 +26,8 @@ export const PreviewGrid = observer(() => {
 								gridTemplateRows: `repeat(${genStore.rows}, ${cardHeight}px)`,
 							}}
 						>
-							{Array.from({ length: genStore.count }).map((_, i) => (
-								<CardSvg key={i} height={cardHeight} width={cardWidth} />
+							{Array.from({ length: genStore.count }).map((_, idx) => (
+								<CardSvg key={idx} height={cardHeight} width={cardWidth} />
 							))}
 						</div>
 					</div>

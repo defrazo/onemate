@@ -119,12 +119,7 @@ export class GenStore {
 					const enabledBlocks = this.textBlocks.filter((b) => b.isEnabled);
 					this.svgWithText = insertTextBlocks(
 						raw,
-						enabledBlocks.map((b) => ({
-							text: b.text,
-							x: b.x,
-							y: b.y,
-							fontSize: 20,
-						}))
+						enabledBlocks.map(({ text, x, y }) => ({ text, x, y, fontSize: 20 }))
 					);
 				},
 				{ fireImmediately: true }

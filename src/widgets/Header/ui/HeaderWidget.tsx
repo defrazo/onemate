@@ -4,11 +4,11 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import NavigationLinks from '@/features/navigation';
 import ThemeSwitcher from '@/features/theme-switcher';
+import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { Time } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 import { HeaderLogo } from '.';
-import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 
 const Header = () => {
 	const { authStore, userStore } = useStore();
@@ -21,7 +21,7 @@ const Header = () => {
 	return (
 		<header
 			ref={headerRef}
-			className="z-30 flex justify-between rounded-xl bg-[var(--bg-tertiary)] px-4 py-2 shadow-[var(--shadow)] select-none md:py-3 print:hidden"
+			className="z-30 flex justify-between rounded-xl bg-(--bg-tertiary) px-4 py-2 shadow-(--shadow) select-none md:py-3 print:hidden"
 		>
 			<HeaderLogo />
 			<div className="flex items-center gap-4">

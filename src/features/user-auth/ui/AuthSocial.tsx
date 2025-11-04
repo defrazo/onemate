@@ -1,4 +1,4 @@
-import { IconMask, IconGoogle } from '@/shared/assets/icons';
+import { IconGoogle, IconMask } from '@/shared/assets/icons';
 import { Button, Tooltip } from '@/shared/ui';
 
 interface AuthSocialProps {
@@ -12,7 +12,7 @@ export const AuthSocial = ({ isLoading, oAuth, demoAuth }: AuthSocialProps) => {
 		<>
 			<Tooltip className="w-full" content="Доступно только для разработчика">
 				<Button
-					className="flex h-10 w-full gap-2 text-sm hover:text-[var(--accent-text)] md:text-base"
+					className="flex h-10 w-full gap-2 text-sm hover:text-(--accent-text) md:text-base"
 					loading={isLoading}
 					variant="ghost"
 					onClick={oAuth}
@@ -23,7 +23,7 @@ export const AuthSocial = ({ isLoading, oAuth, demoAuth }: AuthSocialProps) => {
 			{demoAuth && (
 				<Tooltip className="w-full" content="Запустить демо-режим">
 					<Button
-						className="flex h-10 w-full gap-2 text-sm hover:text-[var(--accent-text)] hover:opacity-100 md:text-base"
+						className="flex h-10 w-full gap-2 text-sm hover:text-(--accent-text) hover:opacity-100 md:text-base"
 						loading={isLoading}
 						variant="ghost"
 						onClick={demoAuth}

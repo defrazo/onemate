@@ -34,12 +34,12 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 					<div className="relative flex h-full items-center">
 						<Textarea
 							className={cn(
-								'hide-scrollbar h-full rounded-none border-l border-[var(--border-color)] py-2 pr-4 text-right',
+								'hide-scrollbar h-full rounded-none border-l border-(--border-color) py-2 pr-4 text-right',
 								!isVisible && 'cursor-default border-none'
 							)}
+							name="calc-log"
 							placeholder={isVisible ? 'Журнала еще нет' : ''}
 							readOnly
-							name="calc-log"
 							size="custom"
 							value={isVisible ? renderResult(result) : ''}
 							variant="custom"
@@ -48,7 +48,7 @@ export const CalculatorLog = ({ result }: CalculatorLogProps) => {
 							centerIcon={
 								isVisible ? <IconForward className="size-4" /> : <IconBack className="size-4" />
 							}
-							className="absolute right-0 h-full cursor-pointer text-[var(--accent-default)] select-none hover:text-[var(--accent-hover)]"
+							className="absolute right-0 h-full cursor-pointer text-(--accent-default) select-none hover:text-(--accent-hover)"
 							size="custom"
 							title={isVisible ? 'Свернуть журнал' : 'Развернуть журнал'}
 							variant="mobile"

@@ -4,19 +4,19 @@
 	}
 
 	.core-base {
-		@apply bg-[var(--bg-secondary)] text-[var(--color-primary)];
+		@apply bg-(--bg-secondary) text-(--color-primary);
 	}
 
 	.core-elements {
-		@apply border border-solid border-[var(--border-light)] bg-[var(--bg-tertiary)];
+		@apply border border-solid border-(--border-light) bg-(--bg-tertiary);
 	}
 
 	.core-border {
-		@apply rounded-xl border border-solid border-[var(--border-color)];
+		@apply rounded-xl border border-solid border-(--border-color);
 	}
 
 	.core-semiborder {
-		@apply rounded-xl border border-solid border-[var(--border-color-op)];
+		@apply rounded-xl border border-solid border-(--border-color-op);
 	}
 
 	.core-header {
@@ -31,7 +31,7 @@
 	}
 
 	.loader {
-		@apply aspect-square w-16 animate-spin rounded-full bg-[var(--accent-default)];
+		@apply aspect-square w-16 animate-spin rounded-full bg-(--accent-default);
 		mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		transform-origin: 50% 40%;

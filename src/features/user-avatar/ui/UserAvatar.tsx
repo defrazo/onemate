@@ -1,9 +1,9 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 import { cn } from '@/shared/lib/utils';
 import { Thumbnail } from '@/shared/ui';
-import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 
 interface UserAvatarProps {
 	className?: string;

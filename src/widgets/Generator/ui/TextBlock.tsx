@@ -33,18 +33,18 @@ export const TextBlock = ({
 					{label}
 				</label>
 				<CheckboxBool
-					id={`${label}`}
 					checked={isChecked}
 					className="h-5 bg-transparent"
 					disabled={!genStore.svgWithText}
+					id={`${label}`}
 					onChange={onCheckToggle}
 				/>
 			</div>
 			<Input
 				className="core-border text-center leading-4"
 				disabled={!genStore.svgWithText}
-				size="sm"
 				name={`${label}`}
+				size="sm"
 				type="text"
 				value={textValue}
 				onChange={onTextChange}

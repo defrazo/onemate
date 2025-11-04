@@ -9,10 +9,10 @@ interface RowProps {
 }
 
 export const Row = ({ label, value, isColumn = false }: RowProps) => (
-	<div className="hover:bg-[var(--bg-tertiary)]">
-		<div className="mx-4 border-y border-[var(--border-color)]">
+	<div className="hover:bg-(--bg-tertiary)">
+		<div className="mx-4 border-y border-(--border-color)">
 			<dl className="grid grid-cols-2 py-2">
-				<dt className="cursor-default text-[var(--color-secondary)] opacity-70">{label}</dt>
+				<dt className="cursor-default text-(--color-secondary) opacity-70">{label}</dt>
 				<dd className={cn('', isColumn && 'flex flex-col')}>{value}</dd>
 			</dl>
 		</div>

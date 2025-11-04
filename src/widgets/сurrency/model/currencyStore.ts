@@ -52,13 +52,7 @@ export class CurrencyStore {
 
 	get currencyOptions(): CurrencyOption[] {
 		const list = this.ratesList;
-
-		return Object.values(list).map((item) => ({
-			icon: item.icon,
-			key: item.name,
-			label: item.code,
-			value: item.code,
-		}));
+		return Object.values(list).map(({ icon, name, code }) => ({ icon, key: name, label: code, value: code }));
 	}
 
 	get ratesList(): RatesList {

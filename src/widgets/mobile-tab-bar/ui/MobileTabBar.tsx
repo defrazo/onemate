@@ -1,9 +1,9 @@
+import { useEffect, useRef, useState } from 'react';
+import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import NavigationLinks from '@/features/navigation';
-import { useEffect, useRef, useState } from 'react';
-import { useLocation } from 'react-router-dom';
 
 const MobileTabBar = () => {
 	const { userStore } = useStore();
@@ -51,7 +51,7 @@ const MobileTabBar = () => {
 
 	return (
 		<div
-			className="fixed inset-x-0 z-40 flex h-12 w-full items-center justify-around border-t border-solid border-[var(--border-alt)] bg-[var(--bg-tertiary)] shadow transition-all duration-300"
+			className="fixed inset-x-0 z-40 flex h-12 w-full items-center justify-around border-t border-solid border-(--border-alt) bg-(--bg-tertiary) shadow transition-all duration-300"
 			style={{ bottom: 0, transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
 		>
 			<NavigationLinks

@@ -7,11 +7,7 @@ import { Input, SuggestionList } from '@/shared/ui';
 
 import { useLocationChannel } from '../model';
 
-interface LocationProps {
-	id?: string;
-}
-
-const LocationSearch = ({ id }: LocationProps) => {
+const LocationSearch = () => {
 	const { locationStore: store, notifyStore } = useStore();
 
 	useLocationChannel();
@@ -37,14 +33,14 @@ const LocationSearch = ({ id }: LocationProps) => {
 	return (
 		<div className="relative w-full">
 			<Input
-				id="location"
 				autoComplete="off"
-				className="bg-[var(--bg-secondary)]"
+				className="bg-(--bg-secondary)"
+				id="location"
 				name="fake-location"
 				placeholder="Введите город"
 				rightIcon={
 					<IconLocation
-						className="size-7 cursor-pointer hover:text-[var(--accent-hover)]"
+						className="size-7 cursor-pointer hover:text-(--accent-hover)"
 						onClick={() => handleGeolocation()}
 					/>
 				}

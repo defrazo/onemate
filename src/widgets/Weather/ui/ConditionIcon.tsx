@@ -21,7 +21,7 @@ export const ConditionIcon = observer(({ condition, description, className }: Co
 	return (
 		<img
 			alt={description}
-			className={cn('no-touch-callout size-full text-[var(--color-primary)]', className)}
+			className={cn('no-touch-callout size-full text-(--color-primary)', className)}
 			height="100%"
 			src={icon}
 			width="100%"

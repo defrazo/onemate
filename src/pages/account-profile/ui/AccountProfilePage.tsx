@@ -1,9 +1,9 @@
+import { JSX, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
+import { useStore } from '@/app/providers';
 import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
 import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
-import { JSX, useEffect } from 'react';
-import { useStore } from '@/app/providers';
 
 const AccountProfilePage = () => {
 	usePageTitle('Профиль');

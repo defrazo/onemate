@@ -35,13 +35,13 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 					const content = (
 						<>
 							<span
-								className={`${isMobile ? '' : 'text-[var(--accent-default)]'} size-5 group-hover:text-[var(--accent-hover)] lg:size-6`}
+								className={`${isMobile ? '' : 'text-(--accent-default)'} size-5 group-hover:text-(--accent-hover) lg:size-6`}
 							>
 								{icon}
 							</span>
 							<span
 								className={
-									isMobile ? 'text-xs leading-4 lg:text-xl' : 'group-hover:text-[var(--accent-hover)]'
+									isMobile ? 'text-xs leading-4 lg:text-xl' : 'group-hover:text-(--accent-hover)'
 								}
 							>
 								{label}

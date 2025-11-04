@@ -15,7 +15,7 @@ const TableOfContents = () => {
 
 	useEffect(() => {
 		const headers = Array.from(document.querySelectorAll<HTMLHeadingElement>('h2[id]'));
-		setSections(headers.map((h) => ({ id: h.id, title: h.textContent || 'Без названия' })));
+		setSections(headers.map(({ id, textContent }) => ({ id, title: textContent || 'Без названия' })));
 
 		const handleScroll = () => {
 			if (window.scrollY <= 1) {
@@ -54,27 +54,27 @@ const TableOfContents = () => {
 	return (
 		<nav className="group sticky top-1/2 z-10 hidden self-start xl:flex print:hidden">
 			<div className="relative">
-				<div className="flex cursor-pointer items-center justify-center rounded-full text-[var(--color-secondary)]">
+				<div className="flex cursor-pointer items-center justify-center rounded-full text-(--color-secondary)">
 					<IconScroll className="size-16 opacity-50" />
 				</div>
-				<div className="absolute top-1/2 left-0 z-10 hidden min-w-sm -translate-y-1/2 flex-col gap-1 rounded-xl bg-[var(--bg-secondary)] p-4 whitespace-nowrap shadow group-hover:flex">
+				<div className="absolute top-1/2 left-0 z-10 hidden min-w-sm -translate-y-1/2 flex-col gap-1 rounded-xl bg-(--bg-secondary) p-4 whitespace-nowrap shadow group-hover:flex">
 					<h1 className="text-center text-xl font-bold select-none">Навигация</h1>
 					<Divider />
-					{sections.map((sec) => (
+					{sections.map(({ id, title }) => (
 						<a
-							key={sec.id}
+							key={id}
 							className={cn(
 								'rounded-xl px-4 py-2 transition-colors',
-								activeId === sec.id
-									? 'border-l-4 border-[var(--accent-default)] bg-[var(--bg-tertiary)] font-semibold opacity-100 shadow'
-									: 'border-transparent opacity-50 hover:bg-[var(--bg-tertiary)] hover:opacity-100'
+								activeId === id
+									? 'border-l-4 border-(--accent-default) bg-(--bg-tertiary) font-semibold opacity-100 shadow'
+									: 'border-transparent opacity-50 hover:bg-(--bg-tertiary) hover:opacity-100'
 							)}
-							href={`#${sec.id}`}
+							href={`#${id}`}
 							onClick={() =>
-								document.getElementById(sec.id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+								document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
 							}
 						>
-							{sec.title}
+							{title}
 						</a>
 					))}
 					<Divider />

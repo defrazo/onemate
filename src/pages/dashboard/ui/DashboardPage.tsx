@@ -1,3 +1,4 @@
+import { useMemo } from 'react';
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
@@ -8,7 +9,6 @@ import { useDeviceType, useOrientation, usePageTitle } from '@/shared/lib/hooks'
 import { widgets } from '../lib';
 import { useDashboard, useTabs } from '../model';
 import { Widget, WidgetPanel } from '.';
-import { useMemo } from 'react';
 
 const DashboardPage = () => {
 	usePageTitle('Dashboard');
@@ -18,7 +18,7 @@ const DashboardPage = () => {
 	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
 	const { slots, setSlot, tabsFor, EMPTY } = useTabs();
 
-	const widgetById = useMemo(() => new Map(widgets.map((widget) => [widget.id, widget.content] as const)), []);
+	const widgetById = useMemo(() => new Map(widgets.map(({ id, content }) => [id, content] as const)), []);
 	const slotContent = (id: string | undefined) => (id === EMPTY ? null : (widgetById.get(id ?? '') ?? null));
 
 	return (
@@ -32,35 +32,35 @@ const DashboardPage = () => {
 						onDragEnd={(e) => handleDragEnd(e)}
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
-							{widgetsOrder.map((widget) => (
-								<Widget key={widget.id} content={widget.content} id={widget.id} />
+							{widgetsOrder.map(({ id, content }) => (
+								<Widget key={id} content={content} id={id} />
 							))}
 						</SortableContext>
 					</DndContext>
 				</div>
 			) : device === 'tablet' ? (
 				<div className="grid grid-cols-2 grid-rows-2 justify-evenly gap-4">
-					{slots.map((slot, index) => (
+					{slots.map((slot, idx) => (
 						<WidgetPanel
-							key={index}
+							key={idx}
 							content={slotContent(slot)}
+							reverse={idx === 2 || idx === 3}
 							tabs={tabsFor()}
 							value={slot}
-							reverse={index === 2 || index === 3}
-							onChange={(value) => setSlot(index, value)}
+							onChange={(value) => setSlot(idx, value)}
 						/>
 					))}
 				</div>
 			) : (
 				<div className="grid grid-cols-1 grid-rows-2 justify-between gap-2">
-					{slots.slice(0, 2).map((slot, index) => (
+					{slots.slice(0, 2).map((slot, idx) => (
 						<WidgetPanel
-							key={index}
+							key={idx}
 							content={slotContent(slot)}
+							reverse={idx === 1}
 							tabs={tabsFor()}
 							value={slot}
-							reverse={index === 1}
-							onChange={(value) => setSlot(index, value)}
+							onChange={(value) => setSlot(idx, value)}
 						/>
 					))}
 				</div>

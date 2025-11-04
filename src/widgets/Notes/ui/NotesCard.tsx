@@ -25,12 +25,12 @@ export const NotesCard = observer(({ id }: NotesCardProps) => {
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-border relative flex size-full bg-[var(--bg-secondary)] py-2"
+			className="core-border relative flex size-full bg-(--bg-secondary) py-2"
 			style={{ transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 0 }}
 		>
 			<div
 				className={cn(
-					'pointer-events-none w-12 items-center border-r border-[var(--border-color)] text-center text-[var(--color-disabled)] select-none',
+					'pointer-events-none w-12 items-center border-r border-(--border-color) text-center text-(--color-disabled) select-none',
 					store.focusedId === id ? 'hidden' : 'flex'
 				)}
 			>
@@ -39,8 +39,8 @@ export const NotesCard = observer(({ id }: NotesCardProps) => {
 			<div className="flex flex-1 flex-col justify-between px-2">
 				<Textarea
 					className="hide-scrollbar h-full min-h-20 overscroll-contain pt-1 text-base"
-					resize="none"
 					name={`note-${id}`}
+					resize="none"
 					rows={1}
 					size="custom"
 					value={draft.text}
@@ -49,7 +49,7 @@ export const NotesCard = observer(({ id }: NotesCardProps) => {
 					onChange={(e) => store.updateNote(id, 'text', e.target.value)}
 					onFocus={() => store.setFocusedId(id)}
 				/>
-				<div className="hidden cursor-help gap-2 text-xs leading-4 text-[var(--color-disabled)] xl:flex">
+				<div className="hidden cursor-help gap-2 text-xs leading-4 text-(--color-disabled) xl:flex">
 					<div className="flex items-center gap-1" title="Дата создания">
 						<SquarePen className="size-3" /> {fullDate(draft.created_at)}
 					</div>

@@ -65,7 +65,7 @@ export const MobileUserMenu = observer(() => {
 			label: (
 				<div className="flex justify-between">
 					<span>Тема оформления:</span>
-					<span className="text-[var(--accent-default)]">{themeStore.currentTheme}</span>
+					<span className="text-(--accent-default)">{themeStore.currentTheme}</span>
 				</div>
 			),
 		},
@@ -102,18 +102,18 @@ export const MobileUserMenu = observer(() => {
 		<div className="top-6 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto overscroll-contain pb-2">
 			<UserMenuInfo />
 			<Divider />
-			{userButtons.map((item) => {
+			{userButtons.map(({ id, label, leftIcon, action }) => {
 				return (
 					<Button
-						key={item.id}
+						key={id}
 						className="h-10 text-sm"
-						leftIcon={item.leftIcon}
+						leftIcon={leftIcon}
 						rightIcon={<IconForward className="size-4" />}
 						size="custom"
 						variant="mobile"
-						onClick={item.action}
+						onClick={action}
 					>
-						<span className="w-full text-left">{item.label}</span>
+						<span className="w-full text-left">{label}</span>
 					</Button>
 				);
 			})}

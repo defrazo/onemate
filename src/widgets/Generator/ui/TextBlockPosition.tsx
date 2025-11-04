@@ -16,7 +16,7 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 			<div className="flex items-center justify-between">
 				<span className="select-none">Позиция:</span>
 				<span
-					className={`text-xs ${!genStore.svgWithText ? 'text-[var(--color-disabled)] opacity-30' : 'text-[var(--color-secondary)]'}`}
+					className={`text-xs ${!genStore.svgWithText ? 'text-(--color-disabled) opacity-30' : 'text-(--color-secondary)'}`}
 				>
 					X ({position[0].toFixed(1)}), Y ({position[1].toFixed(1)})
 				</span>
@@ -24,7 +24,7 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 			<div className="flex items-center gap-2">
 				<span className="whitespace-nowrap select-none">По X:</span>
 				<Input
-					className="accent-[var(--accent-default)]"
+					className="accent-(--accent-default)"
 					disabled={!genStore.svgWithText}
 					max={maxX}
 					min={0}
@@ -37,14 +37,14 @@ export const TextBlockPosition = ({ position, maxX, maxY, onChange }: TextBlockP
 			<div className="flex items-center gap-2">
 				<span className="whitespace-nowrap select-none">По Y:</span>
 				<Input
+					className="accent-(--accent-default)"
 					disabled={!genStore.svgWithText}
 					max={maxY}
-					className="accent-[var(--accent-default)]"
 					min={0}
+					size="custom"
 					type="range"
 					value={position[1]}
 					variant="custom"
-					size="custom"
 					onChange={(e) => onChange('y', parseFloat(e.target.value))}
 				/>
 			</div>

@@ -5,6 +5,7 @@ import type { Gender } from '@/entities/user-profile';
 import LocationSearch from '@/features/location';
 import { AvatarPicker } from '@/features/user-avatar';
 import { IconTrash } from '@/shared/assets/icons';
+import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 import { useModalBack } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
@@ -13,7 +14,6 @@ import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { genderOptions } from '../lib';
 import { useProfile } from '../model';
-import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 
 export const PersonalTab = observer(() => {
 	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
@@ -36,13 +36,13 @@ export const PersonalTab = observer(() => {
 	if (!store.isReady) return <LoadFallback />;
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 shadow-[var(--shadow)] select-none md:p-4">
+		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 select-none md:p-4 md:shadow-(--shadow)">
 			<h1 className="core-header">Личные данные</h1>
 			<div className="flex flex-col gap-4 md:flex-row">
 				<div className="flex flex-col items-center gap-2 md:w-1/3">
 					<Thumbnail
 						alt="avatar"
-						className="size-1/2 cursor-pointer ring-[var(--accent-hover)] hover:ring-2 md:size-fit"
+						className="size-1/2 cursor-pointer ring-(--accent-hover) hover:ring-2 md:size-fit"
 						src={userProfileStore.avatar || DEFAULT_AVATAR}
 						title="Сменить аватар"
 						onClick={() => modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined)}
@@ -56,12 +56,12 @@ export const PersonalTab = observer(() => {
 				</div>
 				<div className="flex w-full flex-col justify-center gap-4">
 					<div className="flex flex-col gap-1">
-						<label htmlFor="firstName" className="text-[var(--color-secondary)] opacity-70">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="firstName">
 							Имя
 						</label>
 						<Input
-							id="firstName"
 							autoComplete="new-password"
+							id="firstName"
 							placeholder="Ваше имя"
 							value={store.firstName}
 							variant="ghost"
@@ -70,12 +70,12 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<label htmlFor="lastName" className="text-[var(--color-secondary)] opacity-70">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="lastName">
 							Фамилия
 						</label>
 						<Input
-							id="lastName"
 							autoComplete="new-password"
+							id="lastName"
 							placeholder="Ваша фамилия"
 							value={store.lastName}
 							variant="ghost"
@@ -84,7 +84,7 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<label htmlFor="username" className="text-[var(--color-secondary)] opacity-70">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="username">
 							Никнейм
 						</label>
 						<Input
@@ -98,7 +98,7 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<span className="text-[var(--color-secondary)] opacity-70">Дата рождения</span>
+						<span className="text-(--color-secondary) opacity-70">Дата рождения</span>
 						<div className="flex flex-col gap-2 md:flex-row">
 							<SelectExt
 								justify="center"
@@ -113,11 +113,11 @@ export const PersonalTab = observer(() => {
 								}}
 							/>
 							<SelectExt
+								direction="up"
 								justify="center"
 								nullable
 								options={generateMonth()}
 								placeholder="Месяц"
-								direction="up"
 								value={store.birthMonth}
 								variant="embedded"
 								onChange={(value) => {
@@ -138,7 +138,7 @@ export const PersonalTab = observer(() => {
 						</div>
 					</div>
 					<div className="flex flex-col gap-1">
-						<span className="text-[var(--color-secondary)] opacity-70">Пол</span>
+						<span className="text-(--color-secondary) opacity-70">Пол</span>
 						<Radio
 							className="flex-col gap-4 md:flex-row"
 							name="gender"
@@ -148,14 +148,14 @@ export const PersonalTab = observer(() => {
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
-						<label htmlFor="location" className="text-[var(--color-secondary)] opacity-70">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="location">
 							Город
 						</label>
 						<div className="flex gap-2">
 							<LocationSearch id="location" />
 							<Button
 								centerIcon={<IconTrash className="size-6" />}
-								className="hover:text-[var(--status-error)]"
+								className="hover:text-(--status-error)"
 								size="custom"
 								title="Удалить"
 								variant="custom"

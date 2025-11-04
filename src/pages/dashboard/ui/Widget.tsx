@@ -22,7 +22,7 @@ export const Widget = ({ id, content }: WidgetProps) => {
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-card core-base relative flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none"
+			className="core-card core-base relative flex flex-1 flex-col justify-between gap-2 shadow-(--shadow) select-none"
 			style={combinedStyle}
 		>
 			<Button

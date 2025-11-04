@@ -9,7 +9,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 			<ul className="list-disc pl-4">
 				<li>Открывать журнал операций</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">
+			<p className="text-(--color-disabled)">
 				Нажмите «Развернуть журнал» (значок «&lt;»), чтобы увидеть историю.
 			</p>
 		</div>
@@ -21,7 +21,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 				<li>Выбирать период для подсчета дней</li>
 				<li>Копировать выбранный период</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">
+			<p className="text-(--color-disabled)">
 				Сначала кликните по начальной дате, потом по конечной. Кнопка «Выходные» включает или выключает их в
 				расчете.
 			</p>
@@ -34,7 +34,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 				<li>Копировать валютный курс</li>
 				<li>Копировать результат конвертации</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">Щелкните по значению, чтобы скопировать его.</p>
+			<p className="text-(--color-disabled)">Щелкните по значению, чтобы скопировать его.</p>
 		</div>
 	),
 	notes: (
@@ -45,7 +45,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 				<li>Менять порядок заметок</li>
 				<li>Добавлять и удалять заметки</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">Потяните заметку за значок с точками, чтобы переместить ее.</p>
+			<p className="text-(--color-disabled)">Потяните заметку за значок с точками, чтобы переместить ее.</p>
 		</div>
 	),
 	translator: (
@@ -54,7 +54,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 			<ul className="list-disc pl-4">
 				<li>Копировать оригинал или перевод текста</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">Нажмите «Скопировать» в соответствующем окне.</p>
+			<p className="text-(--color-disabled)">Нажмите «Скопировать» в соответствующем окне.</p>
 		</div>
 	),
 	weather: (
@@ -64,7 +64,7 @@ export const WIDGET_TIPS: Record<WidgetTipKey, ReactNode> = {
 				<li>Определять местоположение автоматически</li>
 				<li>Узнать направление ветра</li>
 			</ul>
-			<p className="text-[var(--color-disabled)]">
+			<p className="text-(--color-disabled)">
 				Наведите курсор на «Ветер» или скорость, чтобы увидеть направление.
 			</p>
 		</div>

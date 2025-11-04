@@ -18,7 +18,7 @@ export const Current = ({ current }: CurrentProps) => {
 		wind: { deg, speed },
 		weather,
 	} = current;
-	const textStyle = 'text-[var(--accent-default)]';
+	const textStyle = 'text-(--accent-default)';
 
 	return (
 		<>
@@ -40,7 +40,7 @@ export const Current = ({ current }: CurrentProps) => {
 						</div>
 					</div>
 				</div>
-				<div className="h-full w-px bg-[var(--border-color)]" />
+				<div className="h-full w-px bg-(--border-color)" />
 				<div className="flex flex-col justify-between px-2">
 					<div className="flex items-center gap-1 md:gap-2">
 						<ThermometerSun className="size-4" />

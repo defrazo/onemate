@@ -19,7 +19,7 @@ const NotFoundPage = () => {
 					<ul className="list-dash">
 						<li className="flex items-center">
 							<Link
-								className="text-[var(--accent-default)] hover:text-[var(--accent-hover)] hover:underline"
+								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline"
 								size="custom"
 								to="/"
 								variant="mobile"

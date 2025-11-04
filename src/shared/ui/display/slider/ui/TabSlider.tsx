@@ -72,27 +72,27 @@ export const TabSlider = ({ tabs, value, className, onChange }: TabSliderProps) 
 			<div ref={listRef} className="relative flex items-center gap-1 py-1 whitespace-nowrap">
 				<div
 					ref={sliderRef}
-					className="absolute top-0 left-0 z-0 rounded-xl bg-[var(--bg-tertiary)] shadow transition-[left,width,opacity] duration-300 ease-out"
+					className="absolute top-0 left-0 z-0 rounded-xl bg-(--bg-tertiary) shadow transition-[left,width,opacity] duration-300 ease-out"
 					style={{ opacity: 0 }}
 				/>
-				{tabs.map((tab) => {
-					const isActive = hasActive && tab.value === value;
+				{tabs.map(({ label, value, disabled }) => {
+					const isActive = hasActive && value === value;
 					return (
 						<button
-							key={tab.value}
+							key={value}
 							ref={(el) => {
-								tabRefs.current[tab.value] = el;
+								tabRefs.current[value] = el;
 							}}
 							aria-selected={isActive}
 							className={cn(
-								'group relative z-10 rounded-lg px-1.5 py-0.5 text-[var(--color-primary)] transition-opacity md:px-2.5 md:py-1',
+								'group relative z-10 rounded-lg px-1.5 py-0.5 text-(--color-primary) transition-opacity md:px-2.5 md:py-1',
 								isActive ? 'font-semibold opacity-100' : hasActive ? 'opacity-80' : 'opacity-100',
-								tab.disabled && 'cursor-not-allowed opacity-30'
+								disabled && 'cursor-not-allowed opacity-30'
 							)}
-							disabled={tab.disabled}
-							onClick={() => !tab.disabled && onChange(tab.value)}
+							disabled={disabled}
+							onClick={() => !disabled && onChange(value)}
 						>
-							{tab.label}
+							{label}
 						</button>
 					);
 				})}

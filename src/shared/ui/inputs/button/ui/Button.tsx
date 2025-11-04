@@ -56,7 +56,7 @@ const Button = ({
 			{...props}
 		>
 			{loading ? (
-				<Preloader className="size-6 border-3 border-t-[var(--border-alt)]" />
+				<Preloader className="size-6 border-3 border-t-(--border-alt)" />
 			) : (
 				<>
 					{leftIcon && <span className="mr-2">{leftIcon}</span>}

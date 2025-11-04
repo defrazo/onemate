@@ -22,10 +22,10 @@ const AuthContainer = () => {
 	const formMap: Record<AuthType, JSX.Element> = {
 		login: (
 			<LoginForm
+				demoAuth={handleDemo}
 				isLoading={isLoading}
 				oAuth={handleOAuth}
 				store={authFormStore}
-				demoAuth={handleDemo}
 				onSubmit={handleLogin}
 			/>
 		),

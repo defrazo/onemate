@@ -46,18 +46,18 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 				<img alt="Логотип" className="size-20" src={Logo} />
 				<h1 className="core-header">Войти в аккаунт OneMate</h1>
 			</div>
-			<AuthSocial isLoading={isLoading} oAuth={oAuth} demoAuth={demoAuth} />
+			<AuthSocial demoAuth={demoAuth} isLoading={isLoading} oAuth={oAuth} />
 			<div className="flex w-full items-center select-none">
-				<div className="grow border-t border-[var(--border-color)]" />
+				<div className="grow border-t border-(--border-color)" />
 				<span className="px-4">ИЛИ</span>
-				<div className="grow border-t border-[var(--border-color)]" />
+				<div className="grow border-t border-(--border-color)" />
 			</div>
 			<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
 				<Input
-					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					leftIcon={<IconUser className="size-6 border-r border-(--border-color) pr-1" />}
+					name="login"
 					placeholder="Имя пользователя или e-mail"
 					required
-					name="login"
 					type="text"
 					value={store.login}
 					variant="ghost"
@@ -65,10 +65,10 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 					onChange={(e) => store.setLogin(e.target.value)}
 				/>
 				<Input
-					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					leftIcon={<IconPass className="size-6 border-r border-(--border-color) pr-1" />}
+					name="password"
 					placeholder="Пароль"
 					required
-					name="password"
 					rightIcon={renderPasswordToggle({
 						show: showPassword,
 						toggle: () => setShowPassword((p) => !p),
@@ -81,7 +81,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 					onChange={(e) => store.update('password', e.target.value)}
 				/>
 				<Button
-					className="ml-auto text-sm hover:text-[var(--accent-hover)]"
+					className="ml-auto text-sm hover:text-(--accent-hover)"
 					size="custom"
 					variant="mobile"
 					onClick={() => {
@@ -102,7 +102,7 @@ export const LoginForm = observer(({ store, isLoading, oAuth, onSubmit, demoAuth
 			<p className="select-none">
 				Нет аккаунта?{' '}
 				<a
-					className="cursor-pointer font-semibold text-[var(--accent-default)] hover:text-[var(--accent-hover)]"
+					className="cursor-pointer font-semibold text-(--accent-default) hover:text-(--accent-hover)"
 					onClick={() => {
 						store.update('authType', 'register');
 						modalStore.setBack(() => {

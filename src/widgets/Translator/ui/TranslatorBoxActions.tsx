@@ -11,14 +11,14 @@ interface TranslatorBoxActionsProps {
 export const TranslatorBoxActions = ({ type, disabled, onClear, onCopy }: TranslatorBoxActionsProps) => {
 	return (
 		<div className="absolute top-0 flex w-full px-2 select-none">
-			<div className="flex w-full justify-between border-b border-[var(--border-color)] py-2">
-				<span className="text-sm leading-4 text-[var(--color-disabled)]">
+			<div className="flex w-full justify-between border-b border-(--border-color) py-2">
+				<span className="text-sm leading-4 text-(--color-disabled)">
 					{type === 'source' ? 'Оригинал' : 'Перевод'}
 				</span>
 				<div className="flex justify-end gap-2">
 					<Button
 						centerIcon={<IconCopy className="size-4" />}
-						className="bg-transparent opacity-20 transition hover:text-[var(--status-success)] hover:opacity-100"
+						className="bg-transparent opacity-20 transition hover:text-(--status-success) hover:opacity-100"
 						disabled={disabled}
 						size="custom"
 						title="Скопировать"
@@ -28,7 +28,7 @@ export const TranslatorBoxActions = ({ type, disabled, onClear, onCopy }: Transl
 					{type === 'source' && (
 						<Button
 							centerIcon={<IconClose className="size-4" />}
-							className="bg-transparent opacity-20 transition hover:text-[var(--status-error)] hover:opacity-100"
+							className="bg-transparent opacity-20 transition hover:text-(--status-error) hover:opacity-100"
 							disabled={disabled}
 							size="custom"
 							title="Очистить"

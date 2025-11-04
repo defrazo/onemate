@@ -3,8 +3,9 @@ import type { HTMLAttributes } from 'react';
 import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
 import { cn } from '@/shared/lib/utils';
-import { useSelect } from '../model';
+
 import type { Direction, Justify, SelectExtOption } from '../model';
+import { useSelect } from '../model';
 import { SelectList } from '.';
 
 interface SelectExtProps extends Omit<HTMLAttributes<HTMLDivElement>, 'onChange'> {
@@ -56,7 +57,7 @@ const SelectExt = ({
 				className={cn(
 					styles,
 					className,
-					isOpen && isEmbedded && 'border border-solid border-[var(--accent-default-op)] transition-none',
+					isOpen && isEmbedded && 'border border-solid border-(--accent-default-op) transition-none',
 					isOpen && (openUpwards ? isEmbedded && 'rounded-t-none' : isEmbedded && 'rounded-b-none')
 				)}
 				disabled={disabled}
@@ -75,8 +76,8 @@ const SelectExt = ({
 					className={cn(
 						'w-full text-center',
 						visibleDown && 'pr-2',
-						!selectedOption && 'text-[var(--color-primary)]',
-						isOpen && 'text-[var(--accent-hover)]'
+						!selectedOption && 'text-(--color-primary)',
+						isOpen && 'text-(--accent-hover)'
 					)}
 				>
 					{selectedOption?.label ?? placeholder}
@@ -89,16 +90,16 @@ const SelectExt = ({
 			</button>
 			{isOpen && !disabled && (
 				<SelectList
-					variant={variant}
 					addStyle={addStyle}
-					value={value}
-					options={options}
 					justify={justify}
-					openUpwards={openUpwards}
-					onChange={onChange}
-					setIsOpen={setIsOpen}
 					nullable={nullable}
+					openUpwards={openUpwards}
+					options={options}
+					setIsOpen={setIsOpen}
+					value={value}
+					variant={variant}
 					visibleKey={visibleKey}
+					onChange={onChange}
 				/>
 			)}
 		</div>

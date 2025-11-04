@@ -35,10 +35,10 @@ export const SettingsRight = observer(() => {
 						Линия реза:
 					</label>
 					<CheckboxBool
-						id="cutline"
 						checked={genStore.isCutLine}
 						className="h-5 bg-transparent"
 						disabled={!genStore.svgWithText}
+						id="cutline"
 						label=""
 						onChange={() => genStore.updateCutLine('visible', !genStore.isCutLine)}
 					/>
@@ -48,9 +48,9 @@ export const SettingsRight = observer(() => {
 						Отступ:
 					</label>
 					<Input
-						id="padding"
 						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
+						id="padding"
 						justify="end"
 						min={0}
 						size="sm"
@@ -64,9 +64,9 @@ export const SettingsRight = observer(() => {
 						Cкругление:
 					</label>
 					<Input
-						id="rounded"
 						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
+						id="rounded"
 						justify="end"
 						min={0}
 						size="sm"
@@ -80,7 +80,7 @@ export const SettingsRight = observer(() => {
 				<div className="flex items-center justify-between">
 					<span className="select-none">Итоговая сетка:</span>
 					<span
-						className={`${!genStore.svgWithText ? 'text-[var(--color-disabled)] opacity-30' : 'text-[var(--color-secondary)]'}`}
+						className={`${!genStore.svgWithText ? 'text-(--color-disabled) opacity-30' : 'text-(--color-secondary)'}`}
 					>
 						{genStore.cols} x {genStore.rows}
 					</span>
@@ -90,9 +90,9 @@ export const SettingsRight = observer(() => {
 						Количество:
 					</label>
 					<Input
-						id="count"
 						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
+						id="count"
 						justify="end"
 						min={1}
 						size="sm"
@@ -106,9 +106,9 @@ export const SettingsRight = observer(() => {
 						Столбцы:
 					</label>
 					<Input
-						id="cols"
 						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
+						id="cols"
 						justify="end"
 						min={1}
 						size="sm"
@@ -122,9 +122,9 @@ export const SettingsRight = observer(() => {
 						Строки:
 					</label>
 					<Input
-						id="rows"
 						className="core-border w-20 text-center leading-4"
 						disabled={!genStore.svgWithText}
+						id="rows"
 						justify="end"
 						min={1}
 						size="sm"
@@ -136,8 +136,8 @@ export const SettingsRight = observer(() => {
 			</div>
 			<Divider />
 			<Button
-				variant="accent"
 				disabled={!genStore.svgWithText}
+				variant="accent"
 				onClick={() => downloadGridSvg(genStore.svgWithText)}
 			>
 				Скачать

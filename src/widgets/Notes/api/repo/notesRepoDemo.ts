@@ -30,12 +30,12 @@ export class NotesRepoDemo implements INotesRepo {
 	private normalizeNotes(raw: DefaultNote[] | Note[], opts: NormalizeOptions = {}): Note[] {
 		const now = new Date().toISOString();
 
-		return raw.map((n, idx) => ({
-			id: n.id ?? generateUUID(),
-			text: n.text ?? '',
-			order_idx: Number.isFinite(n.order_idx) ? n.order_idx! : idx,
-			created_at: n.created_at ?? now,
-			updated_at: opts.touchUpdated ? now : (n.updated_at ?? now),
+		return raw.map(({ id, text, order_idx, created_at, updated_at }, idx) => ({
+			id: id ?? generateUUID(),
+			text: text ?? '',
+			order_idx: Number.isFinite(order_idx) ? order_idx! : idx,
+			created_at: created_at ?? now,
+			updated_at: opts.touchUpdated ? now : (updated_at ?? now),
 		}));
 	}
 

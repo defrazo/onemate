@@ -20,7 +20,7 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
 			<div
 				className={cn(
-					'flex min-w-60 items-center justify-center gap-2 rounded-xl border border-l-4 border-solid border-[var(--border-color)] bg-[rgba(255,255,255,0.3)] p-3 shadow-lg backdrop-blur-md select-none md:p-2',
+					'flex min-w-60 items-center justify-center gap-2 rounded-xl border border-l-4 border-solid border-(--border-color) bg-[rgba(255,255,255,0.3)] p-3 shadow-lg backdrop-blur-md select-none md:p-2',
 					leftBorder(type)
 				)}
 			>

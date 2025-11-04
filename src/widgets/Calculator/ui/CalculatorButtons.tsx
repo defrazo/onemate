@@ -14,13 +14,13 @@ export const CalculatorButtons = ({ onClick }: CalculatorButtonsProps) => {
 				<Button
 					key={label}
 					className={cn(
-						'border border-solid border-[var(--border-light)] py-1.5 text-base md:py-0',
+						'border border-solid border-(--border-light) py-1.5 text-base md:py-0',
 						colSpan === 2 ? 'col-span-2' : 'col-span-1',
 						type === 'digit'
-							? 'bg-[var(--bg-tertiary)]'
+							? 'bg-(--bg-tertiary)'
 							: type === 'operator'
-								? 'bg-[var(--bg-tertiary-op)]'
-								: 'bg-[var(--accent-default)] text-[var(--accent-text)]'
+								? 'bg-(--bg-tertiary-op)'
+								: 'bg-(--accent-default) text-(--accent-text)'
 					)}
 					size="custom"
 					onClick={() => onClick(label)}

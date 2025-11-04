@@ -15,7 +15,7 @@ export const renderResult = (result: ResultItem[]): string => {
 	return result
 		.slice()
 		.reverse()
-		.map((item) => `${item.expression} = ${item.result}`)
+		.map(({ expression, result }) => `${expression} = ${result}`)
 		.join('\n');
 };
 

@@ -52,17 +52,17 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 			</div>
 			<AuthSocial isLoading={isLoading} oAuth={oAuth} />
 			<div className="flex w-full items-center select-none">
-				<div className="grow border-t border-[var(--border-color)]" />
+				<div className="grow border-t border-(--border-color)" />
 				<span className="px-4">ИЛИ</span>
-				<div className="grow border-t border-[var(--border-color)]" />
+				<div className="grow border-t border-(--border-color)" />
 			</div>
 			<form className="flex w-full flex-col gap-4">
 				<Input
-					leftIcon={<IconUser className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					autoComplete="username"
+					leftIcon={<IconUser className="size-6 border-r border-(--border-color) pr-1" />}
+					name="username"
 					placeholder="Имя пользователя"
 					required
-					name="username"
-					autoComplete="username"
 					type="text"
 					value={store.username}
 					variant="ghost"
@@ -70,11 +70,11 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 					onChange={(e) => store.update('username', e.target.value)}
 				/>
 				<Input
-					leftIcon={<IconEmail className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					autoComplete="email"
+					leftIcon={<IconEmail className="size-6 border-r border-(--border-color) pr-1" />}
+					name="email"
 					placeholder="E-mail"
 					required
-					autoComplete="email"
-					name="email"
 					type="email"
 					value={store.email}
 					variant="ghost"
@@ -83,10 +83,10 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 				/>
 				<div className="relative">
 					<Input
-						leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+						leftIcon={<IconPass className="size-6 border-r border-(--border-color) pr-1" />}
+						name="password"
 						placeholder="Пароль"
 						required
-						name="password"
 						rightIcon={passwordToggleIcon}
 						type={showPassword ? 'text' : 'password'}
 						value={store.password}
@@ -105,10 +105,10 @@ export const RegisterForm = observer(({ store, isLoading, oAuth, onSubmit }: Reg
 					/>
 				</div>
 				<Input
-					leftIcon={<IconPass className="size-6 border-r border-[var(--border-color)] pr-1" />}
+					leftIcon={<IconPass className="size-6 border-r border-(--border-color) pr-1" />}
+					name="password-confirm"
 					placeholder="Подтвердите пароль"
 					required
-					name="password-confirm"
 					rightIcon={passwordToggleIcon}
 					type={showPassword ? 'text' : 'password'}
 					value={store.passwordConfirm}

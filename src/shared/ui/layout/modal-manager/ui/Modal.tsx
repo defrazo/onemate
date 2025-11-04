@@ -19,12 +19,10 @@ export const Modal = observer(({ children, onBack, onClose }: ModalProps) => {
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
 			<div className="core-base core-card core-border max-w-fit flex-col shadow-2xl">
 				<div className="top-4 flex h-4 w-full justify-between">
-					{onBack && (
-						<IconBack className="w-5 cursor-pointer hover:text-[var(--accent-hover)]" onClick={onBack} />
-					)}
+					{onBack && <IconBack className="w-5 cursor-pointer hover:text-(--accent-hover)" onClick={onBack} />}
 					{onClose && (
 						<IconClose
-							className="ml-auto w-5 cursor-pointer hover:text-[var(--accent-hover)]"
+							className="ml-auto w-5 cursor-pointer hover:text-(--accent-hover)"
 							onClick={onClose}
 						/>
 					)}

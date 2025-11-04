@@ -19,9 +19,9 @@ const ConfirmDialog = ({
 	return (
 		<div className="flex flex-col items-center gap-4 px-4 pb-4 md:w-lg md:p-0">
 			<div className="flex flex-col items-center gap-2 text-center select-none">
-				<IconWarning className="size-20 text-[var(--warning-default)]" />
+				<IconWarning className="size-20 text-(--warning-default)" />
 				<h1 className="text-2xl font-bold">{title}</h1>
-				<p className="text-sm text-[var(--color-disabled)]">{description}</p>
+				<p className="text-sm text-(--color-disabled)">{description}</p>
 			</div>
 			<div className="flex w-full gap-2" onClick={() => onConfirm(true)}>
 				<Button className="core-border w-full" type="submit">

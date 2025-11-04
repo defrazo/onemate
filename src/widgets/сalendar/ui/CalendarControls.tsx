@@ -32,7 +32,6 @@ export const CalendarControls = ({
 			<Button
 				active={hasWeekendInRange(range) && includeWeekends}
 				className="w-full text-xs xl:text-sm"
-				variant="accent"
 				disabled={!hasWeekendInRange(range)}
 				leftIcon={
 					device === 'desktop' && ortientation === 'landscape' ? (
@@ -43,26 +42,27 @@ export const CalendarControls = ({
 						)
 					) : null
 				}
+				variant="accent"
 				onClick={() => setIncludeWeekends((prev) => !prev)}
 			>
 				Выходные
 			</Button>
 			<Button
-				className="w-full text-xs hover:enabled:bg-[var(--status-success)] xl:text-sm"
-				variant="accent"
+				className="w-full text-xs hover:enabled:bg-(--status-success) xl:text-sm"
 				disabled={!range[0] || !range[1]}
 				leftIcon={device === 'desktop' && ortientation === 'landscape' ? <IconCopy className="size-4" /> : null}
+				variant="accent"
 				onClick={() => copy(rangeState, 'Период скопирован!')}
 			>
 				Скопировать
 			</Button>
 			<Button
-				className="w-full text-xs hover:enabled:bg-[var(--status-error)] xl:text-sm"
+				className="w-full text-xs hover:enabled:bg-(--status-error) xl:text-sm"
 				disabled={!range[0]}
-				variant="accent"
 				leftIcon={
 					device === 'desktop' && ortientation === 'landscape' ? <IconTrash className="size-4" /> : null
 				}
+				variant="accent"
 				onClick={() => setRange([null, null])}
 			>
 				Сбросить

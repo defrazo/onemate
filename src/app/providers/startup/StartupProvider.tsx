@@ -43,11 +43,11 @@ const AppInitializer = observer(() => {
 	if (state.error) {
 		return (
 			<div className="flex h-full flex-1 flex-col items-center justify-center gap-2">
-				<IconWarning className="size-10 text-[var(--status-error)]" />
-				<h2 className="text-xl font-semibold text-[var(--status-error)]">Ошибка загрузки OneMate</h2>
-				<p className="text-[var(--color-disabled)]">{state.error.message}</p>
+				<IconWarning className="size-10 text-(--status-error)" />
+				<h2 className="text-xl font-semibold text-(--status-error)">Ошибка загрузки OneMate</h2>
+				<p className="text-(--color-disabled)">{state.error.message}</p>
 				<button
-					className="cursor-pointer rounded-xl bg-[var(--accent-default)] px-4 py-2 text-[var(--color-primary)] hover:bg-[var(--accent-hover)]"
+					className="cursor-pointer rounded-xl bg-(--accent-default) px-4 py-2 text-(--color-primary) hover:bg-(--accent-hover)"
 					type="button"
 					onClick={() => {
 						initAttempted.current = false;

@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
+
 import type { Direction } from '.';
 
 export const useSelect = (direction: Direction = 'auto') => {

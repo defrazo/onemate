@@ -1,9 +1,9 @@
 import type { ReactNode } from 'react';
 
+import { IconEmpty } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
 import type { TabOption } from '@/shared/ui';
 import { TabSlider } from '@/shared/ui';
-import { IconEmpty } from '@/shared/assets/icons';
 
 interface WidgetPanel {
 	tabs: TabOption[];
@@ -17,16 +17,16 @@ interface WidgetPanel {
 export const WidgetPanel = ({ tabs, value, content, onChange, reverse, className }: WidgetPanel) => (
 	<div className={cn('core-base flex flex-col gap-2 rounded-xl p-2', reverse && 'flex-col-reverse', className)}>
 		<TabSlider
-			className="z-0 rounded-xl border-[var(--border-color)] bg-[var(--bg-primary)] p-1"
+			className="z-0 rounded-xl border-(--border-color) bg-(--bg-primary) p-1"
 			tabs={tabs}
 			value={value}
 			onChange={onChange}
 		/>
-		<div className="flex flex-1 flex-col justify-between gap-2 shadow-[var(--shadow)] select-none">
+		<div className="flex flex-1 flex-col justify-between gap-2 select-none">
 			{content ?? (
 				<div className="flex flex-1 flex-col items-center justify-evenly">
 					<IconEmpty className="size-60 opacity-10" />
-					<div className="font-semibold text-[var(--color-disabled)] opacity-40">Выберите виджет</div>
+					<div className="font-semibold text-(--color-disabled) opacity-40">Выберите виджет</div>
 				</div>
 			)}
 		</div>

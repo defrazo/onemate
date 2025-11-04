@@ -11,7 +11,7 @@ const PrintButton = ({ className }: PrintButtonProps) => {
 	return (
 		<Button
 			centerIcon={<Printer className="size-6" />}
-			className={cn('text-[var(--color-disabled)] hover:text-[var(--accent-hover)] print:hidden', className)}
+			className={cn('text-(--color-disabled) hover:text-(--accent-hover) print:hidden', className)}
 			size="custom"
 			title="Распечатать"
 			variant="mobile"

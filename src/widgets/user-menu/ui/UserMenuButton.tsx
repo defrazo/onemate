@@ -45,7 +45,7 @@ export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
 
 	return (
 		<Button
-			centerIcon={<UserAvatar className="size-10 ring-[var(--accent-hover)] hover:ring-2" />}
+			centerIcon={<UserAvatar className="size-10 ring-(--accent-hover) hover:ring-2" />}
 			size="custom"
 			title="Открыть меню пользователя"
 			variant="custom"

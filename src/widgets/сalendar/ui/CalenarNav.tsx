@@ -13,9 +13,7 @@ export const CalendarNav = ({ currentDate, handleNext, handlePrev }: CalendarNav
 	return (
 		<div className="flex items-center justify-center">
 			<Button
-				centerIcon={
-					<IconBack className="size-4 text-[var(--accent-default)] hover:text-[var(--accent-hover)]" />
-				}
+				centerIcon={<IconBack className="size-4 text-(--accent-default) hover:text-(--accent-hover)" />}
 				size="custom"
 				variant="custom"
 				onClick={handlePrev}
@@ -24,9 +22,7 @@ export const CalendarNav = ({ currentDate, handleNext, handlePrev }: CalendarNav
 				{formatMonthTitle(currentDate)}
 			</div>
 			<Button
-				centerIcon={
-					<IconForward className="size-4 text-[var(--accent-default)] hover:text-[var(--accent-hover)]" />
-				}
+				centerIcon={<IconForward className="size-4 text-(--accent-default) hover:text-(--accent-hover)" />}
 				size="custom"
 				variant="custom"
 				onClick={handleNext}

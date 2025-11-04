@@ -1,5 +1,5 @@
 import type { ReactNode } from 'react';
-import { makeAutoObservable } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import type { ModalConfig, ModalType } from '../ui';
 
@@ -40,6 +40,13 @@ export class ModalStore {
 	}
 
 	constructor() {
-		makeAutoObservable(this, {}, { autoBind: true });
+		makeObservable(this, {
+			modal: observable.ref,
+			modalType: computed,
+			setModal: action.bound,
+			closeModal: action.bound,
+			setBack: action.bound,
+			resetBack: action.bound,
+		});
 	}
 }

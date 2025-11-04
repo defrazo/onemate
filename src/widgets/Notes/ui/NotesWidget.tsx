@@ -39,12 +39,12 @@ const NotesWidget = () => {
 						<Button
 							centerIcon={<IconAdd className="size-4" />}
 							className="rounded-full p-2"
-							variant="accent"
 							size="custom"
 							title="Добавить заметку"
+							variant="accent"
 							onClick={() => handleAdd()}
 						/>
-						<div className="pointer-events-none absolute bottom-4 left-0 text-sm leading-0 text-[var(--color-disabled)]">
+						<div className="pointer-events-none absolute bottom-4 left-0 text-sm leading-0 text-(--color-disabled)">
 							Всего записей: {notesStore.notes.length}
 						</div>
 					</div>

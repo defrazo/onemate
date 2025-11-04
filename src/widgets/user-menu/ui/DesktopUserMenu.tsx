@@ -50,32 +50,32 @@ export const DesktopUserMenu = observer(() => {
 	];
 
 	return (
-		<div className="core-border absolute right-2.5 flex w-xs flex-col !rounded-t-none bg-[var(--bg-secondary)] py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
+		<div className="core-border absolute right-2.5 flex w-xs flex-col rounded-t-none! bg-(--bg-secondary) py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
 			<UserMenuInfo className="mt-2.5 px-4 py-2" />
-			<Divider className="mx-2 bg-[var(--border-color)]" margY="sm" />
-			{userButtons.map((item) => {
-				const isThemeToggle = item.id === 'theme';
+			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
+			{userButtons.map(({ id, label, icon, action }) => {
+				const isThemeToggle = id === 'theme';
 				const handleClick = isThemeToggle
-					? item.action
+					? action
 					: () => {
 							modalStore.closeModal();
-							navigate(`/account/profile?tab=${item.id}`);
+							navigate(`/account/profile?tab=${id}`);
 						};
 				return (
 					<Button
-						key={item.id}
-						className="h-10 justify-start rounded-none hover:bg-[var(--accent-hover)] hover:text-[var(--accent-text)]"
-						leftIcon={item.icon}
+						key={id}
+						className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
+						leftIcon={icon}
 						variant="mobile"
 						onClick={handleClick}
 					>
-						{item.label}
+						{label}
 					</Button>
 				);
 			})}
-			<Divider className="mx-2 bg-[var(--border-color)]" margY="sm" />
+			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
 			<Button
-				className="h-10 justify-start rounded-none hover:bg-[var(--accent-hover)] hover:text-[var(--accent-text)]"
+				className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
 				leftIcon={<IconLogout className="size-6" />}
 				variant="mobile"
 				onClick={() => {

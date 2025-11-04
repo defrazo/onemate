@@ -47,15 +47,13 @@ const CheckboxBool = ({
 			/>
 
 			{!disabled && checked ? (
-				<IconChecked className={cn(styles, 'group-hover:text-[var(--accent-hover)]', className)} />
+				<IconChecked className={cn(styles, 'group-hover:text-(--accent-hover)', className)} />
 			) : (
-				<IconUnchecked className={cn(styles, 'group-hover:text-[var(--accent-hover)]', className)} />
+				<IconUnchecked className={cn(styles, 'group-hover:text-(--accent-hover)', className)} />
 			)}
 
 			{label && (
-				<span className={cn(styles, 'flex w-fit items-center group-hover:text-[var(--accent-hover)]')}>
-					{label}
-				</span>
+				<span className={cn(styles, 'flex w-fit items-center group-hover:text-(--accent-hover)')}>{label}</span>
 			)}
 		</label>
 	);
