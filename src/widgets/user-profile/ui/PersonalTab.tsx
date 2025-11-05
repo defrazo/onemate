@@ -152,7 +152,7 @@ export const PersonalTab = observer(() => {
 							Город
 						</label>
 						<div className="flex gap-2">
-							<LocationSearch id="location" />
+							<LocationSearch />
 							<Button
 								centerIcon={<IconTrash className="size-6" />}
 								className="hover:text-(--status-error)"

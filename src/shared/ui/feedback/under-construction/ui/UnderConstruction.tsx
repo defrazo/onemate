@@ -39,6 +39,8 @@ const UnderConstruction = ({ title = 'Страница в разработке',
 				<img
 					alt="Иллюстрация: страница в разработке"
 					className="no-touch-callout max-h-[45vh] xl:max-h-[65vh]"
+					decoding="async"
+					loading="lazy"
 					src={Construction}
 					onContextMenu={(e) => e.preventDefault()}
 				/>

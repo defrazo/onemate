@@ -2,6 +2,7 @@ import { makeAutoObservable, reaction } from 'mobx';
 
 import type { IBaseCityPort } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
+import { cache } from '@/shared/lib/cache';
 import type { Status } from '@/shared/stores';
 
 import { fetchWeatherData } from '../api';
@@ -31,10 +32,6 @@ export class WeatherStore {
 
 	get errorMessage(): string | null {
 		return this.error;
-	}
-
-	get isRefresh(): boolean {
-		return this.status === 'loading' && this.current != null && this.forecast.length > 0;
 	}
 
 	setIsOpenCurrent(): void {
@@ -71,12 +68,22 @@ export class WeatherStore {
 		if (this.inited) return;
 		this.inited = true;
 
-		this.track(
-			reaction(
-				() => this.userStore.id,
-				(id) => !id && this.reset(),
-				{ fireImmediately: true }
-			)
+		reaction(
+			() => this.userStore.id,
+			(id) => {
+				if (!id) {
+					this.reset();
+					return;
+				}
+
+				const cached = cache.getWeather(id);
+				if (cached) {
+					this.current = cached.current;
+					this.forecast = cached.forecast;
+					this.status = 'ready';
+				}
+			},
+			{ fireImmediately: true }
 		);
 
 		this.track(
@@ -108,6 +115,7 @@ export class WeatherStore {
 		this.error = null;
 		this.current = current;
 		this.forecast = forecast;
+		if (this.userStore.id) cache.setWeather(this.userStore.id, current, forecast);
 	}
 
 	private setError(error: unknown): void {

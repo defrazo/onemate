@@ -23,6 +23,8 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 				<img
 					alt={alt}
 					className="no-touch-callout aspect-square size-full object-cover"
+					decoding="async"
+					loading="lazy"
 					src={src}
 					title={title}
 				/>

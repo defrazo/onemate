@@ -1,9 +1,16 @@
+import type { CurrentType, ForecastType } from '@/widgets/weather';
+
 import type { Cache } from '.';
 import { clearCache, readCache, writeCache } from '.';
 
 export const cache = {
 	get(id: string): Cache | null {
 		return readCache(id);
+	},
+
+	getWeather(id: string): { current: CurrentType; forecast: ForecastType[] } | null {
+		const c = readCache(id);
+		return c?.ui?.weather ?? null;
 	},
 
 	setAvatar(id: string, avatar_url: string) {
@@ -24,6 +31,10 @@ export const cache = {
 
 	setAccountDeleted(id: string, deletedAt: string | null) {
 		writeCache(id, { auth: { deleted_at: deletedAt ?? undefined } });
+	},
+
+	setWeather(id: string, current: CurrentType, forecast: ForecastType[]) {
+		writeCache(id, { ui: { weather: { current, forecast, ts: Date.now() } } });
 	},
 
 	clear(id: string) {

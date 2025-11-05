@@ -44,7 +44,7 @@ export const ResetForm = observer(({ store, isLoading, onSubmit }: ResetFormProp
 	return (
 		<div className="flex flex-col items-center gap-4 px-2 pb-4 md:w-lg md:p-0">
 			<div className="flex flex-col items-center gap-2 select-none">
-				<img alt="Логотип" className="size-20" src={Logo} />
+				<img alt="Логотип" className="size-20" decoding="async" loading="lazy" src={Logo} />
 				<h1 className="core-header">Восстановить пароль OneMate</h1>
 			</div>
 			<div className="select-none">

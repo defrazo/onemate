@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
-import { Input, SuggestionList } from '@/shared/ui';
+import { Input, Preloader, SuggestionList } from '@/shared/ui';
 
 import { useLocationChannel } from '../model';
 
@@ -35,14 +35,17 @@ const LocationSearch = () => {
 			<Input
 				autoComplete="off"
 				className="bg-(--bg-secondary)"
-				id="location"
 				name="fake-location"
 				placeholder="Введите город"
 				rightIcon={
-					<IconLocation
-						className="size-7 cursor-pointer hover:text-(--accent-hover)"
-						onClick={() => handleGeolocation()}
-					/>
+					store.isLoading ? (
+						<Preloader className="size-7" />
+					) : (
+						<IconLocation
+							className="size-7 cursor-pointer hover:text-(--accent-hover)"
+							onClick={() => handleGeolocation()}
+						/>
+					)
 				}
 				value={store.inputValue}
 				variant="ghost"

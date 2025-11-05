@@ -28,7 +28,7 @@ const AboutPage = () => {
 				</p>
 				<div className="mt-2 flex items-center gap-2 rounded-full bg-(--accent-text) px-3 py-1 text-xs leading-tight text-[#39393a] md:text-sm">
 					<Rocket className="size-4 hover:animate-spin" />
-					<span>v.1.0.1</span>
+					<span>v.1.0.2</span>
 					<span>•</span>
 					<span>активно развивается</span>
 				</div>

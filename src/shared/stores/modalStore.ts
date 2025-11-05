@@ -32,11 +32,11 @@ export class ModalStore {
 	}
 
 	setBack(handler: () => void): void {
-		if (this.modal) this.modal.back = handler;
+		if (this.modal) this.modal = { ...this.modal, back: handler };
 	}
 
 	resetBack(): void {
-		if (this.modal) this.modal.back = undefined;
+		if (this.modal) this.modal = { ...this.modal, back: undefined };
 	}
 
 	constructor() {

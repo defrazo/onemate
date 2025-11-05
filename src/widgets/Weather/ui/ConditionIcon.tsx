@@ -22,7 +22,9 @@ export const ConditionIcon = observer(({ condition, description, className }: Co
 		<img
 			alt={description}
 			className={cn('no-touch-callout size-full text-(--color-primary)', className)}
+			decoding="async"
 			height="100%"
+			loading="lazy"
 			src={icon}
 			width="100%"
 			onContextMenu={(e) => e.preventDefault()}

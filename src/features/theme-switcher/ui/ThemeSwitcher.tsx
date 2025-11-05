@@ -14,7 +14,15 @@ const ThemeSwitcher = () => {
 
 	return (
 		<div className="size-7">
-			<img alt={alt} className="cursor-pointer" src={image} title={title} onClick={handleToogle} />
+			<img
+				alt={alt}
+				className="cursor-pointer"
+				decoding="async"
+				loading="lazy"
+				src={image}
+				title={title}
+				onClick={handleToogle}
+			/>
 		</div>
 	);
 };

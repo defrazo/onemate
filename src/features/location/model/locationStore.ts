@@ -9,6 +9,7 @@ import { checkWeatherAvailability, fetchCitiesByName } from '../api';
 import { regionsDictionary } from '../lib';
 
 export class LocationStore {
+	private debounce: ReturnType<typeof setTimeout> | null = null;
 	private abort: AbortController | null = null;
 	private disposers = new Set<() => void>();
 	private inited: boolean = false;
@@ -126,6 +127,17 @@ export class LocationStore {
 		this.setSearchResults([]);
 	}
 
+	private handleQueryChange(query: string) {
+		if (this.debounce) clearTimeout(this.debounce);
+
+		if (query.length < 3) {
+			this.setSearchResults([]);
+			return;
+		}
+
+		this.debounce = setTimeout(() => this.fetchCities(query), 1000);
+	}
+
 	private loadLocation(): void {
 		this.query = this.cityStore.name;
 	}
@@ -163,21 +175,29 @@ export class LocationStore {
 		private readonly userStore: IBaseUserPort,
 		private readonly cityStore: ICityLocationPort
 	) {
-		makeAutoObservable<this, 'userStore' | 'cityStore' | 'inited' | 'disposers' | 'abort'>(this, {
+		makeAutoObservable<this, 'userStore' | 'cityStore' | 'inited' | 'disposers' | 'debounce' | 'abort'>(this, {
 			userStore: false,
 			cityStore: false,
 			inited: false,
 			disposers: false,
+			debounce: false,
 			abort: false,
 		});
 
 		this.track(
 			reaction(
 				() => (this.isFocused ? this.query.trim() : ''),
-				(query) => {
-					if (query.length >= 3) this.fetchCities(query);
-					else this.setSearchResults([]);
-				}
+				(query) => this.handleQueryChange(query)
+			)
+		);
+
+		this.track(
+			reaction(
+				() => [this.cityStore.isReady, this.cityStore.name] as const,
+				([isReady, name]) => {
+					if (isReady && name) void this.loadLocation();
+				},
+				{ fireImmediately: true }
 			)
 		);
 	}
@@ -211,6 +231,7 @@ export class LocationStore {
 		});
 		this.disposers.clear();
 		this.abort?.abort();
+		this.clearDebounce();
 		this.inited = false;
 	}
 
@@ -234,6 +255,13 @@ export class LocationStore {
 		this.error = null;
 		this.query = '';
 		this.setSearchResults([]);
+	}
+
+	private clearDebounce(): void {
+		if (this.debounce) {
+			clearTimeout(this.debounce);
+			this.debounce = null;
+		}
 	}
 
 	private track(disposer?: (() => void) | void): void {

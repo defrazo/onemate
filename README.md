@@ -1,4 +1,4 @@
-[![React](https://img.shields.io/badge/React-19-blue)](#) [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](#) [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC)](#) [![MobX](https://img.shields.io/badge/MobX-6.x-orange)](#) [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF)](#) [![Supabase](https://img.shields.io/badge/Supabase-DB-3FCF8E)](#) [![version](https://badgen.net/badge/version/v.1.0.1?icon=tag&scale=1)](#)
+[![React](https://img.shields.io/badge/React-19-blue)](#) [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue)](#) [![TailwindCSS](https://img.shields.io/badge/Tailwind-4.x-38B2AC)](#) [![MobX](https://img.shields.io/badge/MobX-6.x-orange)](#) [![Vite](https://img.shields.io/badge/Vite-6.x-646CFF)](#) [![Supabase](https://img.shields.io/badge/Supabase-DB-3FCF8E)](#) [![version](https://badgen.net/badge/version/v.1.0.2?icon=tag&scale=1)](#)
 
 # OneMate – твое личное рабочее пространство
 

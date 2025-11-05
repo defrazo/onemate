@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import LocationSearch from '@/features/location/ui/LocationSearch';
+import LocationSearch from '@/features/location';
 import { WIDGET_TIPS } from '@/shared/content';
 import { Button, ErrorFallback, LoadFallback, Tooltip } from '@/shared/ui';
 
@@ -22,7 +22,7 @@ const WeatherWidget = () => {
 			) : (
 				<div className="flex flex-1 flex-col justify-between">
 					<LocationSearch />
-					{store.isRefresh ? (
+					{store.isLoading && !store.isReady ? (
 						<LoadFallback />
 					) : (
 						<>

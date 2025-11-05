@@ -19,7 +19,7 @@ const DeletedAccountPage = () => {
 		<div className="mx-4 flex min-h-screen flex-col items-center justify-center gap-2">
 			<div className="core-card core-base flex flex-col items-center gap-2 shadow-(--shadow) md:w-lg">
 				<div className="flex flex-col items-center gap-2 select-none">
-					<img alt="Логотип" className="size-20" src={Logo} />
+					<img alt="Логотип" className="size-20" decoding="async" loading="lazy" src={Logo} />
 					<h1 className="core-header">Аккаунт OneMate удален</h1>
 				</div>
 				<p className="mb-1 text-center text-sm">

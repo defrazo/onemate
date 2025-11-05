@@ -31,6 +31,8 @@ export const AvatarPicker = () => {
 							'hover:z-10 hover:scale-[1.2] hover:ring-2',
 							'cursor-pointer'
 						)}
+						decoding="async"
+						loading="lazy"
 						src={src}
 						onClick={() => handleSelect(src)}
 					/>

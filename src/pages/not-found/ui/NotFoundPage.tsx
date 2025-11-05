@@ -36,6 +36,8 @@ const NotFoundPage = () => {
 				<img
 					alt="Иллюстрация: страница не найдена"
 					className="no-touch-callout max-h-[45vh] xl:max-h-[65vh]"
+					decoding="async"
+					loading="lazy"
 					src={NotFound}
 					onContextMenu={(e) => e.preventDefault()}
 				/>

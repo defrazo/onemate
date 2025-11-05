@@ -84,6 +84,8 @@ export const SelectList = ({
 						<img
 							alt=""
 							className="no-touch-callout size-6 rounded-lg"
+							decoding="async"
+							loading="lazy"
 							src={option.icon}
 							onContextMenu={(e) => e.preventDefault()}
 						/>
