@@ -9,7 +9,7 @@ import { AuthFormStore, AuthStore } from '@/features/user-auth';
 import { ModalStore, NotifyStore } from '@/shared/stores';
 import { GenStore } from '@/widgets/generator';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
-import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator_tmp';
+import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { ProfileStore } from '@/widgets/user-profile';
 import { WeatherStore } from '@/widgets/weather';
 import { CurrencyStore } from '@/widgets/сurrency';
