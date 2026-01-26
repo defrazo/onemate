@@ -3,10 +3,11 @@ import { makeAutoObservable, reaction } from 'mobx';
 import type { IBaseCityPort } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import { cache } from '@/shared/lib/cache';
+import { MS_IN_SECOND } from '@/shared/lib/utils';
 import type { Status } from '@/shared/stores';
 
 import { fetchWeatherData } from '../api';
-import type { CurrentType, ForecastType } from './types';
+import type { CurrentType, ForecastType } from '.';
 
 export class WeatherStore {
 	private disposers = new Set<() => void>();
@@ -38,18 +39,50 @@ export class WeatherStore {
 		this.isOpenCurrent = !this.isOpenCurrent;
 	}
 
+	private resetWeather(): void {
+		this.current = null;
+		this.forecast = [];
+		this.isOpenCurrent = true;
+	}
+
 	private async loadWeather(): Promise<void> {
 		if (!this.userStore.id || this.isLoading) return;
 
 		this.setLoading();
 
-		try {
-			const { weather, forecast } = await fetchWeatherData(this.cityStore.name);
-			if (weather) this.setReady(weather, forecast);
-		} catch (error) {
-			this.setError(error);
-			return;
-		}
+		const timeoutMs = MS_IN_SECOND * 30;
+		const retryDelay = 5000;
+		const maxRetries = 3;
+
+		let attempt = 0;
+
+		const tryLoad = async (): Promise<void> => {
+			attempt++;
+
+			const timeoutPromise = new Promise<never>((_, reject) =>
+				setTimeout(() => reject(new Error('Weather request timeout')), timeoutMs)
+			);
+
+			try {
+				const { weather, forecast } = await Promise.race([
+					fetchWeatherData(this.cityStore.name),
+					timeoutPromise,
+				]);
+
+				if (weather) this.setReady(weather, forecast);
+			} catch (error) {
+				if (attempt < maxRetries) {
+					setTimeout(() => {
+						this.resetWeather();
+						tryLoad();
+					}, retryDelay);
+				} else {
+					this.setError(error);
+				}
+			}
+		};
+
+		tryLoad();
 	}
 
 	constructor(
@@ -62,6 +95,19 @@ export class WeatherStore {
 			inited: false,
 			disposers: false,
 		});
+
+		this.track(
+			reaction(
+				() => [this.cityStore.isReady, this.cityStore.name] as const,
+				([isReady]) => {
+					if (isReady) {
+						this.resetWeather();
+						this.loadWeather();
+					}
+				},
+				{ fireImmediately: true }
+			)
+		);
 	}
 
 	init(): void {
@@ -84,14 +130,6 @@ export class WeatherStore {
 				}
 			},
 			{ fireImmediately: true }
-		);
-
-		this.track(
-			reaction(
-				() => [this.cityStore.isReady, this.cityStore.name] as const,
-				([isReady]) => isReady && this.loadWeather(),
-				{ fireImmediately: true }
-			)
 		);
 	}
 

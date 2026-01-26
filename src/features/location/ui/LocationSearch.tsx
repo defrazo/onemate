@@ -39,7 +39,7 @@ const LocationSearch = () => {
 				placeholder="Введите город"
 				rightIcon={
 					store.isLoading ? (
-						<Preloader className="size-7" />
+						<Preloader className="size-7 border-(--border-alt) border-t-(--bg-tertiary)" />
 					) : (
 						<IconLocation
 							className="size-7 cursor-pointer hover:text-(--accent-hover)"

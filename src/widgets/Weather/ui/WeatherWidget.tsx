@@ -8,7 +8,7 @@ import { Button, ErrorFallback, LoadFallback, Tooltip } from '@/shared/ui';
 import { Current, Forecast } from '.';
 
 const WeatherWidget = () => {
-	const { cityStore, weatherStore: store } = useStore();
+	const { cityStore, locationStore, weatherStore: store } = useStore();
 
 	return (
 		<>
@@ -16,11 +16,19 @@ const WeatherWidget = () => {
 				<Tooltip content={WIDGET_TIPS.weather}>
 					<h1 className="core-header">Погода</h1>
 				</Tooltip>
+				{(locationStore.isLoading || store.isLoading) && (
+					<p className="mx-6 px-2 text-center text-xs leading-3 text-(--accent-default)">
+						Данные могут загружаться дольше обычного из-за задержек в работе внешнего сервиса.
+					</p>
+				)}
 			</div>
-			{!store.isReady ? (
+			{store.isError ? (
 				<ErrorFallback onRetry={() => cityStore.restart()} />
 			) : (
-				<div className="flex flex-1 flex-col justify-between">
+				<div className="relative flex flex-1 flex-col justify-between">
+					{(locationStore.isLoading || store.isLoading) && (
+						<div className="absolute inset-0 z-40 cursor-progress" />
+					)}
 					<LocationSearch />
 					{store.isLoading && !store.isReady ? (
 						<LoadFallback />
