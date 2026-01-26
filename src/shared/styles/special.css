@@ -43,4 +43,11 @@
 		content: '—';
 		@apply absolute left-0;
 	}
+
+	/* Drop зоны kanban */
+	[data-tasks='true'].drag-over {
+		outline: 1px dashed var(--accent-hover);
+		outline-offset: 0.5px;
+		border-radius: 12px;
+	}
 }

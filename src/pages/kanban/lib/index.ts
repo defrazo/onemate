@@ -1,0 +1,1 @@
+export { insertSvg } from './utils';
