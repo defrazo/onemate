@@ -7,7 +7,7 @@ import type { ThemeStore } from '@/features/theme-switcher';
 import type { AccountStore } from '@/features/user-account';
 import type { AuthFormStore, AuthStore } from '@/features/user-auth';
 import type { ModalStore, NotifyStore } from '@/shared/stores';
-import type { GenStore } from '@/widgets/generator_tmp';
+import type { GenStore } from '@/widgets/generator';
 import type { NotesStore } from '@/widgets/notes';
 import type { TranslatorStore } from '@/widgets/translator';
 import type { ProfileStore } from '@/widgets/user-profile';

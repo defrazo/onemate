@@ -14,7 +14,7 @@ import PrivacyPolicyPage from '@/pages/privacy-policy';
 import TermsOfServicePage from '@/pages/terms-of-service';
 import TodoPage from '@/pages/to-do';
 import { Layout, StaticPageLayout } from '@/shared/layouts';
-import { SettingsLeft, SettingsRight } from '@/widgets/generator_tmp';
+import { SettingsLeft, SettingsRight } from '@/widgets/generator';
 import { ProfileNav } from '@/widgets/user-profile';
 
 import { GuardedRoute } from '.';
