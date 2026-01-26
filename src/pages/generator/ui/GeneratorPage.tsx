@@ -1,5 +1,5 @@
 import { usePageTitle } from '@/shared/lib/hooks';
-import GeneratorWidget from '@/widgets/generator';
+import GeneratorWidget from '@/widgets/generator_tmp';
 
 const GeneratorPage = () => {
 	usePageTitle('OneGen');

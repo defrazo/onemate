@@ -2,7 +2,7 @@ import type { City } from '@/entities/city';
 import type { UserProfile } from '@/entities/user-profile';
 import type { Theme } from '@/features/theme-switcher';
 import type { AuthData } from '@/features/user-auth';
-import type { CutLine, TextBlock } from '@/widgets/generator';
+import type { CutLine, TextBlock } from '@/widgets/generator_tmp';
 import type { Note } from '@/widgets/notes';
 import type { Textbox } from '@/widgets/translator';
 import type { Currency } from '@/widgets/сurrency';
