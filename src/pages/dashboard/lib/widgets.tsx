@@ -1,5 +1,5 @@
 import CalculatorWidget from '@/widgets/calculator';
-import NotesWidget from '@/widgets/notes';
+import NotesWidget from '@/widgets/notes_tmp';
 import TranslatorWidget from '@/widgets/translator';
 import WeatherWidget from '@/widgets/weather';
 import CalendarWidget from '@/widgets/сalendar';
