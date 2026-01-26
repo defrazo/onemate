@@ -11,7 +11,7 @@ import type { GenStore } from '@/widgets/generator';
 import type { NotesStore } from '@/widgets/notes';
 import type { TranslatorStore } from '@/widgets/translator';
 import type { ProfileStore } from '@/widgets/user-profile';
-import type { WeatherStore } from '@/widgets/weather';
+import type { WeatherStore } from '@/widgets/weather_tmp';
 import type { CurrencyStore } from '@/widgets/сurrency';
 
 export type AllStores = {

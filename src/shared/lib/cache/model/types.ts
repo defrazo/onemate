@@ -1,4 +1,4 @@
-import type { CurrentType, ForecastType } from '@/widgets/weather';
+import type { CurrentType, ForecastType } from '@/widgets/weather_tmp';
 
 export type Patch = Partial<Cache>;
 
