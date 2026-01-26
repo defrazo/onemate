@@ -1,6 +1,6 @@
 import CalculatorWidget from '@/widgets/calculator';
 import NotesWidget from '@/widgets/notes';
-import TranslatorWidget from '@/widgets/translator';
+import TranslatorWidget from '@/widgets/translator_tmp';
 import WeatherWidget from '@/widgets/weather';
 import CalendarWidget from '@/widgets/сalendar';
 import CurrencyWidget from '@/widgets/сurrency';
