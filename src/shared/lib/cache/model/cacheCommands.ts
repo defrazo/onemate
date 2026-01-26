@@ -1,4 +1,4 @@
-import type { CurrentType, ForecastType } from '@/widgets/weather_tmp';
+import type { CurrentType, ForecastType } from '@/widgets/weather';
 
 import type { Cache } from '.';
 import { clearCache, readCache, writeCache } from '.';

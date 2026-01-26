@@ -11,7 +11,7 @@ import { GenStore } from '@/widgets/generator';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { ProfileStore } from '@/widgets/user-profile';
-import { WeatherStore } from '@/widgets/weather_tmp';
+import { WeatherStore } from '@/widgets/weather';
 import { CurrencyStore } from '@/widgets/сurrency';
 
 import { AllStores, CoreStores } from '.';
