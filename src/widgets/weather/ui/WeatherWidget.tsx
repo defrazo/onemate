@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -10,13 +11,28 @@ import { Current, Forecast } from '.';
 const WeatherWidget = () => {
 	const { cityStore, locationStore, weatherStore: store } = useStore();
 
+	const [showSlowMessage, setShowSlowMessage] = useState(false);
+
+	const isLoading = locationStore.isLoading || store.isLoading;
+
+	useEffect(() => {
+		if (!isLoading) {
+			setShowSlowMessage(false);
+			return;
+		}
+
+		const timer = setTimeout(() => setShowSlowMessage(true), 5000);
+
+		return () => clearTimeout(timer);
+	}, [isLoading]);
+
 	return (
 		<>
 			<div className="flex items-center">
 				<Tooltip content={WIDGET_TIPS.weather}>
 					<h1 className="core-header">Погода</h1>
 				</Tooltip>
-				{(locationStore.isLoading || store.isLoading) && (
+				{showSlowMessage && (
 					<p className="mx-6 px-2 text-center text-xs leading-3 text-(--accent-default)">
 						Данные могут загружаться дольше обычного из-за задержек в работе внешнего сервиса.
 					</p>
