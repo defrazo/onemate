@@ -21,8 +21,10 @@ export const createCustomSelect = <T extends string | number = number>(
 	container.className = cn('relative inline-block w-32 text-center cursor-pointer select-none', className);
 
 	let items: Array<T | CustomSelectItem<T>> = [];
-	if (options.items) items = options.items;
-	else if (typeof options.min === 'number' && typeof options.max === 'number') {
+
+	if (options.items) {
+		items = options.items;
+	} else if (typeof options.min === 'number' && typeof options.max === 'number') {
 		for (let i = options.min; i <= options.max; i++) items.push(i as T);
 	} else items = [options.initialValue ?? 0] as Array<T>;
 
@@ -51,6 +53,7 @@ export const createCustomSelect = <T extends string | number = number>(
 	selected.append(selectedValue, arrow);
 
 	const optionsContainer = document.createElement('div');
+	optionsContainer.dataset.customSelect = '';
 	optionsContainer.className =
 		'absolute left-0 right-0 mt-1 hide-scrollbar border border-(--border-color) rounded-xl bg-(--bg-tertiary) shadow-(--shadow) hidden max-h-40 overflow-auto z-10';
 
@@ -81,6 +84,7 @@ export const createCustomSelect = <T extends string | number = number>(
 
 	selected.addEventListener('click', (event) => {
 		event.stopPropagation();
+		closeAllSelects(optionsContainer);
 		optionsContainer.classList.toggle('hidden');
 	});
 
@@ -89,6 +93,12 @@ export const createCustomSelect = <T extends string | number = number>(
 	document.addEventListener('click', (event) => {
 		if (!container.contains(event.target as Node)) optionsContainer.classList.add('hidden');
 	});
+
+	const closeAllSelects = (except?: HTMLElement) => {
+		document.querySelectorAll('[data-custom-select]').forEach((element) => {
+			if (element !== except) element.classList.add('hidden');
+		});
+	};
 
 	return container;
 };

@@ -1,83 +1,96 @@
 import editIcon from '@/shared/assets/icons/actions/edit.svg?raw';
 import optionsIcon from '@/shared/assets/icons/actions/options.svg?raw';
 import deleteIcon from '@/shared/assets/icons/actions/trash.svg?raw';
+import viewIcon from '@/shared/assets/icons/system/indicators/eye.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { insertSvg, TASK_PRIORITY, TASK_STATUS, TaskPriority, TaskStatus } from '../lib';
+import { insertSvg, TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../lib';
 import { createState, type Task } from '../model';
-import { controls, deleteDialog, editTaskDialog, layout } from '.';
-import { viewTaskDialog } from './dialogs';
+import { border, button, deleteDialog, editTaskDialog, layout, primitives, viewTaskDialog } from '.';
+
+const getOption = (index: number, icon: string, title: string, cb: () => void): HTMLElement => {
+	const option = document.createElement('button');
+	const roundedVariants = ['hover:rounded-t-xl', 'hover:rounded-none', 'hover:rounded-b-xl'] as const;
+
+	option.className = cn(
+		layout.row,
+		'gap-2 px-3 py-2 cursor-pointer text-left w-full hover:bg-(--accent-hover)',
+		roundedVariants[index]
+	);
+	insertSvg(option, icon, 'size-4');
+	option.append(title);
+	option.addEventListener('click', () => cb());
+
+	return option;
+};
 
 export const createTaskCard = (task: Task, state: ReturnType<typeof createState>): HTMLElement => {
 	// === TASK CARD ===
 	const taskCard = document.createElement('div');
-	taskCard.className = cn(
-		layout.col,
-		'bg-(--bg-secondary) min-h-[200px] border-(--border-color) gap-1 hover:border-(--accent-hover)'
-	);
+	taskCard.className = cn(layout.col, 'bg-(--bg-secondary) min-h-[200px] gap-1');
 	taskCard.dataset.taskId = task.id;
 
 	// === TASK HEADER ===
 	const taskHeader = document.createElement('div');
-	taskHeader.className = cn('border-b border-(--border-color) flex justify-between p-2 hover:cursor-grab relative');
+	taskHeader.className = cn(
+		layout.row,
+		'border-b border-(--border-color) justify-between p-2 hover:cursor-grab relative'
+	);
 
 	const taskTitle = document.createElement('h2');
 	taskTitle.textContent = task.title;
 	taskTitle.dataset.taskDragHandle = '';
 	taskTitle.draggable = true;
-	taskTitle.className = 'font-bold w-full text-left';
+	taskTitle.className = cn(
+		primitives.title,
+		'w-full cursor-grab overflow-hidden text-ellipsis line-clamp-1 display-box webkit-box-orient-vertical leading-normal'
+	);
 
 	const optionsButton = document.createElement('button');
 	optionsButton.type = 'button';
-	optionsButton.className = cn(controls.iconButton, 'pl-2');
+	optionsButton.title = 'Действия с задачей';
+	optionsButton.className = cn(button.icon, 'pl-2');
 	insertSvg(optionsButton, optionsIcon, 'size-3');
 	optionsButton.addEventListener('click', (event) => {
 		event.stopPropagation();
+		document.querySelectorAll('[data-options-menu]').forEach((menu) => {
+			if (menu !== optionsMenu) menu.classList.add('hidden');
+		});
 		optionsMenu.classList.toggle('hidden');
 	});
 
 	document.addEventListener('click', () => optionsMenu.classList.add('hidden'));
 
 	const optionsMenu = document.createElement('div');
+	optionsMenu.dataset.optionsMenu = '';
 	optionsMenu.className = cn(
+		layout.blur,
 		layout.col,
-		'absolute w-36 flex right-0 top-8 bg-(--bg-tertiary) border border-(--border-color) rounded-md shadow-md hidden'
+		border.default,
+		'absolute w-fit divide-y divide-(--border-color) right-0 text-sm top-8 hidden'
 	);
 
-	const editOption = document.createElement('button');
-	editOption.className = cn('px-3 py-1 cursor-pointer text-left rounded-md w-full hover:bg-(--accent-hover)');
-	editOption.textContent = 'Редактировать';
-	editOption.addEventListener('click', () => onEdit());
-	insertSvg(editOption, editIcon, 'size-5');
-
-	const deleteOption = document.createElement('button');
-	deleteOption.className = cn('px-3 py-1 cursor-pointer text-left rounded-md w-full hover:bg-(--accent-hover)');
-	deleteOption.textContent = 'Удалить';
-	deleteOption.addEventListener('click', () => onDelete());
-	insertSvg(deleteOption, deleteIcon, 'size-5');
-
-	optionsMenu.append(editOption, deleteOption);
+	const options = [
+		{ index: 0, icon: viewIcon, title: 'Просмотреть', action: () => onView() },
+		{ index: 1, icon: editIcon, title: 'Редактировать', action: () => onEdit() },
+		{ index: 2, icon: deleteIcon, title: 'Удалить', action: () => onDelete() },
+	];
+	options.forEach((option) => optionsMenu.append(getOption(option.index, option.icon, option.title, option.action)));
 
 	taskHeader.append(taskTitle, optionsButton, optionsMenu);
 
-	// === STATUS BAR ===
+	// === ATTRIBUTES BAR ===
 	const attributes = document.createElement('div');
-	attributes.className = cn(layout.row, layout.between, '');
+	attributes.className = cn(layout.row, 'select-none cursor-default justify-between');
 
 	const status = document.createElement('div');
-	status.className = cn(layout.row, 'gap-2 text-sm items-center');
+	status.className = cn(layout.row, 'gap-2 text-sm');
 
 	let statusConfig = TASK_STATUS[task.status as TaskStatus];
-	if (!statusConfig) {
-		console.warn('Unknown task status:', task.status);
-		statusConfig = TASK_STATUS.active;
-	}
+	if (!statusConfig) statusConfig = TASK_STATUS.active;
 
 	let priorityConfig = TASK_PRIORITY[task.priority as TaskPriority];
-	if (!priorityConfig) {
-		console.warn('Unknown task priority:', task.priority);
-		priorityConfig = TASK_PRIORITY.medium;
-	}
+	if (!priorityConfig) priorityConfig = TASK_PRIORITY.medium;
 
 	const statusDot = document.createElement('span');
 	statusDot.className = 'relative flex size-1.5 mb-0.5';
@@ -90,7 +103,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	if ('halo' in statusConfig && statusConfig.halo) {
 		const halo = document.createElement('span');
-		halo.className = cn('absolute inset-0 rounded-full animate-ping', `bg-(${statusConfig.color}) opacity-40`);
+		halo.className = cn('absolute inset-0 rounded-full animate-ping');
+		halo.style.backgroundColor = `color-mix(in srgb, var(${statusConfig.color}) 50%, transparent)`;
 
 		statusDot.append(halo);
 	}
@@ -104,26 +118,27 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	priority.textContent = priorityConfig.label;
 	priority.className = 'text-xs rounded-full px-2 py-0.5';
 	priority.style.color = `var(${priorityConfig.color})`;
-	priority.style.backgroundColor = `color-mix(in srgb, var(${priorityConfig.color}) 30%, transparent)`;
+	priority.style.backgroundColor = `color-mix(in srgb, var(${priorityConfig.color}) 10%, transparent)`;
 
 	attributes.append(status, priority);
 
 	// === TASK CONTENT ===
 	const taskContent = document.createElement('div');
-	taskContent.className = cn(layout.col, 'flex-1 gap-2 p-2 cursor-zoom-in');
+	taskContent.className = cn(layout.col, 'flex-1 gap-2 p-2');
 
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
-	taskDescription.className = 'text-sm flex-1 p-2 text-(--color-secondary)';
+	taskDescription.className = cn(
+		'text-sm px-2 text-(--color-secondary) select-none cursor-default overflow-hidden text-ellipsis line-clamp-3'
+	);
 
 	const timestamp = document.createElement('div');
 	timestamp.textContent = task.date;
-	timestamp.className = 'select-none p-2 border-t border-(--border-color) text-xs text-(--color-disabled)';
-
-	taskContent.addEventListener('click', () => onView());
+	timestamp.className = 'select-none border-t p-2 border-(--border-color) text-xs text-(--color-disabled)';
 
 	taskContent.append(attributes, taskDescription);
 
+	// === ACTION FUNCTIONS ===
 	const onView = () => {
 		const modal = viewTaskDialog({
 			initialData: {

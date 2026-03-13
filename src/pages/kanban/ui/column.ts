@@ -4,36 +4,38 @@ import { cn, fullDate } from '@/shared/lib/utils';
 
 import { COLUMN_COLORS, type ColumnColor, insertSvg } from '../lib';
 import { type Column, createState } from '../model';
-import { controls, editColumnDialog, editTaskDialog, layout } from '.';
+import { button, editColumnDialog, editTaskDialog, layout, primitives } from '.';
 
 const availableHeight = window.innerHeight * 0.71;
 
 export const createColumn = (column: Column, state: ReturnType<typeof createState>): HTMLElement => {
 	// === COLUMN ===
 	const container = document.createElement('div');
-	container.dataset.column = column.title;
 	container.dataset.columnId = column.id;
-	container.className = cn(layout.col, 'gap-6 border-2 border-transparent flex-1');
+	container.className = cn(layout.col, 'gap-6 border border-transparent flex-1');
 
 	// === HEADER ===
 	const header = document.createElement('div');
+	header.dataset.header = '';
 	header.className = cn(layout.col, 'gap-1 pb-2');
 	header.style.borderBottomColor = COLUMN_COLORS[(column.color ?? 'slate') as ColumnColor];
 	header.style.borderBottomWidth = '3px';
 
 	// === TITLE ===
 	const titleRow = document.createElement('div');
-	titleRow.className = cn(layout.row, layout.between, '');
+	titleRow.className = cn(layout.row, 'justify-between');
 
 	const title = document.createElement('h2');
 	title.textContent = column.title.toUpperCase();
+	title.dataset.title = '';
 	title.dataset.columnDragHandle = '';
 	title.draggable = true;
-	title.className = 'w-full text-left cursor-grab font-bold select-none';
+	title.className = cn(primitives.title, 'w-full cursor-grab');
 
 	const settingsButton = document.createElement('button');
 	settingsButton.type = 'button';
-	settingsButton.className = cn(controls.iconButton, '');
+	settingsButton.title = 'Настройки колонки';
+	settingsButton.className = cn(button.icon, '');
 	settingsButton.addEventListener('click', () =>
 		onEditColumn(column.id, column.title, column.taskLimit, column.color)
 	);
@@ -43,18 +45,20 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	// === TASKS ACTIONS ===
 	const tasksRow = document.createElement('div');
-	tasksRow.className = cn(layout.row, layout.between, '');
+	tasksRow.className = cn(layout.row, 'justify-between');
 
 	const counter = document.createElement('div');
-	counter.textContent = `Всего: 0. Максимум: ${column.taskLimit ?? '∞'}`;
+	counter.textContent = `Задач: 0 / ${column.taskLimit ?? '∞'}`;
 	counter.dataset.count = '';
-	counter.className = 'text-sm select-none text-(--color-secondary) opacity-70';
+	counter.className = primitives.hint;
 
 	const addTaskButton = document.createElement('button');
 	addTaskButton.type = 'button';
-	addTaskButton.className = cn(controls.iconButton, '');
-	addTaskButton.addEventListener('click', () => onAddTask(column.title));
-	insertSvg(addTaskButton, addIcon, 'size-5');
+	addTaskButton.title = 'Добавить задачу';
+	addTaskButton.dataset.addTask = '';
+	addTaskButton.className = cn(button.default, 'w-[52px] justify-center py-0.5');
+	addTaskButton.addEventListener('click', () => onAddTask(column.id));
+	insertSvg(addTaskButton, addIcon, 'size-4 mx-auto');
 
 	tasksRow.append(counter, addTaskButton);
 
@@ -63,12 +67,13 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	// === TASKS CONTAINER ===
 	const tasksContainer = document.createElement('div');
 	tasksContainer.dataset.column = column.title;
+	tasksContainer.dataset.columnId = column.id;
 	tasksContainer.dataset.tasks = '';
 	tasksContainer.className = cn(layout.col, 'flex-1 gap-4 overflow-y-auto hide-scrollbar');
 	tasksContainer.style.maxHeight = `${availableHeight}px`;
 
 	// === ACTION FUNCTIONS ===
-	const onAddTask = (columnName: string) => {
+	const onAddTask = (columnId: string) => {
 		const today = new Date().toISOString().split('T')[0];
 		const timestamp = fullDate(new Date().toISOString());
 
@@ -88,7 +93,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 					description,
 					status,
 					priority,
-					columnName,
+					columnId,
 					timestamp,
 					startDate || today,
 					endDate || null

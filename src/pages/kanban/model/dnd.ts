@@ -2,7 +2,7 @@ type DragType = 'task' | 'column' | null;
 
 export const setupDnD = (
 	board: HTMLElement,
-	onTaskDrop: (taskId: string, targetColumn: string, newIndex: number) => void,
+	onTaskDrop: (taskId: string, targetColumnId: string, newIndex: number) => void,
 	onColumnDrop: (columnId: string, newIndex: number) => void
 ) => {
 	let currentDragType: DragType = null;
@@ -53,7 +53,7 @@ export const setupDnD = (
 			});
 
 			event.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
-			event.dataTransfer!.setData('text/plain', column.dataset.id!);
+			event.dataTransfer!.setData('text/plain', column.dataset.columnId!);
 			event.dataTransfer!.effectAllowed = 'move';
 			return;
 		}
@@ -89,16 +89,16 @@ export const setupDnD = (
 			const targetContainer = target.closest<HTMLElement>('[data-columns]');
 			if (!targetContainer) return;
 
-			const targetColumn = target.closest<HTMLElement>('[data-column-id]');
-			if (!targetColumn || targetColumn === draggingElement) return;
+			const targetColumnId = target.closest<HTMLElement>('[data-column-id]');
+			if (!targetColumnId || targetColumnId === draggingElement) return;
 
-			const rect = targetColumn.getBoundingClientRect();
+			const rect = targetColumnId.getBoundingClientRect();
 			const isAfter = event.clientX > rect.left + rect.width / 2;
-			const referenceNode = isAfter ? targetColumn.nextElementSibling : targetColumn;
+			const referenceNode = isAfter ? targetColumnId.nextElementSibling : targetColumnId;
 
 			if (placeholder.nextElementSibling !== referenceNode) {
-				if (isAfter) targetColumn.after(placeholder);
-				else targetColumn.before(placeholder);
+				if (isAfter) targetColumnId.after(placeholder);
+				else targetColumnId.before(placeholder);
 			}
 		}
 	});
@@ -115,11 +115,11 @@ export const setupDnD = (
 			draggingElement.style.display = '';
 			placeholder.replaceWith(draggingElement);
 
-			const taskId = draggingElement.dataset.id!;
-			const targetColumn = container.dataset.column!;
+			const taskId = draggingElement.dataset.taskId!;
+			const targetColumnId = container.dataset.columnId!;
 
 			cleanup();
-			onTaskDrop(taskId, targetColumn, newIndex);
+			onTaskDrop(taskId, targetColumnId, newIndex);
 		}
 
 		if (currentDragType === 'column') {
@@ -142,10 +142,10 @@ export const setupDnD = (
 		const div = document.createElement('div');
 		if (type === 'task')
 			div.className =
-				'rounded-lg bg-(--bg-tertiary-op) h-[100px] border border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300';
+				'rounded-lg bg-[#64748b] min-h-[200px] animate-pulse border border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300';
 		if (type === 'column')
 			div.className =
-				'rounded-lg bg-(--bg-tertiary-op) w-full h-full p-4 border border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300 flex flex-1 flex-col';
+				'rounded-lg bg-[#64748b] w-full h-full border animate-pulse border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300 flex flex-1 flex-col';
 		return div;
 	}
 

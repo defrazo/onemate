@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
 import { getDivider } from '../../lib';
-import { layout } from '../styles';
+import { border, layout, primitives } from '../styles';
 import { createCloseButton, createOverlay } from '.';
 
 export const createDialog = (text: string, icon?: SVGElement) => {
@@ -10,26 +10,28 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 	// === CONTAINER ===
 	const container = document.createElement('div');
 	container.className = cn(
+		layout.blur,
 		layout.col,
-		'core-card bg-(--bg-secondary)/50 text-(--color-primary) border border-(--border-color) backdrop-blur-sm md:w-md gap-3 p-3 relative'
+		border.default,
+		'text-(--color-primary) md:w-md gap-3 p-3 relative'
 	);
 
 	// === HEADER ROW ===
 	const header = document.createElement('div');
-	header.className = cn(layout.row, 'gap-2 items-center');
+	header.className = cn(layout.row, 'gap-2');
 
 	if (icon) header.append(icon);
 
 	const title = document.createElement('h1');
 	title.textContent = text;
-	title.className = 'text-lg leading-4 cursor-default select-none font-bold text-(--color-text-primary)';
+	title.className = cn(primitives.title, 'text-lg');
 
 	const closeButton = createCloseButton(close);
 
 	header.append(title, closeButton);
 
 	// === DIVIDER ===
-	const divider = getDivider('absolute left-0 top-11');
+	const divider = getDivider('absolute left-0 top-12');
 
 	// === ASSEMBLY ===
 	overlay.append(container);

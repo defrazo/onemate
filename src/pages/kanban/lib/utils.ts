@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-export const getDivider = (className?: string) => {
+export const getDivider = (className = '') => {
 	const divider = document.createElement('div');
 	divider.className = cn('border-b w-full border-(--border-color)', className);
 	return divider;
@@ -39,18 +39,18 @@ export type TaskStatusConfig = {
 export const TASK_STATUS = {
 	active: {
 		label: 'В работе',
-		color: '--status-success',
+		color: '--priority-medium',
 		halo: true,
 	},
 
 	paused: {
 		label: 'На паузе',
-		color: '--status-warning',
+		color: '--priority-high',
 	},
 
 	waiting: {
 		label: 'Ожидание',
-		color: '--status-info',
+		color: '--priority-low',
 	},
 } satisfies Record<string, TaskStatusConfig>;
 
@@ -65,22 +65,17 @@ type TaskPriorityConfig = {
 export const TASK_PRIORITY = {
 	low: {
 		label: 'Низкий',
-		color: '--status-info',
+		color: '--priority-low',
 	},
 
 	medium: {
 		label: 'Обычный',
-		color: '--status-success',
+		color: '--priority-medium',
 	},
 
 	high: {
 		label: 'Высокий',
-		color: '--status-warning',
-	},
-
-	urgent: {
-		label: 'Срочный',
-		color: '--status-error',
+		color: '--priority-high',
 	},
 } satisfies Record<string, TaskPriorityConfig>;
 
@@ -88,14 +83,14 @@ export type TaskPriority = keyof typeof TASK_PRIORITY;
 
 // === COLUMN COLORS ===
 export const COLUMN_COLORS = {
-	emerald: '#10b981',
-	blue: '#3b82f6',
-	violet: '#8b5cf6',
-	yellow: '#f3a619',
+	slate: '#64748b',
 	rose: '#f43f5e',
-	cyan: '#06b6d4',
+	amber: '#fff741',
+	emerald: '#10b981',
+	violet: '#8b5cf6',
 	lime: '#84cc16',
 	fuchsia: '#d946ef',
+	sky: '#0ea5e9',
 } as const;
 
 export type ColumnColor = keyof typeof COLUMN_COLORS;

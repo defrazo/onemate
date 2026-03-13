@@ -8,7 +8,7 @@ export const mapTaskFromDb = (db: DbTask): Task => ({
 	description: db.description,
 	status: db.status as TaskStatus,
 	priority: db.priority as TaskPriority,
-	col: db.col,
+	columnId: db.column_id,
 	position: db.position,
 	date: db.date,
 	startDate: db.start_date,
@@ -20,14 +20,14 @@ export const mapTaskToDb = (task: Omit<Task, 'id'>): Partial<DbTask> => ({
 	description: task.description,
 	status: task.status,
 	priority: task.priority,
-	col: task.col,
+	column_id: task.columnId,
 	position: task.position,
 	date: task.date,
 	start_date: task.startDate,
 	end_date: task.endDate,
 });
 
-export const mapTaskUpdateToDb = (task: Omit<Task, 'id' | 'col' | 'position'>): Partial<DbTask> => ({
+export const mapTaskUpdateToDb = (task: Omit<Task, 'id' | 'columnId' | 'position'>): Partial<DbTask> => ({
 	title: task.title,
 	description: task.description,
 	date: task.date,

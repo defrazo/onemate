@@ -37,7 +37,7 @@ export const addTaskApi = async (task: Omit<Task, 'id'>): Promise<Task> => {
 	return mapTaskFromDb(data);
 };
 
-export const editTaskApi = async (id: string, task: Omit<Task, 'id' | 'col' | 'position'>): Promise<Task> => {
+export const editTaskApi = async (id: string, task: Omit<Task, 'id' | 'columnId' | 'position'>): Promise<Task> => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
@@ -53,12 +53,12 @@ export const editTaskApi = async (id: string, task: Omit<Task, 'id' | 'col' | 'p
 	return mapTaskFromDb(data);
 };
 
-export const moveTaskApi = async (id: string, newCol: string, position: number) => {
+export const moveTaskApi = async (id: string, columnId: string, position: number) => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_TASKS)
-		.update({ col: newCol, position })
+		.update({ column_id: columnId, position })
 		.eq('id', id)
 		.eq('user_id', user.id)
 		.select()

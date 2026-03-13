@@ -10,15 +10,30 @@ import {
 	moveColumnApi,
 	moveTaskApi,
 } from '../api';
-import { type ColumnColor, notifier, TaskPriority, TaskStatus } from '../lib';
+import { type ColumnColor, notifier, type TaskPriority, type TaskStatus } from '../lib';
 import type { Column, Task } from '.';
 
 const defaultColumns: Column[] = [
-	{ id: crypto.randomUUID(), title: 'Запланировано', position: 0, taskLimit: 10, color: 'yellow' },
-	{ id: crypto.randomUUID(), title: 'Подготовка', position: 1, taskLimit: 10, color: 'yellow' },
-	{ id: crypto.randomUUID(), title: 'В работе', position: 2, taskLimit: 10, color: 'yellow' },
-	{ id: crypto.randomUUID(), title: 'Завершено', position: 3, taskLimit: 10, color: 'yellow' },
+	{ id: crypto.randomUUID(), title: 'Запланировано', position: 0, taskLimit: 10, color: 'slate' },
+	{ id: crypto.randomUUID(), title: 'Подготовка', position: 1, taskLimit: 10, color: 'amber' },
+	{ id: crypto.randomUUID(), title: 'В работе', position: 2, taskLimit: 10, color: 'rose' },
+	{ id: crypto.randomUUID(), title: 'Завершено', position: 3, taskLimit: 10, color: 'lime' },
 ];
+
+const fallback = async <T>(
+	fetch: () => Promise<void>,
+	snapshot: T,
+	restore: (snapshot: T) => void,
+	notify: () => void
+) => {
+	try {
+		await fetch();
+	} catch {
+		restore(snapshot);
+		notify();
+		notifier.setNotice('Нет связи с сервером. Данные могут быть неактуальны.', 'error');
+	}
+};
 
 export const createState = () => {
 	// === COLUMNS ===
@@ -26,122 +41,124 @@ export const createState = () => {
 	let columnListeners: Array<(columns: Column[]) => void> = [];
 
 	const getColumns = () => [...columns];
-
-	const notifyColumns = () => {
-		columnListeners.forEach((callback) => callback(columns));
-	};
+	const notifyColumns = () => columnListeners.forEach((callback) => callback([...columns]));
 
 	const fetchColumns = async () => {
 		try {
-			const fetchedColumns = await fetchColumnsApi();
+			const fetched = await fetchColumnsApi();
 
-			if (!fetchedColumns || fetchedColumns.length === 0) {
-				const addedColumns: Column[] = [];
+			if (!fetched || fetched.length === 0) {
+				const added: Column[] = [];
 
-				for (const col of defaultColumns) {
-					const newCol = await addColumnApi({
-						title: col.title,
-						position: col.position,
-						taskLimit: col.taskLimit,
-						color: col.color,
+				for (const column of defaultColumns) {
+					const newColumn = await addColumnApi({
+						title: column.title,
+						position: column.position,
+						taskLimit: column.taskLimit,
+						color: column.color,
 					});
-
-					addedColumns.push(newCol);
+					added.push(newColumn);
 				}
-				columns = addedColumns;
-			} else columns = fetchedColumns;
+
+				columns = added;
+			} else columns = fetched;
 
 			notifyColumns();
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при загрузке колонок: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при загрузке колонок', 'error');
 		}
 	};
 
 	const addColumn = async (title: string, taskLimit: number, color: ColumnColor) => {
-		try {
-			const position = columns.length === 0 ? 0 : Math.max(...columns.map((c) => c.position)) + 1;
-			const newColumn = await addColumnApi({ title, taskLimit, position, color });
-			await fetchColumns();
-			await fetchTasks();
+		const snapshot = [...columns];
 
+		try {
+			const position = columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1 : 0;
+			const newColumn = await addColumnApi({ title, taskLimit, position, color });
+
+			columns.push(newColumn);
+			notifyColumns();
 			notifier.setNotice('Колонка добавлена!', 'success');
+
 			return newColumn;
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при добавлении колонки: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при добавлении колонки', 'error');
+			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
 	const editColumn = async (id: string, title: string, taskLimit: number, color: ColumnColor) => {
-		try {
-			await editColumnApi(id, { title, taskLimit, color });
-			await fetchColumns();
-			await fetchTasks();
+		const snapshot = [...columns];
 
+		try {
+			columns = columns.map((column) => (column.id === id ? { ...column, title, taskLimit, color } : column));
+			notifyColumns();
+
+			await editColumnApi(id, { title, taskLimit, color });
 			notifier.setNotice('Колонка обновлена!', 'success');
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при обновлении колонки: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при обновлении колонки', 'error');
+			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
 	const deleteColumn = async (id: string) => {
-		try {
-			await deleteColumnApi(id);
-			await fetchColumns();
-			await fetchTasks();
+		const snapshot = [...columns];
 
+		try {
+			columns = columns.filter((column) => column.id !== id);
+			notifyColumns();
+
+			await deleteColumnApi(id);
 			notifier.setNotice('Колонка удалена!', 'success');
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при удалении колонки: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при удалении колонки', 'error');
+			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
 	const moveColumn = async (id: string, newIndex: number) => {
+		const snapshot = [...columns];
+
 		try {
-			const updatedColumns = [...columns];
-			const oldIndex = updatedColumns.findIndex((c) => c.id === id);
+			const oldIndex = columns.findIndex((column) => column.id === id);
 			if (oldIndex === -1 || oldIndex === newIndex) return;
 
-			const [moved] = updatedColumns.splice(oldIndex, 1);
-			updatedColumns.splice(newIndex, 0, moved);
+			const updated = [...columns];
+			const [moved] = updated.splice(oldIndex, 1);
+			updated.splice(newIndex, 0, moved);
+			updated.forEach((column, idx) => (column.position = idx));
 
-			updatedColumns.forEach((col, i) => (col.position = i + 1000));
+			columns = updated;
+			notifyColumns();
 
-			for (const col of updatedColumns) {
-				await moveColumnApi(col.id, col.position);
-			}
-
-			updatedColumns.forEach((col, i) => (col.position = i));
-
-			for (const col of updatedColumns) {
-				await moveColumnApi(col.id, col.position);
-			}
+			for (const column of columns) await moveColumnApi(column.id, column.position);
 
 			notifier.setNotice('Колонки обновлены!', 'success');
-		} catch (error) {
-			notifier.setNotice(`Ошибка при перемещении колонки: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Ошибка при перемещении колонки', 'error');
+			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
 	const subscribeColumns = (callback: (columns: Column[]) => void) => {
 		columnListeners.push(callback);
 		callback([...columns]);
-
-		return () => (columnListeners = columnListeners.filter((l) => l !== callback));
+		return () => (columnListeners = columnListeners.filter((listener) => listener !== callback));
 	};
 
 	// === TASKS ===
 	let tasks: Task[] = [];
 	let taskListeners: Array<(tasks: Task[]) => void> = [];
 
-	const notifyTasks = () => taskListeners.forEach((callback) => callback(tasks));
+	const notifyTasks = () => taskListeners.forEach((callback) => callback([...tasks]));
 
 	const fetchTasks = async () => {
 		try {
-			tasks = await fetchTasksApi();
-
+			tasks = (await fetchTasksApi()) ?? [];
 			notifyTasks();
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при загрузке задач: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при загрузке задач', 'error');
 		}
 	};
 
@@ -150,31 +167,35 @@ export const createState = () => {
 		description: string,
 		status: TaskStatus,
 		priority: TaskPriority,
-		col: string,
+		columnId: string,
 		date: string,
 		startDate: string,
 		endDate: string | null
 	) => {
+		const snapshot = [...tasks];
+
 		try {
-			const columnTasks = tasks.filter((t) => t.col === col);
-			const position = columnTasks.length === 0 ? 1000 : columnTasks[columnTasks.length - 1].position + 1000;
+			const columnTasks = tasks.filter((task) => task.columnId === columnId);
+			const position = columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1 : 0;
 			const newTask = await addTaskApi({
 				title,
 				description,
 				status,
 				priority,
-				col,
+				columnId,
 				position,
 				date,
 				startDate,
 				endDate,
 			});
-			await fetchTasks();
 
+			tasks.push(newTask);
+			notifyTasks();
 			notifier.setNotice('Задача добавлена!', 'success');
 			return newTask;
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при добавлении задачи: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при добавлении задачи', 'error');
+			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -188,62 +209,67 @@ export const createState = () => {
 		startDate: string,
 		endDate: string | null
 	) => {
-		try {
-			await editTaskApi(id, { title, description, status, priority, date, startDate, endDate });
-			await fetchTasks();
+		const snapshot = [...tasks];
 
+		try {
+			tasks = tasks.map((task) =>
+				task.id === id ? { ...task, title, description, status, priority, date, startDate, endDate } : task
+			);
+			notifyTasks();
+
+			await editTaskApi(id, { title, description, status, priority, date, startDate, endDate });
 			notifier.setNotice('Задача обновлена!', 'success');
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при редактировании задачи: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Произошла ошибка при редактировании задачи', 'error');
+			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
 	const deleteTask = async (id: string) => {
-		try {
-			await deleteTaskApi(id);
-			await fetchTasks();
+		const snapshot = [...tasks];
 
+		try {
+			tasks = tasks.filter((task) => task.id !== id);
+			notifyTasks();
+
+			await deleteTaskApi(id);
 			notifier.setNotice('Задача удалена!', 'success');
-		} catch (error) {
-			notifier.setNotice(`Произошла ошибка при удалении задачи: ${error}`, 'error');
+		} catch (_error) {
+			notifier.setNotice('Ошибка при удалении', 'error');
+			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
-	const moveTask = async (id: string, newColumn: string, newIndex: number) => {
+	const moveTask = async (id: string, newColumnId: string, newIndex: number) => {
+		const snapshot = [...tasks];
+
 		try {
-			const task = tasks.find((t) => t.id === id);
+			const task = tasks.find((task) => task.id === id);
 			if (!task) return;
 
-			const oldIndex = tasks.findIndex((t) => t.id === id);
-			tasks.splice(oldIndex, 1);
+			const oldIndex = tasks.findIndex((task) => task.id === id);
+			const withoutTask = [...tasks];
+			withoutTask.splice(oldIndex, 1);
 
-			task.col = newColumn;
-
-			const columnTasks = tasks.filter((t) => t.col === newColumn);
+			const columnTasks = withoutTask.filter((task) => task.columnId === newColumnId);
 
 			let newPosition: number;
+			if (columnTasks.length === 0) newPosition = 1000;
+			else if (newIndex === 0) newPosition = columnTasks[0].position - 1000;
+			else if (newIndex >= columnTasks.length) newPosition = columnTasks[columnTasks.length - 1].position + 1000;
+			else newPosition = (columnTasks[newIndex - 1].position + columnTasks[newIndex].position) / 2;
 
-			if (columnTasks.length === 0) {
-				newPosition = 1000;
-			} else if (newIndex === 0) {
-				newPosition = columnTasks[0].position - 1000;
-			} else if (newIndex >= columnTasks.length) {
-				newPosition = columnTasks[columnTasks.length - 1].position + 1000;
-			} else {
-				const prev = columnTasks[newIndex - 1];
-				const next = columnTasks[newIndex];
-				newPosition = (prev.position + next.position) / 2;
-			}
+			const updatedTask = { ...task, columnId: newColumnId, position: newPosition };
 
-			task.position = newPosition;
-
-			tasks.splice(newIndex, 0, task);
-
+			withoutTask.splice(newIndex, 0, updatedTask);
+			tasks = withoutTask;
 			notifyTasks();
 
-			await moveTaskApi(id, newColumn, newPosition);
-		} catch (error) {
-			notifier.setNotice(`Ошибка при перемещении задачи: ${error}`, 'error');
+			await moveTaskApi(id, newColumnId, newPosition);
+			notifier.setNotice('Задача перемещена!', 'success');
+		} catch (_error) {
+			notifier.setNotice('Ошибка при перемещении задачи', 'error');
+			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -251,7 +277,7 @@ export const createState = () => {
 		taskListeners.push(callback);
 		callback([...tasks]);
 
-		return () => (taskListeners = taskListeners.filter((l) => l !== callback));
+		return () => (taskListeners = taskListeners.filter((listener) => listener !== callback));
 	};
 
 	const init = async () => {

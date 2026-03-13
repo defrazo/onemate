@@ -6,7 +6,7 @@ export type Task = {
 	description: string;
 	status: TaskStatus;
 	priority: TaskPriority;
-	col: string;
+	columnId: string;
 	position: number;
 	date: string;
 	startDate: string;
@@ -20,7 +20,7 @@ export type DbTask = {
 	description: string;
 	status: TaskStatus;
 	priority: TaskPriority;
-	col: string;
+	column_id: string;
 	position: number;
 	date: string;
 	start_date: string;

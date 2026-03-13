@@ -8,10 +8,10 @@ import {
 	getDivider,
 	TASK_PRIORITY,
 	TASK_STATUS,
-	TaskPriority,
-	TaskStatus,
+	type TaskPriority,
+	type TaskStatus,
 } from '../../lib';
-import { controls, layout, primitives } from '../styles';
+import { button, layout, primitives } from '../styles';
 import { createDialog } from '.';
 
 type EditTaskDialogOptions = {
@@ -51,7 +51,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const titleId = generateId('task-title');
 
 	const titleCol = document.createElement('div');
-	titleCol.className = cn(layout.col, 'gap-2 mt-2');
+	titleCol.className = cn(layout.col, 'gap-3 mt-3');
 
 	const labelTitle = document.createElement('label');
 	labelTitle.htmlFor = titleId;
@@ -62,15 +62,12 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	title.type = 'text';
 	title.value = options.initialData.title;
 	title.id = titleId;
-	title.className = cn(
-		primitives.input,
-		'flex-1 bg-(--bg-tertiary)/50 border border-(--border-color) hover:border-(--accent-hover)'
-	);
+	title.className = primitives.input;
 	title.addEventListener('input', () => updateSubmitState());
 
 	const titleHint = document.createElement('span');
 	titleHint.textContent = 'Введите название';
-	titleHint.className = 'text-(--color-secondary) select-none -mt-1 opacity-70 text-sm';
+	titleHint.className = cn(primitives.hint, '-mt-2');
 
 	titleCol.append(labelTitle, title, titleHint);
 
@@ -78,7 +75,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const descriptionId = generateId('task-description');
 
 	const descriptionCol = document.createElement('div');
-	descriptionCol.className = cn(layout.col, 'gap-2');
+	descriptionCol.className = cn(layout.col, 'gap-3');
 
 	const labelDescription = document.createElement('label');
 	labelDescription.htmlFor = descriptionId;
@@ -89,36 +86,30 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	description.id = descriptionId;
 	description.name = 'description';
 	description.value = options.initialData.description || '';
-	description.className = cn(
-		primitives.input,
-		'flex-1 min-h-40 bg-(--bg-tertiary)/50 resize-none border border-(--border-color) hover:border-(--accent-hover)'
-	);
+	description.className = cn(primitives.input, 'min-h-40 resize-none hide-scrollbar');
 
 	const descriptionHint = document.createElement('span');
 	descriptionHint.textContent = 'Введите комментарий к задаче (необязательно)';
-	descriptionHint.className = 'text-(--color-secondary) -mt-1 select-none opacity-70 text-sm';
+	descriptionHint.className = cn(primitives.hint, '-mt-2');
 
 	descriptionCol.append(labelDescription, description, descriptionHint);
 
 	// === DEADLINES ===
 	const deadlinesCol = document.createElement('div');
-	deadlinesCol.className = cn(layout.col, 'gap-2');
+	deadlinesCol.className = cn(layout.col, 'gap-3');
 
 	const deadlinesLabel = document.createElement('span');
 	deadlinesLabel.textContent = 'Период выполнения';
 	deadlinesLabel.className = 'leading-4 select-none';
 
 	const dates = document.createElement('div');
-	dates.className = cn(layout.row, 'gap-4 items-center');
+	dates.className = cn(layout.row, 'gap-4');
 
 	const startDate = document.createElement('input');
 	startDate.type = 'date';
 	startDate.name = 'startDate';
 	startDate.value = options.initialData.startDate;
-	startDate.className = cn(
-		primitives.input,
-		'flex-1 bg-(--bg-tertiary)/50 border border-(--border-color) hover:border-(--accent-hover)'
-	);
+	startDate.className = primitives.input;
 
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
@@ -128,16 +119,13 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	endDate.type = 'date';
 	endDate.name = 'endDate';
 	endDate.value = options.initialData.endDate || '';
-	endDate.className = cn(
-		primitives.input,
-		'flex-1 bg-(--bg-tertiary)/50 border border-(--border-color) hover:border-(--accent-hover)'
-	);
+	endDate.className = primitives.input;
 
 	dates.append(startDate, arrow, endDate);
 
 	const deadlinesHint = document.createElement('span');
 	deadlinesHint.textContent = 'Введите дату начала и завершения задачи';
-	deadlinesHint.className = 'text-(--color-secondary) -mt-1 select-none opacity-70 text-sm';
+	deadlinesHint.className = cn(primitives.hint, '-mt-2');
 
 	deadlinesCol.append(deadlinesLabel, dates, deadlinesHint);
 
@@ -145,7 +133,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const statusId = generateId('column-limit');
 
 	const statusRow = document.createElement('div');
-	statusRow.className = cn(layout.row, layout.between, '');
+	statusRow.className = cn(layout.row, 'justify-between');
 
 	const labelStatusCol = document.createElement('div');
 	labelStatusCol.className = cn(layout.col, 'gap-1');
@@ -156,8 +144,8 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	labelStatus.className = 'leading-4 select-none';
 
 	const statusHint = document.createElement('span');
-	statusHint.textContent = 'Укажите текущий статус задачи';
-	statusHint.className = 'text-(--color-secondary) select-none opacity-70 text-sm';
+	statusHint.textContent = 'Показывает этап выполнения';
+	statusHint.className = primitives.hint;
 
 	labelStatusCol.append(labelStatus, statusHint);
 
@@ -186,7 +174,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const priorityId = generateId('column-limit');
 
 	const proirityRow = document.createElement('div');
-	proirityRow.className = cn(layout.row, layout.between, '');
+	proirityRow.className = cn(layout.row, 'justify-between');
 
 	const labelPriorityCol = document.createElement('div');
 	labelPriorityCol.className = cn(layout.col, 'gap-1');
@@ -197,8 +185,8 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	labelPriority.className = 'leading-4 select-none';
 
 	const priorityHint = document.createElement('span');
-	priorityHint.textContent = 'Укажите приоритет задачи';
-	priorityHint.className = 'text-(--color-secondary) select-none opacity-70 text-sm';
+	priorityHint.textContent = 'Определяет важность задачи';
+	priorityHint.className = primitives.hint;
 
 	labelPriorityCol.append(labelPriority, priorityHint);
 
@@ -227,7 +215,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const submitButton = document.createElement('button');
 	submitButton.type = 'button';
 	submitButton.textContent = options.mode === 'create' ? 'Добавить' : 'Сохранить';
-	submitButton.className = cn(controls.button, 'mt-1');
+	submitButton.className = cn(button.default, 'w-52 mt-2 mx-auto');
 	submitButton.addEventListener('click', () => handleSubmit());
 
 	// === ACTION FUNCTIONS ===
