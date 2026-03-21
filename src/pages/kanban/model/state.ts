@@ -10,34 +10,19 @@ import {
 	moveColumnApi,
 	moveTaskApi,
 } from '../api';
-import { type ColumnColor, notifier, type TaskPriority, type TaskStatus } from '../lib';
+import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
+import { getDefaultColumns, getDefaultTasks, MESSAGES, notifier } from '../lib';
 import type { Column, Task } from '.';
 
-const defaultColumns: Column[] = [
-	{ id: crypto.randomUUID(), title: 'Запланировано', position: 0, taskLimit: 10, color: 'slate' },
-	{ id: crypto.randomUUID(), title: 'Подготовка', position: 1, taskLimit: 10, color: 'amber' },
-	{ id: crypto.randomUUID(), title: 'В работе', position: 2, taskLimit: 10, color: 'rose' },
-	{ id: crypto.randomUUID(), title: 'Завершено', position: 3, taskLimit: 10, color: 'lime' },
-];
-
-const fallback = async <T>(
-	fetch: () => Promise<void>,
-	snapshot: T,
-	restore: (snapshot: T) => void,
-	notify: () => void
-) => {
-	try {
-		await fetch();
-	} catch {
-		restore(snapshot);
-		notify();
-		notifier.setNotice('Нет связи с сервером. Данные могут быть неактуальны.', 'error');
-	}
+const fallback = async <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
+	restore(snapshot);
+	notify();
+	notifier.setNotice('Нет связи с сервером. Данные могут быть неактуальны.', 'error');
 };
 
 export const createState = () => {
 	// === COLUMNS ===
-	let columns: Column[] = [...defaultColumns];
+	let columns: Column[] = [];
 	let columnListeners: Array<(columns: Column[]) => void> = [];
 
 	const getColumns = () => [...columns];
@@ -50,7 +35,7 @@ export const createState = () => {
 			if (!fetched || fetched.length === 0) {
 				const added: Column[] = [];
 
-				for (const column of defaultColumns) {
+				for (const column of getDefaultColumns()) {
 					const newColumn = await addColumnApi({
 						title: column.title,
 						position: column.position,
@@ -59,13 +44,12 @@ export const createState = () => {
 					});
 					added.push(newColumn);
 				}
-
 				columns = added;
 			} else columns = fetched;
 
 			notifyColumns();
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при загрузке колонок', 'error');
+			notifier.setNotice(MESSAGES.columns.fetchError, 'error');
 		}
 	};
 
@@ -78,12 +62,10 @@ export const createState = () => {
 
 			columns.push(newColumn);
 			notifyColumns();
-			notifier.setNotice('Колонка добавлена!', 'success');
-
-			return newColumn;
+			notifier.setNotice(MESSAGES.columns.added, 'success');
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при добавлении колонки', 'error');
-			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			notifier.setNotice(MESSAGES.columns.addError, 'error');
+			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -95,10 +77,10 @@ export const createState = () => {
 			notifyColumns();
 
 			await editColumnApi(id, { title, taskLimit, color });
-			notifier.setNotice('Колонка обновлена!', 'success');
+			notifier.setNotice(MESSAGES.columns.updated, 'success');
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при обновлении колонки', 'error');
-			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			notifier.setNotice(MESSAGES.columns.updateError, 'error');
+			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -109,11 +91,17 @@ export const createState = () => {
 			columns = columns.filter((column) => column.id !== id);
 			notifyColumns();
 
+			const tasksToDelete = tasks.filter((task) => task.columnId === id);
+			if (tasksToDelete.length !== 0) {
+				for (const task of tasksToDelete) await deleteTask(task.id);
+				notifyTasks();
+			}
+
 			await deleteColumnApi(id);
-			notifier.setNotice('Колонка удалена!', 'success');
+			notifier.setNotice(MESSAGES.columns.deleted, 'success');
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при удалении колонки', 'error');
-			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			notifier.setNotice(MESSAGES.columns.deleteError, 'error');
+			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -134,10 +122,10 @@ export const createState = () => {
 
 			for (const column of columns) await moveColumnApi(column.id, column.position);
 
-			notifier.setNotice('Колонки обновлены!', 'success');
+			notifier.setNotice(MESSAGES.columns.moved, 'success');
 		} catch (_error) {
-			notifier.setNotice('Ошибка при перемещении колонки', 'error');
-			await fallback(fetchColumns, snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			notifier.setNotice(MESSAGES.columns.moveError, 'error');
+			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -155,10 +143,33 @@ export const createState = () => {
 
 	const fetchTasks = async () => {
 		try {
-			tasks = (await fetchTasksApi()) ?? [];
+			const fetched = await fetchTasksApi();
+
+			if (!fetched || fetched.length === 0) {
+				const added: Task[] = [];
+				const defaultTasks = getDefaultTasks(columns.map((column) => column.id));
+
+				for (const task of defaultTasks) {
+					if (!task.columnId) continue;
+					const newTask = await addTaskApi({
+						title: task.title,
+						description: task.description,
+						status: task.status,
+						priority: task.priority,
+						columnId: task.columnId,
+						position: task.position,
+						date: task.date,
+						startDate: task.startDate,
+						endDate: task.endDate,
+					});
+					added.push(newTask);
+				}
+				tasks = added;
+			} else tasks = fetched;
+
 			notifyTasks();
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при загрузке задач', 'error');
+			notifier.setNotice(MESSAGES.tasks.fetchError, 'error');
 		}
 	};
 
@@ -191,11 +202,10 @@ export const createState = () => {
 
 			tasks.push(newTask);
 			notifyTasks();
-			notifier.setNotice('Задача добавлена!', 'success');
-			return newTask;
+			notifier.setNotice(MESSAGES.tasks.added, 'success');
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при добавлении задачи', 'error');
-			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			notifier.setNotice(MESSAGES.tasks.addError, 'error');
+			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -218,25 +228,10 @@ export const createState = () => {
 			notifyTasks();
 
 			await editTaskApi(id, { title, description, status, priority, date, startDate, endDate });
-			notifier.setNotice('Задача обновлена!', 'success');
+			notifier.setNotice(MESSAGES.tasks.updated, 'success');
 		} catch (_error) {
-			notifier.setNotice('Произошла ошибка при редактировании задачи', 'error');
-			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
-		}
-	};
-
-	const deleteTask = async (id: string) => {
-		const snapshot = [...tasks];
-
-		try {
-			tasks = tasks.filter((task) => task.id !== id);
-			notifyTasks();
-
-			await deleteTaskApi(id);
-			notifier.setNotice('Задача удалена!', 'success');
-		} catch (_error) {
-			notifier.setNotice('Ошибка при удалении', 'error');
-			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			notifier.setNotice(MESSAGES.tasks.updateError, 'error');
+			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -266,10 +261,25 @@ export const createState = () => {
 			notifyTasks();
 
 			await moveTaskApi(id, newColumnId, newPosition);
-			notifier.setNotice('Задача перемещена!', 'success');
+			notifier.setNotice(MESSAGES.tasks.moved, 'success');
 		} catch (_error) {
-			notifier.setNotice('Ошибка при перемещении задачи', 'error');
-			await fallback(fetchTasks, snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
+			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+		}
+	};
+
+	const deleteTask = async (id: string) => {
+		const snapshot = [...tasks];
+
+		try {
+			tasks = tasks.filter((task) => task.id !== id);
+			notifyTasks();
+
+			await deleteTaskApi(id);
+			notifier.setNotice(MESSAGES.tasks.deleted, 'success');
+		} catch (_error) {
+			notifier.setNotice(MESSAGES.tasks.deleteError, 'error');
+			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -287,16 +297,16 @@ export const createState = () => {
 
 	return {
 		init,
+		fetchTasks,
+		fetchColumns,
 		addTask,
 		addColumn,
 		editTask,
 		editColumn,
-		deleteTask,
-		deleteColumn,
 		moveTask,
 		moveColumn,
-		fetchTasks,
-		fetchColumns,
+		deleteTask,
+		deleteColumn,
 		getColumns,
 		subscribeTasks,
 		subscribeColumns,

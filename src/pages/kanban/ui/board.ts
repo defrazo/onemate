@@ -25,6 +25,14 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	columnsContainer.dataset.columns = '';
 
 	const renderColumns = (columns: Column[], tasks: Task[]) => {
+		const actualColumns = new Set(columns.map((column) => column.id));
+
+		Array.from(columnsContainer.querySelectorAll('[data-column-id]')).forEach((node) => {
+			const element = node as HTMLElement;
+			const id = element.dataset.columnId;
+			if (!id || !actualColumns.has(id)) element.remove();
+		});
+
 		columns.forEach((column) => {
 			let existingColumn = columnsContainer.querySelector(`[data-column-id="${column.id}"]`) as HTMLElement;
 
@@ -126,7 +134,7 @@ export const updateBoard = (board: HTMLElement, tasks: Task[], state: ReturnType
 		const isLimitReached = tasksInColumn.length >= limit;
 
 		const countElement = column.querySelector('[data-count]') as HTMLElement;
-		if (countElement) countElement.textContent = `Задач: ${tasksInColumn.length} / ${limit}`;
+		if (countElement) countElement.textContent = `Задач: ${tasksInColumn.length} / ${limit ?? '∞'}`;
 
 		const addTaskButton = column.querySelector('[data-add-task]') as HTMLElement;
 		if (addTaskButton) {
