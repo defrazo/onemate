@@ -11,7 +11,7 @@ import {
 	moveTaskApi,
 } from '../api';
 import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
-import { getDefaultColumns, getDefaultTasks, MESSAGES, notifier } from '../lib';
+import { getDefaultColumns, getDefaultTasks, KANBAN_LIMITS, MESSAGES, notifier } from '../lib';
 import type { Column, Task } from '.';
 
 const fallback = async <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
@@ -54,9 +54,14 @@ export const createState = () => {
 	};
 
 	const addColumn = async (title: string, taskLimit: number, color: ColumnColor) => {
-		const snapshot = [...columns];
+		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
+			if (columns.length >= KANBAN_LIMITS.MAX_COLUMNS) {
+				notifier.setNotice(MESSAGES.columns.addLimit, 'error');
+				return;
+			}
+
 			const position = columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1 : 0;
 			const newColumn = await addColumnApi({ title, taskLimit, position, color });
 
@@ -70,7 +75,7 @@ export const createState = () => {
 	};
 
 	const editColumn = async (id: string, title: string, taskLimit: number, color: ColumnColor) => {
-		const snapshot = [...columns];
+		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
 			columns = columns.map((column) => (column.id === id ? { ...column, title, taskLimit, color } : column));
@@ -85,17 +90,16 @@ export const createState = () => {
 	};
 
 	const deleteColumn = async (id: string) => {
-		const snapshot = [...columns];
+		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
+			if (columns.length <= KANBAN_LIMITS.MIN_COLUMNS) {
+				notifier.setNotice(MESSAGES.columns.deleteLimit, 'error');
+				return;
+			}
+
 			columns = columns.filter((column) => column.id !== id);
 			notifyColumns();
-
-			const tasksToDelete = tasks.filter((task) => task.columnId === id);
-			if (tasksToDelete.length !== 0) {
-				for (const task of tasksToDelete) await deleteTask(task.id);
-				notifyTasks();
-			}
 
 			await deleteColumnApi(id);
 			notifier.setNotice(MESSAGES.columns.deleted, 'success');
@@ -106,7 +110,7 @@ export const createState = () => {
 	};
 
 	const moveColumn = async (id: string, newIndex: number) => {
-		const snapshot = [...columns];
+		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
 			const oldIndex = columns.findIndex((column) => column.id === id);
@@ -181,12 +185,19 @@ export const createState = () => {
 		columnId: string,
 		date: string,
 		startDate: string,
-		endDate: string | null
+		endDate: string | null,
+		taskLimit: number
 	) => {
-		const snapshot = [...tasks];
+		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
 			const columnTasks = tasks.filter((task) => task.columnId === columnId);
+
+			if (columnTasks.length + 1 > taskLimit) {
+				notifier.setNotice(MESSAGES.tasks.addLimit, 'error');
+				return;
+			}
+
 			const position = columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1 : 0;
 			const newTask = await addTaskApi({
 				title,
@@ -219,7 +230,7 @@ export const createState = () => {
 		startDate: string,
 		endDate: string | null
 	) => {
-		const snapshot = [...tasks];
+		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
 			tasks = tasks.map((task) =>
@@ -236,16 +247,30 @@ export const createState = () => {
 	};
 
 	const moveTask = async (id: string, newColumnId: string, newIndex: number) => {
-		const snapshot = [...tasks];
+		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
 			const task = tasks.find((task) => task.id === id);
 			if (!task) return;
 
-			const oldIndex = tasks.findIndex((task) => task.id === id);
-			const withoutTask = [...tasks];
-			withoutTask.splice(oldIndex, 1);
+			const tasksInNewColumn = tasks.filter((task) => task.columnId === newColumnId);
+			const oldIndexInNewColumn = tasksInNewColumn.findIndex((task) => task.id === id);
 
+			const isSameColumn = task.columnId === newColumnId;
+			const isSamePosition = oldIndexInNewColumn === newIndex;
+
+			if (isSameColumn && isSamePosition) return;
+
+			const columnData = columns.find((column) => column.id === newColumnId);
+
+			if (tasksInNewColumn.length + 1 > (columnData?.taskLimit ?? Infinity)) {
+				tasks = snapshot;
+				notifyTasks();
+				notifier.setNotice(MESSAGES.tasks.moveLimit, 'error');
+				return;
+			}
+
+			const withoutTask = tasks.filter((task) => task.id !== id);
 			const columnTasks = withoutTask.filter((task) => task.columnId === newColumnId);
 
 			let newPosition: number;
@@ -255,8 +280,14 @@ export const createState = () => {
 			else newPosition = (columnTasks[newIndex - 1].position + columnTasks[newIndex].position) / 2;
 
 			const updatedTask = { ...task, columnId: newColumnId, position: newPosition };
-
 			withoutTask.splice(newIndex, 0, updatedTask);
+
+			if (task.columnId === updatedTask.columnId && task.position === updatedTask.position) {
+				tasks = withoutTask;
+				notifyTasks();
+				return;
+			}
+
 			tasks = withoutTask;
 			notifyTasks();
 
@@ -269,7 +300,7 @@ export const createState = () => {
 	};
 
 	const deleteTask = async (id: string) => {
-		const snapshot = [...tasks];
+		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
 			tasks = tasks.filter((task) => task.id !== id);

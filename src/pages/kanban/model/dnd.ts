@@ -73,7 +73,13 @@ export const setupDnD = (
 			if (!targetContainer) return;
 
 			const targetCard = target.closest<HTMLElement>('[data-task-id]');
-			if (!targetCard || targetCard === draggingElement) return;
+
+			if (!targetCard) {
+				if (!targetContainer.contains(placeholder)) targetContainer.appendChild(placeholder!);
+				return;
+			}
+
+			if (targetCard === draggingElement) return;
 
 			const rect = targetCard.getBoundingClientRect();
 			const isAfter = event.clientY > rect.top + rect.height / 2;

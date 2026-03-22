@@ -1,4 +1,4 @@
-export { MESSAGES } from './constants';
+export { KANBAN_LIMITS, MESSAGES } from './constants';
 export { createCustomSelect } from './customSelect';
 export { getDefaultColumns, getDefaultTasks } from './defaults';
 export { notifier } from './notifier';

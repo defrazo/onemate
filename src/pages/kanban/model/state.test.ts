@@ -381,7 +381,8 @@ describe('state', () => {
 						'c1',
 						'18.03.2026, 10:00',
 						'2026-03-18',
-						null
+						null,
+						10
 					);
 
 					// ASSERT
@@ -402,7 +403,7 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.addTask('Задача 3', '', 'active', 'low', 'c1', '', '', null);
+					await state.addTask('Задача 3', '', 'active', 'low', 'c1', '', '', null, 10);
 
 					// ASSERT
 					expect(listener).toHaveBeenLastCalledWith(tasksBefore);

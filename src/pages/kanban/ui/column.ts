@@ -12,7 +12,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	// === COLUMN ===
 	const container = document.createElement('div');
 	container.dataset.columnId = column.id;
-	container.className = cn(layout.col, 'gap-6 border border-transparent flex-1');
+	container.className = cn(layout.col, 'gap-6 border h-full border-transparent flex-1');
 
 	// === HEADER ===
 	const header = document.createElement('div');
@@ -57,7 +57,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	addTaskButton.title = 'Добавить задачу';
 	addTaskButton.dataset.addTask = '';
 	addTaskButton.className = cn(button.default, 'w-[52px] justify-center py-0.5');
-	addTaskButton.addEventListener('click', () => onAddTask(column.id));
+	addTaskButton.addEventListener('click', () => onAddTask(column.id, column.taskLimit));
 	insertSvg(addTaskButton, addIcon, 'size-4 mx-auto');
 
 	tasksRow.append(counter, addTaskButton);
@@ -73,7 +73,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	tasksContainer.style.maxHeight = `${availableHeight}px`;
 
 	// === ACTION FUNCTIONS ===
-	const onAddTask = (columnId: string) => {
+	const onAddTask = (columnId: string, taskLimit: number) => {
 		const today = new Date().toISOString().split('T')[0];
 		const timestamp = fullDate(new Date().toISOString());
 
@@ -96,7 +96,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 					columnId,
 					timestamp,
 					startDate || today,
-					endDate || null
+					endDate || null,
+					taskLimit
 				);
 			},
 		});

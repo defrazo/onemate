@@ -1,7 +1,7 @@
 import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { COLUMN_COLORS, insertSvg } from '../lib';
+import { COLUMN_COLORS, insertSvg, KANBAN_LIMITS } from '../lib';
 import { type Column, createState, setupDnD, type Task } from '../model';
 import { button, createColumn, createTaskCard, editColumnDialog, layout } from '.';
 
@@ -9,8 +9,6 @@ type BoardInstance = {
 	board: HTMLDivElement;
 	destroy: () => void;
 };
-
-const MAX_COLUMNS = 6;
 
 export const createBoard = (state: ReturnType<typeof createState>): BoardInstance => {
 	let lastTasks: Task[] = [];
@@ -87,7 +85,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	const unsubscribeColumns = state.subscribeColumns((columns) => {
 		renderColumns(columns, lastTasks);
 
-		if (columns.length >= MAX_COLUMNS) addColumnButton.classList.add('hidden');
+		if (columns.length >= KANBAN_LIMITS.MAX_COLUMNS) addColumnButton.classList.add('hidden');
 		else addColumnButton.classList.remove('hidden');
 	});
 
