@@ -4,7 +4,7 @@ import deleteIcon from '@/shared/assets/icons/actions/trash.svg?raw';
 import viewIcon from '@/shared/assets/icons/system/indicators/eye.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { insertSvg, TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../lib';
+import { deviceUtils, insertSvg, TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../lib';
 import { createState, type Task } from '../model';
 import { border, button, deleteDialog, editTaskDialog, layout, primitives, viewTaskDialog } from '.';
 
@@ -25,31 +25,35 @@ const getOption = (index: number, icon: string, title: string, cb: () => void): 
 };
 
 export const createTaskCard = (task: Task, state: ReturnType<typeof createState>): HTMLElement => {
+	const device = deviceUtils.getDevice();
+
 	// === TASK CARD ===
 	const taskCard = document.createElement('div');
-	taskCard.className = cn(layout.col, 'bg-(--bg-secondary) min-h-[200px] gap-1');
+	taskCard.className = cn(layout.col, 'bg-(--bg-secondary) rounded-md min-h-[180px]');
 	taskCard.dataset.taskId = task.id;
 
 	// === TASK HEADER ===
 	const taskHeader = document.createElement('div');
 	taskHeader.className = cn(
 		layout.row,
-		'border-b border-(--border-color) justify-between p-2 hover:cursor-grab relative'
+		'border-b border-(--border-color) justify-between  hover:cursor-grab relative'
 	);
 
 	const taskTitle = document.createElement('h2');
 	taskTitle.textContent = task.title;
 	taskTitle.dataset.taskDragHandle = '';
-	taskTitle.draggable = true;
 	taskTitle.className = cn(
 		primitives.title,
-		'w-full cursor-grab overflow-hidden text-ellipsis line-clamp-1 display-box webkit-box-orient-vertical leading-normal'
+		'w-full cursor-grab py-2 pl-2 overflow-hidden text-ellipsis line-clamp-1 display-box webkit-box-orient-vertical leading-4'
 	);
 
 	const optionsButton = document.createElement('button');
 	optionsButton.type = 'button';
 	optionsButton.title = 'Действия с задачей';
-	optionsButton.className = cn(button.icon, 'pl-2');
+	optionsButton.className = cn(
+		button.icon,
+		'p-3 border-l border-transparent hover:border-(--border-color-op) rounded-none'
+	);
 	insertSvg(optionsButton, optionsIcon, 'size-3');
 	optionsButton.addEventListener('click', (event) => {
 		event.stopPropagation();
@@ -67,7 +71,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		layout.blur,
 		layout.col,
 		border.default,
-		'absolute w-fit divide-y divide-(--border-color) right-0 text-sm top-8 hidden'
+		'absolute w-fit z-10 divide-y divide-(--border-color) right-0 text-sm top-8 hidden'
 	);
 
 	const options = [
@@ -111,6 +115,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	const statusText = document.createElement('span');
 	statusText.textContent = statusConfig.label;
+	statusText.className = 'text-xs';
 
 	status.append(statusDot, statusText);
 
@@ -129,12 +134,12 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
 	taskDescription.className = cn(
-		'text-sm px-2 text-(--color-secondary) select-none cursor-default overflow-hidden text-ellipsis line-clamp-3'
+		'text-sm text-justify text-(--color-secondary) select-none cursor-default overflow-hidden text-ellipsis line-clamp-3'
 	);
 
 	const timestamp = document.createElement('div');
 	timestamp.textContent = task.date;
-	timestamp.className = 'select-none border-t p-2 border-(--border-color) text-xs text-(--color-disabled)';
+	timestamp.className = cn(primitives.hint, 'text-xs border-t p-2 border-(--border-color)');
 
 	taskContent.append(attributes, taskDescription);
 
@@ -178,6 +183,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 		document.body.append(modal);
 	};
+
+	device === 'mobile' ? (taskCard.draggable = true) : (taskTitle.draggable = true);
 
 	// === ASSEMBLY ===
 	taskCard.append(taskHeader, taskContent, timestamp);

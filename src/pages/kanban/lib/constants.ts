@@ -27,7 +27,10 @@ export const MESSAGES = {
 	},
 } as const;
 
-export const KANBAN_LIMITS = {
+export const LIMITS = {
 	MIN_COLUMNS: 3,
 	MAX_COLUMNS: 6,
+	COLUMN_TITLE: 35,
+	TASK_TITLE: 60,
+	TASK_DESC: 300,
 } as const;

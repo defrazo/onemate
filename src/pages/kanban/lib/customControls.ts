@@ -1,9 +1,11 @@
+import dateIcon from '@/shared/assets/icons/system/date.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-type CustomSelectItem<T extends string | number = string | number> = {
-	value: T;
-	label: string;
-};
+import { layout, primitives } from '../ui';
+import { insertSvg } from './utils';
+
+// === SELECT ===
+type CustomSelectItem<T extends string | number = string | number> = { value: T; label: string };
 
 type CustomSelectOptions<T extends string | number = number> = {
 	initialValue?: T;
@@ -13,12 +15,12 @@ type CustomSelectOptions<T extends string | number = number> = {
 	onChange?: (value: T) => void;
 };
 
-export const createCustomSelect = <T extends string | number = number>(
+export const customSelect = <T extends string | number = number>(
 	options: CustomSelectOptions<T> = {},
 	className?: string
 ): HTMLDivElement => {
 	const container = document.createElement('div');
-	container.className = cn('relative inline-block w-32 text-center cursor-pointer select-none', className);
+	container.className = cn('relative inline-block min-w-fit text-center cursor-pointer select-none', className);
 
 	let items: Array<T | CustomSelectItem<T>> = [];
 
@@ -44,7 +46,7 @@ export const createCustomSelect = <T extends string | number = number>(
 
 	const selectedValue = document.createElement('span');
 	selectedValue.textContent = findLabel(initialItem as T);
-	selectedValue.className = 'flex-1';
+	selectedValue.className = 'flex-1 px-2';
 
 	const arrow = document.createElement('span');
 	arrow.className = 'arrow ml-2';
@@ -101,4 +103,46 @@ export const createCustomSelect = <T extends string | number = number>(
 	};
 
 	return container;
+};
+
+// === DATE PICKER ===
+export const customDatePicker = (date: string | null, className?: string, readonly?: 'readonly' | null) => {
+	const isReadonly = readonly === 'readonly';
+
+	const container = document.createElement('div');
+	container.className = cn(
+		layout.row,
+		primitives.input,
+		'relative',
+		isReadonly ? 'cursor-default hover:border-(--border-color)' : 'cursor-pointer',
+		className
+	);
+
+	const icon = document.createElement('span');
+	insertSvg(icon, dateIcon, 'size-5');
+
+	const input = document.createElement('input');
+	input.type = 'date';
+	input.value = date || '';
+	input.readOnly = isReadonly;
+	input.className = 'absolute right-0 opacity-0 pointer-events-none';
+
+	const display = document.createElement('div');
+	display.textContent = date ? formatDate(date) : 'дд.мм.гггг';
+	display.className = 'mx-auto';
+
+	container.append(icon, display, input);
+
+	if (!isReadonly) {
+		container.addEventListener('click', () => input.showPicker?.());
+		input.addEventListener('change', () => (display.textContent = formatDate(input.value)));
+	}
+
+	return { element: container, getValue: () => input.value };
+
+	function formatDate(iso: string) {
+		if (!iso) return 'дд.мм.гггг';
+		const [y, m, d] = iso.split('-');
+		return `${d}.${m}.${y}`;
+	}
 };

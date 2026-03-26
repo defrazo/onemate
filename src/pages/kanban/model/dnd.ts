@@ -11,6 +11,8 @@ export const setupDnD = (
 	let parent: HTMLElement | null = null;
 	let nextSibling: ChildNode | null = null;
 
+	const autoScroll = enableAutoScroll(board);
+
 	board.addEventListener('dragstart', (event) => {
 		const target = event.target as HTMLElement;
 
@@ -62,9 +64,13 @@ export const setupDnD = (
 	});
 
 	board.addEventListener('dragover', (event) => {
-		if (!draggingElement || !placeholder) return;
 		event.preventDefault();
+
+		if (!draggingElement || !placeholder) return;
+
 		event.dataTransfer!.dropEffect = 'move';
+
+		autoScroll.update(event.clientX);
 
 		const target = event.target as HTMLElement;
 
@@ -111,6 +117,8 @@ export const setupDnD = (
 
 	board.addEventListener('drop', (event) => {
 		event.preventDefault();
+		autoScroll.stop();
+
 		if (!draggingElement || !placeholder) return;
 
 		if (currentDragType === 'task') {
@@ -141,17 +149,20 @@ export const setupDnD = (
 		}
 	});
 
-	board.addEventListener('dragend', restore);
+	board.addEventListener('dragend', () => {
+		autoScroll.stop();
+		restore();
+	});
 
 	// === HELPERS ===
 	function createPlaceholder(type: DragType) {
 		const div = document.createElement('div');
 		if (type === 'task')
 			div.className =
-				'rounded-lg bg-[#64748b] min-h-[200px] animate-pulse border border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300';
+				'rounded-lg bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
 		if (type === 'column')
 			div.className =
-				'rounded-lg bg-[#64748b] w-full h-full border animate-pulse border-dashed border-(--accent-hover) box-border transition-transform delay-150 duration-300 flex flex-1 flex-col';
+				'rounded-lg bg-(--border-alt)/30 w-full h-full animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
 		return div;
 	}
 
@@ -191,4 +202,49 @@ export const setupDnD = (
 		parent = null;
 		nextSibling = null;
 	}
+};
+
+export const enableAutoScroll = (container: HTMLElement) => {
+	let direction: 'left' | 'right' | null = null;
+	let active = false;
+
+	const THRESHOLD = 60;
+	const SPEED = 12;
+
+	const loop = () => {
+		if (!active || !direction) return;
+		if (direction === 'left') container.scrollLeft -= SPEED;
+		else container.scrollLeft += SPEED;
+
+		requestAnimationFrame(loop);
+	};
+
+	const update = (clientX: number) => {
+		const rect = container.getBoundingClientRect();
+
+		if (clientX < rect.left + THRESHOLD) {
+			direction = 'left';
+			if (!active) {
+				active = true;
+				requestAnimationFrame(loop);
+			}
+		} else if (clientX > rect.right - THRESHOLD) {
+			direction = 'right';
+			if (!active) {
+				active = true;
+				requestAnimationFrame(loop);
+			}
+		} else {
+			direction = null;
+			active = false;
+		}
+	};
+
+	return {
+		update,
+		stop() {
+			active = false;
+			direction = null;
+		},
+	};
 };

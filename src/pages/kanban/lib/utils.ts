@@ -6,8 +6,6 @@ export const getDivider = (className = '') => {
 	return divider;
 };
 
-export const generateId = (prefix: string) => `${prefix}-${crypto.randomUUID()}`;
-
 // === SVG ===
 export const createSvg = (svgText: string, className = ''): SVGSVGElement | undefined => {
 	const template = document.createElement('template');

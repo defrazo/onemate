@@ -13,7 +13,7 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 		layout.blur,
 		layout.col,
 		border.default,
-		'text-(--color-primary) md:w-md gap-3 p-3 relative'
+		'text-(--color-primary) min-w-0 h-fit max-h-full min-h-0 w-full xl:w-md gap-3 p-3 relative hide-scrollbar overflow-y-auto overscroll-contain'
 	);
 
 	// === HEADER ROW ===

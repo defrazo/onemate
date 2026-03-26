@@ -71,7 +71,7 @@ export const routes: RouteObject[] = [
 		element: (
 			<GuardedRoute
 				element={
-					<Layout>
+					<Layout hideFooter>
 						<KanbanPage />
 					</Layout>
 				}

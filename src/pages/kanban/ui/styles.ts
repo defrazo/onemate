@@ -8,7 +8,7 @@ const base = {
 export const layout = {
 	row: 'flex items-center',
 	col: 'flex flex-col',
-	overlay: 'fixed inset-0 z-50 flex items-center justify-center bg-black/40',
+	overlay: 'fixed inset-0 z-50 flex p-2 items-center justify-center bg-black/40',
 	blur: 'bg-(--bg-tertiary)/50 backdrop-blur-sm rounded-xl shadow-(--shadow)',
 };
 
@@ -31,8 +31,8 @@ export const button = {
 export const primitives = {
 	input: cn(
 		border.default,
-		'rounded-xl outline-none p-2 flex-1 bg-(--bg-tertiary)/50 hover:border-(--accent-hover) focus:border-(--accent-hover)'
+		'rounded-xl outline-none p-2 w-full bg-(--bg-tertiary)/50 hover:border-(--accent-hover) focus:border-(--accent-hover)'
 	),
-	hint: 'text-(--color-secondary) select-none opacity-70 text-sm',
+	hint: 'text-(--color-secondary) select-none opacity-70 text-xs xl:text-sm cursor-default',
 	title: 'leading-4 cursor-default select-none font-bold text-left',
 };

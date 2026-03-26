@@ -1,17 +1,12 @@
 import viewIcon from '@/shared/assets/icons/system/indicators/eye.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { createSvg, getDivider } from '../../lib';
+import { createSvg, customDatePicker, getDivider } from '../../lib';
 import { button, layout, primitives } from '../styles';
 import { createDialog } from '.';
 
 type ViewTaskDialogOptions = {
-	initialData: {
-		title: string;
-		description?: string;
-		startDate: string;
-		endDate?: string | null;
-	};
+	initialData: { title: string; description?: string; startDate: string; endDate: string | null };
 };
 
 export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
@@ -25,7 +20,7 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	const titleCol = document.createElement('div');
 	titleCol.className = cn(layout.col, 'gap-3 mt-3');
 
-	const labelTitle = document.createElement('span');
+	const labelTitle = document.createElement('div');
 	labelTitle.textContent = 'Задача';
 	labelTitle.className = 'leading-4 select-none';
 
@@ -39,7 +34,7 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	const descriptionCol = document.createElement('div');
 	descriptionCol.className = cn(layout.col, 'gap-2');
 
-	const labelDescription = document.createElement('span');
+	const labelDescription = document.createElement('div');
 	labelDescription.textContent = 'Комментарий';
 	labelDescription.className = 'leading-4 select-none';
 
@@ -58,27 +53,34 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	deadlinesLabel.className = 'leading-4 select-none';
 
 	const dates = document.createElement('div');
-	dates.className = cn(layout.row, 'gap-3');
+	dates.className = cn('flex flex-col xl:flex-row gap-4 xl:items-center');
 
-	const startDate = document.createElement('input');
-	startDate.type = 'date';
-	startDate.name = 'startDate';
-	startDate.value = options.initialData.startDate;
-	startDate.style.pointerEvents = 'none';
-	startDate.className = cn(primitives.input, 'hover:border-(--border-color)');
+	const startDateRow = document.createElement('div');
+	startDateRow.className = cn(layout.row, 'justify-between w-full');
+
+	const labelStartDate = document.createElement('div');
+	labelStartDate.textContent = 'Дата начала';
+	labelStartDate.className = 'xl:hidden leading-4 select-none';
+
+	const startDate = customDatePicker(options.initialData.startDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+
+	startDateRow.append(labelStartDate, startDate.element);
 
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
-	arrow.className = 'select-none';
+	arrow.className = 'select-none xl:block hidden';
 
-	const endDate = document.createElement('input');
-	endDate.type = 'date';
-	endDate.name = 'endDate';
-	endDate.value = options.initialData.endDate || '';
-	endDate.style.pointerEvents = 'none';
-	endDate.className = cn(primitives.input, 'hover:border-(--border-color)');
+	const endDateRow = document.createElement('div');
+	endDateRow.className = cn(layout.row, 'justify-between w-full');
 
-	dates.append(startDate, arrow, endDate);
+	const labelEndDate = document.createElement('div');
+	labelEndDate.textContent = 'Дата завершения';
+	labelEndDate.className = 'xl:hidden leading-4 select-none';
+
+	const endDate = customDatePicker(options.initialData.endDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+
+	endDateRow.append(labelEndDate, endDate.element);
+	dates.append(startDateRow, arrow, endDateRow);
 
 	deadlinesCol.append(deadlinesLabel, dates);
 

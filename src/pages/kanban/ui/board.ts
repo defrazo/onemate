@@ -1,25 +1,25 @@
 import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { COLUMN_COLORS, insertSvg, KANBAN_LIMITS } from '../lib';
+import { COLUMN_COLORS, insertSvg, LIMITS } from '../lib';
 import { type Column, createState, setupDnD, type Task } from '../model';
 import { button, createColumn, createTaskCard, editColumnDialog, layout } from '.';
 
-type BoardInstance = {
-	board: HTMLDivElement;
-	destroy: () => void;
-};
+type BoardInstance = { board: HTMLDivElement; destroy: () => void };
 
 export const createBoard = (state: ReturnType<typeof createState>): BoardInstance => {
 	let lastTasks: Task[] = [];
 
 	// === BOARD ===
 	const board = document.createElement('div');
-	board.className = cn(layout.row, 'gap-4 items-start size-full');
+	board.className = cn(
+		layout.row,
+		'gap-4 max-w-[calc(100dvw-32px)] hide-scrollbar items-start h-full overflow-x-auto overflow-y-hidden'
+	);
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');
-	columnsContainer.className = cn(layout.row, 'flex-1 items-start gap-4 size-full');
+	columnsContainer.className = cn(layout.row, 'flex-1 items-start gap-4 h-full');
 	columnsContainer.dataset.columns = '';
 
 	const renderColumns = (columns: Column[], tasks: Task[]) => {
@@ -56,7 +56,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	// === ADD COLUMN BUTTON ===
 	const addColumnButton = document.createElement('button');
 	addColumnButton.title = 'Добавить колонку';
-	addColumnButton.className = cn(button.ghost, 'h-[61px] p-0');
+	addColumnButton.className = cn(button.ghost, 'h-full shrink-0 xl:h-[61px] p-0');
 	addColumnButton.addEventListener('click', () => onAddColumn());
 	insertSvg(addColumnButton, addIcon, 'size-4');
 
@@ -85,7 +85,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	const unsubscribeColumns = state.subscribeColumns((columns) => {
 		renderColumns(columns, lastTasks);
 
-		if (columns.length >= KANBAN_LIMITS.MAX_COLUMNS) addColumnButton.classList.add('hidden');
+		if (columns.length >= LIMITS.MAX_COLUMNS) addColumnButton.classList.add('hidden');
 		else addColumnButton.classList.remove('hidden');
 	});
 

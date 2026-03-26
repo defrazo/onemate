@@ -7,7 +7,7 @@ import { button, layout } from '../styles';
 export const createOverlay = () => {
 	const overlay = document.createElement('div');
 	overlay.className = layout.overlay;
-	overlay.addEventListener('click', (event) => {
+	overlay.addEventListener('mousedown', (event) => {
 		if (event.target === overlay) close();
 	});
 

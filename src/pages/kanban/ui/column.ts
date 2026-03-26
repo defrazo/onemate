@@ -2,22 +2,27 @@ import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
 import settingsIcon from '@/shared/assets/icons/actions/settings.svg?raw';
 import { cn, fullDate } from '@/shared/lib/utils';
 
-import { COLUMN_COLORS, type ColumnColor, insertSvg } from '../lib';
+import { COLUMN_COLORS, type ColumnColor, deviceUtils, insertSvg } from '../lib';
 import { type Column, createState } from '../model';
 import { button, editColumnDialog, editTaskDialog, layout, primitives } from '.';
 
-const availableHeight = window.innerHeight * 0.71;
-
 export const createColumn = (column: Column, state: ReturnType<typeof createState>): HTMLElement => {
+	const device = deviceUtils.getDevice();
+
 	// === COLUMN ===
 	const container = document.createElement('div');
 	container.dataset.columnId = column.id;
-	container.className = cn(layout.col, 'gap-6 border h-full border-transparent flex-1');
+	container.className = cn(
+		layout.col,
+		'gap-6 border h-full border-transparent shrink-0 snap-start w-[80vw] xl:flex-1 xl:w-full'
+	);
 
 	// === HEADER ===
 	const header = document.createElement('div');
 	header.dataset.header = '';
-	header.className = cn(layout.col, 'gap-1 pb-2');
+	header.dataset.columnDragHandle = '';
+	header.draggable = device === 'desktop';
+	header.className = cn(layout.col, 'gap-1 pb-2 cursor-grab');
 	header.style.borderBottomColor = COLUMN_COLORS[(column.color ?? 'slate') as ColumnColor];
 	header.style.borderBottomWidth = '3px';
 
@@ -28,14 +33,12 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const title = document.createElement('h2');
 	title.textContent = column.title.toUpperCase();
 	title.dataset.title = '';
-	title.dataset.columnDragHandle = '';
-	title.draggable = true;
-	title.className = cn(primitives.title, 'w-full cursor-grab');
+	title.className = primitives.title;
 
 	const settingsButton = document.createElement('button');
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
-	settingsButton.className = cn(button.icon, '');
+	settingsButton.className = cn(button.icon, 'text-(--color-secondary)');
 	settingsButton.addEventListener('click', () =>
 		onEditColumn(column.id, column.title, column.taskLimit, column.color)
 	);
@@ -69,8 +72,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	tasksContainer.dataset.column = column.title;
 	tasksContainer.dataset.columnId = column.id;
 	tasksContainer.dataset.tasks = '';
-	tasksContainer.className = cn(layout.col, 'flex-1 gap-4 overflow-y-auto hide-scrollbar');
-	tasksContainer.style.maxHeight = `${availableHeight}px`;
+	tasksContainer.className = cn(layout.col, 'flex-1 gap-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-210px)]');
 
 	// === ACTION FUNCTIONS ===
 	const onAddTask = (columnId: string, taskLimit: number) => {
@@ -115,6 +117,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 		document.body.append(modal);
 	};
+
+	deviceUtils.onChange((device) => (header.draggable = device === 'desktop'));
 
 	// === ASSEMBLY ===
 	container.append(header, tasksContainer);

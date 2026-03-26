@@ -11,7 +11,7 @@ import {
 	moveTaskApi,
 } from '../api';
 import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
-import { getDefaultColumns, getDefaultTasks, KANBAN_LIMITS, MESSAGES, notifier } from '../lib';
+import { getDefaultColumns, getDefaultTasks, LIMITS, MESSAGES, notifier } from '../lib';
 import type { Column, Task } from '.';
 
 const fallback = async <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
@@ -57,8 +57,8 @@ export const createState = () => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
-			if (columns.length >= KANBAN_LIMITS.MAX_COLUMNS) {
-				notifier.setNotice(MESSAGES.columns.addLimit, 'error');
+			if (columns.length >= LIMITS.MAX_COLUMNS) {
+				notifier.setNotice(MESSAGES.columns.addLimit, 'info');
 				return;
 			}
 
@@ -93,8 +93,8 @@ export const createState = () => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
-			if (columns.length <= KANBAN_LIMITS.MIN_COLUMNS) {
-				notifier.setNotice(MESSAGES.columns.deleteLimit, 'error');
+			if (columns.length <= LIMITS.MIN_COLUMNS) {
+				notifier.setNotice(MESSAGES.columns.deleteLimit, 'info');
 				return;
 			}
 
@@ -266,7 +266,7 @@ export const createState = () => {
 			if (tasksInNewColumn.length + 1 > (columnData?.taskLimit ?? Infinity)) {
 				tasks = snapshot;
 				notifyTasks();
-				notifier.setNotice(MESSAGES.tasks.moveLimit, 'error');
+				notifier.setNotice(MESSAGES.tasks.moveLimit, 'info');
 				return;
 			}
 

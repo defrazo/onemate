@@ -9,6 +9,7 @@ import MobileTabBar from '@/widgets/mobile-tab-bar';
 interface LayoutProps {
 	leftSide?: ReactNode;
 	rightSide?: ReactNode;
+	hideFooter?: boolean;
 	hideLeftOnMobile?: boolean;
 	hideRightOnMobile?: boolean;
 	children: ReactNode;
@@ -17,6 +18,7 @@ interface LayoutProps {
 export const Layout = ({
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
+	hideFooter = false,
 	leftSide,
 	rightSide,
 	children,
@@ -49,7 +51,7 @@ export const Layout = ({
 					<main className="flex flex-1">{children}</main>
 					{right && <aside className="flex">{right}</aside>}
 				</div>
-				{!showMobileTabBar && <Footer />}
+				{!showMobileTabBar && !hideFooter && <Footer />}
 			</div>
 			{showMobileTabBar && (
 				<div className="h-12">
