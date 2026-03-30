@@ -2,7 +2,7 @@ import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
 import { COLUMN_COLORS, insertSvg, LIMITS } from '../lib';
-import { type Column, createState, setupDnD, type Task } from '../model';
+import { type Column, createState, enableMouseScroll, setupDnD, type Task } from '../model';
 import { button, createColumn, createTaskCard, editColumnDialog, layout } from '.';
 
 type BoardInstance = { board: HTMLDivElement; destroy: () => void };
@@ -14,12 +14,12 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	const board = document.createElement('div');
 	board.className = cn(
 		layout.row,
-		'gap-4 max-w-[calc(100dvw-32px)] hide-scrollbar items-start h-full overflow-x-auto overflow-y-hidden'
+		'gap-4 min-w-0 items-start overflow-x-auto max-w-full hide-scrollbar overflow-y-hidden h-full'
 	);
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');
-	columnsContainer.className = cn(layout.row, 'flex-1 items-start gap-4 h-full');
+	columnsContainer.className = cn(layout.row, 'items-start w-full h-full gap-4');
 	columnsContainer.dataset.columns = '';
 
 	const renderColumns = (columns: Column[], tasks: Task[]) => {
@@ -51,29 +51,31 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 				columnsContainer.append(col);
 			}
 		});
+
+		columnsContainer.append(addColumnButton);
 	};
 
 	// === ADD COLUMN BUTTON ===
 	const addColumnButton = document.createElement('button');
 	addColumnButton.title = 'Добавить колонку';
-	addColumnButton.className = cn(button.ghost, 'h-full shrink-0 xl:h-[61px] p-0');
-	addColumnButton.addEventListener('click', () => onAddColumn());
+	addColumnButton.className = cn(button.ghost, 'h-full ml-auto shrink-0 xl:h-[61px] p-0');
+	addColumnButton.addEventListener('click', onAddColumn);
 	insertSvg(addColumnButton, addIcon, 'size-4');
 
 	// === ACTION FUNCTIONS ===
-	const onAddColumn = () => {
+	function onAddColumn() {
 		const modal = editColumnDialog({
 			mode: 'create',
-			initialData: { columnName: '', limit: 10, color: 'slate' },
+			initial: { columnName: '', limit: 10, color: 'slate' },
 			onSubmit: (columnName, limit, color) => state.addColumn(columnName, limit, color),
 			onDelete: () => {},
 		});
 
 		document.body.append(modal);
-	};
+	}
 
 	// === ASSEMBLY ===
-	board.append(columnsContainer, addColumnButton);
+	board.append(columnsContainer);
 
 	// === SUBSCRIBE ===
 	setupDnD(
@@ -81,6 +83,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 		(taskId, targetColumn, newIndex) => state.moveTask(taskId, targetColumn, newIndex),
 		(columnId, newIndex) => state.moveColumn(columnId, newIndex)
 	);
+	const destroyMouseScroll = enableMouseScroll(board);
 
 	const unsubscribeColumns = state.subscribeColumns((columns) => {
 		renderColumns(columns, lastTasks);
@@ -99,6 +102,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 		destroy: () => {
 			unsubscribeTasks();
 			unsubscribeColumns();
+			destroyMouseScroll();
 		},
 	};
 };
@@ -118,7 +122,11 @@ export const updateBoard = (board: HTMLElement, tasks: Task[], state: ReturnType
 
 		const tasksInColumn = tasks
 			.filter((task) => task.columnId === columnId)
-			.sort((a, b) => a.position - b.position);
+			.sort((a, b) => {
+				if (a.completed && !b.completed) return 1;
+				if (!a.completed && b.completed) return -1;
+				return a.position - b.position;
+			});
 
 		tasksInColumn.forEach((task) => {
 			const card = createTaskCard(task, state);

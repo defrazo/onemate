@@ -2,13 +2,13 @@ import settingsIcon from '@/shared/assets/icons/actions/settings.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
 import { COLUMN_COLORS, type ColumnColor, createSvg, customSelect, getDivider, LIMITS } from '../../lib';
-import { button, layout, primitives } from '../styles';
-import { createDialog, deleteDialog } from '.';
+import { button, layout, primitives } from '..';
+import { createDialog, createSubmitButton, deleteDialog } from '.';
 
 type EditColumnDialogOptions = {
 	mode: 'create' | 'edit';
-	initialData: { columnName: string; limit: number | null; color?: ColumnColor };
-	onSubmit: (columnName: string, limit: number, color: ColumnColor) => void;
+	initial: { columnName: string; color: ColumnColor | undefined; limit: number | null };
+	onSubmit: (columnName: string, color: ColumnColor, limit: number) => void;
 	onDelete?: () => void;
 };
 
@@ -22,8 +22,8 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 		icon
 	);
 
-	let selectedLimit = options.initialData.limit ?? 10;
-	let selectedColor: ColumnColor = options.initialData.color ?? 'slate';
+	let selectedLimit = options.initial.limit ?? 10;
+	let selectedColor: ColumnColor = options.initial.color ?? 'slate';
 
 	// === TITLE ===
 	const titleCol = document.createElement('div');
@@ -36,7 +36,7 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 
 	const title = document.createElement('input');
 	title.type = 'text';
-	title.value = options.initialData.columnName;
+	title.value = options.initial.columnName;
 	title.id = 'column-title';
 	title.autocomplete = 'off';
 	title.name = `column-title-${Math.random()}`;
@@ -49,7 +49,7 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 	title.addEventListener('blur', () => updateTitleHint('blur'));
 
 	const titleHint = document.createElement('span');
-	titleHint.textContent = options.initialData.columnName
+	titleHint.textContent = options.initial.columnName
 		? `${title.value.length} / ${LIMITS.COLUMN_TITLE} символов`
 		: `Введите название (до ${LIMITS.COLUMN_TITLE} символов)`;
 	titleHint.className = cn(primitives.hint, '-mt-2');
@@ -76,7 +76,7 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 	const limitContainer = document.createElement('div');
 	const customLimit = customSelect(
 		{
-			initialValue: options.initialData.limit || 10,
+			initialValue: options.initial.limit || 10,
 			min: 1,
 			max: 15,
 			onChange: (value) => (selectedLimit = value),
@@ -132,11 +132,7 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 	const actionsCol = document.createElement('div');
 	actionsCol.className = cn(layout.col, 'gap-2 mx-auto');
 
-	const submitButton = document.createElement('button');
-	submitButton.type = 'button';
-	submitButton.textContent = 'Сохранить';
-	submitButton.className = cn(button.default, 'w-52 mt-3');
-	submitButton.addEventListener('click', () => handleSubmit());
+	const submitButton = createSubmitButton('Сохранить', handleSubmit);
 
 	actionsCol.append(submitButton);
 
@@ -148,18 +144,23 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 			button.icon,
 			'text-center hover:text-(--status-error) opacity-70 text-(--status-error) hover:opacity-100'
 		);
-		deleteLink.addEventListener('click', () => handleDelete());
+		deleteLink.addEventListener('click', handleDelete);
 
 		actionsCol.append(deleteLink);
 	}
 
 	// === ACTION FUNCTIONS ===
-	const handleSubmit = () => {
+	function handleSubmit() {
 		if (!title.value.trim()) return;
-
-		options.onSubmit(title.value.trim(), selectedLimit, selectedColor);
+		options.onSubmit(title.value.trim(), selectedColor, selectedLimit);
 		close();
-	};
+	}
+
+	function handleDelete() {
+		close();
+		const modal = deleteDialog('Удаление колонки', 'Вы уверены, что хотите удалить колонку?', options.onDelete!);
+		document.body.append(modal);
+	}
 
 	const updateSubmitState = () => {
 		const tooLong = title.value.trim().length > LIMITS.COLUMN_TITLE;
@@ -173,13 +174,6 @@ export const editColumnDialog = (options: EditColumnDialogOptions): HTMLElement 
 			titleHint.textContent = `${length} / ${LIMITS.COLUMN_TITLE} символов`;
 			titleHint.className = cn(primitives.hint, '-mt-2', length > LIMITS.COLUMN_TITLE && 'text-red-500');
 		} else if (!title.value.trim()) titleHint.textContent = `Введите название (до ${LIMITS.COLUMN_TITLE} символов)`;
-	};
-
-	const handleDelete = () => {
-		close();
-		const modal = deleteDialog('Удаление колонки', 'Вы уверены, что хотите удалить колонку?', options.onDelete!);
-
-		document.body.append(modal);
 	};
 
 	updateSubmitState();

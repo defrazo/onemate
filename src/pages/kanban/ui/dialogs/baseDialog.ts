@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
 import { getDivider } from '../../lib';
-import { border, layout, primitives } from '../styles';
+import { border, layout, primitives } from '..';
 import { createCloseButton, createOverlay } from '.';
 
 export const createDialog = (text: string, icon?: SVGElement) => {

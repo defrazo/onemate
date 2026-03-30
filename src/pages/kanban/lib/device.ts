@@ -1,6 +1,6 @@
 type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
-let currentDevice: DeviceType = getDeviceType();
+let currentDevice: DeviceType = typeof window !== 'undefined' ? getDeviceType() : 'desktop';
 
 const listeners: ((device: DeviceType) => void)[] = [];
 
@@ -17,16 +17,23 @@ function getDeviceType(): DeviceType {
 	return 'desktop';
 }
 
-window.addEventListener('resize', () => {
-	const newDevice = getDeviceType();
+function initDeviceListener() {
+	if (typeof window === 'undefined') return;
 
-	if (newDevice !== currentDevice) {
-		currentDevice = newDevice;
-		listeners.forEach((callback) => callback(currentDevice));
-	}
-});
+	currentDevice = getDeviceType();
+
+	window.addEventListener('resize', () => {
+		const newDevice = getDeviceType();
+
+		if (newDevice !== currentDevice) {
+			currentDevice = newDevice;
+			listeners.forEach((callback) => callback(currentDevice));
+		}
+	});
+}
 
 export const deviceUtils = {
+	init: initDeviceListener,
 	getDevice: () => currentDevice,
 	onChange: (callback: (device: DeviceType) => void) => listeners.push(callback),
 };

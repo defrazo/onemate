@@ -14,7 +14,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	container.dataset.columnId = column.id;
 	container.className = cn(
 		layout.col,
-		'gap-6 border h-full border-transparent shrink-0 snap-start w-[80vw] xl:flex-1 xl:w-full'
+		'gap-6 border h-full border-transparent snap-start flex-1 min-w-[260px] max-w-[350px]'
 	);
 
 	// === HEADER ===
@@ -28,7 +28,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	// === TITLE ===
 	const titleRow = document.createElement('div');
-	titleRow.className = cn(layout.row, 'justify-between');
+	titleRow.className = cn(layout.row, 'min-w-0 justify-between');
 
 	const title = document.createElement('h2');
 	title.textContent = column.title.toUpperCase();
@@ -40,7 +40,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	settingsButton.title = 'Настройки колонки';
 	settingsButton.className = cn(button.icon, 'text-(--color-secondary)');
 	settingsButton.addEventListener('click', () =>
-		onEditColumn(column.id, column.title, column.taskLimit, column.color)
+		onEditColumn(column.id, column.title, column.color, column.taskLimit)
 	);
 	insertSvg(settingsButton, settingsIcon, 'size-5');
 
@@ -77,28 +77,30 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	// === ACTION FUNCTIONS ===
 	const onAddTask = (columnId: string, taskLimit: number) => {
 		const today = new Date().toISOString().split('T')[0];
-		const timestamp = fullDate(new Date().toISOString());
+		const createdAt = fullDate(new Date().toISOString());
 
 		const modal = editTaskDialog({
 			mode: 'create',
-			initialData: {
+			initial: {
 				title: '',
 				description: '',
 				status: 'active',
 				priority: 'medium',
 				startDate: today,
 				endDate: null,
+				completed: false,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate) => {
+			onSubmit: (title, description, status, priority, startDate, endDate, completed) => {
 				state.addTask(
+					columnId,
 					title,
 					description,
 					status,
 					priority,
-					columnId,
-					timestamp,
 					startDate || today,
 					endDate || null,
+					completed,
+					createdAt,
 					taskLimit
 				);
 			},
@@ -107,11 +109,11 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		document.body.append(modal);
 	};
 
-	const onEditColumn = (id: string, columnName: string, limit: number, color: ColumnColor) => {
+	const onEditColumn = (id: string, columnName: string, color: ColumnColor, limit: number) => {
 		const modal = editColumnDialog({
 			mode: 'edit',
-			initialData: { columnName, limit, color },
-			onSubmit: (columnName, limit, color) => state.editColumn(id, columnName, limit, color),
+			initial: { columnName, limit, color },
+			onSubmit: (columnName, limit, color) => state.editColumn(id, columnName, color, limit),
 			onDelete: () => state.deleteColumn(id),
 		});
 

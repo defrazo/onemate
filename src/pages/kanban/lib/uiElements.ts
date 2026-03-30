@@ -2,7 +2,14 @@ import dateIcon from '@/shared/assets/icons/system/date.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
 import { layout, primitives } from '../ui';
-import { insertSvg } from './utils';
+import { insertSvg } from '.';
+
+// === DIVIDER ===
+export const getDivider = (className = '') => {
+	const divider = document.createElement('div');
+	divider.className = cn('border-b w-full border-(--border-color)', className);
+	return divider;
+};
 
 // === SELECT ===
 type CustomSelectItem<T extends string | number = string | number> = { value: T; label: string };
@@ -13,6 +20,7 @@ type CustomSelectOptions<T extends string | number = number> = {
 	min?: number;
 	max?: number;
 	onChange?: (value: T) => void;
+	direction?: 'up' | 'down';
 };
 
 export const customSelect = <T extends string | number = number>(
@@ -87,7 +95,16 @@ export const customSelect = <T extends string | number = number>(
 	selected.addEventListener('click', (event) => {
 		event.stopPropagation();
 		closeAllSelects(optionsContainer);
+
 		optionsContainer.classList.toggle('hidden');
+
+		if (options.direction === 'up') {
+			optionsContainer.style.top = 'auto';
+			optionsContainer.style.bottom = `${selected.offsetHeight}px`;
+		} else {
+			optionsContainer.style.top = `${selected.offsetHeight}px`;
+			optionsContainer.style.bottom = 'auto';
+		}
 	});
 
 	container.append(selected, optionsContainer);
@@ -135,7 +152,10 @@ export const customDatePicker = (date: string | null, className?: string, readon
 
 	if (!isReadonly) {
 		container.addEventListener('click', () => input.showPicker?.());
-		input.addEventListener('change', () => (display.textContent = formatDate(input.value)));
+		input.addEventListener('change', () => {
+			display.textContent = formatDate(input.value);
+			container.dispatchEvent(new CustomEvent('dateChange', { detail: input.value }));
+		});
 	}
 
 	return { element: container, getValue: () => input.value };

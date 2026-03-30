@@ -1,11 +1,3 @@
-import { cn } from '@/shared/lib/utils';
-
-export const getDivider = (className = '') => {
-	const divider = document.createElement('div');
-	divider.className = cn('border-b w-full border-(--border-color)', className);
-	return divider;
-};
-
 // === SVG ===
 export const createSvg = (svgText: string, className = ''): SVGSVGElement | undefined => {
 	const template = document.createElement('template');
@@ -28,53 +20,23 @@ export const insertSvg = (container: HTMLElement, svgText: string, className = '
 };
 
 // === TASK STATUS ===
-export type TaskStatusConfig = {
-	label: string;
-	color: string;
-	halo?: boolean;
-};
+export type TaskStatusConfig = { label: string; color: string; halo?: boolean };
 
 export const TASK_STATUS = {
-	active: {
-		label: 'В работе',
-		color: '--priority-medium',
-		halo: true,
-	},
-
-	paused: {
-		label: 'На паузе',
-		color: '--priority-high',
-	},
-
-	waiting: {
-		label: 'Ожидание',
-		color: '--priority-low',
-	},
+	active: { label: 'В работе', color: '--priority-medium', halo: true },
+	paused: { label: 'На паузе', color: '--priority-high' },
+	waiting: { label: 'Ожидание', color: '--priority-low' },
 } satisfies Record<string, TaskStatusConfig>;
 
 export type TaskStatus = keyof typeof TASK_STATUS;
 
 // === TASK PRIORITY ===
-type TaskPriorityConfig = {
-	label: string;
-	color: string;
-};
+type TaskPriorityConfig = { label: string; color: string };
 
 export const TASK_PRIORITY = {
-	low: {
-		label: 'Низкий',
-		color: '--priority-low',
-	},
-
-	medium: {
-		label: 'Обычный',
-		color: '--priority-medium',
-	},
-
-	high: {
-		label: 'Высокий',
-		color: '--priority-high',
-	},
+	low: { label: 'Низкий', color: '--priority-low' },
+	medium: { label: 'Обычный', color: '--priority-medium' },
+	high: { label: 'Высокий', color: '--priority-high' },
 } satisfies Record<string, TaskPriorityConfig>;
 
 export type TaskPriority = keyof typeof TASK_PRIORITY;

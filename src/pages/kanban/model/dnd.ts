@@ -14,6 +14,8 @@ export const setupDnD = (
 	const autoScroll = enableAutoScroll(board);
 
 	board.addEventListener('dragstart', (event) => {
+		board.dataset.dragging = 'true';
+
 		const target = event.target as HTMLElement;
 
 		const taskCard = target.closest<HTMLElement>('[data-task-id]');
@@ -116,6 +118,7 @@ export const setupDnD = (
 	});
 
 	board.addEventListener('drop', (event) => {
+		delete board.dataset.dragging;
 		event.preventDefault();
 		autoScroll.stop();
 
@@ -150,6 +153,7 @@ export const setupDnD = (
 	});
 
 	board.addEventListener('dragend', () => {
+		delete board.dataset.dragging;
 		autoScroll.stop();
 		restore();
 	});
@@ -162,7 +166,7 @@ export const setupDnD = (
 				'rounded-lg bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
 		if (type === 'column')
 			div.className =
-				'rounded-lg bg-(--border-alt)/30 w-full h-full animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
+				'rounded-lg bg-(--border-alt)/30 w-full h-full min-w-0 w-[80vw] animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
 		return div;
 	}
 
@@ -246,5 +250,57 @@ export const enableAutoScroll = (container: HTMLElement) => {
 			active = false;
 			direction = null;
 		},
+	};
+};
+
+export const enableMouseScroll = (container: HTMLElement) => {
+	let isDown = false;
+	let startX = 0;
+	let scrollLeft = 0;
+	let moved = false;
+
+	const MOVE_THRESHOLD = 5;
+
+	const onMouseDown = (event: MouseEvent) => {
+		if (event.button !== 0) return;
+		if (container.dataset.dragging) return;
+
+		const target = event.target as HTMLElement;
+
+		if (target.closest('button, input, textarea, select, [data-task-id]')) return;
+
+		isDown = true;
+		moved = false;
+		startX = event.pageX;
+		scrollLeft = container.scrollLeft;
+	};
+
+	const onMouseMove = (event: MouseEvent) => {
+		if (!isDown || container.dataset.dragging) return;
+
+		const dx = event.pageX - startX;
+
+		if (!moved && Math.abs(dx) < MOVE_THRESHOLD) return;
+
+		moved = true;
+		event.preventDefault();
+		container.scrollLeft = scrollLeft - dx;
+		container.style.cursor = 'grabbing';
+	};
+
+	const onMouseUp = () => {
+		isDown = false;
+		moved = false;
+		container.style.cursor = '';
+	};
+
+	container.addEventListener('mousedown', onMouseDown);
+	document.addEventListener('mousemove', onMouseMove);
+	document.addEventListener('mouseup', onMouseUp);
+
+	return () => {
+		container.removeEventListener('mousedown', onMouseDown);
+		document.removeEventListener('mousemove', onMouseMove);
+		document.removeEventListener('mouseup', onMouseUp);
 	};
 };

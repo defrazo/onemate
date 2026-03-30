@@ -1,29 +1,21 @@
 import settingsIcon from '@/shared/assets/icons/actions/settings.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import {
-	createSvg,
-	customDatePicker,
-	customSelect,
-	getDivider,
-	LIMITS,
-	TASK_PRIORITY,
-	TASK_STATUS,
-	type TaskPriority,
-	type TaskStatus,
-} from '../../lib';
-import { button, layout, primitives } from '../styles';
-import { createDialog } from '.';
+import type { TaskPriority, TaskStatus } from '../../lib';
+import { createSvg, customDatePicker, customSelect, getDivider, LIMITS, TASK_PRIORITY, TASK_STATUS } from '../../lib';
+import { layout, primitives } from '..';
+import { createDialog, createSubmitButton } from '.';
 
 type EditTaskDialogOptions = {
 	mode: 'create' | 'edit';
-	initialData: {
+	initial: {
 		title: string;
 		description?: string;
 		status: TaskStatus;
 		priority: TaskPriority;
 		startDate: string;
 		endDate: string | null;
+		completed: boolean;
 	};
 	onSubmit: (
 		title: string,
@@ -31,7 +23,8 @@ type EditTaskDialogOptions = {
 		status: TaskStatus,
 		priority: TaskPriority,
 		startDate: string,
-		endDate: string | null
+		endDate: string | null,
+		completed: boolean
 	) => void;
 };
 
@@ -41,6 +34,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const divider2 = getDivider();
 	const divider3 = getDivider();
 	const divider4 = getDivider();
+	const divider5 = getDivider(options.mode === 'create' ? 'hidden' : '');
 
 	const { overlay, container, close } = createDialog(
 		options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи',
@@ -58,7 +52,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const title = document.createElement('input');
 	title.type = 'text';
-	title.value = options.initialData.title;
+	title.value = options.initial.title;
 	title.id = 'task-title';
 	title.autocomplete = 'off';
 	title.name = `task-title-${Math.random()}`;
@@ -71,7 +65,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	title.addEventListener('blur', () => updateTitleHint('blur'));
 
 	const titleHint = document.createElement('span');
-	titleHint.textContent = options.initialData.title
+	titleHint.textContent = options.initial.title
 		? `${title.value.length} / ${LIMITS.TASK_TITLE} символов`
 		: `Введите название (до ${LIMITS.TASK_TITLE} символов)`;
 	titleHint.className = cn(primitives.hint, '-mt-2');
@@ -91,7 +85,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	description.name = 'description';
 	description.id = 'task-description';
-	description.value = options.initialData.description || '';
+	description.value = options.initial.description || '';
 	description.autocomplete = 'off';
 	description.name = `task-description-${Math.random()}`;
 	description.className = cn(primitives.input, 'min-h-10 xl:min-h-40 resize-none hide-scrollbar');
@@ -100,7 +94,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	description.addEventListener('blur', () => updateDescHint('blur'));
 
 	const descriptionHint = document.createElement('span');
-	descriptionHint.textContent = options.initialData.description
+	descriptionHint.textContent = options.initial.description
 		? `${description.value.length} / ${LIMITS.TASK_DESC} символов`
 		: `Введите комментарий (до ${LIMITS.TASK_DESC} символов)`;
 	descriptionHint.className = cn(primitives.hint, '-mt-2');
@@ -118,31 +112,54 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const dates = document.createElement('div');
 	dates.className = cn('flex flex-col xl:flex-row gap-4 xl:items-center');
 
+	// Start Date
 	const startDateRow = document.createElement('div');
 	startDateRow.className = cn(layout.row, 'justify-between w-full');
+
+	const labelStartDateCol = document.createElement('div');
+	labelStartDateCol.className = cn(layout.col, 'gap-1');
 
 	const labelStartDate = document.createElement('div');
 	labelStartDate.textContent = 'Дата начала';
 	labelStartDate.className = 'xl:hidden leading-4 select-none';
 
-	const startDate = customDatePicker(options.initialData.startDate, 'min-w-40 w-fit xl:w-full');
+	const labelStartHint = document.createElement('span');
+	labelStartHint.textContent = 'Начало периода ';
+	labelStartHint.className = cn(primitives.hint, 'xl:hidden');
 
-	startDateRow.append(labelStartDate, startDate.element);
+	labelStartDateCol.append(labelStartDate, labelStartHint);
 
+	const startDate = customDatePicker(options.initial.startDate, 'min-w-40 w-fit xl:w-full');
+	startDate.element.addEventListener('dateChange', validateDates);
+
+	startDateRow.append(labelStartDateCol, startDate.element);
+
+	// Arrow
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
 	arrow.className = 'select-none xl:block hidden';
 
+	// End Date
 	const endDateRow = document.createElement('div');
 	endDateRow.className = cn(layout.row, 'justify-between w-full');
+
+	const labelEndDateCol = document.createElement('div');
+	labelEndDateCol.className = cn(layout.col, 'gap-1');
 
 	const labelEndDate = document.createElement('div');
 	labelEndDate.textContent = 'Дата завершения';
 	labelEndDate.className = 'xl:hidden leading-4 select-none';
 
-	const endDate = customDatePicker(options.initialData.endDate, 'min-w-40 w-fit xl:w-full');
+	const labelEndHint = document.createElement('span');
+	labelEndHint.textContent = 'Конец периода ';
+	labelEndHint.className = cn(primitives.hint, 'xl:hidden');
 
-	endDateRow.append(labelEndDate, endDate.element);
+	labelEndDateCol.append(labelEndDate, labelEndHint);
+
+	const endDate = customDatePicker(options.initial.endDate, 'min-w-40 w-fit xl:w-full');
+	endDate.element.addEventListener('dateChange', validateDates);
+
+	endDateRow.append(labelEndDateCol, endDate.element);
 
 	dates.append(startDateRow, arrow, endDateRow);
 
@@ -179,9 +196,9 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const customStatus = customSelect(
 		{
-			initialValue: options.initialData.status || 'В работе',
+			initialValue: options.initial.status || 'В работе',
 			items: statusItems,
-			onChange: (value) => (options.initialData.status = value as TaskStatus),
+			onChange: (value) => (options.initial.status = value as TaskStatus),
 		},
 		'min-w-32'
 	);
@@ -217,9 +234,10 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const customPriority = customSelect(
 		{
-			initialValue: options.initialData.priority || 'Обычный',
+			initialValue: options.initial.priority || 'Обычный',
 			items: priorityItems,
-			onChange: (value) => (options.initialData.priority = value as TaskPriority),
+			onChange: (value) => (options.initial.priority = value as TaskPriority),
+			direction: options.mode === 'create' ? 'up' : 'down',
 		},
 		'min-w-32'
 	);
@@ -228,30 +246,88 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	proirityRow.append(labelPriorityCol, priorityContainer);
 
+	// === COMPLETED ===
+	const completedRow = document.createElement('div');
+	completedRow.className = cn(layout.row, 'justify-between', options.mode === 'create' && 'hidden');
+
+	const labelCompletedCol = document.createElement('div');
+	labelCompletedCol.className = cn(layout.col, 'gap-1');
+
+	const labelCompleted = document.createElement('div');
+	labelCompleted.textContent = 'Завершено';
+	labelCompleted.className = 'leading-4 select-none';
+
+	const completedHint = document.createElement('span');
+	completedHint.textContent = 'Отметить как выполненную';
+	completedHint.className = primitives.hint;
+
+	labelCompletedCol.append(labelCompleted, completedHint);
+
+	const completedCheckbox = document.createElement('input');
+	completedCheckbox.type = 'checkbox';
+	completedCheckbox.id = 'task-completed';
+	completedCheckbox.checked = !!options.initial.completed;
+	completedCheckbox.className = 'ml-2 cursor-pointer size-5';
+
+	completedRow.append(labelCompletedCol, completedCheckbox);
+
 	// === SUBMIT BUTTON ===
-	const submitButton = document.createElement('button');
-	submitButton.type = 'button';
-	submitButton.textContent = options.mode === 'create' ? 'Добавить' : 'Сохранить';
-	submitButton.className = cn(button.default, 'w-52 mt-2 mx-auto');
-	submitButton.addEventListener('click', () => handleSubmit());
+	const submitButton = createSubmitButton(options.mode === 'create' ? 'Добавить' : 'Сохранить', handleSubmit);
 
 	// === ACTION FUNCTIONS ===
-	const handleSubmit = () => {
+	function handleSubmit() {
+		if (!validateDates()) return;
+
 		const data = getFormData();
 		if (!data.title) return;
 
-		options.onSubmit(data.title, data.description, data.status, data.priority, data.start, data.end);
+		options.onSubmit(
+			data.title,
+			data.description,
+			data.status,
+			data.priority,
+			data.startDate,
+			data.endDate,
+			data.completed
+		);
 		close();
-	};
+	}
+
+	function validateDates() {
+		const start = startDate.getValue();
+		const end = endDate.getValue();
+
+		if (!start || !end) {
+			endDate.element.classList.remove('border-red-500');
+			submitButton.disabled = !title.value.trim();
+			return true;
+		}
+
+		const startTime = new Date(start).getTime();
+		const endTime = new Date(end).getTime();
+
+		const valid = endTime >= startTime;
+
+		if (!valid) {
+			endDate.element.classList.add('border-red-500');
+			submitButton.disabled = true;
+		} else {
+			endDate.element.classList.remove('border-red-500');
+			submitButton.disabled = !title.value.trim();
+		}
+
+		return valid;
+	}
 
 	const getFormData = () => {
 		return {
 			title: title.value.trim(),
 			description: description.value.trim(),
-			status: options.initialData.status,
-			priority: options.initialData.priority,
-			start: startDate.getValue(),
-			end: endDate.getValue() || null,
+			status: options.initial.status,
+			priority: options.initial.priority,
+			startDate: startDate.getValue(),
+			endDate: endDate.getValue() || null,
+			completed: completedCheckbox.checked,
 		};
 	};
 
@@ -281,6 +357,8 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 			descriptionHint.textContent = `Введите комментарий (до ${LIMITS.TASK_DESC} символов)`;
 	};
 
+	updateSubmitState();
+
 	// === ASSEMBLY ===
 	overlay.append(container);
 	container.append(
@@ -293,10 +371,10 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		statusRow,
 		divider4,
 		proirityRow,
+		divider5,
+		completedRow,
 		submitButton
 	);
-
-	updateSubmitState();
 
 	return overlay;
 };

@@ -4,8 +4,7 @@ import { supabase } from '@/shared/lib/supabase';
 
 import type { TaskPriority, TaskStatus } from '../lib';
 import type { DbTask, Task } from '../model';
-import { getCurrentUser } from './auth-api';
-import { addTaskApi, deleteTaskApi, editTaskApi, fetchTasksApi, moveTaskApi } from './tasks-api';
+import { addTaskApi, deleteTaskApi, editTaskApi, fetchTasksApi, getCurrentUser, moveTaskApi } from '.';
 
 vi.mock('@/shared/lib/supabase', () => ({
 	supabase: { from: vi.fn() },
@@ -32,18 +31,19 @@ beforeEach(() => {
 describe('fetchTasksApi', () => {
 	it('should return tasks when request succeeds', async () => {
 		// ARRANGE
-		const dbTasks: Omit<DbTask, 'user_id' | 'created_at'>[] = [
+		const dbTasks: Omit<DbTask, 'user_id'>[] = [
 			{
 				id: 't1',
+				column_id: 'c1',
 				title: 'Обычная задача',
 				description: 'Описание задачи',
-				column_id: 'c1',
 				status: 'waiting',
 				priority: 'high',
-				position: 0,
-				date: '18.03.2026, 10:00',
 				start_date: '2026-03-18',
 				end_date: '2026-03-20',
+				completed: false,
+				position: 0,
+				created_at: '18.03.2026, 10:00',
 			},
 		];
 
@@ -56,15 +56,16 @@ describe('fetchTasksApi', () => {
 		expect(result).toEqual([
 			{
 				id: 't1',
+				columnId: 'c1',
 				title: 'Обычная задача',
 				description: 'Описание задачи',
-				columnId: 'c1',
 				status: 'waiting',
 				priority: 'high',
-				position: 0,
-				date: '18.03.2026, 10:00',
 				startDate: '2026-03-18',
 				endDate: '2026-03-20',
+				completed: false,
+				position: 0,
+				createdAt: '18.03.2026, 10:00',
 			},
 		]);
 	});
@@ -93,30 +94,32 @@ describe('fetchTasksApi', () => {
 
 describe('addTaskApi', () => {
 	const taskData: Omit<Task, 'id'> = {
+		columnId: 'c1',
 		title: 'Новая задача',
 		description: 'Описание задачи',
-		columnId: 'c1',
 		status: 'waiting',
 		priority: 'medium',
-		position: 0,
-		date: '18.03.2026, 14:00',
 		startDate: '2026-03-18',
 		endDate: '2026-03-20',
+		completed: false,
+		position: 0,
+		createdAt: '18.03.2026, 14:00',
 	};
 
 	it('should add task and return it when request succeeds', async () => {
 		// ARRANGE
-		const dbTask: Omit<DbTask, 'user_id' | 'created_at'> = {
+		const dbTask: Omit<DbTask, 'user_id'> = {
 			id: 't2',
+			column_id: taskData.columnId,
 			title: taskData.title,
 			description: taskData.description,
-			column_id: taskData.columnId,
 			status: taskData.status,
 			priority: taskData.priority,
-			position: taskData.position,
-			date: taskData.date,
 			start_date: taskData.startDate,
 			end_date: taskData.endDate,
+			completed: taskData.completed,
+			position: taskData.position,
+			created_at: taskData.createdAt,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -144,29 +147,31 @@ describe('addTaskApi', () => {
 describe('editTaskApi', () => {
 	const taskId = 't1';
 	const taskData: Omit<Task, 'id' | 'position'> = {
+		columnId: 'c1',
 		title: 'Обновлено',
 		description: 'Новое описание',
-		columnId: 'c1',
 		status: 'active' as TaskStatus,
 		priority: 'high' as TaskPriority,
-		date: '18.03.2026, 15:00',
 		startDate: '2026-03-18',
 		endDate: '2026-03-21',
+		completed: false,
+		createdAt: '18.03.2026, 15:00',
 	};
 
 	it('should update task and return it when request succeeds', async () => {
 		// ARRANGE
-		const dbTask: Omit<DbTask, 'user_id' | 'created_at'> = {
+		const dbTask: Omit<DbTask, 'user_id'> = {
 			id: taskId,
+			column_id: taskData.columnId,
 			title: taskData.title,
 			description: taskData.description,
-			column_id: taskData.columnId,
 			status: taskData.status,
 			priority: taskData.priority,
-			position: 0,
-			date: taskData.date,
 			start_date: taskData.startDate,
 			end_date: taskData.endDate,
+			completed: taskData.completed,
+			position: 0,
+			created_at: taskData.createdAt,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -201,30 +206,32 @@ describe('moveTaskApi', () => {
 
 	const taskData: Task = {
 		id: 't1',
+		columnId: 'c1',
 		title: 'Обычная задача',
 		description: 'Описание задачи',
-		columnId: 'c1',
 		status: 'waiting',
 		priority: 'high',
-		position: 0,
-		date: '18.03.2026, 10:00',
 		startDate: '2026-03-18',
 		endDate: '2026-03-20',
+		completed: false,
+		position: 0,
+		createdAt: '18.03.2026, 10:00',
 	};
 
 	it('should move task and return it when request succeeds', async () => {
 		// ARRANGE
-		const dbTask: Omit<DbTask, 'user_id' | 'created_at'> = {
+		const dbTask: Omit<DbTask, 'user_id'> = {
 			id: taskId,
+			column_id: newColumnId,
 			title: taskData.title,
 			description: taskData.description,
-			column_id: newColumnId,
 			status: taskData.status,
 			priority: taskData.priority,
-			position: newPosition,
-			date: taskData.date,
 			start_date: taskData.startDate,
 			end_date: taskData.endDate,
+			completed: taskData.completed,
+			position: newPosition,
+			created_at: taskData.createdAt,
 		};
 
 		(supabase.from as Mock).mockReturnValue(

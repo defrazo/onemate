@@ -48,7 +48,7 @@ export const Layout = ({
 					)}
 				>
 					{left && <aside className="flex">{left}</aside>}
-					<main className="flex flex-1">{children}</main>
+					<main className="flex min-w-0 flex-1">{children}</main>
 					{right && <aside className="flex">{right}</aside>}
 				</div>
 				{!showMobileTabBar && !hideFooter && <Footer />}

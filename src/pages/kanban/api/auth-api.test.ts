@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { supabase } from '@/shared/lib/supabase';
 
-import { getCurrentUser } from './auth-api';
+import { getCurrentUser, getUserRole } from '.';
 
 vi.mock('@/shared/lib/supabase', () => ({
 	supabase: {
@@ -36,9 +36,7 @@ const mockGetUser = (response: any) => {
 };
 
 describe('getCurrentUser', () => {
-	beforeEach(() => {
-		vi.clearAllMocks();
-	});
+	beforeEach(() => vi.clearAllMocks());
 
 	it('should return user when request succeeds', async () => {
 		// ARRANGE
@@ -78,5 +76,53 @@ describe('getCurrentUser', () => {
 
 		// ASSERT
 		expect(supabase.auth.getUser).toHaveBeenCalledTimes(1);
+	});
+});
+
+describe('getUserRole', () => {
+	beforeEach(() => vi.clearAllMocks());
+
+	it('should return user role when app_metadata.role is user', async () => {
+		// ARRANGE
+		mockGetUser({
+			data: { user: makeFakeUser({ app_metadata: { role: 'user' } }) },
+			error: null,
+		});
+
+		// ACT + ASSERT
+		await expect(getUserRole()).resolves.toBe('user');
+	});
+
+	it('should return demo when app_metadata.role is missing', async () => {
+		// ARRANGE
+		mockGetUser({
+			data: { user: makeFakeUser({ app_metadata: {} }) },
+			error: null,
+		});
+
+		// ACT + ASSERT
+		await expect(getUserRole()).resolves.toBe('demo');
+	});
+
+	it('should return demo when app_metadata.role is unknown', async () => {
+		// ARRANGE
+		mockGetUser({
+			data: { user: makeFakeUser({ app_metadata: { role: 'admin' } }) },
+			error: null,
+		});
+
+		// ACT + ASSERT
+		await expect(getUserRole()).resolves.toBe('demo');
+	});
+
+	it('should rethrow when getCurrentUser fails', async () => {
+		// ARRANGE
+		mockGetUser({
+			data: { user: null },
+			error: makeFakeAuthError('Ошибка сети'),
+		});
+
+		// ACT + ASSERT
+		await expect(getUserRole()).rejects.toThrow('Ошибка сети');
 	});
 });

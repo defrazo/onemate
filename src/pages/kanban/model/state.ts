@@ -1,15 +1,4 @@
-import {
-	addColumnApi,
-	addTaskApi,
-	deleteColumnApi,
-	deleteTaskApi,
-	editColumnApi,
-	editTaskApi,
-	fetchColumnsApi,
-	fetchTasksApi,
-	moveColumnApi,
-	moveTaskApi,
-} from '../api';
+import type { IKanbanRepo } from '../api';
 import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
 import { getDefaultColumns, getDefaultTasks, LIMITS, MESSAGES, notifier } from '../lib';
 import type { Column, Task } from '.';
@@ -17,35 +6,35 @@ import type { Column, Task } from '.';
 const fallback = async <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
 	restore(snapshot);
 	notify();
-	notifier.setNotice('Нет связи с сервером. Данные могут быть неактуальны.', 'error');
 };
 
-export const createState = () => {
+export const createState = (repo: IKanbanRepo) => {
 	// === COLUMNS ===
 	let columns: Column[] = [];
 	let columnListeners: Array<(columns: Column[]) => void> = [];
 
-	const getColumns = () => [...columns];
-	const notifyColumns = () => columnListeners.forEach((callback) => callback([...columns]));
+	const getColumns = () => columns.map((column) => ({ ...column }));
+	const notifyColumns = () =>
+		columnListeners.forEach((callback) => callback(columns.map((column) => ({ ...column }))));
 
 	const fetchColumns = async () => {
 		try {
-			const fetched = await fetchColumnsApi();
+			const fetched = await repo.fetchColumns();
 
 			if (!fetched || fetched.length === 0) {
 				const added: Column[] = [];
 
 				for (const column of getDefaultColumns()) {
-					const newColumn = await addColumnApi({
+					const newColumn = await repo.addColumn({
 						title: column.title,
-						position: column.position,
-						taskLimit: column.taskLimit,
 						color: column.color,
+						taskLimit: column.taskLimit,
+						position: column.position,
 					});
 					added.push(newColumn);
 				}
 				columns = added;
-			} else columns = fetched;
+			} else columns = fetched.map((column) => ({ ...column }));
 
 			notifyColumns();
 		} catch (_error) {
@@ -53,7 +42,7 @@ export const createState = () => {
 		}
 	};
 
-	const addColumn = async (title: string, taskLimit: number, color: ColumnColor) => {
+	const addColumn = async (title: string, color: ColumnColor, taskLimit: number) => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
@@ -63,7 +52,7 @@ export const createState = () => {
 			}
 
 			const position = columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1 : 0;
-			const newColumn = await addColumnApi({ title, taskLimit, position, color });
+			const newColumn = await repo.addColumn({ title, color, taskLimit, position });
 
 			columns.push(newColumn);
 			notifyColumns();
@@ -78,10 +67,10 @@ export const createState = () => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
-			columns = columns.map((column) => (column.id === id ? { ...column, title, taskLimit, color } : column));
+			columns = columns.map((column) => (column.id === id ? { ...column, title, color, taskLimit } : column));
 			notifyColumns();
 
-			await editColumnApi(id, { title, taskLimit, color });
+			await repo.editColumn(id, { title, color, taskLimit });
 			notifier.setNotice(MESSAGES.columns.updated, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.updateError, 'error');
@@ -101,7 +90,7 @@ export const createState = () => {
 			columns = columns.filter((column) => column.id !== id);
 			notifyColumns();
 
-			await deleteColumnApi(id);
+			await repo.deleteColumn(id);
 			notifier.setNotice(MESSAGES.columns.deleted, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.deleteError, 'error');
@@ -124,7 +113,7 @@ export const createState = () => {
 			columns = updated;
 			notifyColumns();
 
-			for (const column of columns) await moveColumnApi(column.id, column.position);
+			for (const column of columns) await repo.moveColumn(column.id, column.position);
 
 			notifier.setNotice(MESSAGES.columns.moved, 'success');
 		} catch (_error) {
@@ -135,7 +124,7 @@ export const createState = () => {
 
 	const subscribeColumns = (callback: (columns: Column[]) => void) => {
 		columnListeners.push(callback);
-		callback([...columns]);
+		callback(columns.map((column) => ({ ...column })));
 		return () => (columnListeners = columnListeners.filter((listener) => listener !== callback));
 	};
 
@@ -143,11 +132,11 @@ export const createState = () => {
 	let tasks: Task[] = [];
 	let taskListeners: Array<(tasks: Task[]) => void> = [];
 
-	const notifyTasks = () => taskListeners.forEach((callback) => callback([...tasks]));
+	const notifyTasks = () => taskListeners.forEach((callback) => callback(tasks.map((task) => ({ ...task }))));
 
 	const fetchTasks = async () => {
 		try {
-			const fetched = await fetchTasksApi();
+			const fetched = await repo.fetchTasks();
 
 			if (!fetched || fetched.length === 0) {
 				const added: Task[] = [];
@@ -155,21 +144,22 @@ export const createState = () => {
 
 				for (const task of defaultTasks) {
 					if (!task.columnId) continue;
-					const newTask = await addTaskApi({
+					const newTask = await repo.addTask({
+						columnId: task.columnId,
 						title: task.title,
 						description: task.description,
 						status: task.status,
 						priority: task.priority,
-						columnId: task.columnId,
-						position: task.position,
-						date: task.date,
 						startDate: task.startDate,
 						endDate: task.endDate,
+						completed: task.completed,
+						position: task.position,
+						createdAt: task.createdAt,
 					});
 					added.push(newTask);
 				}
 				tasks = added;
-			} else tasks = fetched;
+			} else tasks = fetched.map((tasks) => ({ ...tasks }));
 
 			notifyTasks();
 		} catch (_error) {
@@ -178,14 +168,15 @@ export const createState = () => {
 	};
 
 	const addTask = async (
+		columnId: string,
 		title: string,
 		description: string,
 		status: TaskStatus,
 		priority: TaskPriority,
-		columnId: string,
-		date: string,
 		startDate: string,
 		endDate: string | null,
+		completed: boolean,
+		createdAt: string,
 		taskLimit: number
 	) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
@@ -199,16 +190,17 @@ export const createState = () => {
 			}
 
 			const position = columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1 : 0;
-			const newTask = await addTaskApi({
+			const newTask = await repo.addTask({
+				columnId,
 				title,
 				description,
 				status,
 				priority,
-				columnId,
-				position,
-				date,
 				startDate,
 				endDate,
+				completed,
+				position,
+				createdAt,
 			});
 
 			tasks.push(newTask);
@@ -226,19 +218,31 @@ export const createState = () => {
 		description: string,
 		status: TaskStatus,
 		priority: TaskPriority,
-		date: string,
 		startDate: string,
-		endDate: string | null
+		endDate: string | null,
+		completed: boolean,
+		createdAt: string
 	) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
 			tasks = tasks.map((task) =>
-				task.id === id ? { ...task, title, description, status, priority, date, startDate, endDate } : task
+				task.id === id
+					? { ...task, title, description, status, priority, startDate, endDate, completed, createdAt }
+					: task
 			);
 			notifyTasks();
 
-			await editTaskApi(id, { title, description, status, priority, date, startDate, endDate });
+			await repo.editTask(id, {
+				title,
+				description,
+				status,
+				priority,
+				startDate,
+				endDate,
+				completed,
+				createdAt,
+			});
 			notifier.setNotice(MESSAGES.tasks.updated, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.updateError, 'error');
@@ -291,7 +295,7 @@ export const createState = () => {
 			tasks = withoutTask;
 			notifyTasks();
 
-			await moveTaskApi(id, newColumnId, newPosition);
+			await repo.moveTask(id, newColumnId, newPosition);
 			notifier.setNotice(MESSAGES.tasks.moved, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
@@ -306,7 +310,7 @@ export const createState = () => {
 			tasks = tasks.filter((task) => task.id !== id);
 			notifyTasks();
 
-			await deleteTaskApi(id);
+			await repo.deleteTask(id);
 			notifier.setNotice(MESSAGES.tasks.deleted, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.deleteError, 'error');
@@ -316,18 +320,17 @@ export const createState = () => {
 
 	const subscribeTasks = (callback: (tasks: Task[]) => void) => {
 		taskListeners.push(callback);
-		callback([...tasks]);
-
+		callback(tasks.map((task) => ({ ...task })));
 		return () => (taskListeners = taskListeners.filter((listener) => listener !== callback));
 	};
 
-	const init = async () => {
+	const loadData = async () => {
 		await fetchColumns();
 		await fetchTasks();
 	};
 
 	return {
-		init,
+		loadData,
 		fetchTasks,
 		fetchColumns,
 		addTask,

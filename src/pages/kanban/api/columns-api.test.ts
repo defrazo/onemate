@@ -3,8 +3,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { supabase } from '@/shared/lib/supabase';
 
 import type { Column, DbColumn } from '../model';
-import { getCurrentUser } from './auth-api';
-import { addColumnApi, deleteColumnApi, editColumnApi, fetchColumnsApi, moveColumnApi } from './columns-api';
+import { addColumnApi, deleteColumnApi, editColumnApi, fetchColumnsApi, getCurrentUser, moveColumnApi } from '.';
 
 vi.mock('@/shared/lib/supabase', () => ({
 	supabase: { from: vi.fn() },
@@ -32,10 +31,10 @@ describe('fetchColumnsApi', () => {
 	it('should return columns when request succeeds', async () => {
 		// ARRANGE
 		const dbColumns: Omit<DbColumn, 'user_id'>[] = [
-			{ id: 'c1', title: 'Запланировано', position: 0, task_limit: 10, color: 'slate' },
-			{ id: 'c2', title: 'Подготовка', position: 1, task_limit: 10, color: 'slate' },
-			{ id: 'c3', title: 'В работе', position: 2, task_limit: 10, color: 'slate' },
-			{ id: 'c4', title: 'Завершено', position: 3, task_limit: 10, color: 'slate' },
+			{ id: 'c1', title: 'Запланировано', color: 'slate', task_limit: 10, position: 0 },
+			{ id: 'c2', title: 'Подготовка', color: 'slate', task_limit: 10, position: 1 },
+			{ id: 'c3', title: 'В работе', color: 'slate', task_limit: 10, position: 2 },
+			{ id: 'c4', title: 'Завершено', color: 'slate', task_limit: 10, position: 3 },
 		];
 
 		(supabase.from as Mock).mockReturnValue(mockChain(['select', 'eq', 'order'], { data: dbColumns, error: null }));
@@ -45,10 +44,10 @@ describe('fetchColumnsApi', () => {
 
 		// ASSERT
 		expect(result).toEqual([
-			{ id: 'c1', title: 'Запланировано', position: 0, taskLimit: 10, color: 'slate' },
-			{ id: 'c2', title: 'Подготовка', position: 1, taskLimit: 10, color: 'slate' },
-			{ id: 'c3', title: 'В работе', position: 2, taskLimit: 10, color: 'slate' },
-			{ id: 'c4', title: 'Завершено', position: 3, taskLimit: 10, color: 'slate' },
+			{ id: 'c1', title: 'Запланировано', color: 'slate', taskLimit: 10, position: 0 },
+			{ id: 'c2', title: 'Подготовка', color: 'slate', taskLimit: 10, position: 1 },
+			{ id: 'c3', title: 'В работе', color: 'slate', taskLimit: 10, position: 2 },
+			{ id: 'c4', title: 'Завершено', color: 'slate', taskLimit: 10, position: 3 },
 		]);
 	});
 
@@ -75,16 +74,16 @@ describe('fetchColumnsApi', () => {
 });
 
 describe('addColumnApi', () => {
-	const columnData: Omit<Column, 'id'> = { title: 'Переделать', position: 4, taskLimit: 10, color: 'slate' };
+	const columnData: Omit<Column, 'id'> = { title: 'Переделать', color: 'slate', taskLimit: 10, position: 4 };
 
 	it('should add column and return it when request succeeds', async () => {
 		// ARRANGE
 		const dbColumn: Omit<DbColumn, 'user_id'> = {
 			id: 'c5',
 			title: columnData.title,
+			color: columnData.color,
 			task_limit: columnData.taskLimit,
 			position: columnData.position,
-			color: columnData.color,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -111,16 +110,16 @@ describe('addColumnApi', () => {
 
 describe('editColumnApi', () => {
 	const columnId = 'c4';
-	const columnData: Omit<Column, 'id' | 'position'> = { title: 'Переделать', taskLimit: 10, color: 'slate' };
+	const columnData: Omit<Column, 'id' | 'position'> = { title: 'Переделать', color: 'slate', taskLimit: 10 };
 
 	it('should update column and return it when request succeeds', async () => {
 		// ARRANGE
 		const dbColumn: Omit<DbColumn, 'user_id'> = {
 			id: columnId,
 			title: columnData.title,
+			color: columnData.color,
 			task_limit: columnData.taskLimit,
 			position: 4,
-			color: columnData.color,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -151,14 +150,14 @@ describe('moveColumnApi', () => {
 
 	it('should move column and return it when request succeeds', async () => {
 		// ARRANGE
-		const columnData: Column = { id: 'c4', title: 'В работе', position: 2, taskLimit: 10, color: 'slate' };
+		const columnData: Column = { id: 'c4', title: 'В работе', color: 'slate', taskLimit: 10, position: 2 };
 
 		const dbColumn: Omit<DbColumn, 'user_id'> = {
 			id: columnId,
 			title: columnData.title,
+			color: columnData.color,
 			task_limit: columnData.taskLimit,
 			position: newPosition,
-			color: columnData.color,
 		};
 
 		(supabase.from as Mock).mockReturnValue(

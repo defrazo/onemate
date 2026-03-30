@@ -1,18 +1,19 @@
 import viewIcon from '@/shared/assets/icons/system/indicators/eye.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { createSvg, customDatePicker, getDivider } from '../../lib';
-import { button, layout, primitives } from '../styles';
-import { createDialog } from '.';
+import { createSvg, customDatePicker } from '../../lib';
+import { layout, primitives } from '..';
+import { createDialog, createSubmitButton } from '.';
 
 type ViewTaskDialogOptions = {
-	initialData: { title: string; description?: string; startDate: string; endDate: string | null };
+	initial: { title: string; description?: string; startDate: string; endDate: string | null; completed: boolean };
+	onSubmit: (completed: boolean) => void;
 };
 
 export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
+	const isCompleted = !!options.initial.completed;
+
 	const icon = createSvg(viewIcon, 'size-5');
-	const divider1 = getDivider();
-	const divider2 = getDivider();
 
 	const { overlay, container, close } = createDialog('Детали задачи', icon);
 
@@ -25,7 +26,7 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	labelTitle.className = 'leading-4 select-none';
 
 	const title = document.createElement('h1');
-	title.textContent = options.initialData.title;
+	title.textContent = options.initial.title;
 	title.className = cn(primitives.input, 'hover:border-(--border-color)');
 
 	titleCol.append(labelTitle, title);
@@ -39,7 +40,7 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	labelDescription.className = 'leading-4 select-none';
 
 	const description = document.createElement('p');
-	description.textContent = options.initialData.description || 'Комментариев нет';
+	description.textContent = options.initial.description || 'Комментариев нет';
 	description.className = cn(primitives.input, 'min-h-40 hover:border-(--border-color)');
 
 	descriptionCol.append(labelDescription, description);
@@ -50,11 +51,12 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 
 	const deadlinesLabel = document.createElement('span');
 	deadlinesLabel.textContent = 'Период выполнения';
-	deadlinesLabel.className = 'leading-4 select-none';
+	deadlinesLabel.className = 'hidden xl:block leading-4 select-none';
 
 	const dates = document.createElement('div');
 	dates.className = cn('flex flex-col xl:flex-row gap-4 xl:items-center');
 
+	// Start Date
 	const startDateRow = document.createElement('div');
 	startDateRow.className = cn(layout.row, 'justify-between w-full');
 
@@ -62,14 +64,16 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	labelStartDate.textContent = 'Дата начала';
 	labelStartDate.className = 'xl:hidden leading-4 select-none';
 
-	const startDate = customDatePicker(options.initialData.startDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+	const startDate = customDatePicker(options.initial.startDate, 'min-w-40 w-fit xl:w-full', 'readonly');
 
 	startDateRow.append(labelStartDate, startDate.element);
 
+	// Arrow
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
 	arrow.className = 'select-none xl:block hidden';
 
+	// End Date
 	const endDateRow = document.createElement('div');
 	endDateRow.className = cn(layout.row, 'justify-between w-full');
 
@@ -77,7 +81,7 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	labelEndDate.textContent = 'Дата завершения';
 	labelEndDate.className = 'xl:hidden leading-4 select-none';
 
-	const endDate = customDatePicker(options.initialData.endDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+	const endDate = customDatePicker(options.initial.endDate, 'min-w-40 w-fit xl:w-full', 'readonly');
 
 	endDateRow.append(labelEndDate, endDate.element);
 	dates.append(startDateRow, arrow, endDateRow);
@@ -85,20 +89,19 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 	deadlinesCol.append(deadlinesLabel, dates);
 
 	// === SUBMIT BUTTON ===
-	const submitButton = document.createElement('button');
-	submitButton.type = 'button';
-	submitButton.textContent = 'Завершить';
-	submitButton.className = cn(button.default, 'w-52 mt-2 mx-auto');
-	submitButton.addEventListener('click', () => handleSubmit());
+	const submitButton = createSubmitButton(isCompleted ? 'Возобновить' : 'Завершить', () =>
+		handleSubmit(!isCompleted)
+	);
 
 	// === ACTION FUNCTIONS ===
-	const handleSubmit = () => {
+	function handleSubmit(completed: boolean) {
+		options.onSubmit(completed);
 		close();
-	};
+	}
 
 	// === ASSEMBLY ===
 	overlay.append(container);
-	container.append(titleCol, divider1, descriptionCol, divider2, deadlinesCol, submitButton);
+	container.append(titleCol, descriptionCol, deadlinesCol, submitButton);
 
 	return overlay;
 };
