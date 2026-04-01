@@ -53,6 +53,14 @@ export const editTaskApi = async (id: string, task: Omit<Task, 'id' | 'columnId'
 	return mapTaskFromDb(data);
 };
 
+export const deleteTaskApi = async (id: string): Promise<void> => {
+	const user = await getCurrentUser();
+
+	const { error } = await supabase.from(KANBAN_TASKS).delete().eq('id', id).eq('user_id', user.id);
+
+	if (error) throw error;
+};
+
 export const moveTaskApi = async (id: string, columnId: string, position: number) => {
 	const user = await getCurrentUser();
 
@@ -67,12 +75,4 @@ export const moveTaskApi = async (id: string, columnId: string, position: number
 	if (error) throw error;
 
 	return mapTaskFromDb(data);
-};
-
-export const deleteTaskApi = async (id: string): Promise<void> => {
-	const user = await getCurrentUser();
-
-	const { error } = await supabase.from(KANBAN_TASKS).delete().eq('id', id).eq('user_id', user.id);
-
-	if (error) throw error;
 };

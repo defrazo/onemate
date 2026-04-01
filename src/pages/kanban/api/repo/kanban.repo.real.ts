@@ -17,12 +17,12 @@ export class KanbanRepoReal implements IKanbanRepo {
 		return editColumnApi(id, column);
 	}
 
-	async moveColumn(id: string, newPosition: number): Promise<Column> {
-		return moveColumnApi(id, newPosition);
-	}
-
 	async deleteColumn(id: string): Promise<void> {
 		return deleteColumnApi(id);
+	}
+
+	async moveColumn(id: string, newPosition: number): Promise<Column> {
+		return moveColumnApi(id, newPosition);
 	}
 
 	// === TASKS ===
@@ -38,11 +38,11 @@ export class KanbanRepoReal implements IKanbanRepo {
 		return editTaskApi(id, task);
 	}
 
-	async moveTask(id: string, columnId: string, position: number): Promise<Task> {
-		return moveTaskApi(id, columnId, position);
-	}
-
 	async deleteTask(id: string): Promise<void> {
 		return deleteTaskApi(id);
+	}
+
+	async moveTask(id: string, columnId: string, position: number): Promise<Task> {
+		return moveTaskApi(id, columnId, position);
 	}
 }

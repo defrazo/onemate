@@ -257,8 +257,41 @@ describe('state', () => {
 					// ASSERT
 					const cols = state.getColumns();
 					expect(cols.map((column) => column.id)).toEqual(['c2', 'c1', 'c3', 'c4']);
+					expect(repo.moveColumn).toHaveBeenCalledTimes(4);
+					expect(repo.moveColumn).toHaveBeenNthCalledWith(1, 'c2', 0);
+					expect(repo.moveColumn).toHaveBeenNthCalledWith(2, 'c1', 1);
+					expect(repo.moveColumn).toHaveBeenNthCalledWith(3, 'c3', 2);
+					expect(repo.moveColumn).toHaveBeenNthCalledWith(4, 'c4', 3);
 					expect(cols.map((column) => column.position)).toEqual([0, 1, 2, 3]);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moved, 'success');
+				});
+
+				it('should ignore second moveColumn call while first one is pending', async () => {
+					// ARRANGE
+					const resolves: Array<() => void> = [];
+
+					(repo.moveColumn as Mock).mockImplementation(
+						() => new Promise<void>((resolve) => resolves.push(resolve))
+					);
+
+					// ACT
+					const firstCall = state.moveColumn('c2', 0);
+					const secondCall = state.moveColumn('c3', 1);
+
+					expect(state.isMovingColumn).toBe(true);
+
+					await Promise.resolve();
+
+					expect(repo.moveColumn).toHaveBeenCalledTimes(4);
+
+					// ACT
+					resolves.forEach((resolve) => resolve());
+
+					await firstCall;
+					await secondCall;
+
+					// ASSERT
+					expect(state.isMovingColumn).toBe(false);
 				});
 
 				it('should do nothing when oldIndex equals newIndex', async () => {
@@ -279,6 +312,18 @@ describe('state', () => {
 
 					// ASSERT
 					expect(state.getColumns().map((column) => column.id)).toEqual(before);
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moveError, 'error');
+				});
+
+				it('should reset isMovingColumn after failed move', async () => {
+					// ARRANGE
+					(repo.moveColumn as Mock).mockRejectedValue(new Error('fail'));
+
+					// ACT
+					await state.moveColumn('c2', 0);
+
+					// ASSERT
+					expect(state.isMovingColumn).toBe(false);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moveError, 'error');
 				});
 			});

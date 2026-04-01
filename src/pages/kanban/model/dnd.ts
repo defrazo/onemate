@@ -72,7 +72,7 @@ export const setupDnD = (
 
 		event.dataTransfer!.dropEffect = 'move';
 
-		autoScroll.update(event.clientX);
+		autoScroll.update(event.clientX, event.clientY);
 
 		const target = event.target as HTMLElement;
 
@@ -163,10 +163,10 @@ export const setupDnD = (
 		const div = document.createElement('div');
 		if (type === 'task')
 			div.className =
-				'rounded-lg bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
+				'bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
 		if (type === 'column')
 			div.className =
-				'rounded-lg bg-(--border-alt)/30 w-full h-full min-w-0 w-[80vw] animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
+				'bg-(--border-alt)/30 w-full h-full flex-1 min-w-[260px] max-w-[350px] animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
 		return div;
 	}
 
@@ -209,46 +209,55 @@ export const setupDnD = (
 };
 
 export const enableAutoScroll = (container: HTMLElement) => {
-	let direction: 'left' | 'right' | null = null;
+	let directionX: 'left' | 'right' | null = null;
+	let directionY: 'up' | 'down' | null = null;
+
 	let active = false;
 
 	const THRESHOLD = 60;
+	const THRESHOLD_Y = 30;
 	const SPEED = 12;
+	const SPEED_Y = 120;
 
 	const loop = () => {
-		if (!active || !direction) return;
-		if (direction === 'left') container.scrollLeft -= SPEED;
-		else container.scrollLeft += SPEED;
+		if (!active) return;
+
+		if (directionX === 'left') container.scrollLeft -= SPEED;
+		if (directionX === 'right') container.scrollLeft += SPEED;
+
+		const scroller = document.documentElement;
+
+		if (directionY === 'up') scroller.scrollTop -= SPEED_Y;
+		if (directionY === 'down') scroller.scrollTop += SPEED_Y;
 
 		requestAnimationFrame(loop);
 	};
 
-	const update = (clientX: number) => {
+	const update = (clientX: number, clientY: number) => {
 		const rect = container.getBoundingClientRect();
 
-		if (clientX < rect.left + THRESHOLD) {
-			direction = 'left';
-			if (!active) {
-				active = true;
-				requestAnimationFrame(loop);
-			}
-		} else if (clientX > rect.right - THRESHOLD) {
-			direction = 'right';
-			if (!active) {
-				active = true;
-				requestAnimationFrame(loop);
-			}
-		} else {
-			direction = null;
-			active = false;
+		if (clientX < rect.left + THRESHOLD) directionX = 'left';
+		else if (clientX > rect.right - THRESHOLD) directionX = 'right';
+		else directionX = null;
+
+		if (clientY < THRESHOLD_Y / 10) directionY = 'up';
+		else if (clientY > window.innerHeight - THRESHOLD_Y) directionY = 'down';
+		else directionY = null;
+
+		if ((directionX || directionY) && !active) {
+			active = true;
+			requestAnimationFrame(loop);
 		}
+
+		if (!directionX && !directionY) active = false;
 	};
 
 	return {
 		update,
 		stop() {
 			active = false;
-			direction = null;
+			directionX = null;
+			directionY = null;
 		},
 	};
 };

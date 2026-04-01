@@ -3,12 +3,15 @@ import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
 import { getDefaultColumns, getDefaultTasks, LIMITS, MESSAGES, notifier } from '../lib';
 import type { Column, Task } from '.';
 
-const fallback = async <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
+const fallback = <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
 	restore(snapshot);
 	notify();
 };
 
 export const createState = (repo: IKanbanRepo) => {
+	let isMovingTask = false;
+	let isMovingColumn = false;
+
 	// === COLUMNS ===
 	let columns: Column[] = [];
 	let columnListeners: Array<(columns: Column[]) => void> = [];
@@ -59,7 +62,7 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.columns.added, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.addError, 'error');
-			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -74,7 +77,7 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.columns.updated, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.updateError, 'error');
-			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
@@ -94,11 +97,14 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.columns.deleted, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.deleteError, 'error');
-			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
 		}
 	};
 
 	const moveColumn = async (id: string, newIndex: number) => {
+		if (isMovingColumn) return;
+		isMovingColumn = true;
+
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
@@ -108,17 +114,24 @@ export const createState = (repo: IKanbanRepo) => {
 			const updated = [...columns];
 			const [moved] = updated.splice(oldIndex, 1);
 			updated.splice(newIndex, 0, moved);
+
+			const isSameOrder = updated.every((col, idx) => col.id === columns[idx]?.id);
+			if (isSameOrder) return;
+
 			updated.forEach((column, idx) => (column.position = idx));
 
 			columns = updated;
 			notifyColumns();
 
-			for (const column of columns) await repo.moveColumn(column.id, column.position);
+			await Promise.all(columns.map((column) => repo.moveColumn(column.id, column.position)));
 
 			notifier.setNotice(MESSAGES.columns.moved, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.columns.moveError, 'error');
-			await fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+			fallback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
+		} finally {
+			isMovingColumn = false;
+			notifyColumns();
 		}
 	};
 
@@ -208,7 +221,7 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.tasks.added, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.addError, 'error');
-			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
@@ -246,11 +259,29 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.tasks.updated, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.updateError, 'error');
-			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+		}
+	};
+
+	const deleteTask = async (id: string) => {
+		const snapshot = tasks.map((task) => ({ ...task }));
+
+		try {
+			tasks = tasks.filter((task) => task.id !== id);
+			notifyTasks();
+
+			await repo.deleteTask(id);
+			notifier.setNotice(MESSAGES.tasks.deleted, 'success');
+		} catch (_error) {
+			notifier.setNotice(MESSAGES.tasks.deleteError, 'error');
+			fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		}
 	};
 
 	const moveTask = async (id: string, newColumnId: string, newIndex: number) => {
+		if (isMovingTask) return;
+		isMovingTask = true;
+
 		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
@@ -283,14 +314,10 @@ export const createState = (repo: IKanbanRepo) => {
 			else if (newIndex >= columnTasks.length) newPosition = columnTasks[columnTasks.length - 1].position + 1000;
 			else newPosition = (columnTasks[newIndex - 1].position + columnTasks[newIndex].position) / 2;
 
+			if (task.columnId === newColumnId && task.position === newPosition) return;
+
 			const updatedTask = { ...task, columnId: newColumnId, position: newPosition };
 			withoutTask.splice(newIndex, 0, updatedTask);
-
-			if (task.columnId === updatedTask.columnId && task.position === updatedTask.position) {
-				tasks = withoutTask;
-				notifyTasks();
-				return;
-			}
 
 			tasks = withoutTask;
 			notifyTasks();
@@ -299,22 +326,9 @@ export const createState = (repo: IKanbanRepo) => {
 			notifier.setNotice(MESSAGES.tasks.moved, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
-			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
-		}
-	};
-
-	const deleteTask = async (id: string) => {
-		const snapshot = tasks.map((task) => ({ ...task }));
-
-		try {
-			tasks = tasks.filter((task) => task.id !== id);
-			notifyTasks();
-
-			await repo.deleteTask(id);
-			notifier.setNotice(MESSAGES.tasks.deleted, 'success');
-		} catch (_error) {
-			notifier.setNotice(MESSAGES.tasks.deleteError, 'error');
-			await fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+			fallback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
+		} finally {
+			isMovingTask = false;
 		}
 	};
 
@@ -330,6 +344,12 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	return {
+		get isMovingColumn() {
+			return isMovingColumn;
+		},
+		get isMovingTask() {
+			return isMovingTask;
+		},
 		loadData,
 		fetchTasks,
 		fetchColumns,

@@ -9,18 +9,20 @@ import MobileTabBar from '@/widgets/mobile-tab-bar';
 interface LayoutProps {
 	leftSide?: ReactNode;
 	rightSide?: ReactNode;
-	hideFooter?: boolean;
 	hideLeftOnMobile?: boolean;
 	hideRightOnMobile?: boolean;
+	hideFooter?: boolean;
+	landscapeMode?: boolean;
 	children: ReactNode;
 }
 
 export const Layout = ({
+	leftSide,
+	rightSide,
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
 	hideFooter = false,
-	leftSide,
-	rightSide,
+	landscapeMode = false,
 	children,
 }: LayoutProps) => {
 	const device = useDeviceType();
@@ -29,14 +31,15 @@ export const Layout = ({
 	const left = hideLeftOnMobile && device === 'mobile' ? null : leftSide;
 	const right = hideRightOnMobile && device === 'mobile' ? null : rightSide;
 	const showMobileTabBar = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
+	const landscape = orientation === 'landscape' && landscapeMode && device === 'mobile';
 
 	return (
 		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-[1600px] xl:text-base">
 			<div className="flex flex-1 flex-col px-4 pb-4">
-				<Header />
+				{!landscape && <Header />}
 				<div
 					className={cn(
-						'grid flex-1 gap-4 pt-4 md:pb-4',
+						`grid flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4`,
 						left && right
 							? 'grid-cols-[250px_1fr_250px]'
 							: left
@@ -44,7 +47,7 @@ export const Layout = ({
 								: right
 									? 'grid-cols-[1fr_250px]'
 									: '',
-						orientation === 'landscape' ? 'px-[25dvw] md:px-[10dvw] lg:px-0' : ''
+						orientation === 'landscape' ? (landscapeMode ? '' : 'px-[25dvw] md:px-[10dvw] lg:px-0') : ''
 					)}
 				>
 					{left && <aside className="flex">{left}</aside>}
@@ -53,7 +56,7 @@ export const Layout = ({
 				</div>
 				{!showMobileTabBar && !hideFooter && <Footer />}
 			</div>
-			{showMobileTabBar && (
+			{showMobileTabBar && !landscapeMode && (
 				<div className="h-12">
 					<MobileTabBar />
 				</div>

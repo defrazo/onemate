@@ -14,7 +14,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	const board = document.createElement('div');
 	board.className = cn(
 		layout.row,
-		'gap-4 min-w-0 items-start overflow-x-auto max-w-full hide-scrollbar overflow-y-hidden h-full'
+		'gap-4 min-w-0 items-start overflow-x-auto max-w-full hide-scrollbar xl:overflow-y-hidden h-full'
 	);
 
 	// === COLUMNS CONTAINER ===
@@ -83,6 +83,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 		(taskId, targetColumn, newIndex) => state.moveTask(taskId, targetColumn, newIndex),
 		(columnId, newIndex) => state.moveColumn(columnId, newIndex)
 	);
+
 	const destroyMouseScroll = enableMouseScroll(board);
 
 	const unsubscribeColumns = state.subscribeColumns((columns) => {

@@ -21,8 +21,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const header = document.createElement('div');
 	header.dataset.header = '';
 	header.dataset.columnDragHandle = '';
-	header.draggable = device === 'desktop';
-	header.className = cn(layout.col, 'gap-1 pb-2 cursor-grab');
+	header.draggable = device === 'desktop' && !state.isMovingColumn;
+	header.className = cn(layout.col, 'gap-1 pb-2', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
 	header.style.borderBottomColor = COLUMN_COLORS[(column.color ?? 'slate') as ColumnColor];
 	header.style.borderBottomWidth = '3px';
 
@@ -72,7 +72,10 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	tasksContainer.dataset.column = column.title;
 	tasksContainer.dataset.columnId = column.id;
 	tasksContainer.dataset.tasks = '';
-	tasksContainer.className = cn(layout.col, 'flex-1 gap-4 overflow-y-auto hide-scrollbar max-h-[calc(100vh-210px)]');
+	tasksContainer.className = cn(
+		layout.col,
+		'flex-1 gap-4 hide-scrollbar landscape:min-h-[150vh] sm:max-h-fit xl:max-h-[calc(100vh-145px)]'
+	);
 
 	// === ACTION FUNCTIONS ===
 	const onAddTask = (columnId: string, taskLimit: number) => {
@@ -120,7 +123,15 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		document.body.append(modal);
 	};
 
-	deviceUtils.onChange((device) => (header.draggable = device === 'desktop'));
+	const updateDraggable = () => {
+		header.draggable = deviceUtils.getDevice() === 'desktop' && !state.isMovingColumn;
+		header.className = cn(layout.col, 'gap-1 pb-2', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
+	};
+
+	deviceUtils.onDeviceChange((device) => (header.draggable = device === 'desktop'));
+	deviceUtils.onDeviceChange(updateDraggable);
+
+	state.subscribeColumns(updateDraggable);
 
 	// === ASSEMBLY ===
 	container.append(header, tasksContainer);

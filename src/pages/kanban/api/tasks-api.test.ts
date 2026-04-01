@@ -199,6 +199,29 @@ describe('editTaskApi', () => {
 	});
 });
 
+describe('deleteTaskApi', () => {
+	const taskId = 't1';
+
+	it('should delete task when request succeeds', async () => {
+		// ARRANGE
+		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: null }));
+
+		// ACT
+		await deleteTaskApi(taskId);
+
+		// ASSERT
+		expect(supabase.from).toHaveBeenCalled();
+	});
+
+	it('should throw error when API returns error', async () => {
+		// ARRANGE
+		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: new Error() }));
+
+		// ACT + ASSERT
+		await expect(deleteTaskApi(taskId)).rejects.toBeInstanceOf(Error);
+	});
+});
+
 describe('moveTaskApi', () => {
 	const taskId = 't1';
 	const newColumnId = 'c2';
@@ -253,28 +276,5 @@ describe('moveTaskApi', () => {
 
 		// ACT + ASSERT
 		await expect(moveTaskApi(taskId, newColumnId, newPosition)).rejects.toBeInstanceOf(Error);
-	});
-});
-
-describe('deleteTaskApi', () => {
-	const taskId = 't1';
-
-	it('should delete task when request succeeds', async () => {
-		// ARRANGE
-		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: null }));
-
-		// ACT
-		await deleteTaskApi(taskId);
-
-		// ASSERT
-		expect(supabase.from).toHaveBeenCalled();
-	});
-
-	it('should throw error when API returns error', async () => {
-		// ARRANGE
-		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: new Error() }));
-
-		// ACT + ASSERT
-		await expect(deleteTaskApi(taskId)).rejects.toBeInstanceOf(Error);
 	});
 });

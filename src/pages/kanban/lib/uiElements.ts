@@ -64,8 +64,10 @@ export const customSelect = <T extends string | number = number>(
 
 	const optionsContainer = document.createElement('div');
 	optionsContainer.dataset.customSelect = '';
-	optionsContainer.className =
-		'absolute left-0 right-0 mt-1 hide-scrollbar border border-(--border-color) rounded-xl bg-(--bg-tertiary) shadow-(--shadow) hidden max-h-40 overflow-auto z-10';
+	optionsContainer.className = cn(
+		'absolute left-0 right-0 hide-scrollbar border border-(--border-color) rounded-xl bg-(--bg-tertiary) shadow-(--shadow) hidden max-h-40 overflow-auto z-10',
+		options.direction === 'up' ? 'mb-0.5' : 'mt-0.5'
+	);
 
 	items.forEach((item) => {
 		let displayText: string;

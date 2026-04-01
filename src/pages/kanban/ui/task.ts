@@ -92,7 +92,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	// Task Status
 	const status = document.createElement('div');
-	status.className = cn(layout.row, 'gap-2');
+	status.className = cn(layout.row, 'gap-2 ');
 
 	let statusConfig = TASK_STATUS[task.status as TaskStatus];
 	if (!statusConfig) statusConfig = TASK_STATUS.active;

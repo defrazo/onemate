@@ -18,7 +18,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-20',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 10:00',
+		createdAt: '2026-03-18T10:00:00.000Z',
 	},
 	{
 		columnId: columnIds[1] ?? '',
@@ -30,7 +30,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-22',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 11:00',
+		createdAt: '2026-03-18T11:00:00.000Z',
 	},
 	{
 		columnId: columnIds[1] ?? '',
@@ -42,7 +42,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-21',
 		completed: false,
 		position: 1,
-		createdAt: '18.03.2026, 11:30',
+		createdAt: '2026-03-18T11:30:00.000Z',
 	},
 	{
 		columnId: columnIds[2] ?? '',
@@ -54,7 +54,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-25',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 12:00',
+		createdAt: '2026-03-18T12:00:00.000Z',
 	},
 	{
 		columnId: columnIds[3] ?? '',
@@ -66,7 +66,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-18',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 13:00',
+		createdAt: '2026-03-18T13:00:00.000Z',
 	},
 	{
 		columnId: columnIds[3] ?? '',
@@ -78,6 +78,6 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		endDate: '2026-03-19',
 		completed: false,
 		position: 1,
-		createdAt: '18.03.2026, 13:30',
+		createdAt: '2026-03-18T13:30:00.000Z',
 	},
 ];

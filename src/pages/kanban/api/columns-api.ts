@@ -49,6 +49,14 @@ export const editColumnApi = async (id: string, column: Omit<Column, 'id' | 'pos
 	return mapColumnFromDb(data);
 };
 
+export const deleteColumnApi = async (id: string): Promise<void> => {
+	const user = await getCurrentUser();
+
+	const { error } = await supabase.from(KANBAN_COLUMNS).delete().eq('id', id).eq('user_id', user.id);
+
+	if (error) throw error;
+};
+
 export const moveColumnApi = async (id: string, newPosition: number) => {
 	const user = await getCurrentUser();
 
@@ -63,12 +71,4 @@ export const moveColumnApi = async (id: string, newPosition: number) => {
 	if (error) throw error;
 
 	return mapColumnFromDb(data);
-};
-
-export const deleteColumnApi = async (id: string): Promise<void> => {
-	const user = await getCurrentUser();
-
-	const { error } = await supabase.from(KANBAN_COLUMNS).delete().eq('id', id).eq('user_id', user.id);
-
-	if (error) throw error;
 };

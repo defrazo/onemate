@@ -144,6 +144,29 @@ describe('editColumnApi', () => {
 	});
 });
 
+describe('deleteColumnApi', () => {
+	const columnId = 'c4';
+
+	it('should delete column when request succeeds', async () => {
+		// ARRANGE
+		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: null }));
+
+		// ACT
+		await deleteColumnApi(columnId);
+
+		// ASSERT
+		expect(supabase.from).toHaveBeenCalled();
+	});
+
+	it('should throw error when API returns error', async () => {
+		// ARRANGE
+		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: new Error() }));
+
+		// ACT + ASSERT
+		await expect(deleteColumnApi(columnId)).rejects.toBeInstanceOf(Error);
+	});
+});
+
 describe('moveColumnApi', () => {
 	const columnId = 'c4';
 	const newPosition = 4;
@@ -183,28 +206,5 @@ describe('moveColumnApi', () => {
 
 		// ACT + ASSERT
 		await expect(moveColumnApi(columnId, newPosition)).rejects.toBeInstanceOf(Error);
-	});
-});
-
-describe('deleteColumnApi', () => {
-	const columnId = 'c4';
-
-	it('should delete column when request succeeds', async () => {
-		// ARRANGE
-		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: null }));
-
-		// ACT
-		await deleteColumnApi(columnId);
-
-		// ASSERT
-		expect(supabase.from).toHaveBeenCalled();
-	});
-
-	it('should throw error when API returns error', async () => {
-		// ARRANGE
-		(supabase.from as Mock).mockReturnValue(mockChain(['delete', 'eq', 'eq'], { data: null, error: new Error() }));
-
-		// ACT + ASSERT
-		await expect(deleteColumnApi(columnId)).rejects.toBeInstanceOf(Error);
 	});
 });
