@@ -60,7 +60,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	insertSvg(optionsButton, optionsIcon, 'size-3');
 	optionsButton.addEventListener('click', (event) => {
 		event.stopPropagation();
-		document.querySelectorAll('[data-options-menu]').forEach((menu) => {
+		document.querySelectorAll('[data-task-options]').forEach((menu) => {
 			if (menu !== optionsMenu) menu.classList.add('hidden');
 		});
 		optionsMenu.classList.toggle('hidden');
@@ -69,7 +69,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	document.addEventListener('click', () => optionsMenu.classList.add('hidden'));
 
 	const optionsMenu = document.createElement('div');
-	optionsMenu.dataset.optionsMenu = '';
+	optionsMenu.dataset.taskOptions = '';
 	optionsMenu.className = cn(
 		layout.blur,
 		layout.col,

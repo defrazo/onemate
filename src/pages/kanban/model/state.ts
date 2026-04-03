@@ -16,9 +16,16 @@ export const createState = (repo: IKanbanRepo) => {
 	let columns: Column[] = [];
 	let columnListeners: Array<(columns: Column[]) => void> = [];
 
-	const getColumns = () => columns.map((column) => ({ ...column }));
-	const notifyColumns = () =>
-		columnListeners.forEach((callback) => callback(columns.map((column) => ({ ...column }))));
+	const getColumns = () =>
+		columns
+			.slice()
+			.sort((a, b) => a.position - b.position)
+			.map((column) => ({ ...column }));
+
+	const notifyColumns = () => {
+		const sorted = getColumns();
+		columnListeners.forEach((callback) => callback(sorted));
+	};
 
 	const fetchColumns = async () => {
 		try {
@@ -36,8 +43,8 @@ export const createState = (repo: IKanbanRepo) => {
 					});
 					added.push(newColumn);
 				}
-				columns = added;
-			} else columns = fetched.map((column) => ({ ...column }));
+				columns = added.sort((a, b) => a.position - b.position);
+			} else columns = fetched.map((column) => ({ ...column })).sort((a, b) => a.position - b.position);
 
 			notifyColumns();
 		} catch (_error) {
@@ -49,12 +56,17 @@ export const createState = (repo: IKanbanRepo) => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
+			if (title.length > LIMITS.COLUMN_TITLE) {
+				notifier.setNotice(MESSAGES.columns.addTitleLimit, 'info');
+				return;
+			}
+
 			if (columns.length >= LIMITS.MAX_COLUMNS) {
 				notifier.setNotice(MESSAGES.columns.addLimit, 'info');
 				return;
 			}
 
-			const position = columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1 : 0;
+			const position = columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1000 : 1000;
 			const newColumn = await repo.addColumn({ title, color, taskLimit, position });
 
 			columns.push(newColumn);
@@ -66,10 +78,15 @@ export const createState = (repo: IKanbanRepo) => {
 		}
 	};
 
-	const editColumn = async (id: string, title: string, taskLimit: number, color: ColumnColor) => {
+	const editColumn = async (id: string, title: string, color: ColumnColor, taskLimit: number) => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
+			if (title.length > LIMITS.COLUMN_TITLE) {
+				notifier.setNotice(MESSAGES.columns.updateTitleLimit, 'info');
+				return;
+			}
+
 			columns = columns.map((column) => (column.id === id ? { ...column, title, color, taskLimit } : column));
 			notifyColumns();
 
@@ -108,22 +125,36 @@ export const createState = (repo: IKanbanRepo) => {
 		const snapshot = columns.map((column) => ({ ...column }));
 
 		try {
-			const oldIndex = columns.findIndex((column) => column.id === id);
-			if (oldIndex === -1 || oldIndex === newIndex) return;
+			const sortedColumns = columns.slice().sort((a, b) => a.position - b.position);
 
-			const updated = [...columns];
-			const [moved] = updated.splice(oldIndex, 1);
-			updated.splice(newIndex, 0, moved);
+			const column = sortedColumns.find((column) => column.id === id);
+			if (!column) return;
 
-			const isSameOrder = updated.every((col, idx) => col.id === columns[idx]?.id);
-			if (isSameOrder) return;
+			const oldIndex = sortedColumns.findIndex((column) => column.id === id);
+			if (oldIndex === -1) return;
 
-			updated.forEach((column, idx) => (column.position = idx));
+			const withoutMoved = sortedColumns.filter((column) => column.id !== id);
+			const clampedIndex = Math.max(0, Math.min(newIndex, withoutMoved.length));
+
+			let newPosition: number;
+			if (withoutMoved.length === 0) newPosition = 1000;
+			else if (clampedIndex === 0) newPosition = withoutMoved[0].position - 1000;
+			else if (clampedIndex >= withoutMoved.length)
+				newPosition = withoutMoved[withoutMoved.length - 1].position + 1000;
+			else newPosition = (withoutMoved[clampedIndex - 1].position + withoutMoved[clampedIndex].position) / 2;
+
+			if (column.position === newPosition) return;
+
+			const movedColumn = { ...column, position: newPosition };
+			const updated = [...withoutMoved];
+			updated.splice(clampedIndex, 0, movedColumn);
 
 			columns = updated;
 			notifyColumns();
 
-			await Promise.all(columns.map((column) => repo.moveColumn(column.id, column.position)));
+			await repo.moveColumn(id, newPosition);
+
+			if (shouldNormalizeColumns()) await normalizeColumnPositions();
 
 			notifier.setNotice(MESSAGES.columns.moved, 'success');
 		} catch (_error) {
@@ -135,9 +166,32 @@ export const createState = (repo: IKanbanRepo) => {
 		}
 	};
 
+	const shouldNormalizeColumns = () => {
+		const sorted = columns.slice().sort((a, b) => a.position - b.position);
+
+		for (let i = 1; i < sorted.length; i++) {
+			const gap = sorted[i].position - sorted[i - 1].position;
+			if (gap < 1) return true;
+		}
+
+		return false;
+	};
+
+	const normalizeColumnPositions = async () => {
+		const sorted = columns
+			.slice()
+			.sort((a, b) => a.position - b.position)
+			.map((column, index) => ({ ...column, position: (index + 1) * 1000 }));
+
+		columns = sorted;
+		notifyColumns();
+
+		await Promise.all(sorted.map((column) => repo.moveColumn(column.id, column.position)));
+	};
+
 	const subscribeColumns = (callback: (columns: Column[]) => void) => {
 		columnListeners.push(callback);
-		callback(columns.map((column) => ({ ...column })));
+		callback(getColumns());
 		return () => (columnListeners = columnListeners.filter((listener) => listener !== callback));
 	};
 
@@ -145,6 +199,7 @@ export const createState = (repo: IKanbanRepo) => {
 	let tasks: Task[] = [];
 	let taskListeners: Array<(tasks: Task[]) => void> = [];
 
+	const getTasks = () => tasks.map((task) => ({ ...task }));
 	const notifyTasks = () => taskListeners.forEach((callback) => callback(tasks.map((task) => ({ ...task }))));
 
 	const fetchTasks = async () => {
@@ -195,6 +250,11 @@ export const createState = (repo: IKanbanRepo) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
+			if (title.length > LIMITS.TASK_TITLE) {
+				notifier.setNotice(MESSAGES.tasks.addTitleLimit, 'info');
+				return;
+			}
+
 			const columnTasks = tasks.filter((task) => task.columnId === columnId);
 
 			if (columnTasks.length + 1 > taskLimit) {
@@ -202,7 +262,8 @@ export const createState = (repo: IKanbanRepo) => {
 				return;
 			}
 
-			const position = columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1 : 0;
+			const position =
+				columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1000 : 1000;
 			const newTask = await repo.addTask({
 				columnId,
 				title,
@@ -239,6 +300,11 @@ export const createState = (repo: IKanbanRepo) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
+			if (title.length > LIMITS.TASK_TITLE) {
+				notifier.setNotice(MESSAGES.tasks.updateTitleLimit, 'info');
+				return;
+			}
+
 			tasks = tasks.map((task) =>
 				task.id === id
 					? { ...task, title, description, status, priority, startDate, endDate, completed, createdAt }
@@ -323,6 +389,9 @@ export const createState = (repo: IKanbanRepo) => {
 			notifyTasks();
 
 			await repo.moveTask(id, newColumnId, newPosition);
+
+			if (shouldNormalizeTasksInColumn(newColumnId)) await normalizeTaskPositionsInColumn(newColumnId);
+
 			notifier.setNotice(MESSAGES.tasks.moved, 'success');
 		} catch (_error) {
 			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
@@ -330,6 +399,34 @@ export const createState = (repo: IKanbanRepo) => {
 		} finally {
 			isMovingTask = false;
 		}
+	};
+
+	const shouldNormalizeTasksInColumn = (columnId: string) => {
+		const sorted = tasks
+			.filter((task) => task.columnId === columnId)
+			.slice()
+			.sort((a, b) => a.position - b.position);
+
+		for (let i = 1; i < sorted.length; i++) {
+			const gap = sorted[i].position - sorted[i - 1].position;
+			if (gap < 0.01) return true;
+		}
+
+		return false;
+	};
+
+	const normalizeTaskPositionsInColumn = async (columnId: string) => {
+		const sortedColumnTasks = tasks
+			.filter((task) => task.columnId === columnId)
+			.slice()
+			.sort((a, b) => a.position - b.position)
+			.map((task, index) => ({ ...task, position: (index + 1) * 1000 }));
+
+		const otherTasks = tasks.filter((task) => task.columnId !== columnId);
+		tasks = [...otherTasks, ...sortedColumnTasks];
+		notifyTasks();
+
+		await Promise.all(sortedColumnTasks.map((task) => repo.moveTask(task.id, task.columnId, task.position)));
 	};
 
 	const subscribeTasks = (callback: (tasks: Task[]) => void) => {
@@ -344,25 +441,26 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	return {
+		loadData,
+		fetchColumns,
+		fetchTasks,
+		addColumn,
+		addTask,
+		editColumn,
+		editTask,
+		moveColumn,
+		moveTask,
+		deleteColumn,
+		deleteTask,
+		getColumns,
+		getTasks,
+		subscribeColumns,
+		subscribeTasks,
 		get isMovingColumn() {
 			return isMovingColumn;
 		},
 		get isMovingTask() {
 			return isMovingTask;
 		},
-		loadData,
-		fetchTasks,
-		fetchColumns,
-		addTask,
-		addColumn,
-		editTask,
-		editColumn,
-		moveTask,
-		moveColumn,
-		deleteTask,
-		deleteColumn,
-		getColumns,
-		subscribeTasks,
-		subscribeColumns,
 	};
 };

@@ -1,10 +1,10 @@
 import type { Column, Task } from '../model';
 
 export const getDefaultColumns = (): Omit<Column, 'id'>[] => [
-	{ title: 'Запланировано', color: 'slate', taskLimit: 10, position: 0 },
-	{ title: 'Подготовка', color: 'amber', taskLimit: 10, position: 1 },
-	{ title: 'В работе', color: 'rose', taskLimit: 10, position: 2 },
-	{ title: 'Завершено', color: 'lime', taskLimit: 10, position: 3 },
+	{ title: 'Запланировано', color: 'slate', taskLimit: 10, position: 1000 },
+	{ title: 'Подготовка', color: 'amber', taskLimit: 10, position: 2000 },
+	{ title: 'В работе', color: 'rose', taskLimit: 10, position: 3000 },
+	{ title: 'Завершено', color: 'lime', taskLimit: 10, position: 4000 },
 ];
 
 export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
@@ -17,7 +17,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-18',
 		endDate: '2026-03-20',
 		completed: false,
-		position: 0,
+		position: 1000,
 		createdAt: '2026-03-18T10:00:00.000Z',
 	},
 	{
@@ -29,11 +29,11 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-18',
 		endDate: '2026-03-22',
 		completed: false,
-		position: 0,
+		position: 1000,
 		createdAt: '2026-03-18T11:00:00.000Z',
 	},
 	{
-		columnId: columnIds[1] ?? '',
+		columnId: columnIds[0] ?? '',
 		title: 'Уточнить информацию у коллег',
 		description: 'Свяжись с ответственными сотрудниками и уточни недостающие детали по проекту.',
 		status: 'waiting',
@@ -41,7 +41,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-19',
 		endDate: '2026-03-21',
 		completed: false,
-		position: 1,
+		position: 2000,
 		createdAt: '2026-03-18T11:30:00.000Z',
 	},
 	{
@@ -53,7 +53,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-18',
 		endDate: '2026-03-25',
 		completed: false,
-		position: 0,
+		position: 1000,
 		createdAt: '2026-03-18T12:00:00.000Z',
 	},
 	{
@@ -65,7 +65,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-18',
 		endDate: '2026-03-18',
 		completed: false,
-		position: 0,
+		position: 1000,
 		createdAt: '2026-03-18T13:00:00.000Z',
 	},
 	{
@@ -77,7 +77,7 @@ export const getDefaultTasks = (columnIds: string[]): Omit<Task, 'id'>[] => [
 		startDate: '2026-03-18',
 		endDate: '2026-03-19',
 		completed: false,
-		position: 1,
+		position: 2000,
 		createdAt: '2026-03-18T13:30:00.000Z',
 	},
 ];

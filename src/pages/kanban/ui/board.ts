@@ -14,13 +14,13 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 	const board = document.createElement('div');
 	board.className = cn(
 		layout.row,
-		'gap-4 min-w-0 items-start overflow-x-auto max-w-full hide-scrollbar xl:overflow-y-hidden h-full'
+		'gap-4 min-w-0 items-start overflow-x-auto max-w-full xl:overflow-y-hidden h-full'
 	);
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');
 	columnsContainer.className = cn(layout.row, 'items-start w-full h-full gap-4');
-	columnsContainer.dataset.columns = '';
+	columnsContainer.dataset.columnsContainer = '';
 
 	const renderColumns = (columns: Column[], tasks: Task[]) => {
 		const actualColumns = new Set(columns.map((column) => column.id));
@@ -35,13 +35,13 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 			let existingColumn = columnsContainer.querySelector(`[data-column-id="${column.id}"]`) as HTMLElement;
 
 			if (existingColumn) {
-				const title = existingColumn.querySelector('[data-title]') as HTMLElement;
+				const title = existingColumn.querySelector('[data-column-title]') as HTMLElement;
 				if (title) title.textContent = column.title.toUpperCase();
 
-				const header = existingColumn.querySelector('[data-header]') as HTMLElement;
+				const header = existingColumn.querySelector('[data-column-header]') as HTMLElement;
 				if (header) header.style.borderBottomColor = COLUMN_COLORS[column.color];
 
-				const countEl = existingColumn.querySelector('[data-count]') as HTMLElement;
+				const countEl = existingColumn.querySelector('[data-tasks-counter]') as HTMLElement;
 				if (countEl) {
 					const tasksInColumn = tasks.filter((task) => task.columnId === column.id);
 					countEl.textContent = `Задач: ${tasksInColumn.length} / ${column.taskLimit ?? '∞'}`;
@@ -67,7 +67,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 		const modal = editColumnDialog({
 			mode: 'create',
 			initial: { columnName: '', limit: 10, color: 'slate' },
-			onSubmit: (columnName, limit, color) => state.addColumn(columnName, limit, color),
+			onSubmit: (columnName, color, limit) => state.addColumn(columnName, color, limit),
 			onDelete: () => {},
 		});
 
@@ -109,14 +109,14 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 };
 
 export const updateBoard = (board: HTMLElement, tasks: Task[], state: ReturnType<typeof createState>) => {
-	const columnsContainer = board.querySelector('[data-columns]') as HTMLElement;
+	const columnsContainer = board.querySelector('[data-columns-container]') as HTMLElement;
 	if (!columnsContainer) return;
 
 	const columns = Array.from(columnsContainer.children) as HTMLElement[];
 
 	columns.forEach((column) => {
 		const columnId = column.dataset.columnId;
-		const tasksContainer = column.querySelector('[data-tasks]') as HTMLElement;
+		const tasksContainer = column.querySelector('[data-tasks-container]') as HTMLElement;
 		if (!tasksContainer) return;
 
 		tasksContainer.innerHTML = '';
@@ -140,10 +140,10 @@ export const updateBoard = (board: HTMLElement, tasks: Task[], state: ReturnType
 		const limit = columnData?.taskLimit ?? Infinity;
 		const isLimitReached = tasksInColumn.length >= limit;
 
-		const countElement = column.querySelector('[data-count]') as HTMLElement;
+		const countElement = column.querySelector('[data-tasks-counter]') as HTMLElement;
 		if (countElement) countElement.textContent = `Задач: ${tasksInColumn.length} / ${limit ?? '∞'}`;
 
-		const addTaskButton = column.querySelector('[data-add-task]') as HTMLElement;
+		const addTaskButton = column.querySelector('[data-task-add]') as HTMLElement;
 		if (addTaskButton) {
 			if (isLimitReached) addTaskButton.classList.add('hidden');
 			else addTaskButton.classList.remove('hidden');

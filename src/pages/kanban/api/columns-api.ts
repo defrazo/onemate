@@ -8,7 +8,11 @@ const KANBAN_COLUMNS = 'kanban_columns';
 export const fetchColumnsApi = async (): Promise<Column[]> => {
 	const user = await getCurrentUser();
 
-	const { data, error } = await supabase.from(KANBAN_COLUMNS).select('*').eq('user_id', user.id).order('position');
+	const { data, error } = await supabase
+		.from(KANBAN_COLUMNS)
+		.select('*')
+		.eq('user_id', user.id)
+		.order('position', { ascending: true });
 
 	if (error) throw error;
 	if (!data) return [];

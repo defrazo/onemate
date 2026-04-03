@@ -77,7 +77,7 @@ export const setupDnD = (
 		const target = event.target as HTMLElement;
 
 		if (currentDragType === 'task') {
-			const targetContainer = target.closest<HTMLElement>('[data-tasks]');
+			const targetContainer = target.closest<HTMLElement>('[data-tasks-container]');
 			if (!targetContainer) return;
 
 			const targetCard = target.closest<HTMLElement>('[data-task-id]');
@@ -100,7 +100,7 @@ export const setupDnD = (
 		}
 
 		if (currentDragType === 'column') {
-			const targetContainer = target.closest<HTMLElement>('[data-columns]');
+			const targetContainer = target.closest<HTMLElement>('[data-columns-container]');
 			if (!targetContainer) return;
 
 			const targetColumnId = target.closest<HTMLElement>('[data-column-id]');
@@ -125,7 +125,7 @@ export const setupDnD = (
 		if (!draggingElement || !placeholder) return;
 
 		if (currentDragType === 'task') {
-			const container = placeholder.closest<HTMLElement>('[data-tasks]');
+			const container = placeholder.closest<HTMLElement>('[data-tasks-container]');
 			if (!container) return restore();
 
 			const newIndex = Array.from(container.children).indexOf(placeholder);
@@ -133,7 +133,7 @@ export const setupDnD = (
 			placeholder.replaceWith(draggingElement);
 
 			const taskId = draggingElement.dataset.taskId!;
-			const targetColumnId = container.dataset.columnId!;
+			const targetColumnId = container.dataset.tasksContainer!;
 
 			cleanup();
 			onTaskDrop(taskId, targetColumnId, newIndex);
@@ -153,6 +153,7 @@ export const setupDnD = (
 	});
 
 	board.addEventListener('dragend', () => {
+		console.log('DRAGEND fired', { currentDragType });
 		delete board.dataset.dragging;
 		autoScroll.stop();
 		restore();
@@ -166,7 +167,7 @@ export const setupDnD = (
 				'bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
 		if (type === 'column')
 			div.className =
-				'bg-(--border-alt)/30 w-full h-full flex-1 min-w-[260px] max-w-[350px] animate-pulse transition-transform delay-150 duration-300 flex flex-1 flex-col';
+				'bg-(--border-alt)/30 w-full h-full min-w-[260px] max-w-[350px] animate-pulse transition-transform delay-150 duration-300 flex flex-col';
 		return div;
 	}
 

@@ -31,10 +31,10 @@ vi.mock('../lib', async () => {
 });
 
 const mockColumns: Column[] = [
-	{ id: 'c1', title: 'Запланировано', color: 'slate', taskLimit: 10, position: 0 },
-	{ id: 'c2', title: 'Подготовка', color: 'amber', taskLimit: 10, position: 1 },
-	{ id: 'c3', title: 'В работе', color: 'rose', taskLimit: 10, position: 2 },
-	{ id: 'c4', title: 'Завершено', color: 'lime', taskLimit: 10, position: 3 },
+	{ id: 'c1', title: 'Запланировано', color: 'slate', taskLimit: 10, position: 1000 },
+	{ id: 'c2', title: 'Подготовка', color: 'amber', taskLimit: 10, position: 2000 },
+	{ id: 'c3', title: 'В работе', color: 'rose', taskLimit: 10, position: 3000 },
+	{ id: 'c4', title: 'Завершено', color: 'lime', taskLimit: 10, position: 4000 },
 ];
 
 const mockTasks: Task[] = [
@@ -48,7 +48,7 @@ const mockTasks: Task[] = [
 		startDate: '2026-03-18',
 		endDate: '2026-03-20',
 		completed: false,
-		position: 0,
+		position: 1000,
 		createdAt: '18.03.2026, 10:00',
 	},
 	{
@@ -61,7 +61,7 @@ const mockTasks: Task[] = [
 		startDate: '2026-03-18',
 		endDate: '2026-03-20',
 		completed: false,
-		position: 0,
+		position: 2000,
 		createdAt: '18.03.2026, 10:00',
 	},
 ];
@@ -110,7 +110,7 @@ describe('state', () => {
 			it('should create default columns when API returns empty array', async () => {
 				// ARRANGE
 				const defaultColumns: Omit<Column, 'id'>[] = [
-					{ title: 'Новая', color: 'slate', taskLimit: 10, position: 0 },
+					{ title: 'Новая', color: 'slate', taskLimit: 10, position: 1000 },
 				];
 				(repo.fetchColumns as Mock).mockResolvedValue([]);
 				(repo.fetchTasks as Mock).mockResolvedValue([]);
@@ -147,7 +147,13 @@ describe('state', () => {
 			describe('addColumn', () => {
 				it('should add column and notify subscribers when request succeeds', async () => {
 					// ARRANGE
-					const newColumn: Column = { id: 'c3', title: 'Готово', color: 'slate', taskLimit: 0, position: 4 };
+					const newColumn: Column = {
+						id: 'c3',
+						title: 'Готово',
+						color: 'slate',
+						taskLimit: 0,
+						position: 5000,
+					};
 					(repo.addColumn as Mock).mockResolvedValue(newColumn);
 
 					const listener = vi.fn();
@@ -162,11 +168,25 @@ describe('state', () => {
 						title: 'Готово',
 						color: 'slate',
 						taskLimit: 0,
-						position: 4,
+						position: 5000,
 					});
 					expect(listener).toHaveBeenCalledTimes(1);
 					expect(state.getColumns()).toContainEqual(newColumn);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.added, 'success');
+				});
+
+				it('should not add or call repo if title exceeds length limit', async () => {
+					// ARRANGE
+					const before = state.getColumns().length;
+
+					// ACT
+					await state.addColumn('Длинный заголовок превышающий лимит', 'sky', 7);
+
+					// ASSERT
+					const after = state.getColumns().length;
+					expect(after).toEqual(before);
+					expect(repo.addColumn).not.toHaveBeenCalled();
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.addTitleLimit, 'info');
 				});
 
 				it('should rollback state when request fails', async () => {
@@ -190,7 +210,7 @@ describe('state', () => {
 					(repo.editColumn as Mock).mockResolvedValue(undefined);
 
 					// ACT
-					await state.editColumn('c1', 'Переделать', 7, 'sky');
+					await state.editColumn('c1', 'Переделать', 'sky', 7);
 
 					// ASSERT
 					const updated = state.getColumns().find((column) => column.id === 'c1');
@@ -203,13 +223,27 @@ describe('state', () => {
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.updated, 'success');
 				});
 
+				it('should not update or call repo if title exceeds length limit', async () => {
+					// ARRANGE
+					const before = state.getColumns().find((column) => column.id === 'c1');
+
+					// ACT
+					await state.editColumn('c1', 'Длинный заголовок превышающий лимит', 'sky', 7);
+
+					// ASSERT
+					const after = state.getColumns().find((column) => column.id === 'c1');
+					expect(after).toEqual(before);
+					expect(repo.editColumn).not.toHaveBeenCalled();
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.updateTitleLimit, 'info');
+				});
+
 				it('should rollback changes when request fails', async () => {
 					// ARRANGE
 					(repo.editColumn as Mock).mockRejectedValue(new Error('fail'));
 					const before = state.getColumns().find((column) => column.id === 'c1');
 
 					// ACT
-					await state.editColumn('c1', 'Переделать', 99, 'sky');
+					await state.editColumn('c1', 'Переделать', 'sky', 99);
 
 					// ASSERT
 					const after = state.getColumns().find((column) => column.id === 'c1');
@@ -255,14 +289,11 @@ describe('state', () => {
 					await state.moveColumn('c2', 0);
 
 					// ASSERT
+					expect(repo.moveColumn).toHaveBeenCalledTimes(1);
+					expect(repo.moveColumn).toHaveBeenCalledWith('c2', 0);
 					const cols = state.getColumns();
 					expect(cols.map((column) => column.id)).toEqual(['c2', 'c1', 'c3', 'c4']);
-					expect(repo.moveColumn).toHaveBeenCalledTimes(4);
-					expect(repo.moveColumn).toHaveBeenNthCalledWith(1, 'c2', 0);
-					expect(repo.moveColumn).toHaveBeenNthCalledWith(2, 'c1', 1);
-					expect(repo.moveColumn).toHaveBeenNthCalledWith(3, 'c3', 2);
-					expect(repo.moveColumn).toHaveBeenNthCalledWith(4, 'c4', 3);
-					expect(cols.map((column) => column.position)).toEqual([0, 1, 2, 3]);
+					expect(cols.map((column) => column.position)).toEqual([0, 1000, 3000, 4000]);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moved, 'success');
 				});
 
@@ -282,7 +313,8 @@ describe('state', () => {
 
 					await Promise.resolve();
 
-					expect(repo.moveColumn).toHaveBeenCalledTimes(4);
+					expect(repo.moveColumn).toHaveBeenCalledTimes(1);
+					expect(repo.moveColumn).toHaveBeenCalledWith('c2', 0);
 
 					// ACT
 					resolves.forEach((resolve) => resolve());
@@ -367,7 +399,7 @@ describe('state', () => {
 					startDate: '2026-03-18',
 					endDate: '2026-03-20',
 					completed: false,
-					position: 0,
+					position: 1000,
 					createdAt: '18.03.2026, 10:00',
 				};
 
@@ -416,7 +448,7 @@ describe('state', () => {
 						startDate: '2026-03-18',
 						endDate: null,
 						completed: false,
-						position: 2,
+						position: 3000,
 						createdAt: '18.03.2026, 10:00',
 					};
 					(repo.addTask as Mock).mockResolvedValue(newTask);
@@ -441,10 +473,35 @@ describe('state', () => {
 
 					// ASSERT
 					expect(repo.addTask).toHaveBeenCalledWith(
-						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 1 })
+						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 3000 })
 					);
 					expect(listener).toHaveBeenCalledTimes(1);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.added, 'success');
+				});
+
+				it('should not add or call repo if title exceeds length limit', async () => {
+					// ARRANGE
+					const before = state.getTasks().length;
+
+					// ACT
+					await state.addTask(
+						'c1',
+						'Очень длинный заголовок точно превышающий лимит заголовка задачи',
+						'Описание',
+						'waiting',
+						'high',
+						'2026-03-18',
+						null,
+						false,
+						'18.03.2026, 10:00',
+						10
+					);
+
+					// ASSERT
+					const after = state.getTasks().length;
+					expect(after).toEqual(before);
+					expect(repo.addTask).not.toHaveBeenCalled();
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.addTitleLimit, 'info');
 				});
 
 				it('should rollback state when request fails', async () => {
@@ -495,6 +552,30 @@ describe('state', () => {
 						createdAt: '18.03.2026, 10:00',
 					});
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updated, 'success');
+				});
+
+				it('should not update or call repo if title exceeds length limit', async () => {
+					// ARRANGE
+					const before = state.getTasks().length;
+
+					// ACT
+					await state.editTask(
+						't1',
+						'Очень длинный заголовок точно превышающий лимит заголовка задачи',
+						'Описание',
+						'waiting',
+						'high',
+						'2026-03-18',
+						null,
+						false,
+						'18.03.2026, 10:00'
+					);
+
+					// ASSERT
+					const after = state.getTasks().length;
+					expect(after).toEqual(before);
+					expect(repo.editTask).not.toHaveBeenCalled();
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updateTitleLimit, 'info');
 				});
 
 				it('should rollback changes when request fails', async () => {

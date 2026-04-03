@@ -19,7 +19,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	// === HEADER ===
 	const header = document.createElement('div');
-	header.dataset.header = '';
+	header.dataset.columnHeader = '';
 	header.dataset.columnDragHandle = '';
 	header.draggable = device === 'desktop' && !state.isMovingColumn;
 	header.className = cn(layout.col, 'gap-1 pb-2', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
@@ -32,8 +32,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	const title = document.createElement('h2');
 	title.textContent = column.title.toUpperCase();
-	title.dataset.title = '';
-	title.className = primitives.title;
+	title.dataset.columnTitle = '';
+	title.className = cn(primitives.title, state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
 
 	const settingsButton = document.createElement('button');
 	settingsButton.type = 'button';
@@ -52,13 +52,13 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	const counter = document.createElement('div');
 	counter.textContent = `Задач: 0 / ${column.taskLimit ?? '∞'}`;
-	counter.dataset.count = '';
-	counter.className = primitives.hint;
+	counter.dataset.tasksCounter = '';
+	counter.className = cn(primitives.hint, state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
 
 	const addTaskButton = document.createElement('button');
 	addTaskButton.type = 'button';
 	addTaskButton.title = 'Добавить задачу';
-	addTaskButton.dataset.addTask = '';
+	addTaskButton.dataset.taskAdd = '';
 	addTaskButton.className = cn(button.default, 'w-[52px] justify-center py-0.5');
 	addTaskButton.addEventListener('click', () => onAddTask(column.id, column.taskLimit));
 	insertSvg(addTaskButton, addIcon, 'size-4 mx-auto');
@@ -69,12 +69,11 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 
 	// === TASKS CONTAINER ===
 	const tasksContainer = document.createElement('div');
-	tasksContainer.dataset.column = column.title;
-	tasksContainer.dataset.columnId = column.id;
-	tasksContainer.dataset.tasks = '';
+	tasksContainer.dataset.tasksContainer = column.id;
 	tasksContainer.className = cn(
 		layout.col,
-		'flex-1 gap-4 hide-scrollbar landscape:min-h-[150vh] sm:max-h-fit xl:max-h-[calc(100vh-145px)]'
+		// 'flex-1 gap-4 hide-scrollbar landscape:min-h-[150vh] sm:max-h-fit xl:max-h-[calc(100vh-145px)]'
+		'flex-1 gap-4 hide-scrollbar xl:overflow-y-auto xl:max-h-[calc(100vh-225px)]'
 	);
 
 	// === ACTION FUNCTIONS ===
@@ -115,8 +114,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const onEditColumn = (id: string, columnName: string, color: ColumnColor, limit: number) => {
 		const modal = editColumnDialog({
 			mode: 'edit',
-			initial: { columnName, limit, color },
-			onSubmit: (columnName, limit, color) => state.editColumn(id, columnName, color, limit),
+			initial: { columnName, color, limit },
+			onSubmit: (columnName, color, limit) => state.editColumn(id, columnName, color, limit),
 			onDelete: () => state.deleteColumn(id),
 		});
 
