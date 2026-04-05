@@ -3,10 +3,7 @@ import { createBoard } from '.';
 
 export const renderKanban = (root: HTMLElement, state: ReturnType<typeof createState>) => {
 	const kanban = createBoard(state);
-	root.appendChild(kanban.board);
+	root.appendChild(kanban.element);
 
-	return () => {
-		kanban.destroy();
-		root.innerHTML = '';
-	};
+	return () => kanban.destroy();
 };

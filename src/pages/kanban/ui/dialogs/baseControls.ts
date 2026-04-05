@@ -7,11 +7,25 @@ import { button, layout } from '..';
 export const createOverlay = () => {
 	const overlay = document.createElement('div');
 	overlay.className = layout.overlay;
-	overlay.addEventListener('mousedown', (event) => {
-		if (event.target === overlay) close();
-	});
+	overlay.addEventListener('mousedown', onClickOutside);
 
-	const close = () => overlay.remove();
+	document.body.style.overflow = 'hidden';
+	document.addEventListener('keydown', onEscape);
+
+	function onClickOutside(event: MouseEvent) {
+		if (event.target === overlay) close();
+	}
+
+	function onEscape(event: KeyboardEvent) {
+		if (event.key === 'Escape') close();
+	}
+
+	function close() {
+		overlay.remove();
+		overlay.removeEventListener('mousedown', onClickOutside);
+		document.removeEventListener('keydown', onEscape);
+		document.body.style.overflow = '';
+	}
 
 	return { overlay, close };
 };
@@ -30,7 +44,7 @@ export const createSubmitButton = (text: string, onSubmit: () => void, className
 	const submitButton = document.createElement('button');
 	submitButton.type = 'button';
 	submitButton.textContent = text;
-	submitButton.className = cn(button.default, 'w-52 mt-2 py-1.5 mx-auto', className);
+	submitButton.className = cn(button.default, 'mx-auto mt-2 w-52 py-1.5', className);
 	submitButton.addEventListener('click', onSubmit);
 
 	return submitButton;

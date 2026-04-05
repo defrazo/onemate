@@ -13,7 +13,7 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 		layout.blur,
 		layout.col,
 		border.default,
-		'text-(--color-primary) min-w-0 h-fit max-h-full min-h-0 w-full xl:w-md gap-3 p-3 relative hide-scrollbar overflow-y-auto overscroll-contain'
+		'hide-scrollbar relative h-fit max-h-full min-h-0 w-full max-w-md min-w-0 gap-3 overflow-y-auto p-3'
 	);
 
 	// === HEADER ROW ===
@@ -24,14 +24,14 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 
 	const title = document.createElement('h1');
 	title.textContent = text;
-	title.className = cn(primitives.title, 'text-lg');
+	title.className = cn(primitives.title, 'text-base 2xl:text-lg');
 
 	const closeButton = createCloseButton(close);
 
 	header.append(title, closeButton);
 
 	// === DIVIDER ===
-	const divider = getDivider('absolute left-0 top-12');
+	const divider = getDivider('absolute top-12 left-0');
 
 	// === ASSEMBLY ===
 	overlay.append(container);

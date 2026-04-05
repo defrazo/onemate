@@ -1,6 +1,6 @@
-export { createBoard, updateBoard } from './board';
+export { createBoard } from './board';
 export { createColumn } from './column';
-export { deleteDialog, editColumnDialog, editTaskDialog, viewTaskDialog } from './dialogs';
+export { deleteDialog, editColumn, editTask, viewTask } from './dialogs';
 export { initKanban } from './init';
 export { default } from './KanbanPage';
 export { renderKanban } from './render';

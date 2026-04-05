@@ -5,15 +5,19 @@ import { createSvg } from '../../lib';
 import { layout } from '..';
 import { createDialog, createSubmitButton } from '.';
 
-export const deleteDialog = (title: string, content: string, onDelete: () => void): HTMLElement => {
+type DeleteInstance = { element: HTMLDivElement; close: () => void };
+
+export const deleteDialog = (title: string, content: string, onDelete: () => void): DeleteInstance => {
 	const icon = createSvg(deleteIcon, 'size-5');
 
-	const { overlay, container, close } = createDialog(title, icon);
+	const { overlay, container, close: closeDialog } = createDialog(title, icon);
+
+	let isClosed = false;
 
 	// === QUESTION TEXT ===
 	const question = document.createElement('span');
-	question.textContent = content;
-	question.className = 'text-md pt-5 pb-1 select-none text-center';
+	question.innerHTML = content;
+	question.className = 'pt-5 pb-1 text-center text-sm select-none break-words whitespace-normal 2xl:text-base';
 
 	// === BUTTONS ROW ===
 	const buttonsRow = document.createElement('div');
@@ -30,9 +34,15 @@ export const deleteDialog = (title: string, content: string, onDelete: () => voi
 		close();
 	}
 
+	function close() {
+		if (isClosed) return;
+		isClosed = true;
+
+		closeDialog();
+	}
+
 	// === ASSEMBLY ===
-	overlay.append(container);
 	container.append(question, buttonsRow);
 
-	return overlay;
+	return { element: overlay, close };
 };

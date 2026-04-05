@@ -5,25 +5,29 @@ import { createSvg, customDatePicker } from '../../lib';
 import { layout, primitives } from '..';
 import { createDialog, createSubmitButton } from '.';
 
-type ViewTaskDialogOptions = {
+type ViewTaskOptions = {
 	initial: { title: string; description?: string; startDate: string; endDate: string | null; completed: boolean };
 	onSubmit: (completed: boolean) => void;
 };
 
-export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
-	const isCompleted = !!options.initial.completed;
+type ViewTaskInstance = { element: HTMLDivElement; close: () => void };
 
+export const viewTask = (options: ViewTaskOptions): ViewTaskInstance => {
 	const icon = createSvg(viewIcon, 'size-5');
 
-	const { overlay, container, close } = createDialog('Детали задачи', icon);
+	const { overlay, container, close: closeDialog } = createDialog('Детали задачи', icon);
+
+	let isClosed = false;
+
+	const isCompleted = !!options.initial.completed;
 
 	// === TITLE ===
 	const titleCol = document.createElement('div');
-	titleCol.className = cn(layout.col, 'gap-3 mt-3');
+	titleCol.className = cn(layout.col, 'mt-3 gap-3');
 
 	const labelTitle = document.createElement('div');
 	labelTitle.textContent = 'Задача';
-	labelTitle.className = 'leading-4 select-none';
+	labelTitle.className = primitives.label;
 
 	const title = document.createElement('h1');
 	title.textContent = options.initial.title;
@@ -37,11 +41,14 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 
 	const labelDescription = document.createElement('div');
 	labelDescription.textContent = 'Комментарий';
-	labelDescription.className = 'leading-4 select-none';
+	labelDescription.className = primitives.label;
 
 	const description = document.createElement('p');
 	description.textContent = options.initial.description || 'Комментариев нет';
-	description.className = cn(primitives.input, 'min-h-40 hover:border-(--border-color)');
+	description.className = cn(
+		primitives.input,
+		'hide-scrollbar min-h-10 resize-none hover:border-(--border-color) xl:min-h-20 2xl:min-h-40'
+	);
 
 	descriptionCol.append(labelDescription, description);
 
@@ -51,39 +58,40 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 
 	const deadlinesLabel = document.createElement('span');
 	deadlinesLabel.textContent = 'Период выполнения';
-	deadlinesLabel.className = 'hidden xl:block leading-4 select-none';
+	deadlinesLabel.className = cn(primitives.label, 'hidden xl:block');
 
 	const dates = document.createElement('div');
-	dates.className = cn('flex flex-col xl:flex-row gap-4 xl:items-center');
+	dates.className = cn(layout.col, 'gap-4 xl:flex-row xl:items-center');
 
 	// Start Date
 	const startDateRow = document.createElement('div');
-	startDateRow.className = cn(layout.row, 'justify-between w-full');
+	startDateRow.className = cn(layout.row, 'w-full justify-between');
 
 	const labelStartDate = document.createElement('div');
 	labelStartDate.textContent = 'Дата начала';
-	labelStartDate.className = 'xl:hidden leading-4 select-none';
+	labelStartDate.className = cn(primitives.label, 'xl:hidden');
 
-	const startDate = customDatePicker(options.initial.startDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+	const startDate = customDatePicker(options.initial.startDate, 'w-fit min-w-40 xl:w-full', 'readonly');
 
 	startDateRow.append(labelStartDate, startDate.element);
 
 	// Arrow
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
-	arrow.className = 'select-none xl:block hidden';
+	arrow.className = 'hidden select-none xl:block';
 
 	// End Date
 	const endDateRow = document.createElement('div');
-	endDateRow.className = cn(layout.row, 'justify-between w-full');
+	endDateRow.className = cn(layout.row, 'w-full justify-between');
 
 	const labelEndDate = document.createElement('div');
 	labelEndDate.textContent = 'Дата завершения';
-	labelEndDate.className = 'xl:hidden leading-4 select-none';
+	labelEndDate.className = cn(primitives.label, 'xl:hidden');
 
-	const endDate = customDatePicker(options.initial.endDate, 'min-w-40 w-fit xl:w-full', 'readonly');
+	const endDate = customDatePicker(options.initial.endDate, 'w-fit min-w-40 xl:w-full', 'readonly');
 
 	endDateRow.append(labelEndDate, endDate.element);
+
 	dates.append(startDateRow, arrow, endDateRow);
 
 	deadlinesCol.append(deadlinesLabel, dates);
@@ -99,9 +107,15 @@ export const viewTaskDialog = (options: ViewTaskDialogOptions): HTMLElement => {
 		close();
 	}
 
+	function close() {
+		if (isClosed) return;
+		isClosed = true;
+
+		closeDialog();
+	}
+
 	// === ASSEMBLY ===
-	overlay.append(container);
 	container.append(titleCol, descriptionCol, deadlinesCol, submitButton);
 
-	return overlay;
+	return { element: overlay, close };
 };

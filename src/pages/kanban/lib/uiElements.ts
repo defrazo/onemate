@@ -1,13 +1,13 @@
 import dateIcon from '@/shared/assets/icons/system/date.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { layout, primitives } from '../ui';
+import { border, layout, primitives } from '../ui';
 import { insertSvg } from '.';
 
 // === DIVIDER ===
 export const getDivider = (className = '') => {
 	const divider = document.createElement('div');
-	divider.className = cn('border-b w-full border-(--border-color)', className);
+	divider.className = cn('w-full border-b border-(--border-color)', className);
 	return divider;
 };
 
@@ -23,20 +23,24 @@ type CustomSelectOptions<T extends string | number = number> = {
 	direction?: 'up' | 'down';
 };
 
+type CustomSelectInstance = { element: HTMLDivElement; destroy: () => void };
+
 export const customSelect = <T extends string | number = number>(
 	options: CustomSelectOptions<T> = {},
 	className?: string
-): HTMLDivElement => {
+): CustomSelectInstance => {
 	const container = document.createElement('div');
-	container.className = cn('relative inline-block min-w-fit text-center cursor-pointer select-none', className);
+	container.className = cn(
+		'relative inline-block min-w-fit cursor-pointer text-center text-sm select-none 2xl:text-base',
+		className
+	);
 
 	let items: Array<T | CustomSelectItem<T>> = [];
 
-	if (options.items) {
-		items = options.items;
-	} else if (typeof options.min === 'number' && typeof options.max === 'number') {
+	if (options.items) items = options.items;
+	else if (typeof options.min === 'number' && typeof options.max === 'number')
 		for (let i = options.min; i <= options.max; i++) items.push(i as T);
-	} else items = [options.initialValue ?? 0] as Array<T>;
+	else items = [options.initialValue ?? 0] as Array<T>;
 
 	const initialItem = options.initialValue ?? items[0];
 
@@ -49,15 +53,18 @@ export const customSelect = <T extends string | number = number>(
 	};
 
 	const selected = document.createElement('div');
-	selected.className =
-		'border border-(--border-color) flex-1 hover:border-(--accent-hover) rounded-xl p-1 bg-(--bg-tertiary)/50 flex justify-between items-center';
+	selected.className = cn(
+		layout.row,
+		border.default,
+		'flex-1 justify-between rounded-xl bg-(--bg-tertiary)/50 p-1 hover:border-(--accent-hover)'
+	);
 
 	const selectedValue = document.createElement('span');
 	selectedValue.textContent = findLabel(initialItem as T);
 	selectedValue.className = 'flex-1 px-2';
 
 	const arrow = document.createElement('span');
-	arrow.className = 'arrow ml-2';
+	arrow.className = 'ml-2';
 	arrow.innerHTML = '&#9662;';
 
 	selected.append(selectedValue, arrow);
@@ -65,9 +72,18 @@ export const customSelect = <T extends string | number = number>(
 	const optionsContainer = document.createElement('div');
 	optionsContainer.dataset.customSelect = '';
 	optionsContainer.className = cn(
-		'absolute left-0 right-0 hide-scrollbar border border-(--border-color) rounded-xl bg-(--bg-tertiary) shadow-(--shadow) hidden max-h-40 overflow-auto z-10',
+		border.default,
+		'hide-scrollbar absolute right-0 left-0 z-10 hidden max-h-36 overflow-auto rounded-xl bg-(--bg-tertiary) shadow-(--shadow)',
 		options.direction === 'up' ? 'mb-0.5' : 'mt-0.5'
 	);
+
+	const optionListeners: Array<{ element: HTMLDivElement; handler: () => void }> = [];
+
+	const closeAllSelects = (except?: HTMLElement) => {
+		document.querySelectorAll('[data-custom-select]').forEach((element) => {
+			if (element !== except) element.classList.add('hidden');
+		});
+	};
 
 	items.forEach((item) => {
 		let displayText: string;
@@ -82,19 +98,22 @@ export const customSelect = <T extends string | number = number>(
 		}
 
 		const option = document.createElement('div');
-		option.className = 'p-1 hover:bg-(--accent-hover) hover:cursor-pointer hover:text-(--accent-text)';
+		option.className = 'p-1 hover:cursor-pointer hover:bg-(--accent-hover) hover:text-(--accent-text)';
 		option.textContent = displayText;
 
-		option.addEventListener('click', () => {
+		const onOptionClick = () => {
 			selectedValue.textContent = displayText;
 			optionsContainer.classList.add('hidden');
 			options.onChange?.(value);
-		});
+		};
+
+		option.addEventListener('click', onOptionClick);
+		optionListeners.push({ element: option, handler: onOptionClick });
 
 		optionsContainer.appendChild(option);
 	});
 
-	selected.addEventListener('click', (event) => {
+	const onSelectedClick = (event: MouseEvent) => {
 		event.stopPropagation();
 		closeAllSelects(optionsContainer);
 
@@ -107,21 +126,29 @@ export const customSelect = <T extends string | number = number>(
 			optionsContainer.style.top = `${selected.offsetHeight}px`;
 			optionsContainer.style.bottom = 'auto';
 		}
-	});
+	};
+
+	const onDocumentClick = (event: MouseEvent) => {
+		if (!container.contains(event.target as Node)) {
+			optionsContainer.classList.add('hidden');
+		}
+	};
+
+	selected.addEventListener('click', onSelectedClick);
+	document.addEventListener('click', onDocumentClick);
 
 	container.append(selected, optionsContainer);
 
-	document.addEventListener('click', (event) => {
-		if (!container.contains(event.target as Node)) optionsContainer.classList.add('hidden');
-	});
+	const destroy = () => {
+		selected.removeEventListener('click', onSelectedClick);
+		document.removeEventListener('click', onDocumentClick);
 
-	const closeAllSelects = (except?: HTMLElement) => {
-		document.querySelectorAll('[data-custom-select]').forEach((element) => {
-			if (element !== except) element.classList.add('hidden');
+		optionListeners.forEach(({ element, handler }) => {
+			element.removeEventListener('click', handler);
 		});
 	};
 
-	return container;
+	return { element: container, destroy };
 };
 
 // === DATE PICKER ===
@@ -144,7 +171,7 @@ export const customDatePicker = (date: string | null, className?: string, readon
 	input.type = 'date';
 	input.value = date || '';
 	input.readOnly = isReadonly;
-	input.className = 'absolute right-0 opacity-0 pointer-events-none';
+	input.className = 'pointer-events-none absolute right-0 opacity-0';
 
 	const display = document.createElement('div');
 	display.textContent = date ? formatDate(date) : 'дд.мм.гггг';

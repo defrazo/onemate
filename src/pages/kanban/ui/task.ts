@@ -6,37 +6,27 @@ import { cn, fullDate } from '@/shared/lib/utils';
 
 import { deviceUtils, insertSvg, TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../lib';
 import { createState, type Task } from '../model';
-import { border, button, deleteDialog, editTaskDialog, layout, primitives, viewTaskDialog } from '.';
+import { border, button, deleteDialog, editTask, layout, primitives, viewTask } from '.';
 
-const getOption = (index: number, icon: string, title: string, callback: () => void): HTMLElement => {
-	const option = document.createElement('button');
-	const roundedVariants = ['hover:rounded-t-xl', 'hover:rounded-none', 'hover:rounded-b-xl'] as const;
+type CreateTaskCardInstance = { element: HTMLElement; destroy: () => void };
 
-	option.className = cn(
-		layout.row,
-		'xl:gap-2 gap-3 px-5 xl:px-3 xl:py-2 py-3 cursor-pointer text-left w-full hover:bg-(--accent-hover)',
-		roundedVariants[index]
-	);
-	insertSvg(option, icon, 'size-4');
-	option.append(title);
-	option.addEventListener('click', callback);
+export const createTaskCard = (task: Task, state: ReturnType<typeof createState>): CreateTaskCardInstance => {
+	let isDestroyed = false;
 
-	return option;
-};
-
-export const createTaskCard = (task: Task, state: ReturnType<typeof createState>): HTMLElement => {
-	const device = deviceUtils.getDevice();
+	let viewTaskModal: ReturnType<typeof viewTask> | null = null;
+	let editTaskModal: ReturnType<typeof editTask> | null = null;
+	let deleteTaskModal: ReturnType<typeof deleteDialog> | null = null;
 
 	// === TASK CARD ===
 	const taskCard = document.createElement('div');
-	taskCard.className = cn(layout.col, 'bg-(--bg-secondary) min-w-0 min-h-[180px]');
+	taskCard.className = cn(layout.col, 'min-h-[180px] min-w-0 bg-(--bg-secondary)');
 	taskCard.dataset.taskId = task.id;
 
 	// === TASK HEADER ===
 	const taskHeader = document.createElement('div');
 	taskHeader.className = cn(
 		layout.row,
-		'border-b border-(--border-color) min-w-0  justify-between hover:cursor-grab relative'
+		'relative min-w-0 justify-between border-b border-(--border-color) hover:cursor-grab'
 	);
 
 	const taskTitle = document.createElement('h2');
@@ -44,7 +34,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	taskTitle.dataset.taskDragHandle = '';
 	taskTitle.className = cn(
 		primitives.title,
-		'min-w-0 py-3 pl-3 truncate cursor-grab',
+		'min-w-0 cursor-grab truncate py-3 pl-3',
 		task.completed && 'line-through opacity-30'
 	);
 
@@ -54,19 +44,10 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	optionsButton.title = 'Действия с задачей';
 	optionsButton.className = cn(
 		button.icon,
-		'p-3 border-l border-transparent hover:border-(--border-color-op) rounded-none',
+		'rounded-none border-l border-transparent p-3 hover:border-(--border-color-op)',
 		task.completed && 'opacity-30 hover:opacity-100'
 	);
 	insertSvg(optionsButton, optionsIcon, 'size-3');
-	optionsButton.addEventListener('click', (event) => {
-		event.stopPropagation();
-		document.querySelectorAll('[data-task-options]').forEach((menu) => {
-			if (menu !== optionsMenu) menu.classList.add('hidden');
-		});
-		optionsMenu.classList.toggle('hidden');
-	});
-
-	document.addEventListener('click', () => optionsMenu.classList.add('hidden'));
 
 	const optionsMenu = document.createElement('div');
 	optionsMenu.dataset.taskOptions = '';
@@ -74,31 +55,53 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		layout.blur,
 		layout.col,
 		border.default,
-		'absolute w-fit z-10 divide-y divide-(--border-color) right-0 top-8 hidden'
+		'absolute top-8 right-0 z-10 hidden w-fit divide-y divide-(--border-color)'
 	);
 
-	const options = [
-		{ index: 0, icon: viewIcon, title: 'Просмотреть', action: () => onView() },
-		{ index: 1, icon: editIcon, title: 'Редактировать', action: () => onEdit() },
-		{ index: 2, icon: deleteIcon, title: 'Удалить', action: () => onDelete() },
+	const onOptionsButtonClick = (event: MouseEvent) => {
+		event.stopPropagation();
+
+		document.querySelectorAll('[data-task-options]').forEach((menu) => {
+			if (menu !== optionsMenu) menu.classList.add('hidden');
+		});
+
+		optionsMenu.classList.toggle('hidden');
+	};
+
+	const onDocumentClick = (event: MouseEvent) => {
+		const target = event.target as Node | null;
+		if (!target) return;
+
+		if (!taskCard.contains(target)) optionsMenu.classList.add('hidden');
+	};
+
+	optionsButton.addEventListener('click', onOptionsButtonClick);
+	document.addEventListener('click', onDocumentClick);
+
+	const optionDefs = [
+		{ index: 0, icon: viewIcon, title: 'Просмотреть', action: onViewTask },
+		{ index: 1, icon: editIcon, title: 'Редактировать', action: onEditTask },
+		{ index: 2, icon: deleteIcon, title: 'Удалить', action: onDeleteTask },
 	];
-	options.forEach((option) => optionsMenu.append(getOption(option.index, option.icon, option.title, option.action)));
+
+	const optionInstances = optionDefs.map((item) => createOption(item.index, item.icon, item.title, item.action));
+	optionInstances.forEach(({ option }) => optionsMenu.append(option));
 
 	taskHeader.append(taskTitle, optionsButton, optionsMenu);
 
 	// === ATTRIBUTES BAR ===
 	const attributes = document.createElement('div');
-	attributes.className = cn(layout.row, 'select-none cursor-default justify-between', task.completed && 'opacity-30');
+	attributes.className = cn(layout.row, 'cursor-default justify-between select-none', task.completed && 'opacity-30');
 
 	// Task Status
 	const status = document.createElement('div');
-	status.className = cn(layout.row, 'gap-2 ');
+	status.className = cn(layout.row, 'gap-2');
 
 	let statusConfig = TASK_STATUS[task.status as TaskStatus];
 	if (!statusConfig) statusConfig = TASK_STATUS.active;
 
 	const statusDot = document.createElement('span');
-	statusDot.className = 'relative flex size-1.5 mb-0.5';
+	statusDot.className = 'relative mb-0.5 flex size-1.5';
 
 	const innerDot = document.createElement('span');
 	innerDot.style.backgroundColor = `var(${statusConfig.color})`;
@@ -108,7 +111,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	if ('halo' in statusConfig && statusConfig.halo) {
 		const halo = document.createElement('span');
-		halo.className = cn('absolute inset-0 rounded-full animate-ping');
+		halo.className = 'absolute inset-0 animate-ping rounded-full';
 		halo.style.backgroundColor = `color-mix(in srgb, var(${statusConfig.color}) 50%, transparent)`;
 
 		statusDot.append(halo);
@@ -116,7 +119,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	const statusText = document.createElement('span');
 	statusText.textContent = statusConfig.label;
-	statusText.className = 'text-sm';
+	statusText.className = 'text-xs 2xl:text-sm';
 
 	status.append(statusDot, statusText);
 
@@ -126,7 +129,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	const priority = document.createElement('div');
 	priority.textContent = priorityConfig.label;
-	priority.className = 'text-xs rounded-full px-2 py-0.5';
+	priority.className = 'rounded-full px-2 py-0.5 text-xs';
 	priority.style.color = `var(${priorityConfig.color})`;
 	priority.style.backgroundColor = `color-mix(in srgb, var(${priorityConfig.color}) 10%, transparent)`;
 
@@ -138,23 +141,21 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
-	taskDescription.className = cn(
-		'text-sm text-justify text-(--color-secondary) select-none leading-[18px] cursor-default wrap overflow-hidden text-ellipsis line-clamp-3'
-	);
+	taskDescription.className =
+		'line-clamp-3 cursor-default overflow-hidden text-justify text-sm leading-[18px] text-ellipsis text-(--color-secondary) select-none';
 
 	const timestamp = document.createElement('div');
 	timestamp.textContent = fullDate(task.createdAt);
-	timestamp.className = cn(
-		primitives.hint,
-		'text-xs xl:text-xs px-3 pb-3 leading-4 border-(--border-color)',
-		task.completed && 'opacity-30'
-	);
+	timestamp.title = 'Дата создания';
+	timestamp.className = cn(primitives.hint, 'px-3 pb-3 text-xs leading-4 xl:text-xs', task.completed && 'opacity-30');
 
 	taskContent.append(attributes, taskDescription);
 
 	// === ACTION FUNCTIONS ===
-	const onView = () => {
-		const modal = viewTaskDialog({
+	function onViewTask() {
+		viewTaskModal?.close();
+
+		viewTaskModal = viewTask({
 			initial: {
 				title: task.title,
 				description: task.description,
@@ -174,14 +175,17 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 					completed,
 					task.createdAt
 				);
+				viewTaskModal = null;
 			},
 		});
 
-		document.body.append(modal);
-	};
+		document.body.append(viewTaskModal.element);
+	}
 
-	const onEdit = () => {
-		const modal = editTaskDialog({
+	function onEditTask() {
+		editTaskModal?.close();
+
+		editTaskModal = editTask({
 			mode: 'edit',
 			initial: {
 				title: task.title,
@@ -204,24 +208,79 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 					completed,
 					task.createdAt
 				);
+				editTaskModal = null;
 			},
 		});
 
-		document.body.append(modal);
-	};
+		document.body.append(editTaskModal.element);
+	}
 
-	const onDelete = () => {
-		const modal = deleteDialog('Удаление задачи', 'Вы уверены, что хотите удалить задачу?', () =>
-			state.deleteTask(task.id)
+	function onDeleteTask() {
+		deleteTaskModal?.close();
+
+		deleteTaskModal = deleteDialog(
+			'Удаление задачи',
+			`Вы уверены, что хотите удалить задачу <span style="color: var(--accent-default)"><strong>${task.title}</strong></span>?`,
+			() => {
+				state.deleteTask(task.id);
+				deleteTaskModal = null;
+			}
 		);
 
-		document.body.append(modal);
-	};
+		document.body.append(deleteTaskModal.element);
+	}
 
-	device === 'mobile' ? (taskCard.draggable = true) : (taskTitle.draggable = true);
+	function createOption(index: number, icon: string, title: string, callback: () => void) {
+		const roundedVariants = ['hover:rounded-t-xl', 'hover:rounded-none', 'hover:rounded-b-xl'] as const;
+
+		const option = document.createElement('button');
+		option.className = cn(
+			layout.row,
+			'w-full cursor-pointer gap-3 px-5 py-3 text-left text-sm hover:bg-(--accent-hover) hover:text-(--accent-text) xl:gap-2 xl:px-3 xl:py-2 2xl:text-base',
+			roundedVariants[index]
+		);
+		insertSvg(option, icon, 'size-4');
+		option.append(title);
+		option.addEventListener('click', callback);
+
+		return { option, callback };
+	}
+
+	function updateDraggable() {
+		taskCard.draggable = deviceUtils.getDevice() === 'mobile';
+		taskTitle.draggable = deviceUtils.getDevice() === 'desktop';
+	}
+
+	updateDraggable();
+
+	const unsubscribeDevice = deviceUtils.onDeviceChange(updateDraggable);
+
+	function cleanup() {
+		optionsButton.removeEventListener('click', onOptionsButtonClick);
+		document.removeEventListener('click', onDocumentClick);
+		optionInstances.forEach(({ option, callback }) => option.removeEventListener('click', callback));
+
+		unsubscribeDevice();
+	}
+
+	function destroy() {
+		if (isDestroyed) return;
+		isDestroyed = true;
+
+		cleanup();
+
+		viewTaskModal?.close();
+		viewTaskModal = null;
+
+		editTaskModal?.close();
+		editTaskModal = null;
+
+		deleteTaskModal?.close();
+		deleteTaskModal = null;
+	}
 
 	// === ASSEMBLY ===
 	taskCard.append(taskHeader, taskContent, timestamp);
 
-	return taskCard;
+	return { element: taskCard, destroy };
 };

@@ -29,10 +29,20 @@
 	--status-warning: #ffa515;
 	--status-info: #2c90c7;
 
-	/* Цвета приоритета */
+	/* Цвета приоритета kanban */
 	--priority-low: #76a9ff;
 	--priority-medium: #64c371;
 	--priority-high: #ff4039;
+
+	/* Дополнительные цвета  */
+	--color-slate: #64748b;
+	--color-rose: #f43f5e;
+	--color-amber: #fff741;
+	--color-emerald: #10b981;
+	--color-violet: #8b5cf6;
+	--color-lime: #84cc16;
+	--color-fuchsia: #d946ef;
+	--color-sky: #0ea5e9;
 
 	/* Разделители и бордеры */
 	--border-color: #39393a;
@@ -79,6 +89,16 @@
 	--priority-low: #76a9ff;
 	--priority-medium: #64c371;
 	--priority-high: #ff4039;
+
+	/* Дополнительные цвета  */
+	--color-slate: #94a3b8;
+	--color-rose: #fb7185;
+	--color-amber: #f59e0b;
+	--color-emerald: #34d399;
+	--color-violet: #a78bfa;
+	--color-lime: #8ecf23;
+	--color-fuchsia: #e879f9;
+	--color-sky: #38bdf8;
 
 	/* Разделители и бордеры */
 	--border-color: #d4d7df;

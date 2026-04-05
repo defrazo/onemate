@@ -4,24 +4,30 @@ import { cn, fullDate } from '@/shared/lib/utils';
 
 import { COLUMN_COLORS, type ColumnColor, deviceUtils, insertSvg } from '../lib';
 import { type Column, createState } from '../model';
-import { button, editColumnDialog, editTaskDialog, layout, primitives } from '.';
+import { button, editColumn, editTask, layout, primitives } from '.';
 
-export const createColumn = (column: Column, state: ReturnType<typeof createState>): HTMLElement => {
-	const device = deviceUtils.getDevice();
+type CreateColumnInstance = {
+	element: HTMLElement;
+	update: (column: Column, tasksCount: number) => void;
+	destroy: () => void;
+};
+
+export const createColumn = (column: Column, state: ReturnType<typeof createState>): CreateColumnInstance => {
+	let isDestroyed = false;
+	let currentColumn = column;
+
+	let editTaskModal: ReturnType<typeof editTask> | null = null;
+	let editColumnModal: ReturnType<typeof editColumn> | null = null;
 
 	// === COLUMN ===
 	const container = document.createElement('div');
 	container.dataset.columnId = column.id;
-	container.className = cn(
-		layout.col,
-		'gap-6 border h-full border-transparent snap-start flex-1 min-w-[260px] max-w-[350px]'
-	);
+	container.className = cn(layout.col, 'h-full max-w-96 min-w-60 flex-1 gap-6');
 
 	// === HEADER ===
 	const header = document.createElement('div');
 	header.dataset.columnHeader = '';
 	header.dataset.columnDragHandle = '';
-	header.draggable = device === 'desktop' && !state.isMovingColumn;
 	header.className = cn(layout.col, 'gap-1 pb-2', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
 	header.style.borderBottomColor = COLUMN_COLORS[(column.color ?? 'slate') as ColumnColor];
 	header.style.borderBottomWidth = '3px';
@@ -38,10 +44,12 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const settingsButton = document.createElement('button');
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
-	settingsButton.className = cn(button.icon, 'text-(--color-secondary)');
-	settingsButton.addEventListener('click', () =>
-		onEditColumn(column.id, column.title, column.color, column.taskLimit)
-	);
+	settingsButton.className = cn(button.icon, 'text-(--color-disabled)');
+
+	const onEdit = () =>
+		onEditColumn(currentColumn.id, currentColumn.title, currentColumn.color, currentColumn.taskLimit);
+
+	settingsButton.addEventListener('click', onEdit);
 	insertSvg(settingsButton, settingsIcon, 'size-5');
 
 	titleRow.append(title, settingsButton);
@@ -53,14 +61,17 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const counter = document.createElement('div');
 	counter.textContent = `Задач: 0 / ${column.taskLimit ?? '∞'}`;
 	counter.dataset.tasksCounter = '';
-	counter.className = cn(primitives.hint, state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
+	counter.className = cn(primitives.hint, 'leading-5', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
 
 	const addTaskButton = document.createElement('button');
 	addTaskButton.type = 'button';
 	addTaskButton.title = 'Добавить задачу';
 	addTaskButton.dataset.taskAdd = '';
 	addTaskButton.className = cn(button.default, 'w-[52px] justify-center py-0.5');
-	addTaskButton.addEventListener('click', () => onAddTask(column.id, column.taskLimit));
+
+	const onAdd = () => onAddTask(currentColumn.id, currentColumn.taskLimit);
+
+	addTaskButton.addEventListener('click', onAdd);
 	insertSvg(addTaskButton, addIcon, 'size-4 mx-auto');
 
 	tasksRow.append(counter, addTaskButton);
@@ -72,16 +83,17 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	tasksContainer.dataset.tasksContainer = column.id;
 	tasksContainer.className = cn(
 		layout.col,
-		// 'flex-1 gap-4 hide-scrollbar landscape:min-h-[150vh] sm:max-h-fit xl:max-h-[calc(100vh-145px)]'
-		'flex-1 gap-4 hide-scrollbar xl:overflow-y-auto xl:max-h-[calc(100vh-225px)]'
+		'hide-scrollbar flex-1 gap-4 xl:max-h-[calc(100vh-225px)] xl:overflow-y-auto'
 	);
 
 	// === ACTION FUNCTIONS ===
-	const onAddTask = (columnId: string, taskLimit: number) => {
+	function onAddTask(columnId: string, taskLimit: number) {
 		const today = new Date().toISOString().split('T')[0];
 		const createdAt = fullDate(new Date().toISOString());
 
-		const modal = editTaskDialog({
+		editTaskModal?.close();
+
+		editTaskModal = editTask({
 			mode: 'create',
 			initial: {
 				title: '',
@@ -108,32 +120,61 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 			},
 		});
 
-		document.body.append(modal);
-	};
+		document.body.append(editTaskModal.element);
+	}
 
-	const onEditColumn = (id: string, columnName: string, color: ColumnColor, limit: number) => {
-		const modal = editColumnDialog({
+	function onEditColumn(id: string, columnTitle: string, color: ColumnColor, limit: number) {
+		editColumnModal?.close();
+
+		editColumnModal = editColumn({
 			mode: 'edit',
-			initial: { columnName, color, limit },
-			onSubmit: (columnName, color, limit) => state.editColumn(id, columnName, color, limit),
+			initial: { columnTitle, color, limit },
+			onSubmit: (columnTitle, color, limit) => state.editColumn(id, columnTitle, color, limit),
 			onDelete: () => state.deleteColumn(id),
 		});
 
-		document.body.append(modal);
-	};
+		document.body.append(editColumnModal.element);
+	}
 
-	const updateDraggable = () => {
+	function updateDraggable() {
 		header.draggable = deviceUtils.getDevice() === 'desktop' && !state.isMovingColumn;
 		header.className = cn(layout.col, 'gap-1 pb-2', state.isMovingColumn ? 'cursor-progress' : 'cursor-grab');
-	};
+	}
 
-	deviceUtils.onDeviceChange((device) => (header.draggable = device === 'desktop'));
-	deviceUtils.onDeviceChange(updateDraggable);
+	function update(nextColumn: Column, tasksCount: number) {
+		currentColumn = nextColumn;
 
-	state.subscribeColumns(updateDraggable);
+		title.textContent = currentColumn.title.toUpperCase();
+		header.style.borderBottomColor = COLUMN_COLORS[currentColumn.color ?? 'slate'];
+		counter.textContent = `Задач: ${tasksCount} / ${currentColumn.taskLimit ?? '∞'}`;
+	}
+
+	const unsubscribeDevice = deviceUtils.onDeviceChange(updateDraggable);
+	const unsubscribeColumns = state.subscribeColumns(updateDraggable);
+
+	function cleanup() {
+		addTaskButton.removeEventListener('click', onAdd);
+		settingsButton.removeEventListener('click', onEdit);
+
+		unsubscribeDevice();
+		unsubscribeColumns();
+	}
+
+	function destroy() {
+		if (isDestroyed) return;
+		isDestroyed = true;
+
+		cleanup();
+
+		editTaskModal?.close();
+		editTaskModal = null;
+
+		editColumnModal?.close();
+		editColumnModal = null;
+	}
 
 	// === ASSEMBLY ===
 	container.append(header, tasksContainer);
 
-	return container;
+	return { element: container, update, destroy };
 };

@@ -6,7 +6,7 @@ import { createSvg, customDatePicker, customSelect, getDivider, LIMITS, TASK_PRI
 import { layout, primitives } from '..';
 import { createDialog, createSubmitButton } from '.';
 
-type EditTaskDialogOptions = {
+type EditTaskOptions = {
 	mode: 'create' | 'edit';
 	initial: {
 		title: string;
@@ -28,7 +28,9 @@ type EditTaskDialogOptions = {
 	) => void;
 };
 
-export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
+type EditTaskInstance = { element: HTMLDivElement; close: () => void };
+
+export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 	const icon = createSvg(settingsIcon, 'size-5');
 	const divider1 = getDivider();
 	const divider2 = getDivider();
@@ -36,19 +38,25 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const divider4 = getDivider();
 	const divider5 = getDivider(options.mode === 'create' ? 'hidden' : '');
 
-	const { overlay, container, close } = createDialog(
-		options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи',
-		icon
-	);
+	const {
+		overlay,
+		container,
+		close: closeDialog,
+	} = createDialog(options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи', icon);
+
+	let isClosed = false;
+
+	let selectedStatus: TaskStatus = options.initial.status;
+	let selectedPriority: TaskPriority = options.initial.priority;
 
 	// === TITLE ===
 	const titleCol = document.createElement('div');
-	titleCol.className = cn(layout.col, 'gap-3 mt-3');
+	titleCol.className = cn(layout.col, 'mt-3 gap-3');
 
 	const labelTitle = document.createElement('label');
 	labelTitle.htmlFor = 'task-title';
 	labelTitle.textContent = 'Название задачи';
-	labelTitle.className = 'leading-4 select-none';
+	labelTitle.className = primitives.label;
 
 	const title = document.createElement('input');
 	title.type = 'text';
@@ -57,12 +65,17 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	title.autocomplete = 'off';
 	title.name = `task-title-${Math.random()}`;
 	title.className = primitives.input;
-	title.addEventListener('input', () => {
+
+	const onTitleInput = () => {
 		updateSubmitState();
-		updateTitleHint('focus');
-	});
-	title.addEventListener('focus', () => updateTitleHint('focus'));
-	title.addEventListener('blur', () => updateTitleHint('blur'));
+		updateTitleHint();
+	};
+	const onTitleFocus = () => updateTitleHint();
+	const onTitleBlur = () => updateTitleHint();
+
+	title.addEventListener('input', onTitleInput);
+	title.addEventListener('focus', onTitleFocus);
+	title.addEventListener('blur', onTitleBlur);
 
 	const titleHint = document.createElement('span');
 	titleHint.textContent = options.initial.title
@@ -79,19 +92,26 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	const labelDescription = document.createElement('label');
 	labelDescription.htmlFor = 'task-description';
 	labelDescription.textContent = 'Комментарий (необязательно)';
-	labelDescription.className = 'leading-4 select-none';
+	labelDescription.className = primitives.label;
 
 	const description = document.createElement('textarea');
 
-	description.name = 'description';
 	description.id = 'task-description';
 	description.value = options.initial.description || '';
 	description.autocomplete = 'off';
 	description.name = `task-description-${Math.random()}`;
-	description.className = cn(primitives.input, 'min-h-10 xl:min-h-40 resize-none hide-scrollbar');
-	description.addEventListener('input', () => updateDescHint('focus'));
-	description.addEventListener('focus', () => updateDescHint('focus'));
-	description.addEventListener('blur', () => updateDescHint('blur'));
+	description.className = cn(
+		primitives.input,
+		'hide-scrollbar min-h-10 resize-none hover:border-(--border-color) xl:min-h-20 2xl:min-h-40'
+	);
+
+	const onDescUpdate = () => updateDescHint();
+	const onDescFocus = () => updateDescHint();
+	const onDescBlur = () => updateDescHint();
+
+	description.addEventListener('input', onDescUpdate);
+	description.addEventListener('focus', onDescFocus);
+	description.addEventListener('blur', onDescBlur);
 
 	const descriptionHint = document.createElement('span');
 	descriptionHint.textContent = options.initial.description
@@ -107,21 +127,21 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const deadlinesLabel = document.createElement('span');
 	deadlinesLabel.textContent = 'Период выполнения';
-	deadlinesLabel.className = 'leading-4 select-none';
+	deadlinesLabel.className = primitives.label;
 
 	const dates = document.createElement('div');
-	dates.className = cn('flex flex-col xl:flex-row gap-4 xl:items-center');
+	dates.className = cn(layout.col, 'gap-4 xl:flex-row xl:items-center');
 
 	// Start Date
 	const startDateRow = document.createElement('div');
-	startDateRow.className = cn(layout.row, 'justify-between w-full');
+	startDateRow.className = cn(layout.row, 'w-full justify-between');
 
 	const labelStartDateCol = document.createElement('div');
 	labelStartDateCol.className = cn(layout.col, 'gap-1');
 
 	const labelStartDate = document.createElement('div');
 	labelStartDate.textContent = 'Дата начала';
-	labelStartDate.className = 'xl:hidden leading-4 select-none';
+	labelStartDate.className = cn(primitives.label, 'xl:hidden');
 
 	const labelStartHint = document.createElement('span');
 	labelStartHint.textContent = 'Начало периода ';
@@ -129,7 +149,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	labelStartDateCol.append(labelStartDate, labelStartHint);
 
-	const startDate = customDatePicker(options.initial.startDate, 'min-w-40 w-fit xl:w-full');
+	const startDate = customDatePicker(options.initial.startDate, 'w-fit min-w-40 xl:w-full');
 	startDate.element.addEventListener('dateChange', validateDates);
 
 	startDateRow.append(labelStartDateCol, startDate.element);
@@ -137,18 +157,18 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	// Arrow
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
-	arrow.className = 'select-none xl:block hidden';
+	arrow.className = 'hidden select-none xl:block';
 
 	// End Date
 	const endDateRow = document.createElement('div');
-	endDateRow.className = cn(layout.row, 'justify-between w-full');
+	endDateRow.className = cn(layout.row, 'w-full justify-between');
 
 	const labelEndDateCol = document.createElement('div');
 	labelEndDateCol.className = cn(layout.col, 'gap-1');
 
 	const labelEndDate = document.createElement('div');
 	labelEndDate.textContent = 'Дата завершения';
-	labelEndDate.className = 'xl:hidden leading-4 select-none';
+	labelEndDate.className = cn(primitives.label, 'xl:hidden');
 
 	const labelEndHint = document.createElement('span');
 	labelEndHint.textContent = 'Конец периода ';
@@ -156,7 +176,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	labelEndDateCol.append(labelEndDate, labelEndHint);
 
-	const endDate = customDatePicker(options.initial.endDate, 'min-w-40 w-fit xl:w-full');
+	const endDate = customDatePicker(options.initial.endDate, 'w-fit min-w-40 xl:w-full');
 	endDate.element.addEventListener('dateChange', validateDates);
 
 	endDateRow.append(labelEndDateCol, endDate.element);
@@ -165,7 +185,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const deadlinesHint = document.createElement('span');
 	deadlinesHint.textContent = 'Дата начала и завершения задачи';
-	deadlinesHint.className = cn(primitives.hint, '-mt-2 xl:block hidden');
+	deadlinesHint.className = cn(primitives.hint, '-mt-2 hidden xl:block');
 
 	deadlinesCol.append(deadlinesLabel, dates, deadlinesHint);
 
@@ -178,7 +198,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const labelStatus = document.createElement('div');
 	labelStatus.textContent = 'Статус задачи';
-	labelStatus.className = 'leading-4 select-none';
+	labelStatus.className = primitives.label;
 
 	const statusHint = document.createElement('span');
 	statusHint.textContent = 'Показывает этап выполнения';
@@ -198,12 +218,12 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		{
 			initialValue: options.initial.status || 'В работе',
 			items: statusItems,
-			onChange: (value) => (options.initial.status = value as TaskStatus),
+			onChange: (value) => (selectedStatus = value as TaskStatus),
 		},
 		'min-w-32'
 	);
 
-	statusContainer.append(customStatus);
+	statusContainer.append(customStatus.element);
 
 	statusRow.append(labelStatusCol, statusContainer);
 
@@ -216,7 +236,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const labelPriority = document.createElement('div');
 	labelPriority.textContent = 'Приоритет задачи';
-	labelPriority.className = 'leading-4 select-none';
+	labelPriority.className = primitives.label;
 
 	const priorityHint = document.createElement('span');
 	priorityHint.textContent = 'Определяет важность задачи';
@@ -236,13 +256,13 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		{
 			initialValue: options.initial.priority || 'Обычный',
 			items: priorityItems,
-			onChange: (value) => (options.initial.priority = value as TaskPriority),
+			onChange: (value) => (selectedPriority = value as TaskPriority),
 			direction: options.mode === 'create' ? 'up' : 'down',
 		},
 		'min-w-32'
 	);
 
-	priorityContainer.append(customPriority);
+	priorityContainer.append(customPriority.element);
 
 	proirityRow.append(labelPriorityCol, priorityContainer);
 
@@ -255,7 +275,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 
 	const labelCompleted = document.createElement('div');
 	labelCompleted.textContent = 'Завершено';
-	labelCompleted.className = 'leading-4 select-none';
+	labelCompleted.className = primitives.label;
 
 	const completedHint = document.createElement('span');
 	completedHint.textContent = 'Отметить как выполненную';
@@ -267,7 +287,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 	completedCheckbox.type = 'checkbox';
 	completedCheckbox.id = 'task-completed';
 	completedCheckbox.checked = !!options.initial.completed;
-	completedCheckbox.className = 'ml-2 cursor-pointer size-5';
+	completedCheckbox.className = 'ml-2 size-5 cursor-pointer';
 
 	completedRow.append(labelCompletedCol, completedCheckbox);
 
@@ -298,7 +318,7 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		const end = endDate.getValue();
 
 		if (!start || !end) {
-			endDate.element.classList.remove('border-red-500');
+			endDate.element.classList.remove('border-(--warning-default)');
 			submitButton.disabled = !title.value.trim();
 			return true;
 		}
@@ -309,58 +329,85 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		const valid = endTime >= startTime;
 
 		if (!valid) {
-			endDate.element.classList.add('border-red-500');
+			endDate.element.classList.add('border-(--warning-default)');
 			submitButton.disabled = true;
 		} else {
-			endDate.element.classList.remove('border-red-500');
+			endDate.element.classList.remove('border-(--warning-default)');
 			submitButton.disabled = !title.value.trim();
 		}
 
 		return valid;
 	}
 
-	const getFormData = () => {
+	function getFormData() {
 		return {
 			title: title.value.trim(),
 			description: description.value.trim(),
-			status: options.initial.status,
-			priority: options.initial.priority,
+			status: selectedStatus,
+			priority: selectedPriority,
 			startDate: startDate.getValue(),
 			endDate: endDate.getValue() || null,
 			completed: completedCheckbox.checked,
 		};
-	};
+	}
 
-	const updateSubmitState = () => {
+	function updateSubmitState() {
 		const data = getFormData();
 		const tooLong = data.title.length > LIMITS.TASK_TITLE;
 
 		submitButton.disabled = !data.title || tooLong;
-	};
+	}
 
-	const updateTitleHint = (event: 'focus' | 'blur') => {
-		const length = title.value.length;
+	function updateTitleHint() {
+		const trimmedTitle = title.value.trim();
+		const length = trimmedTitle.length;
+		const tooLong = trimmedTitle.length > LIMITS.TASK_TITLE;
 
-		if (event === 'focus' && length >= 1) {
-			titleHint.textContent = `${length} / ${LIMITS.TASK_TITLE} символов`;
-			titleHint.className = cn(primitives.hint, '-mt-2', length > LIMITS.TASK_TITLE && 'text-red-500');
-		} else if (!title.value.trim()) titleHint.textContent = `Введите название (до ${LIMITS.TASK_TITLE} символов)`;
-	};
+		if (!trimmedTitle) titleHint.textContent = `Введите название (до ${LIMITS.TASK_TITLE} символов)`;
+		else titleHint.textContent = `${length} / ${LIMITS.TASK_TITLE} символов`;
 
-	const updateDescHint = (event: 'focus' | 'blur') => {
-		const length = description.value.length;
+		titleHint.className = cn(primitives.hint, '-mt-2', tooLong && 'text-(--status-error)');
+	}
 
-		if (event === 'focus' && length >= 1) {
-			descriptionHint.textContent = `${length} / ${LIMITS.TASK_DESC} символов`;
-			descriptionHint.className = cn(primitives.hint, '-mt-2', length > LIMITS.TASK_DESC && 'text-red-500');
-		} else if (!description.value.trim())
-			descriptionHint.textContent = `Введите комментарий (до ${LIMITS.TASK_DESC} символов)`;
-	};
+	function updateDescHint() {
+		const trimmedDesc = description.value.trim();
+		const length = trimmedDesc.length;
+		const tooLong = trimmedDesc.length > LIMITS.TASK_DESC;
+
+		if (!trimmedDesc) descriptionHint.textContent = `Введите комментарий (до ${LIMITS.TASK_DESC} символов)`;
+		else descriptionHint.textContent = `${length} / ${LIMITS.TASK_DESC} символов`;
+
+		descriptionHint.className = cn(primitives.hint, '-mt-2', tooLong && 'text-(--status-error)');
+	}
+
+	function cleanup() {
+		title.removeEventListener('input', onTitleInput);
+		title.removeEventListener('focus', onTitleFocus);
+		title.removeEventListener('blur', onTitleBlur);
+
+		description.removeEventListener('input', onDescUpdate);
+		description.removeEventListener('focus', onDescFocus);
+		description.removeEventListener('blur', onDescBlur);
+
+		startDate.element.removeEventListener('dateChange', validateDates);
+		endDate.element.removeEventListener('dateChange', validateDates);
+
+		customStatus.destroy();
+		customPriority.destroy();
+	}
+
+	function close() {
+		if (isClosed) return;
+		isClosed = true;
+
+		cleanup();
+		closeDialog();
+	}
 
 	updateSubmitState();
+	updateTitleHint();
 
 	// === ASSEMBLY ===
-	overlay.append(container);
 	container.append(
 		titleCol,
 		divider1,
@@ -376,5 +423,5 @@ export const editTaskDialog = (options: EditTaskDialogOptions): HTMLElement => {
 		submitButton
 	);
 
-	return overlay;
+	return { element: overlay, close };
 };

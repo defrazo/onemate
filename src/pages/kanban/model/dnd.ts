@@ -13,7 +13,7 @@ export const setupDnD = (
 
 	const autoScroll = enableAutoScroll(board);
 
-	board.addEventListener('dragstart', (event) => {
+	const onDragStart = (event: DragEvent) => {
 		board.dataset.dragging = 'true';
 
 		const target = event.target as HTMLElement;
@@ -63,9 +63,9 @@ export const setupDnD = (
 		}
 
 		event.preventDefault();
-	});
+	};
 
-	board.addEventListener('dragover', (event) => {
+	const onDragOver = (event: DragEvent) => {
 		event.preventDefault();
 
 		if (!draggingElement || !placeholder) return;
@@ -115,9 +115,9 @@ export const setupDnD = (
 				else targetColumnId.before(placeholder);
 			}
 		}
-	});
+	};
 
-	board.addEventListener('drop', (event) => {
+	const onDragDrop = (event: DragEvent) => {
 		delete board.dataset.dragging;
 		event.preventDefault();
 		autoScroll.stop();
@@ -150,24 +150,20 @@ export const setupDnD = (
 			cleanup();
 			onColumnDrop(columnId, newIndex);
 		}
-	});
+	};
 
-	board.addEventListener('dragend', () => {
-		console.log('DRAGEND fired', { currentDragType });
+	const onDragEnd = () => {
 		delete board.dataset.dragging;
 		autoScroll.stop();
 		restore();
-	});
+	};
 
 	// === HELPERS ===
 	function createPlaceholder(type: DragType) {
 		const div = document.createElement('div');
-		if (type === 'task')
-			div.className =
-				'bg-(--border-alt)/30 min-h-[180px] animate-pulse transition-transform delay-150 duration-300';
+		if (type === 'task') div.className = 'min-h-[180px] animate-pulse bg-(--border-alt)/30';
 		if (type === 'column')
-			div.className =
-				'bg-(--border-alt)/30 w-full h-full min-w-[260px] max-w-[350px] animate-pulse transition-transform delay-150 duration-300 flex flex-col';
+			div.className = 'h-full max-w-[350px] min-w-[260px] flex-1 animate-pulse bg-(--border-alt)/30';
 		return div;
 	}
 
@@ -207,6 +203,22 @@ export const setupDnD = (
 		parent = null;
 		nextSibling = null;
 	}
+
+	// === ATTACH LISTENERS ===
+	board.addEventListener('dragstart', onDragStart);
+	board.addEventListener('dragover', onDragOver);
+	board.addEventListener('drop', onDragDrop);
+	board.addEventListener('dragend', onDragEnd);
+
+	return () => {
+		board.removeEventListener('dragstart', onDragStart);
+		board.removeEventListener('dragover', onDragOver);
+		board.removeEventListener('drop', onDragDrop);
+		board.removeEventListener('dragend', onDragEnd);
+
+		autoScroll.stop();
+		cleanup();
+	};
 };
 
 export const enableAutoScroll = (container: HTMLElement) => {
@@ -304,6 +316,7 @@ export const enableMouseScroll = (container: HTMLElement) => {
 		container.style.cursor = '';
 	};
 
+	// === ATTACH LISTENERS ===
 	container.addEventListener('mousedown', onMouseDown);
 	document.addEventListener('mousemove', onMouseMove);
 	document.addEventListener('mouseup', onMouseUp);

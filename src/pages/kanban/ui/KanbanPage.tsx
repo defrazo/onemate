@@ -11,16 +11,31 @@ const KanbanPage = () => {
 	const kanbanRef = useRef<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		if (!kanbanRef.current) return;
+		const root = kanbanRef.current;
+		if (!root) return;
 
-		let cleanup: void | (() => void);
+		let isDisposed = false;
+		let cleanup: (() => void) | undefined;
 
 		(async () => {
-			cleanup = await initKanban(`#${kanbanRef.current!.id}`);
-			setLoading(false);
+			try {
+				const destroy = await initKanban(root);
+
+				if (isDisposed) {
+					destroy?.();
+					return;
+				}
+
+				cleanup = destroy;
+			} finally {
+				if (!isDisposed) setLoading(false);
+			}
 		})();
 
-		return () => cleanup?.();
+		return () => {
+			isDisposed = true;
+			cleanup?.();
+		};
 	}, []);
 
 	return (
