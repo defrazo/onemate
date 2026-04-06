@@ -34,7 +34,7 @@ export const Layout = ({
 	const landscape = orientation === 'landscape' && landscapeMode && device === 'mobile';
 
 	return (
-		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-[1600px] xl:text-base">
+		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base">
 			<div className="flex flex-1 flex-col px-4 pb-4">
 				{!landscape && <Header />}
 				<div
@@ -56,7 +56,7 @@ export const Layout = ({
 				</div>
 				{!showMobileTabBar && !hideFooter && <Footer />}
 			</div>
-			{showMobileTabBar && !landscapeMode && (
+			{showMobileTabBar && (
 				<div className="h-12">
 					<MobileTabBar />
 				</div>

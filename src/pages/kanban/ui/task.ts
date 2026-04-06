@@ -236,7 +236,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		const option = document.createElement('button');
 		option.className = cn(
 			layout.row,
-			'w-full cursor-pointer gap-3 px-5 py-3 text-left text-sm hover:bg-(--accent-hover) hover:text-(--accent-text) xl:gap-2 xl:px-3 xl:py-2 2xl:text-base',
+			'w-full cursor-pointer gap-3 px-5 py-3 text-left text-base hover:bg-(--accent-hover) hover:text-(--accent-text) xl:gap-2 xl:px-3 xl:py-2 xl:text-sm 2xl:text-base',
 			roundedVariants[index]
 		);
 		insertSvg(option, icon, 'size-4');

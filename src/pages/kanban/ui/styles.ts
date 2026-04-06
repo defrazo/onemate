@@ -21,7 +21,7 @@ export const border = {
 export const button = {
 	default: cn(
 		base.button,
-		'bg-(--accent-default) px-2 py-1 text-sm text-(--accent-text) hover:bg-(--accent-hover) disabled:bg-(--color-disabled) 2xl:text-base'
+		'bg-(--accent-default) px-2 py-1 text-base text-(--accent-text) hover:bg-(--accent-hover) disabled:bg-(--color-disabled) xl:text-sm 2xl:text-base'
 	),
 	icon: cn(base.button, 'hover:text-(--accent-hover) disabled:text-(--color-disabled)'),
 	ghost: cn(
@@ -33,7 +33,7 @@ export const button = {
 export const primitives = {
 	input: cn(
 		border.default,
-		'w-full rounded-xl bg-(--bg-tertiary)/50 p-2 text-sm outline-none hover:border-(--accent-hover) focus:border-(--accent-hover) 2xl:text-base'
+		'w-full rounded-xl bg-(--bg-tertiary)/50 p-2 text-base outline-none hover:border-(--accent-hover) focus:border-(--accent-hover) xl:text-sm 2xl:text-base'
 	),
 	hint: cn(base.secondaryText, 'text-(--color-secondary) opacity-70'),
 	title: cn(base.primaryText, 'text-left font-bold'),
