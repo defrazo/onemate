@@ -31,7 +31,7 @@ export const customSelect = <T extends string | number = number>(
 ): CustomSelectInstance => {
 	const container = document.createElement('div');
 	container.className = cn(
-		'relative inline-block min-w-fit cursor-pointer text-center text-sm select-none 2xl:text-base',
+		'relative inline-block min-w-fit cursor-pointer text-center text-base select-none xl:text-sm 2xl:text-base',
 		className
 	);
 
@@ -160,24 +160,27 @@ export const customDatePicker = (date: string | null, className?: string, readon
 		layout.row,
 		primitives.input,
 		'relative',
-		isReadonly ? 'cursor-default hover:border-(--border-color)' : 'cursor-pointer',
+		isReadonly && 'hover:border-(--border-color)',
 		className
 	);
 
 	const icon = document.createElement('span');
-	insertSvg(icon, dateIcon, 'size-5');
+	insertSvg(icon, dateIcon, 'size-5 mr-1');
 
 	const input = document.createElement('input');
 	input.type = 'date';
 	input.value = date || '';
 	input.readOnly = isReadonly;
-	input.className = 'pointer-events-none absolute right-0 opacity-0';
+	input.className = cn(
+		'absolute inset-0 w-[120%] pr-3 opacity-0',
+		isReadonly ? 'pointer-events-none cursor-default' : 'cursor-pointer'
+	);
 
 	const display = document.createElement('div');
 	display.textContent = date ? formatDate(date) : 'дд.мм.гггг';
 	display.className = 'mx-auto';
 
-	container.append(icon, display, input);
+	container.append(display, input, icon);
 
 	if (!isReadonly) {
 		container.addEventListener('click', () => input.showPicker?.());

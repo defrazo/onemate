@@ -13,7 +13,7 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 		layout.blur,
 		layout.col,
 		border.default,
-		'hide-scrollbar relative h-fit max-h-full min-h-0 w-full max-w-md min-w-0 gap-3 overflow-y-auto p-3'
+		'hide-scrollbar relative h-fit max-h-full min-h-0 w-full max-w-md min-w-0 gap-3 overflow-x-hidden overflow-y-auto p-3'
 	);
 
 	// === HEADER ROW ===
