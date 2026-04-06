@@ -34,7 +34,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	taskTitle.dataset.taskDragHandle = '';
 	taskTitle.className = cn(
 		primitives.title,
-		'min-w-0 cursor-grab truncate py-3 pl-3',
+		'w-full min-w-0 cursor-grab truncate py-3 pl-3',
 		task.completed && 'line-through opacity-30'
 	);
 
@@ -241,7 +241,10 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		);
 		insertSvg(option, icon, 'size-4');
 		option.append(title);
-		option.addEventListener('click', callback);
+		option.addEventListener('click', () => {
+			optionsMenu.classList.add('hidden');
+			callback();
+		});
 
 		return { option, callback };
 	}
