@@ -56,7 +56,7 @@ export const Layout = ({
 				</div>
 				{!showMobileTabBar && !hideFooter && <Footer />}
 			</div>
-			{showMobileTabBar && (
+			{showMobileTabBar && !(landscape && landscapeMode) && (
 				<div className="h-12">
 					<MobileTabBar />
 				</div>
