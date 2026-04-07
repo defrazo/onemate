@@ -34,12 +34,12 @@ const ErrorFallback = ({
 	}
 
 	return (
-		<div className="flex h-full flex-col items-center">
-			{icon && <IconNoData className="size-55 flex-1 text-[#100f0f]" />}
+		<div className="flex h-full flex-col items-center justify-center">
+			{icon && <IconNoData className="size-55 text-[#100f0f]" />}
 			<div className="flex flex-col items-center">
-				<h2 className="text-base md:text-lg xl:text-xl">{message}</h2>
+				<span className="text-base select-none md:text-lg xl:text-xl">{message}</span>
 				{onRetry && (
-					<Button className="mt-2 w-40 text-sm" variant="default" onClick={onRetry}>
+					<Button className="mt-2 w-40 text-base" variant="default" onClick={onRetry}>
 						Повторить
 					</Button>
 				)}
