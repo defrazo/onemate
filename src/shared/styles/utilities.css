@@ -36,18 +36,4 @@
 		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		transform-origin: 50% 40%;
 	}
-
-	/* Kanban loader */
-	.kanban-loader {
-		width: 120px;
-		height: 8px;
-		-webkit-mask: linear-gradient(90deg, #000 70%, #0000 0) left/20% 100%;
-		background: linear-gradient(var(--accent-default) 0 0) left -25% top 0 /20% 100% no-repeat var(--border-color);
-		animation: load 1s infinite steps(6);
-	}
-	@keyframes load {
-		100% {
-			background-position: right -25% top 0;
-		}
-	}
 }

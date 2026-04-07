@@ -1,6 +1,7 @@
 import { useEffect, useRef, useState } from 'react';
 
 import { usePageTitle } from '@/shared/lib/hooks';
+import { ErrorFallback } from '@/shared/ui';
 
 import { initKanban } from '.';
 
@@ -8,39 +9,65 @@ const KanbanPage = () => {
 	usePageTitle('Kanban');
 
 	const [loading, setLoading] = useState(true);
-	const kanbanRef = useRef<HTMLDivElement | null>(null);
+	const [error, setError] = useState(false);
 
-	useEffect(() => {
+	const kanbanRef = useRef<HTMLDivElement | null>(null);
+	const cleanupRef = useRef<(() => void) | undefined>(undefined);
+	const requestIdRef = useRef(0);
+
+	const init = async () => {
 		const root = kanbanRef.current;
 		if (!root) return;
 
-		let isDisposed = false;
-		let cleanup: (() => void) | undefined;
+		const requestId = ++requestIdRef.current;
 
-		(async () => {
-			try {
-				const destroy = await initKanban(root);
+		cleanupRef.current?.();
+		cleanupRef.current = undefined;
 
-				if (isDisposed) {
-					destroy?.();
-					return;
-				}
+		setLoading(true);
+		setError(false);
 
-				cleanup = destroy;
-			} finally {
-				if (!isDisposed) setLoading(false);
+		try {
+			const destroy = await initKanban(root);
+
+			if (requestId !== requestIdRef.current) {
+				destroy?.();
+				return;
 			}
-		})();
+
+			cleanupRef.current = destroy;
+			return destroy;
+		} catch {
+			if (requestId === requestIdRef.current) setError(true);
+		} finally {
+			if (requestId === requestIdRef.current) setLoading(false);
+		}
+	};
+
+	useEffect(() => {
+		let disposed = false;
+
+		init().then((destroy) => {
+			if (disposed) destroy?.();
+		});
 
 		return () => {
-			isDisposed = true;
-			cleanup?.();
+			disposed = true;
+			requestIdRef.current += 1;
+			cleanupRef.current?.();
+			cleanupRef.current = undefined;
 		};
 	}, []);
 
 	return (
-		<div ref={kanbanRef} className="relative size-full overflow-hidden" id="kanban">
-			{loading && <div className="kanban-loader absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2" />}
+		<div className="relative size-full">
+			<div ref={kanbanRef} className="size-full overflow-hidden" id="kanban" />
+
+			{(loading || error) && (
+				<div className="absolute inset-0 flex items-center justify-center">
+					<ErrorFallback delay={7000} message="Что-то пошло не так..." onRetry={init} />
+				</div>
+			)}
 		</div>
 	);
 };
