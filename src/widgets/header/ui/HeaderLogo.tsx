@@ -14,8 +14,6 @@ export const HeaderLogo = () => {
 			<img
 				alt="Логотип"
 				className="no-touch-callout size-10"
-				decoding="async"
-				loading="lazy"
 				src={Logo}
 				onContextMenu={(e) => e.preventDefault()}
 			/>

@@ -21,8 +21,6 @@ const HomePage = () => {
 				<img
 					alt="Иллюстрация: главная страница"
 					className="no-touch-callout max-h-[45vh] md:max-h-[35vh] lg:max-h-[45vh] xl:max-h-[65vh]"
-					decoding="async"
-					loading="lazy"
 					src={Home}
 					onContextMenu={(e) => e.preventDefault()}
 				/>
