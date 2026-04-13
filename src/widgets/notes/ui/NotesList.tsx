@@ -32,8 +32,8 @@ export const NotesList = observer(({ children }: NotesListProps) => {
 		}
 	};
 
-	const portraitStyle = 'max-h-[46dvh] md:max-h-[30dvh] lg:max-h-[34dvh]';
-	const landscapeStyle = 'max-h-[45dvw] md:max-h-[36.5dvw] lg:max-h-[40dvh] xl:max-h-[20dvw] 2xl:max-h-[27dvh]';
+	const portraitStyle = 'max-h-[53svh] md:max-h-[38svh] lg:max-h-[36svh]';
+	const landscapeStyle = 'max-h-[140svh] md:max-h-[74svh] lg:max-h-[40svh] xl:max-h-[30svh] 2xl:max-h-[30svh]';
 
 	return (
 		<DndContext
