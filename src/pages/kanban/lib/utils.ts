@@ -17,3 +17,5 @@ export const insertSvg = (container: HTMLElement, svgText: string, className = '
 	container.append(svg);
 	return svg;
 };
+
+export const now = () => new Date().toISOString();

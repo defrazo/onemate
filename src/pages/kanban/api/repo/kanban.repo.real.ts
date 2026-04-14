@@ -1,4 +1,4 @@
-import type { Column, Task } from '../../model';
+import type { Column, CreateColumnInput, CreateTaskInput, EditColumnInput, EditTaskInput, Task } from '../../model';
 import { addColumnApi, deleteColumnApi, editColumnApi, fetchColumnsApi, moveColumnApi } from '..';
 import { addTaskApi, deleteTaskApi, editTaskApi, fetchTasksApi, moveTaskApi } from '..';
 import type { IKanbanRepo } from '.';
@@ -9,11 +9,11 @@ export class KanbanRepoReal implements IKanbanRepo {
 		return fetchColumnsApi();
 	}
 
-	async addColumn(column: Omit<Column, 'id'>): Promise<Column> {
+	async addColumn(column: CreateColumnInput): Promise<Column> {
 		return addColumnApi(column);
 	}
 
-	async editColumn(id: string, column: Omit<Column, 'id' | 'position'>): Promise<Column> {
+	async editColumn(id: string, column: EditColumnInput): Promise<Column> {
 		return editColumnApi(id, column);
 	}
 
@@ -30,11 +30,11 @@ export class KanbanRepoReal implements IKanbanRepo {
 		return fetchTasksApi();
 	}
 
-	async addTask(task: Omit<Task, 'id'>): Promise<Task> {
+	async addTask(task: CreateTaskInput): Promise<Task> {
 		return addTaskApi(task);
 	}
 
-	async editTask(id: string, task: Omit<Task, 'id' | 'columnId' | 'position'>): Promise<Task> {
+	async editTask(id: string, task: EditTaskInput): Promise<Task> {
 		return editTaskApi(id, task);
 	}
 
@@ -42,7 +42,7 @@ export class KanbanRepoReal implements IKanbanRepo {
 		return deleteTaskApi(id);
 	}
 
-	async moveTask(id: string, columnId: string, position: number): Promise<Task> {
-		return moveTaskApi(id, columnId, position);
+	async moveTask(id: string, columnId: string, position: number, updatedAt: string): Promise<Task> {
+		return moveTaskApi(id, columnId, position, updatedAt);
 	}
 }

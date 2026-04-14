@@ -1,7 +1,7 @@
 import { supabase } from '@/shared/lib/supabase';
 
-import type { Column } from '../model';
-import { getCurrentUser, mapColumnFromDb, mapColumnToDb, mapColumnUpdateToDb } from '.';
+import type { Column, CreateColumnInput, EditColumnInput } from '../model';
+import { getCurrentUser, mapColumnFromDb, mapColumnToDb } from '.';
 
 const KANBAN_COLUMNS = 'kanban_columns';
 
@@ -20,15 +20,12 @@ export const fetchColumnsApi = async (): Promise<Column[]> => {
 	return data.map(mapColumnFromDb);
 };
 
-export const addColumnApi = async (column: Omit<Column, 'id'>): Promise<Column> => {
+export const addColumnApi = async (column: CreateColumnInput): Promise<Column> => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_COLUMNS)
-		.insert({
-			...mapColumnToDb(column),
-			user_id: user.id,
-		})
+		.insert({ ...mapColumnToDb(column), user_id: user.id })
 		.select()
 		.single();
 
@@ -37,12 +34,12 @@ export const addColumnApi = async (column: Omit<Column, 'id'>): Promise<Column> 
 	return mapColumnFromDb(data);
 };
 
-export const editColumnApi = async (id: string, column: Omit<Column, 'id' | 'position'>): Promise<Column> => {
+export const editColumnApi = async (id: string, column: EditColumnInput): Promise<Column> => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_COLUMNS)
-		.update(mapColumnUpdateToDb(column))
+		.update(mapColumnToDb(column))
 		.eq('id', id)
 		.eq('user_id', user.id)
 		.select()

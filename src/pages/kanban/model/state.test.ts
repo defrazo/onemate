@@ -1,9 +1,9 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 import type { IKanbanRepo } from '../api';
-import { getDefaultColumns, getDefaultTasks, notifier } from '../lib';
+import { getDefaultColumns, getDefaultTasks, notifier, now } from '../lib';
 import { MESSAGES } from '../lib/constants';
-import { type Column, createState, type Task } from '.';
+import { type Column, CreateColumnInput, createState, CreateTaskInput, type Task } from '.';
 
 const createRepoMock = (): IKanbanRepo => ({
 	fetchColumns: vi.fn(),
@@ -25,6 +25,7 @@ vi.mock('../lib', async () => {
 		getDefaultColumns: vi.fn(),
 		getDefaultTasks: vi.fn(),
 		notifier: { setNotice: vi.fn() },
+		now: vi.fn(),
 		MESSAGES,
 		LIMITS,
 	};
@@ -50,6 +51,7 @@ const mockTasks: Task[] = [
 		completed: false,
 		position: 1000,
 		createdAt: '18.03.2026, 10:00',
+		updatedAt: null,
 	},
 	{
 		id: 't2',
@@ -63,6 +65,7 @@ const mockTasks: Task[] = [
 		completed: false,
 		position: 2000,
 		createdAt: '18.03.2026, 10:00',
+		updatedAt: null,
 	},
 ];
 
@@ -79,7 +82,12 @@ const createInitializedState = async () => {
 };
 
 describe('state', () => {
-	beforeEach(() => vi.clearAllMocks());
+	const MOCKED_NOW = '2026-04-14T10:00:00.000Z';
+
+	beforeEach(() => {
+		vi.clearAllMocks();
+		(now as Mock).mockReturnValue(MOCKED_NOW);
+	});
 
 	describe('columns', () => {
 		let state: ReturnType<typeof createState>;
@@ -109,7 +117,7 @@ describe('state', () => {
 
 			it('should create default columns when API returns empty array', async () => {
 				// ARRANGE
-				const defaultColumns: Omit<Column, 'id'>[] = [
+				const defaultColumns: CreateColumnInput[] = [
 					{ title: 'Новая', color: 'slate', taskLimit: 10, position: 1000 },
 				];
 				(repo.fetchColumns as Mock).mockResolvedValue([]);
@@ -148,7 +156,7 @@ describe('state', () => {
 				it('should add column and notify subscribers when request succeeds', async () => {
 					// ARRANGE
 					const newColumn: Column = {
-						id: 'c3',
+						id: 'c5',
 						title: 'Готово',
 						color: 'slate',
 						taskLimit: 0,
@@ -390,7 +398,7 @@ describe('state', () => {
 
 			it('should create default tasks when API returns empty array', async () => {
 				// ARRANGE
-				const defaultTask: Omit<Task, 'id'> = {
+				const defaultTask: CreateTaskInput = {
 					columnId: 'c1',
 					title: 'Задача 0',
 					description: 'Описание задачи',
@@ -400,7 +408,6 @@ describe('state', () => {
 					endDate: '2026-03-20',
 					completed: false,
 					position: 1000,
-					createdAt: '18.03.2026, 10:00',
 				};
 
 				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
@@ -412,7 +419,7 @@ describe('state', () => {
 				await state.loadData();
 
 				// ASSERT
-				expect(repo.addTask).toHaveBeenCalledWith(defaultTask);
+				expect(repo.addTask).toHaveBeenCalledWith({ ...defaultTask });
 			});
 
 			it('should show error when request fails', async () => {
@@ -450,6 +457,7 @@ describe('state', () => {
 						completed: false,
 						position: 3000,
 						createdAt: '18.03.2026, 10:00',
+						updatedAt: null,
 					};
 					(repo.addTask as Mock).mockResolvedValue(newTask);
 
@@ -458,18 +466,7 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.addTask(
-						'c1',
-						'Задача 3',
-						'Описание',
-						'waiting',
-						'high',
-						'2026-03-18',
-						null,
-						false,
-						'18.03.2026, 10:00',
-						10
-					);
+					await state.addTask('c1', 'Задача 3', 'Описание', 'waiting', 'high', '2026-03-18', null, false, 10);
 
 					// ASSERT
 					expect(repo.addTask).toHaveBeenCalledWith(
@@ -493,7 +490,6 @@ describe('state', () => {
 						'2026-03-18',
 						null,
 						false,
-						'18.03.2026, 10:00',
 						10
 					);
 
@@ -514,7 +510,7 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.addTask('c1', 'Задача 3', '', 'active', 'low', '', '', false, '18.03.2026, 10:00', 10);
+					await state.addTask('c1', 'Задача 3', '', 'active', 'low', '', '', false, 10);
 
 					// ASSERT
 					expect(listener).toHaveBeenLastCalledWith(tasksBefore);
@@ -536,8 +532,7 @@ describe('state', () => {
 						'high',
 						'2024-02-01',
 						'2024-02-01',
-						false,
-						'18.03.2026, 10:00'
+						false
 					);
 
 					// ASSERT
@@ -549,7 +544,7 @@ describe('state', () => {
 						startDate: '2024-02-01',
 						endDate: '2024-02-01',
 						completed: false,
-						createdAt: '18.03.2026, 10:00',
+						updatedAt: MOCKED_NOW,
 					});
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updated, 'success');
 				});
@@ -567,8 +562,7 @@ describe('state', () => {
 						'high',
 						'2026-03-18',
 						null,
-						false,
-						'18.03.2026, 10:00'
+						false
 					);
 
 					// ASSERT
@@ -588,7 +582,7 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.editTask('t1', 'Задача 3', '', 'active', 'low', '', '', false, '18.03.2026, 10:00');
+					await state.editTask('t1', 'Задача 3', '', 'active', 'low', '', '', false);
 
 					// ASSERT
 					expect(listener).toHaveBeenLastCalledWith(before);
@@ -609,7 +603,7 @@ describe('state', () => {
 					await state.moveTask('t1', 'c2', 0);
 
 					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', expect.any(Number));
+					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', expect.any(Number), MOCKED_NOW);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moved, 'success');
 
 					const tasks: any[] = listener.mock.calls.at(-1)?.[0];
@@ -625,7 +619,7 @@ describe('state', () => {
 					await state.moveTask('t1', 'c2', 99);
 
 					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 1000);
+					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 1000, MOCKED_NOW);
 				});
 
 				it('should move task to empty column with default position', async () => {
@@ -647,7 +641,7 @@ describe('state', () => {
 					await state.moveTask('t1', 'c3', 0);
 
 					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c3', 1000);
+					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c3', 1000, MOCKED_NOW);
 				});
 
 				it('should do nothing when task is not found', async () => {

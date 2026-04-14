@@ -1,6 +1,6 @@
 import type { IKanbanRepo } from '../api';
 import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
-import { getDefaultColumns, getDefaultTasks, LIMITS, MESSAGES, notifier } from '../lib';
+import { getDefaultColumns, getDefaultTasks, LIMITS, MESSAGES, notifier, now } from '../lib';
 import type { Column, Task } from '.';
 
 const fallback = <T>(snapshot: T, restore: (snapshot: T) => void, notify: () => void) => {
@@ -222,7 +222,6 @@ export const createState = (repo: IKanbanRepo) => {
 						endDate: task.endDate,
 						completed: task.completed,
 						position: task.position,
-						createdAt: task.createdAt,
 					});
 					added.push(newTask);
 				}
@@ -244,7 +243,6 @@ export const createState = (repo: IKanbanRepo) => {
 		startDate: string,
 		endDate: string | null,
 		completed: boolean,
-		createdAt: string,
 		taskLimit: number
 	) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
@@ -274,7 +272,6 @@ export const createState = (repo: IKanbanRepo) => {
 				endDate,
 				completed,
 				position,
-				createdAt,
 			});
 
 			tasks.push(newTask);
@@ -294,8 +291,7 @@ export const createState = (repo: IKanbanRepo) => {
 		priority: TaskPriority,
 		startDate: string,
 		endDate: string | null,
-		completed: boolean,
-		createdAt: string
+		completed: boolean
 	) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
 
@@ -305,9 +301,21 @@ export const createState = (repo: IKanbanRepo) => {
 				return;
 			}
 
+			const updatedAt = now();
+
 			tasks = tasks.map((task) =>
 				task.id === id
-					? { ...task, title, description, status, priority, startDate, endDate, completed, createdAt }
+					? {
+							...task,
+							title,
+							description,
+							status,
+							priority,
+							startDate,
+							endDate,
+							completed,
+							updatedAt,
+						}
 					: task
 			);
 			notifyTasks();
@@ -320,7 +328,7 @@ export const createState = (repo: IKanbanRepo) => {
 				startDate,
 				endDate,
 				completed,
-				createdAt,
+				updatedAt,
 			});
 			notifier.setNotice(MESSAGES.tasks.updated, 'success');
 		} catch (_error) {
@@ -382,13 +390,15 @@ export const createState = (repo: IKanbanRepo) => {
 
 			if (task.columnId === newColumnId && task.position === newPosition) return;
 
-			const updatedTask = { ...task, columnId: newColumnId, position: newPosition };
+			const updatedAt = now();
+
+			const updatedTask = { ...task, columnId: newColumnId, position: newPosition, updatedAt };
 			withoutTask.splice(newIndex, 0, updatedTask);
 
 			tasks = withoutTask;
 			notifyTasks();
 
-			await repo.moveTask(id, newColumnId, newPosition);
+			await repo.moveTask(id, newColumnId, newPosition, updatedAt);
 
 			if (shouldNormalizeTasksInColumn(newColumnId)) await normalizeTaskPositionsInColumn(newColumnId);
 
@@ -416,17 +426,21 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	const normalizeTaskPositionsInColumn = async (columnId: string) => {
+		const updatedAt = now();
+
 		const sortedColumnTasks = tasks
 			.filter((task) => task.columnId === columnId)
 			.slice()
 			.sort((a, b) => a.position - b.position)
-			.map((task, index) => ({ ...task, position: (index + 1) * 1000 }));
+			.map((task, index) => ({ ...task, position: (index + 1) * 1000, updatedAt }));
 
 		const otherTasks = tasks.filter((task) => task.columnId !== columnId);
 		tasks = [...otherTasks, ...sortedColumnTasks];
 		notifyTasks();
 
-		await Promise.all(sortedColumnTasks.map((task) => repo.moveTask(task.id, task.columnId, task.position)));
+		await Promise.all(
+			sortedColumnTasks.map((task) => repo.moveTask(task.id, task.columnId, task.position, task.updatedAt))
+		);
 	};
 
 	const subscribeTasks = (callback: (tasks: Task[]) => void) => {

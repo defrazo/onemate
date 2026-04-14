@@ -1,6 +1,6 @@
 import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
 import settingsIcon from '@/shared/assets/icons/actions/settings.svg?raw';
-import { cn, fullDate } from '@/shared/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
 import { COLUMN_COLORS, type ColumnColor, deviceUtils, insertSvg } from '../lib';
 import { type Column, createState } from '../model';
@@ -89,7 +89,6 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	// === ACTION FUNCTIONS ===
 	function onAddTask(columnId: string, taskLimit: number) {
 		const today = new Date().toISOString().split('T')[0];
-		const createdAt = fullDate(new Date().toISOString());
 
 		editTaskModal?.close();
 
@@ -114,7 +113,6 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 					startDate || today,
 					endDate || null,
 					completed,
-					createdAt,
 					taskLimit
 				);
 			},

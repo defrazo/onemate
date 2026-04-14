@@ -132,7 +132,7 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 	const dates = document.createElement('div');
 	dates.className = cn(layout.col, 'gap-4 xl:flex-row xl:items-center');
 
-	// Start Date
+	// start Date
 	const startDateRow = document.createElement('div');
 	startDateRow.className = cn(layout.row, 'w-full justify-between');
 
@@ -154,12 +154,12 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 
 	startDateRow.append(labelStartDateCol, startDate.element);
 
-	// Arrow
+	// arrow
 	const arrow = document.createElement('span');
 	arrow.textContent = '⟶';
 	arrow.className = 'hidden select-none xl:block';
 
-	// End Date
+	// end Date
 	const endDateRow = document.createElement('div');
 	endDateRow.className = cn(layout.row, 'w-full justify-between');
 

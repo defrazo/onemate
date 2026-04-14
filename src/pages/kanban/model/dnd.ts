@@ -161,7 +161,7 @@ export const setupDnD = (
 	// === HELPERS ===
 	function createPlaceholder(type: DragType) {
 		const div = document.createElement('div');
-		if (type === 'task') div.className = 'min-h-[180px] animate-pulse bg-(--border-alt)/30';
+		if (type === 'task') div.className = 'min-h-[175px] animate-pulse bg-(--border-alt)/30';
 		if (type === 'column') div.className = 'h-full max-w-96 min-w-60 flex-1 animate-pulse bg-(--border-alt)/30';
 		return div;
 	}

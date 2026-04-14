@@ -4,4 +4,4 @@ export { getDefaultColumns, getDefaultTasks } from './defaults';
 export { deviceUtils } from './device';
 export { notifier } from './notifier';
 export { customDatePicker, customSelect, getDivider } from './uiElements';
-export { createSvg, insertSvg } from './utils';
+export { createSvg, insertSvg, now } from './utils';
