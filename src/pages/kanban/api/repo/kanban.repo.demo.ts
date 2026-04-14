@@ -1,7 +1,7 @@
 import { generateUUID } from '@/shared/lib/utils';
 
-import { getDefaultColumns, getDefaultTasks, MESSAGES } from '../../lib';
-import type { Column, Task } from '../../model';
+import { getDefaultColumns, getDefaultTasks, MESSAGES, now } from '../../lib';
+import type { Column, CreateColumnInput, CreateTaskInput, EditColumnInput, EditTaskInput, Task } from '../../model';
 import type { IKanbanRepo } from '.';
 
 export class KanbanRepoDemo implements IKanbanRepo {
@@ -20,6 +20,8 @@ export class KanbanRepoDemo implements IKanbanRepo {
 			: getDefaultTasks(this.columns.map((column) => column.id)).map((task) => ({
 					...task,
 					id: this.getID(),
+					createdAt: now(),
+					updatedAt: null,
 				}));
 	}
 
@@ -28,13 +30,13 @@ export class KanbanRepoDemo implements IKanbanRepo {
 		return this.columns.map((column) => ({ ...column }));
 	}
 
-	async addColumn(column: Omit<Column, 'id'>): Promise<Column> {
+	async addColumn(column: CreateColumnInput): Promise<Column> {
 		const newColumn: Column = { ...column, id: this.getID() };
 		this.columns.push(newColumn);
 		return newColumn;
 	}
 
-	async editColumn(id: string, column: Omit<Column, 'id' | 'position'>): Promise<Column> {
+	async editColumn(id: string, column: EditColumnInput): Promise<Column> {
 		const idx = this.columns.findIndex((column) => column.id === id);
 		if (idx === -1) throw new Error(MESSAGES.columns.updateError);
 
@@ -59,13 +61,13 @@ export class KanbanRepoDemo implements IKanbanRepo {
 		return this.tasks.map((task) => ({ ...task }));
 	}
 
-	async addTask(task: Omit<Task, 'id'>): Promise<Task> {
-		const newTask: Task = { ...task, id: this.getID() };
+	async addTask(task: CreateTaskInput): Promise<Task> {
+		const newTask: Task = { ...task, id: this.getID(), createdAt: now(), updatedAt: null };
 		this.tasks.push(newTask);
 		return newTask;
 	}
 
-	async editTask(id: string, task: Omit<Task, 'id' | 'columnId' | 'position'>): Promise<Task> {
+	async editTask(id: string, task: EditTaskInput): Promise<Task> {
 		const idx = this.tasks.findIndex((task) => task.id === id);
 		if (idx === -1) throw new Error(MESSAGES.tasks.updateError);
 
@@ -77,12 +79,13 @@ export class KanbanRepoDemo implements IKanbanRepo {
 		this.tasks = this.tasks.filter((task) => task.id !== id);
 	}
 
-	async moveTask(id: string, columnId: string, position: number): Promise<Task> {
+	async moveTask(id: string, columnId: string, position: number, updatedAt: string): Promise<Task> {
 		const task = this.tasks.find((task) => task.id === id);
 		if (!task) throw new Error(MESSAGES.tasks.moveError);
 
 		task.columnId = columnId;
 		task.position = position;
+		task.updatedAt = updatedAt;
 
 		return task;
 	}

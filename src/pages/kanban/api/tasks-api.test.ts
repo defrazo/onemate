@@ -3,7 +3,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 import { supabase } from '@/shared/lib/supabase';
 
 import type { TaskPriority, TaskStatus } from '../lib';
-import type { DbTask, Task } from '../model';
+import type { CreateTaskInput, DbTask, EditTaskInput, Task } from '../model';
 import { addTaskApi, deleteTaskApi, editTaskApi, fetchTasksApi, getCurrentUser, moveTaskApi } from '.';
 
 vi.mock('@/shared/lib/supabase', () => ({
@@ -11,6 +11,8 @@ vi.mock('@/shared/lib/supabase', () => ({
 }));
 
 vi.mock('./auth-api', () => ({ getCurrentUser: vi.fn() }));
+
+const MOCKED_NOW = '2026-04-14T10:00:00.000Z';
 
 const mockChain = (methods: string[], result: { data: unknown; error: unknown }) => {
 	const last = { [methods.at(-1)!]: vi.fn().mockResolvedValue(result) };
@@ -44,6 +46,7 @@ describe('fetchTasksApi', () => {
 				completed: false,
 				position: 0,
 				created_at: '18.03.2026, 10:00',
+				updated_at: null,
 			},
 		];
 
@@ -66,6 +69,7 @@ describe('fetchTasksApi', () => {
 				completed: false,
 				position: 0,
 				createdAt: '18.03.2026, 10:00',
+				updatedAt: null,
 			},
 		]);
 	});
@@ -93,7 +97,7 @@ describe('fetchTasksApi', () => {
 });
 
 describe('addTaskApi', () => {
-	const taskData: Omit<Task, 'id'> = {
+	const taskData: CreateTaskInput = {
 		columnId: 'c1',
 		title: 'Новая задача',
 		description: 'Описание задачи',
@@ -103,7 +107,6 @@ describe('addTaskApi', () => {
 		endDate: '2026-03-20',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 14:00',
 	};
 
 	it('should add task and return it when request succeeds', async () => {
@@ -119,7 +122,8 @@ describe('addTaskApi', () => {
 			end_date: taskData.endDate,
 			completed: taskData.completed,
 			position: taskData.position,
-			created_at: taskData.createdAt,
+			created_at: '18.03.2026, 14:00',
+			updated_at: null,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -130,7 +134,9 @@ describe('addTaskApi', () => {
 		const result = await addTaskApi(taskData);
 
 		// ASSERT
-		expect(result).toEqual({ ...taskData, id: 't2' });
+		expect(result).toMatchObject({ ...taskData, id: 't2' });
+		expect(result.createdAt).toEqual(dbTask.created_at);
+		expect(result.updatedAt).toBeNull();
 	});
 
 	it('should throw error when API returns error', async () => {
@@ -146,8 +152,7 @@ describe('addTaskApi', () => {
 
 describe('editTaskApi', () => {
 	const taskId = 't1';
-	const taskData: Omit<Task, 'id' | 'position'> = {
-		columnId: 'c1',
+	const taskData: EditTaskInput = {
 		title: 'Обновлено',
 		description: 'Новое описание',
 		status: 'active' as TaskStatus,
@@ -155,14 +160,14 @@ describe('editTaskApi', () => {
 		startDate: '2026-03-18',
 		endDate: '2026-03-21',
 		completed: false,
-		createdAt: '18.03.2026, 15:00',
+		updatedAt: MOCKED_NOW,
 	};
 
 	it('should update task and return it when request succeeds', async () => {
 		// ARRANGE
 		const dbTask: Omit<DbTask, 'user_id'> = {
 			id: taskId,
-			column_id: taskData.columnId,
+			column_id: 'c1',
 			title: taskData.title,
 			description: taskData.description,
 			status: taskData.status,
@@ -171,7 +176,8 @@ describe('editTaskApi', () => {
 			end_date: taskData.endDate,
 			completed: taskData.completed,
 			position: 0,
-			created_at: taskData.createdAt,
+			created_at: '18.03.2026, 15:00',
+			updated_at: MOCKED_NOW,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -182,7 +188,9 @@ describe('editTaskApi', () => {
 		const result = await editTaskApi(taskId, taskData);
 
 		// ASSERT
-		expect(result).toEqual({ ...taskData, id: taskId, position: 0 });
+		expect(result).toMatchObject({ ...taskData, id: taskId, position: 0 });
+		expect(result.createdAt).toBeDefined();
+		expect(result.updatedAt).toEqual(MOCKED_NOW);
 	});
 
 	it('should throw error when API returns error', async () => {
@@ -227,7 +235,7 @@ describe('moveTaskApi', () => {
 	const newColumnId = 'c2';
 	const newPosition = 5;
 
-	const taskData: Task = {
+	const taskData: Omit<Task, 'createdAt'> = {
 		id: 't1',
 		columnId: 'c1',
 		title: 'Обычная задача',
@@ -238,7 +246,7 @@ describe('moveTaskApi', () => {
 		endDate: '2026-03-20',
 		completed: false,
 		position: 0,
-		createdAt: '18.03.2026, 10:00',
+		updatedAt: MOCKED_NOW,
 	};
 
 	it('should move task and return it when request succeeds', async () => {
@@ -254,7 +262,8 @@ describe('moveTaskApi', () => {
 			end_date: taskData.endDate,
 			completed: taskData.completed,
 			position: newPosition,
-			created_at: taskData.createdAt,
+			created_at: '18.03.2026, 10:00',
+			updated_at: MOCKED_NOW,
 		};
 
 		(supabase.from as Mock).mockReturnValue(
@@ -262,10 +271,12 @@ describe('moveTaskApi', () => {
 		);
 
 		// ACT
-		const result = await moveTaskApi(taskId, newColumnId, newPosition);
+		const result = await moveTaskApi(taskId, newColumnId, newPosition, MOCKED_NOW);
 
 		// ASSERT
-		expect(result).toEqual({ ...taskData, id: taskId, columnId: newColumnId, position: newPosition });
+		expect(result).toMatchObject({ ...taskData, id: taskId, columnId: newColumnId, position: newPosition });
+		expect(result.createdAt).toEqual(dbTask.created_at);
+		expect(result.updatedAt).toEqual(MOCKED_NOW);
 	});
 
 	it('should throw error when API returns error', async () => {
@@ -275,6 +286,6 @@ describe('moveTaskApi', () => {
 		);
 
 		// ACT + ASSERT
-		await expect(moveTaskApi(taskId, newColumnId, newPosition)).rejects.toBeInstanceOf(Error);
+		await expect(moveTaskApi(taskId, newColumnId, newPosition, MOCKED_NOW)).rejects.toBeInstanceOf(Error);
 	});
 });

@@ -1,7 +1,7 @@
 import { supabase } from '@/shared/lib/supabase';
 
-import type { Task } from '../model';
-import { getCurrentUser, mapTaskFromDb, mapTaskToDb, mapTaskUpdateToDb } from '.';
+import type { CreateTaskInput, EditTaskInput, Task } from '../model';
+import { getCurrentUser, mapTaskFromDb, mapTaskToDb } from '.';
 
 const KANBAN_TASKS = 'kanban_tasks';
 
@@ -20,15 +20,12 @@ export const fetchTasksApi = async (): Promise<Task[]> => {
 	return data.map(mapTaskFromDb);
 };
 
-export const addTaskApi = async (task: Omit<Task, 'id'>): Promise<Task> => {
+export const addTaskApi = async (task: CreateTaskInput): Promise<Task> => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_TASKS)
-		.insert({
-			...mapTaskToDb(task),
-			user_id: user.id,
-		})
+		.insert({ ...mapTaskToDb(task), user_id: user.id })
 		.select()
 		.single();
 
@@ -37,12 +34,12 @@ export const addTaskApi = async (task: Omit<Task, 'id'>): Promise<Task> => {
 	return mapTaskFromDb(data);
 };
 
-export const editTaskApi = async (id: string, task: Omit<Task, 'id' | 'columnId' | 'position'>): Promise<Task> => {
+export const editTaskApi = async (id: string, task: EditTaskInput): Promise<Task> => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_TASKS)
-		.update(mapTaskUpdateToDb(task))
+		.update(mapTaskToDb(task))
 		.eq('id', id)
 		.eq('user_id', user.id)
 		.select()
@@ -61,12 +58,12 @@ export const deleteTaskApi = async (id: string): Promise<void> => {
 	if (error) throw error;
 };
 
-export const moveTaskApi = async (id: string, columnId: string, position: number) => {
+export const moveTaskApi = async (id: string, columnId: string, position: number, updatedAt: string | null) => {
 	const user = await getCurrentUser();
 
 	const { data, error } = await supabase
 		.from(KANBAN_TASKS)
-		.update({ column_id: columnId, position })
+		.update(mapTaskToDb({ columnId, position, updatedAt }))
 		.eq('id', id)
 		.eq('user_id', user.id)
 		.select()

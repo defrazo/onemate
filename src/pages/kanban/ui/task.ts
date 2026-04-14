@@ -19,7 +19,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	// === TASK CARD ===
 	const taskCard = document.createElement('div');
-	taskCard.className = cn(layout.col, 'min-h-[180px] min-w-0 bg-(--bg-secondary)');
+	taskCard.className = cn(layout.col, 'min-h-[175px] min-w-0 bg-(--bg-secondary)');
 	taskCard.dataset.taskId = task.id;
 
 	// === TASK HEADER ===
@@ -38,7 +38,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		task.completed && 'line-through opacity-30'
 	);
 
-	// Task Options
+	// task options
 	const optionsButton = document.createElement('button');
 	optionsButton.type = 'button';
 	optionsButton.title = 'Действия с задачей';
@@ -93,7 +93,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const attributes = document.createElement('div');
 	attributes.className = cn(layout.row, 'cursor-default justify-between select-none', task.completed && 'opacity-30');
 
-	// Task Status
+	// task status
 	const status = document.createElement('div');
 	status.className = cn(layout.row, 'gap-2');
 
@@ -123,7 +123,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	status.append(statusDot, statusText);
 
-	// Task Priority
+	// task priority
 	let priorityConfig = TASK_PRIORITY[task.priority as TaskPriority];
 	if (!priorityConfig) priorityConfig = TASK_PRIORITY.medium;
 
@@ -144,12 +144,21 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	taskDescription.className =
 		'line-clamp-3 cursor-default overflow-hidden text-justify text-sm leading-[18px] text-ellipsis text-(--color-secondary) select-none';
 
-	const timestamp = document.createElement('div');
-	timestamp.textContent = fullDate(task.createdAt);
-	timestamp.title = 'Дата создания';
-	timestamp.className = cn(primitives.hint, 'px-3 pb-3 text-xs leading-4 xl:text-xs', task.completed && 'opacity-30');
-
 	taskContent.append(attributes, taskDescription);
+
+	// === TIMESTAMP ===
+	const timestampRow = document.createElement('div');
+	timestampRow.title = 'Дата создания';
+	timestampRow.className = cn(layout.row, 'px-3 pb-3');
+
+	const labelCreated = document.createElement('span');
+	labelCreated.className = primitives.hint;
+
+	const created = document.createElement('span');
+	created.textContent = fullDate(task.createdAt);
+	created.className = cn(primitives.hint, 'text-xs!');
+
+	timestampRow.append(labelCreated, created);
 
 	// === ACTION FUNCTIONS ===
 	function onViewTask() {
@@ -162,6 +171,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				startDate: task.startDate,
 				endDate: task.endDate,
 				completed: task.completed,
+				created: task.createdAt,
+				updated: task.updatedAt,
 			},
 			onSubmit: (completed) => {
 				state.editTask(
@@ -172,8 +183,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 					task.priority,
 					task.startDate,
 					task.endDate,
-					completed,
-					task.createdAt
+					completed
 				);
 				viewTaskModal = null;
 			},
@@ -197,17 +207,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				completed: task.completed,
 			},
 			onSubmit: (title, description, status, priority, startDate, endDate, completed) => {
-				state.editTask(
-					task.id,
-					title,
-					description,
-					status,
-					priority,
-					startDate,
-					endDate,
-					completed,
-					task.createdAt
-				);
+				state.editTask(task.id, title, description, status, priority, startDate, endDate, completed);
 				editTaskModal = null;
 			},
 		});
@@ -283,7 +283,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	}
 
 	// === ASSEMBLY ===
-	taskCard.append(taskHeader, taskContent, timestamp);
+	taskCard.append(taskHeader, taskContent, timestampRow);
 
 	return { element: taskCard, destroy };
 };

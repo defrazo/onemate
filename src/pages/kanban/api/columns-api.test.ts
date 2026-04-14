@@ -2,7 +2,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 import { supabase } from '@/shared/lib/supabase';
 
-import type { Column, DbColumn } from '../model';
+import type { Column, CreateColumnInput, DbColumn, EditColumnInput } from '../model';
 import { addColumnApi, deleteColumnApi, editColumnApi, fetchColumnsApi, getCurrentUser, moveColumnApi } from '.';
 
 vi.mock('@/shared/lib/supabase', () => ({
@@ -74,7 +74,7 @@ describe('fetchColumnsApi', () => {
 });
 
 describe('addColumnApi', () => {
-	const columnData: Omit<Column, 'id'> = { title: 'Переделать', color: 'slate', taskLimit: 10, position: 4 };
+	const columnData: CreateColumnInput = { title: 'Переделать', color: 'slate', taskLimit: 10, position: 4 };
 
 	it('should add column and return it when request succeeds', async () => {
 		// ARRANGE
@@ -110,7 +110,7 @@ describe('addColumnApi', () => {
 
 describe('editColumnApi', () => {
 	const columnId = 'c4';
-	const columnData: Omit<Column, 'id' | 'position'> = { title: 'Переделать', color: 'slate', taskLimit: 10 };
+	const columnData: EditColumnInput = { title: 'Переделать', color: 'slate', taskLimit: 10 };
 
 	it('should update column and return it when request succeeds', async () => {
 		// ARRANGE
@@ -196,7 +196,6 @@ describe('moveColumnApi', () => {
 
 	it('should throw error when API returns error', async () => {
 		// ARRANGE
-
 		(supabase.from as Mock).mockReturnValue(
 			mockChain(['update', 'eq', 'eq', 'select', 'single'], {
 				data: null,

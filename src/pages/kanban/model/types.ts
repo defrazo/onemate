@@ -12,6 +12,7 @@ export type Task = {
 	completed: boolean;
 	position: number;
 	createdAt: string;
+	updatedAt: string | null;
 };
 
 export type DbTask = {
@@ -27,6 +28,7 @@ export type DbTask = {
 	completed: boolean;
 	position: number;
 	created_at: string;
+	updated_at: string | null;
 };
 
 export type Column = {
