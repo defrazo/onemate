@@ -111,6 +111,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 		document.body.append(columnModal.element);
 	}
 
+	// === LIFECYCLE ===
 	function destroyTaskInstance(taskId: string) {
 		const instance = taskInstances.get(taskId);
 		if (!instance) return;

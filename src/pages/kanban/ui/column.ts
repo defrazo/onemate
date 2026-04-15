@@ -150,6 +150,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const unsubscribeDevice = deviceUtils.onDeviceChange(updateDraggable);
 	const unsubscribeColumns = state.subscribeColumns(updateDraggable);
 
+	// === LIFECYCLE ===
 	function cleanup() {
 		addTaskButton.removeEventListener('click', onAdd);
 		settingsButton.removeEventListener('click', onEdit);

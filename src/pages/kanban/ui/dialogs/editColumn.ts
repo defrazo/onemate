@@ -32,6 +32,18 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 	let deleteButton: HTMLButtonElement | null = null;
 	let paletteButtons: { button: HTMLButtonElement; handler: () => void }[] = [];
 
+	// === FORM ===
+	const form = document.createElement('form');
+	form.className = 'contents';
+
+	const onSubmit = (event: SubmitEvent) => {
+		event.preventDefault();
+		handleSubmit();
+	};
+
+	form.addEventListener('submit', onSubmit);
+	overlay.addEventListener('keydown', onKeyDown);
+
 	// === TITLE ===
 	const titleCol = document.createElement('div');
 	titleCol.className = cn(layout.col, 'mt-3 gap-3');
@@ -143,12 +155,12 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 	const actionsCol = document.createElement('div');
 	actionsCol.className = cn(layout.col, 'mx-auto gap-2');
 
-	const submitButton = createSubmitButton('Сохранить', handleSubmit);
+	const submitButton = createSubmitButton(options.mode === 'create' ? 'Добавить' : 'Сохранить');
 
 	actionsCol.append(submitButton);
 
 	if (options.mode === 'edit' && options.onDelete) {
-		const deleteButton = document.createElement('button');
+		deleteButton = document.createElement('button');
 		deleteButton.type = 'button';
 		deleteButton.textContent = 'Удалить колонку';
 		deleteButton.className = cn(
@@ -161,6 +173,16 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 	}
 
 	// === ACTION FUNCTIONS ===
+	function onKeyDown(event: KeyboardEvent) {
+		if (event.key !== 'Enter') return;
+		if (event.isComposing || event.defaultPrevented) return;
+		if (submitButton.disabled) return;
+		if (event.target instanceof HTMLTextAreaElement) return;
+
+		event.preventDefault();
+		form.requestSubmit();
+	}
+
 	function handleSubmit() {
 		const trimmedTitle = title.value.trim();
 		if (!trimmedTitle || trimmedTitle.length > LIMITS.COLUMN_TITLE) return;
@@ -206,7 +228,14 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 		titleHint.className = cn(primitives.hint, '-mt-2', tooLong && 'text-(--status-error)');
 	}
 
+	updateSubmitState();
+	updateTitleHint();
+
+	// === LIFECYCLE ===
 	function cleanup() {
+		form.removeEventListener('submit', onSubmit);
+		overlay.removeEventListener('keydown', onKeyDown);
+
 		title.removeEventListener('input', onTitleInput);
 		title.removeEventListener('focus', onTitleFocus);
 		title.removeEventListener('blur', onTitleBlur);
@@ -227,11 +256,9 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 		closeDialog();
 	}
 
-	updateSubmitState();
-	updateTitleHint();
-
 	// === ASSEMBLY ===
-	container.append(titleCol, divider1, limitRow, divider2, paletteCol, actionsCol);
+	form.append(titleCol, divider1, limitRow, divider2, paletteCol, actionsCol);
+	container.append(form);
 
 	return { element: overlay, close };
 };

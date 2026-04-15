@@ -1,4 +1,4 @@
-export { createCloseButton, createOverlay, createSubmitButton } from './baseControls';
+export { createActionButton, createCloseButton, createOverlay, createSubmitButton } from './baseControls';
 export { createDialog } from './baseDialog';
 export { deleteDialog } from './deleteDialog';
 export { editColumn } from './editColumn';

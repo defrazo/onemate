@@ -3,7 +3,7 @@ import { cn } from '@/shared/lib/utils';
 
 import { createSvg } from '../../lib';
 import { layout } from '..';
-import { createDialog, createSubmitButton } from '.';
+import { createActionButton, createDialog } from '.';
 
 type DeleteInstance = { element: HTMLDivElement; close: () => void };
 
@@ -23,8 +23,8 @@ export const deleteDialog = (title: string, content: string, onDelete: () => voi
 	const buttonsRow = document.createElement('div');
 	buttonsRow.className = cn(layout.row, 'gap-4');
 
-	const confirmButton = createSubmitButton('Удалить', handleSubmit);
-	const cancelButton = createSubmitButton('Отмена', close, 'bg-(--color-disabled)');
+	const confirmButton = createActionButton('Удалить', handleSubmit);
+	const cancelButton = createActionButton('Отмена', close, 'bg-(--color-disabled)');
 
 	buttonsRow.append(confirmButton, cancelButton);
 
@@ -34,6 +34,7 @@ export const deleteDialog = (title: string, content: string, onDelete: () => voi
 		close();
 	}
 
+	// === LIFECYCLE ===
 	function close() {
 		if (isClosed) return;
 		isClosed = true;
