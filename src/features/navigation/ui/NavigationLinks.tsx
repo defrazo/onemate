@@ -16,7 +16,7 @@ const NavigationLinks = ({ isAuth, className, variant = 'desktop' }: NavigationL
 	return (
 		<nav className={cn(className)}>
 			{items
-				.filter((item) => (isMobile ? item.label !== 'OneGen' : item.label !== 'Главная'))
+				.filter((item) => (isMobile ? true : item.label !== 'Главная'))
 				.map(({ to, icon, label, onClick, order }) => {
 					const itemClass = cn(
 						'flex-col gap-0.5 lg:flex-row lg:gap-2 mt-1 lg:mt-0',
