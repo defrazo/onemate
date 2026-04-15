@@ -258,6 +258,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	const unsubscribeDevice = deviceUtils.onDeviceChange(updateDraggable);
 
+	// === LIFECYCLE ===
 	function cleanup() {
 		optionsButton.removeEventListener('click', onOptionsButtonClick);
 		document.removeEventListener('click', onDocumentClick);

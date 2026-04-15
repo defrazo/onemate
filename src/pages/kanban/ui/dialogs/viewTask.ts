@@ -5,7 +5,7 @@ import { cn, fullDate } from '@/shared/lib/utils';
 
 import { createSvg, customDatePicker, insertSvg } from '../../lib';
 import { layout, primitives } from '..';
-import { createDialog, createSubmitButton } from '.';
+import { createActionButton, createDialog } from '.';
 
 type ViewTaskOptions = {
 	initial: {
@@ -145,7 +145,7 @@ export const viewTask = (options: ViewTaskOptions): ViewTaskInstance => {
 	if (options.initial.updated) metaRow.append(updatedRow);
 
 	// === SUBMIT BUTTON ===
-	const submitButton = createSubmitButton(isCompleted ? 'Возобновить' : 'Завершить', () =>
+	const submitButton = createActionButton(isCompleted ? 'Возобновить' : 'Завершить', () =>
 		handleSubmit(!isCompleted)
 	);
 
@@ -155,6 +155,7 @@ export const viewTask = (options: ViewTaskOptions): ViewTaskInstance => {
 		close();
 	}
 
+	// === LIFECYCLE ===
 	function close() {
 		if (isClosed) return;
 		isClosed = true;

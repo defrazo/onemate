@@ -49,6 +49,18 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 	let selectedStatus: TaskStatus = options.initial.status;
 	let selectedPriority: TaskPriority = options.initial.priority;
 
+	// === FORM ===
+	const form = document.createElement('form');
+	form.className = 'contents';
+
+	const onSubmit = (event: SubmitEvent) => {
+		event.preventDefault();
+		handleSubmit();
+	};
+
+	form.addEventListener('submit', onSubmit);
+	overlay.addEventListener('keydown', onKeyDown);
+
 	// === TITLE ===
 	const titleCol = document.createElement('div');
 	titleCol.className = cn(layout.col, 'mt-3 gap-3');
@@ -292,9 +304,19 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 	completedRow.append(labelCompletedCol, completedCheckbox);
 
 	// === SUBMIT BUTTON ===
-	const submitButton = createSubmitButton(options.mode === 'create' ? 'Добавить' : 'Сохранить', handleSubmit);
+	const submitButton = createSubmitButton(options.mode === 'create' ? 'Добавить' : 'Сохранить');
 
 	// === ACTION FUNCTIONS ===
+	function onKeyDown(event: KeyboardEvent) {
+		if (event.key !== 'Enter') return;
+		if (event.isComposing || event.defaultPrevented) return;
+		if (submitButton.disabled) return;
+		if (event.target instanceof HTMLTextAreaElement) return;
+
+		event.preventDefault();
+		form.requestSubmit();
+	}
+
 	function handleSubmit() {
 		if (!validateDates()) return;
 
@@ -380,7 +402,14 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 		descriptionHint.className = cn(primitives.hint, '-mt-2', tooLong && 'text-(--status-error)');
 	}
 
+	updateSubmitState();
+	updateTitleHint();
+
+	// === LIFECYCLE ===
 	function cleanup() {
+		form.removeEventListener('submit', onSubmit);
+		overlay.removeEventListener('keydown', onKeyDown);
+
 		title.removeEventListener('input', onTitleInput);
 		title.removeEventListener('focus', onTitleFocus);
 		title.removeEventListener('blur', onTitleBlur);
@@ -404,11 +433,8 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 		closeDialog();
 	}
 
-	updateSubmitState();
-	updateTitleHint();
-
 	// === ASSEMBLY ===
-	container.append(
+	form.append(
 		titleCol,
 		divider1,
 		descriptionCol,
@@ -422,6 +448,7 @@ export const editTask = (options: EditTaskOptions): EditTaskInstance => {
 		completedRow,
 		submitButton
 	);
+	container.append(form);
 
 	return { element: overlay, close };
 };
