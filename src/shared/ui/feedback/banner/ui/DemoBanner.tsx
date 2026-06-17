@@ -39,7 +39,7 @@ const DemoBanner = () => {
 					) : (
 						<div className="flex gap-1">
 							Вы используете демоверсию.
-							<a className="underline hover:text-(--accent-text)" href="/onemate/demo-info">
+							<a className="underline hover:text-(--accent-text)" href="/demo-info">
 								Подробнее
 							</a>
 						</div>

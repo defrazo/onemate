@@ -1,5 +1,5 @@
 services:
-    web:
+    frontend:
         build:
             context: .
             dockerfile: Dockerfile
@@ -10,6 +10,8 @@ services:
                 VITE_MYMEMORY_API_KEY: ${VITE_MYMEMORY_API_KEY}
                 VITE_OPENWEATHER_API_KEY: ${VITE_OPENWEATHER_API_KEY}
                 VITE_ALLOWED_EMAILS: ${VITE_ALLOWED_EMAILS}
-        ports:
-            - '80:80'
+        image: onemate-frontend:latest
+        container_name: onemate-frontend
         restart: unless-stopped
+        ports:
+            - '127.0.0.1:3001:80'

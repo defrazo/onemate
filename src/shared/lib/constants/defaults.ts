@@ -13,7 +13,7 @@ const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
 // --- Примитивы
-export const DEFAULT_REDIRECT: string = 'https://letunoff.ru/onemate/auth/callback';
+export const DEFAULT_REDIRECT: string = 'https://onemate.letunoff.ru/auth/callback';
 export const DEFAULT_THEME: Theme = 'dark';
 export const DEFAULT_AVATAR: string = AVATAR_OPTIONS[0];
 
