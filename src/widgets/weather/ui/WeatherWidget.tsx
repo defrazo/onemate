@@ -51,7 +51,7 @@ const WeatherWidget = () => {
 					) : (
 						<>
 							{store.isOpenCurrent ? (
-								<Current current={store.current!} />
+								<Current current={store.current} />
 							) : (
 								<Forecast forecast={store.forecast} />
 							)}

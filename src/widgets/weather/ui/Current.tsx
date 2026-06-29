@@ -8,10 +8,12 @@ import type { ConditionCode, CurrentType } from '../model';
 import { ConditionIcon } from '.';
 
 interface CurrentProps {
-	current: CurrentType;
+	current: CurrentType | null;
 }
 
 export const Current = ({ current }: CurrentProps) => {
+	if (!current) return null;
+
 	const {
 		main: { temp, temp_max, temp_min, humidity, feels_like },
 		sys: { sunrise, sunset },
