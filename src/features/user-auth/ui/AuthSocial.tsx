@@ -1,16 +1,16 @@
-import { IconGoogle, IconMask } from '@/shared/assets/icons';
+import { IconMask } from '@/shared/assets/icons';
 import { Button, Tooltip } from '@/shared/ui';
 
 interface AuthSocialProps {
 	isLoading: boolean;
-	oAuth: () => void;
+	// oAuth: () => void;
 	demoAuth?: () => void;
 }
 
-export const AuthSocial = ({ isLoading, oAuth, demoAuth }: AuthSocialProps) => {
+export const AuthSocial = ({ isLoading, demoAuth }: AuthSocialProps) => {
 	return (
 		<>
-			<Tooltip className="w-full" content="Доступно только для разработчика">
+			{/* <Tooltip className="w-full" content="Доступно только для разработчика">
 				<Button
 					className="flex h-10 w-full gap-2 text-sm hover:text-(--accent-text) md:text-base"
 					loading={isLoading}
@@ -19,7 +19,7 @@ export const AuthSocial = ({ isLoading, oAuth, demoAuth }: AuthSocialProps) => {
 				>
 					Продолжить с аккаунтом Google <IconGoogle className="size-5" />
 				</Button>
-			</Tooltip>
+			</Tooltip> */}
 			{demoAuth && (
 				<Tooltip className="w-full" content="Запустить демо-режим">
 					<Button
