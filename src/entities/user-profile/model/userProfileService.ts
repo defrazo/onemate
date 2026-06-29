@@ -21,9 +21,11 @@ export const userProfileService = {
 	},
 
 	async updateProfile(id: string, profile: UserProfile): Promise<UserProfile> {
+		const { username: _username, mainEmail: _mainEmail, ...dbProfile } = profile;
+
 		const { data, error } = await supabase
 			.from(TABLE)
-			.upsert({ ...profile, id }, { onConflict: 'id' })
+			.upsert({ ...dbProfile, id }, { onConflict: 'id' })
 			.select(FIELDS)
 			.single();
 
