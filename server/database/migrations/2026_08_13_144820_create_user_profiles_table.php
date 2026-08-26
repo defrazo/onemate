@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('user_profiles', function (Blueprint $table) {
             $table->uuid('user_id')->primary();
-			
+
             $table->text('avatar_url')->nullable();
             $table->string('first_name')->default('');
             $table->string('last_name')->default('');

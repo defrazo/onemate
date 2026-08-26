@@ -13,9 +13,9 @@ return new class extends Migration
 
             $table->string('username', 50)->unique();
             $table->string('email')->unique();
-			$table->string('role', 20)->default('user');
-			
-			$table->timestampTz('privacy_accepted_at')->nullable();
+            $table->string('role', 20)->default('user');
+
+            $table->timestampTz('privacy_accepted_at')->nullable();
             $table->timestampTz('email_verified_at')->nullable();
             $table->string('password');
             $table->timestampTz('last_login_at')->nullable();
