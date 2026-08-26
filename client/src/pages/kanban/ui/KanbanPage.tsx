@@ -1,11 +1,14 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { ErrorFallback } from '@/shared/ui';
 
 import { initKanban } from '.';
 
 const KanbanPage = () => {
+	const { userStore } = useStore();
+
 	usePageTitle('Kanban');
 
 	const [loading, setLoading] = useState(true);
@@ -28,7 +31,7 @@ const KanbanPage = () => {
 		setError(false);
 
 		try {
-			const destroy = await initKanban(root);
+			const destroy = await initKanban(root, userStore);
 
 			if (requestId !== requestIdRef.current) {
 				destroy?.();
