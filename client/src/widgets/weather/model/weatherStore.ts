@@ -114,22 +114,24 @@ export class WeatherStore {
 		if (this.inited) return;
 		this.inited = true;
 
-		reaction(
-			() => this.userStore.id,
-			(id) => {
-				if (!id) {
-					this.reset();
-					return;
-				}
+		this.track(
+			reaction(
+				() => this.userStore.id,
+				(id) => {
+					if (!id) {
+						this.reset();
+						return;
+					}
 
-				const cached = cache.getWeather(id);
-				if (cached) {
-					this.current = cached.current;
-					this.forecast = cached.forecast;
-					this.status = 'ready';
-				}
-			},
-			{ fireImmediately: true }
+					const cached = cache.getWeather(id);
+					if (cached) {
+						this.current = cached.current;
+						this.forecast = cached.forecast;
+						this.status = 'ready';
+					}
+				},
+				{ fireImmediately: true }
+			)
 		);
 	}
 

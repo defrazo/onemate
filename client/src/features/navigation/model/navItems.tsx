@@ -1,3 +1,5 @@
+import { Package2 } from 'lucide-react';
+
 import { useStore } from '@/app/providers';
 import { IconDash, IconKanban, IconLogin, IconMain, IconTodo } from '@/shared/assets/icons';
 import AuthContainer from '@/widgets/authorization';
@@ -19,6 +21,7 @@ export const getNavItems = (isAuth: boolean): NavItem[] => {
 			{ to: '/dashboard', icon: <IconDash className="size-full" />, label: 'Dashboard', order: 4 },
 			{ to: '/todo', icon: <IconTodo className="size-full" />, label: 'ToDo', order: 3 },
 			{ to: '/kanban', icon: <IconKanban />, label: 'Kanban', order: 2 },
+			{ to: 'https://toolbox.letunoff.ru/', icon: <Package2 />, label: 'ToolBox', order: 2 },
 		];
 	} else {
 		return [{ to: '', icon: <IconLogin />, label: 'Войти', onClick: openAuth }];

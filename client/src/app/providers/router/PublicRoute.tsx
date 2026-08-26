@@ -5,12 +5,12 @@ import { PreloaderExt } from '@/shared/ui';
 
 import { useStore } from '../store';
 
-export const GuardedRoute = observer(() => {
+export const PublicRoute = observer(() => {
 	const { authStore, userStore } = useStore();
 
 	if (authStore.isLoading) return <PreloaderExt />;
 
-	if (!userStore.id) return <Navigate replace to="/" />;
+	if (userStore.id) return <Navigate replace to="/dashboard" />;
 
 	return <Outlet />;
 });

@@ -47,20 +47,30 @@ export class RootStore implements AllStores {
 	}
 
 	async init(): Promise<void> {
-		if (this.isInitialized) return Promise.resolve();
+		if (this.isInitialized) return;
 		if (this.initPromise) return this.initPromise;
 
 		this.initPromise = this.initAllStores();
-		return this.initPromise;
+
+		try {
+			await this.initPromise;
+		} finally {
+			this.initPromise = null;
+		}
 	}
 
 	private async initAllStores(): Promise<void> {
 		try {
 			await StoreInitializer.initializeStores(this);
 			this.isInitialized = true;
-		} catch (error: any) {
-			this.initPromise = null;
-			throw new Error('Произошла ошибка при инициализации приложения:', error.message);
+			this.isDestroyed = false;
+		} catch (error) {
+			throw new Error(
+				`Произошла ошибка при инициализации приложения: ${
+					error instanceof Error ? error.message : String(error)
+				}`,
+				{ cause: error }
+			);
 		}
 	}
 
@@ -87,9 +97,14 @@ export class RootStore implements AllStores {
 	}
 }
 
-let rootStore: RootStore | null = null;
+let rootStore: RootStore | null = import.meta.hot?.data.rootStore ?? null;
 
 export const getRootStore = (): RootStore => {
 	if (!rootStore) rootStore = new RootStore();
+
+	if (import.meta.hot) import.meta.hot.data.rootStore = rootStore;
+
 	return rootStore;
 };
+
+if (import.meta.hot) import.meta.hot.dispose((data) => (data.rootStore = rootStore));

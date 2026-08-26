@@ -200,8 +200,6 @@ export class AuthStore implements IAuthAccountPort, IAuthDevicePort {
 	}
 
 	private async checkAuth(): Promise<void> {
-		if (this.isLoading) return;
-
 		this.setLoading();
 
 		try {
@@ -213,10 +211,10 @@ export class AuthStore implements IAuthAccountPort, IAuthDevicePort {
 			}
 
 			this.userStore.setUser(user);
-
 			this.setReady();
-		} catch {
-			this.reset();
+		} catch (error) {
+			this.setError(error);
+			throw error;
 		}
 	}
 
@@ -231,11 +229,12 @@ export class AuthStore implements IAuthAccountPort, IAuthDevicePort {
 		});
 	}
 
-	init(): void {
+	async init(): Promise<void> {
 		if (this.inited) return;
-		this.inited = true;
 
-		void this.checkAuth();
+		await this.checkAuth();
+
+		this.inited = true;
 	}
 
 	destroy(): void {

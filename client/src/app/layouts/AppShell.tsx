@@ -6,30 +6,31 @@ import Footer from '@/widgets/footer';
 import Header from '@/widgets/header';
 import MobileTabBar from '@/widgets/mobile-tab-bar';
 
-interface LayoutProps {
+interface AppShellProps {
+	children: ReactNode;
 	leftSide?: ReactNode;
 	rightSide?: ReactNode;
 	hideLeftOnMobile?: boolean;
 	hideRightOnMobile?: boolean;
 	hideFooter?: boolean;
 	landscapeMode?: boolean;
-	children: ReactNode;
 }
 
-export const Layout = ({
+export const AppShell = ({
+	children,
 	leftSide,
 	rightSide,
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
 	hideFooter = false,
 	landscapeMode = false,
-	children,
-}: LayoutProps) => {
+}: AppShellProps) => {
 	const device = useDeviceType();
 	const orientation = useOrientation();
 
 	const left = hideLeftOnMobile && device === 'mobile' ? null : leftSide;
 	const right = hideRightOnMobile && device === 'mobile' ? null : rightSide;
+
 	const showMobileTabBar = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 	const landscape = orientation === 'landscape' && landscapeMode && device === 'mobile';
 

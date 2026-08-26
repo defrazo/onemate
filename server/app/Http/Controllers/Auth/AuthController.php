@@ -40,7 +40,7 @@ class AuthController extends Controller
     public function session(Request $request): JsonResponse
     {
         /** @var User|null $user */
-        $user = Auth::guard('web')->user();
+        $user = $request->user('sanctum');
 
         return response()->json([
             'authenticated' => $user !== null,
