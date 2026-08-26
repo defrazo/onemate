@@ -1,0 +1,181 @@
+import type { RouteObject } from 'react-router-dom';
+
+import AboutPage from '@/pages/about';
+import DeletedAccountPage from '@/pages/account-deleted';
+import UserProfilePage from '@/pages/account-profile';
+import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
+import DashboardPage from '@/pages/dashboard';
+import DemoInfoPage from '@/pages/demo-info';
+import GeneratorPage from '@/pages/generator';
+import HomePage from '@/pages/home';
+import KanbanPage from '@/pages/kanban';
+import NotFoundPage from '@/pages/not-found';
+import PrivacyPolicyPage from '@/pages/privacy-policy';
+import TermsOfServicePage from '@/pages/terms-of-service';
+import TodoPage from '@/pages/to-do';
+import { Layout, StaticPageLayout } from '@/shared/layouts';
+import { SettingsLeft, SettingsRight } from '@/widgets/generator';
+import { ProfileNav } from '@/widgets/user-profile';
+
+import { GuardedRoute } from '.';
+
+export const routes: RouteObject[] = [
+	{
+		path: '/account/deleted',
+		element: (
+			<GuardedRoute element={<DeletedAccountPage />} redirectIfDeleted={false} redirectIfNotDeleted={true} />
+		),
+	},
+	{
+		path: '/account/profile',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout hideLeftOnMobile leftSide={<ProfileNav />}>
+						<UserProfilePage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/dashboard',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout hideFooter>
+						<DashboardPage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/todo',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout>
+						<TodoPage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/kanban',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout hideFooter landscapeMode>
+						<KanbanPage />
+					</Layout>
+				}
+			/>
+		),
+	},
+	{
+		path: '/generator',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout
+						hideLeftOnMobile
+						hideRightOnMobile
+						leftSide={<SettingsLeft />}
+						rightSide={<SettingsRight />}
+					>
+						<GeneratorPage />
+					</Layout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout>
+						<HomePage />
+					</Layout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/about',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout>
+						<AboutPage />
+					</Layout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/demo-info',
+		element: (
+			<GuardedRoute
+				element={
+					<StaticPageLayout title="О демо-режиме OneMate">
+						<DemoInfoPage />
+					</StaticPageLayout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/terms-of-service',
+		element: (
+			<GuardedRoute
+				element={
+					<StaticPageLayout title="Пользовательское соглашение">
+						<TermsOfServicePage />
+					</StaticPageLayout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/privacy-policy',
+		element: (
+			<GuardedRoute
+				element={
+					<StaticPageLayout title="Политика конфиденциальности">
+						<PrivacyPolicyPage />
+					</StaticPageLayout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+	{
+		path: '/email/verify/:id/:hash',
+		element: <GuardedRoute element={<VerifyEmailPage />} requireAuth={false} />,
+	},
+	{
+		path: '/reset-password',
+		element: <GuardedRoute element={<ResetPasswordPage />} requireAuth={false} />,
+	},
+	{
+		path: '*',
+		element: (
+			<GuardedRoute
+				element={
+					<Layout>
+						<NotFoundPage />
+					</Layout>
+				}
+				requireAuth={false}
+			/>
+		),
+	},
+];
