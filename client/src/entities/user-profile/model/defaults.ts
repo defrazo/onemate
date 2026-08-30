@@ -1,5 +1,4 @@
 import { DEFAULT_THEME } from '@/shared/config';
-import { AVATAR_OPTIONS } from '@/shared/lib/constants';
 
 import type { UserProfile } from '.';
 
@@ -12,8 +11,6 @@ export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
 export const createDefaultSlots = (): string[] => [...DEFAULT_SLOTS];
-
-export const DEFAULT_AVATAR: string = AVATAR_OPTIONS[0];
 
 const DEFAULT_PROFILE: UserProfile = {
 	avatar_url: null,

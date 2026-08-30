@@ -3,13 +3,14 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
+import { AVATAR_ENTRIES, AvatarId, AVATARS } from '@/shared/assets/images/avatars';
 import { DEFAULT_THEME, type Theme } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
 import { userProfileCache, type UserProfileCacheData } from '../lib';
 import type { Gender, IUserProfileProfilePort, IUserProfileRepo, IUserProfileThemePort, UserProfile } from '.';
-import { createDefaultProfile, createDefaultSlots, createDefaultWidgets, DEFAULT_AVATAR } from '.';
+import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from '.';
 
 export class UserProfileStore extends AsyncStore implements IUserProfileProfilePort, IUserProfileThemePort {
 	private readonly avatarUpdate = new Debouncer();
@@ -44,8 +45,15 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		return this.currentLocation?.region ?? '';
 	}
 
+	get avatarId(): AvatarId {
+		const avatarUrl = this.profile?.avatar_url;
+		if (!avatarUrl) return 'avatar0';
+
+		return AVATAR_ENTRIES.find(([, url]) => url === avatarUrl)?.[0] ?? 'avatar0';
+	}
+
 	get avatar(): string {
-		return this.profile?.avatar_url ?? DEFAULT_AVATAR;
+		return AVATARS[this.avatarId];
 	}
 
 	get firstName(): string {
