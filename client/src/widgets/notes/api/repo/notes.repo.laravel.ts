@@ -1,8 +1,7 @@
 import { api } from '@/shared/api';
-import { createDefaultNotes } from '@/shared/lib/constants';
 import { generateUUID } from '@/shared/lib/utils';
 
-import type { INotesRepo, Note } from '../../model';
+import { createDefaultNotes, type INotesRepo, type Note } from '../../model';
 
 type NotesResponse = {
 	notes: Note[];

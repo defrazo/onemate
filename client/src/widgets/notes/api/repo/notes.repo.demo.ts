@@ -1,8 +1,7 @@
-import { createDefaultNotes } from '@/shared/lib/constants';
 import { storage } from '@/shared/lib/storage';
 import { generateUUID, key } from '@/shared/lib/utils';
 
-import type { INotesRepo, Note } from '../../model';
+import { createDefaultNotes, type INotesRepo, type Note } from '../../model';
 
 type DefaultNote = Partial<Pick<Note, 'text' | 'order_idx' | 'id' | 'created_at' | 'updated_at'>>;
 type NormalizeOptions = { touchUpdated?: boolean };
