@@ -1,30 +1,14 @@
-import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import LocationSearch from '@/features/location';
+import LocationSearch from '@/features/location-search';
 import { WIDGET_TIPS } from '@/shared/content';
-import { Button, ErrorFallback, LoadFallback, Tooltip } from '@/shared/ui';
+import { Button, LoadFallback, Tooltip } from '@/shared/ui';
 
 import { Current, Forecast } from '.';
 
 const WeatherWidget = () => {
-	const { cityStore, locationStore, weatherStore: store } = useStore();
-
-	const [showSlowMessage, setShowSlowMessage] = useState(false);
-
-	const isLoading = locationStore.isLoading || store.isLoading;
-
-	useEffect(() => {
-		if (!isLoading) {
-			setShowSlowMessage(false);
-			return;
-		}
-
-		const timer = setTimeout(() => setShowSlowMessage(true), 5000);
-
-		return () => clearTimeout(timer);
-	}, [isLoading]);
+	const { weatherStore } = useStore();
 
 	return (
 		<>
@@ -32,36 +16,24 @@ const WeatherWidget = () => {
 				<Tooltip content={WIDGET_TIPS.weather}>
 					<h1 className="core-header">Погода</h1>
 				</Tooltip>
-				{showSlowMessage && (
-					<p className="mx-6 px-2 text-center text-xs leading-3 text-(--accent-default)">
-						Данные могут загружаться дольше обычного из-за задержек в работе внешнего сервиса.
-					</p>
-				)}
 			</div>
-			{store.isError ? (
-				<ErrorFallback onRetry={() => cityStore.restart()} />
-			) : (
-				<div className="relative flex flex-1 flex-col justify-between">
-					{(locationStore.isLoading || store.isLoading) && (
-						<div className="absolute inset-0 z-40 cursor-progress" />
-					)}
-					<LocationSearch />
-					{store.isLoading && !store.isReady ? (
-						<LoadFallback />
-					) : (
-						<>
-							{store.isOpenCurrent ? (
-								<Current current={store.current} />
-							) : (
-								<Forecast forecast={store.forecast} />
-							)}
-						</>
-					)}
-					<Button className="w-full text-sm" variant="accent" onClick={() => store.setIsOpenCurrent()}>
-						{store.isOpenCurrent ? 'Прогноз на 5 дней' : 'Текущая погода'}
-					</Button>
-				</div>
-			)}
+			<div className="relative flex flex-1 flex-col justify-between">
+				<LocationSearch value={weatherStore.location} onSelect={(city) => weatherStore.setLocation(city)} />
+				{weatherStore.isLoading && !weatherStore.isReady ? (
+					<LoadFallback />
+				) : (
+					<>
+						{weatherStore.isOpenCurrent ? (
+							<Current current={weatherStore.current} />
+						) : (
+							<Forecast forecast={weatherStore.forecast} />
+						)}
+					</>
+				)}
+				<Button className="w-full text-sm" variant="accent" onClick={() => weatherStore.setIsOpenCurrent()}>
+					{weatherStore.isOpenCurrent ? 'Прогноз на 5 дней' : 'Текущая погода'}
+				</Button>
+			</div>
 		</>
 	);
 };
