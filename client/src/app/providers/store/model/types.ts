@@ -1,30 +1,27 @@
 import type { UserStore } from '@/entities/user';
 import type { UserProfileStore } from '@/entities/user-profile';
 import type { DeviceActivityStore } from '@/features/device-activity';
+import type { ModalStore } from '@/features/modal';
+import type { NotifyStore } from '@/features/notification';
 import type { ThemeStore } from '@/features/theme-switcher';
 import type { AuthFormStore, AuthStore } from '@/features/user-auth';
-import type { ModalStore, NotifyStore } from '@/shared/stores';
+import type { CurrencyStore } from '@/widgets/currency';
 import type { NotesStore } from '@/widgets/notes';
 import type { TranslatorStore } from '@/widgets/translator';
 import type { WeatherStore } from '@/widgets/weather';
-import type { CurrencyStore } from '@/widgets/сurrency';
 
 export type AllStores = {
+	userStore: UserStore;
 	notifyStore: NotifyStore;
 	modalStore: ModalStore;
-	userStore: UserStore;
-
 	userProfileStore: UserProfileStore;
-	themeStore: ThemeStore;
-
-	authFormStore: AuthFormStore;
 	authStore: AuthStore;
-
+	authFormStore: AuthFormStore;
+	themeStore: ThemeStore;
 	deviceActivityStore: DeviceActivityStore;
-
+	weatherStore: WeatherStore;
 	notesStore: NotesStore;
 	currencyStore: CurrencyStore;
-	weatherStore: WeatherStore;
 	translatorStore: TranslatorStore;
 };
 

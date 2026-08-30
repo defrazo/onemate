@@ -2,13 +2,14 @@ import { UserRepoRouting, UserStore } from '@/entities/user';
 import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
 import { ActivityRepoRouting, DeviceActivityStore, DeviceProviderRouting } from '@/features/device-activity';
+import { ModalStore } from '@/features/modal';
+import { NotifyStore } from '@/features/notification';
 import { ThemeStore } from '@/features/theme-switcher';
 import { AuthFormStore, AuthStore } from '@/features/user-auth';
-import { ModalStore, NotifyStore } from '@/shared/stores';
+import { CurrencyStore } from '@/widgets/currency';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { WeatherStore } from '@/widgets/weather';
-import { CurrencyStore } from '@/widgets/сurrency';
 
 import { AllStores, CoreStores } from '.';
 
