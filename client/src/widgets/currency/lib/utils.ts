@@ -1,4 +1,4 @@
-import { POPULAR_CODES } from '@/shared/lib/constants';
+const POPULAR_CODES: readonly string[] = ['RUB', 'USD', 'EUR', 'CNY', 'JPY', 'KZT', 'GBP', 'UAH', 'TRY'] as const;
 
 export const sortCodesByPopularity = (codes: string[]): string[] => {
 	const idx = (code: string) => {
