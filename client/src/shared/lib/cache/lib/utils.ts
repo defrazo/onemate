@@ -1,4 +1,4 @@
-import { LS_PREFIX } from '@/shared/lib/storage';
+import { LS_PREFIX } from '@/shared/config';
 
 import type { Cache, CacheSection } from '../model';
 

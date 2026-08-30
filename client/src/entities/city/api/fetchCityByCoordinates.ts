@@ -1,4 +1,4 @@
-import { API_URLS } from '@/shared/lib/constants';
+import { API_URLS } from '@/shared/config';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 import type { City } from '../model';

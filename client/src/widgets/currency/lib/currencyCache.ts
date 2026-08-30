@@ -1,4 +1,5 @@
-import { LS_PREFIX, storage } from '@/shared/lib/storage';
+import { LS_PREFIX } from '@/shared/config';
+import { storage } from '@/shared/lib/storage';
 
 import type { RatesResponse } from '../model';
 

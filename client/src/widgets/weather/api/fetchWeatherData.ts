@@ -1,4 +1,4 @@
-import { API_URLS, env } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/config';
 import { ApiError, handleError } from '@/shared/lib/errors';
 import { convertDate, dayOfWeek, formatDate } from '@/shared/lib/utils';
 

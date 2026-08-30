@@ -3,8 +3,9 @@ import { observer } from 'mobx-react-lite';
 import { Toaster } from 'sonner';
 
 import { ModalManager } from '@/features/modal';
+import { LS_CACHE_UI } from '@/shared/config';
 import { useDeviceType } from '@/shared/lib/hooks';
-import { LS_CACHE_UI, storage } from '@/shared/lib/storage';
+import { storage } from '@/shared/lib/storage';
 import { DemoBanner } from '@/shared/ui';
 
 import { RouterProvider, useStore } from './providers';

@@ -1,5 +1,5 @@
 import type { City } from '@/entities/city';
-import { API_URLS, env } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 
 // Получение списка городов с регионами

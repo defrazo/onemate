@@ -1,8 +1,9 @@
 import { useEffect, useState } from 'react';
 
 import { IconClose } from '@/shared/assets/icons';
+import { LS_CACHE_UI } from '@/shared/config';
 import { useDeviceType } from '@/shared/lib/hooks';
-import { LS_CACHE_UI, storage } from '@/shared/lib/storage';
+import { storage } from '@/shared/lib/storage';
 import { Button } from '@/shared/ui';
 
 const DemoBanner = () => {

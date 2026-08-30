@@ -1,4 +1,4 @@
-import { API_URLS, env } from '@/shared/lib/constants';
+import { API_URLS, env } from '@/shared/config';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
 import type { TranslateRequest } from '../model';

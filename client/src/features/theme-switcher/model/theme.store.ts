@@ -2,8 +2,8 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserProfileThemePort } from '@/entities/user-profile';
-import { DEFAULT_THEME, type Theme } from '@/shared/config';
-import { LS_CACHE_UI, storage } from '@/shared/lib/storage';
+import { DEFAULT_THEME, LS_CACHE_UI, type Theme } from '@/shared/config';
+import { storage } from '@/shared/lib/storage';
 import { BaseStore } from '@/shared/lib/store';
 
 export class ThemeStore extends BaseStore {
