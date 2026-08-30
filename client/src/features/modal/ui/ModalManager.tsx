@@ -5,7 +5,7 @@ import { useDeviceType } from '@/shared/lib/hooks';
 
 import { BottomSheet, Dropdown, Modal } from '.';
 
-const ModalManager = () => {
+export const ModalManager = observer(() => {
 	const { modalStore } = useStore();
 
 	const modal = modalStore.modal;
@@ -31,6 +31,4 @@ const ModalManager = () => {
 			{modal.content}
 		</Wrapper>
 	);
-};
-
-export default observer(ModalManager);
+});

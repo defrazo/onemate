@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { action, computed, makeObservable, observable } from 'mobx';
 
-import type { ModalConfig, ModalType } from '../ui';
+import type { ModalConfig, ModalType } from '.';
 
 export class ModalStore {
 	modal: ModalConfig | null = null;

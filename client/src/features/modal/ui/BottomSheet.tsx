@@ -42,7 +42,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 					<DragHandle getLineClass={getLineClass} />
 				</div>
 				{onBack && (
-					<div className="absolute top-[34px] w-1/4 pl-2" onClick={onBack}>
+					<div className="absolute top-8.5 w-1/4 pl-2" onClick={onBack}>
 						<IconBack className="size-5 cursor-pointer hover:text-(--accent-hover)" />
 					</div>
 				)}
