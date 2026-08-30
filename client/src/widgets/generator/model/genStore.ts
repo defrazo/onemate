@@ -1,9 +1,7 @@
 import { makeAutoObservable, reaction } from 'mobx';
 
-import { createDefaultGenerator } from '@/shared/lib/constants';
-
 import { insertTextBlocks } from '../lib';
-import type { CutLine, TextBlock } from '.';
+import { createDefaultGenerator, type CutLine, type TextBlock } from '.';
 
 export class GenStore {
 	private disposers = new Set<() => void>();
