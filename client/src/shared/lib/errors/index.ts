@@ -7,3 +7,4 @@ export {
 	PermissionError,
 	RestrictedAccess,
 } from './errors';
+export { handleLaravelError } from './handleLaravelError';
