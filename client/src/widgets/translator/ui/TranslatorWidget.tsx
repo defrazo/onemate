@@ -4,9 +4,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { IconArrows } from '@/shared/assets/icons';
-import { WIDGET_TIPS } from '@/shared/content';
 import { Button, Tooltip } from '@/shared/ui';
 
+import { TRANSLATOR_TIP } from '../model';
 import { TranslatorBox } from '.';
 
 const TranslatorWidget = () => {
@@ -44,7 +44,7 @@ const TranslatorWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.translator}>
+				<Tooltip content={TRANSLATOR_TIP}>
 					<h1 className="core-header">Переводчик</h1>
 				</Tooltip>
 			</div>

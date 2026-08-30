@@ -1,7 +1,6 @@
-import { WIDGET_TIPS } from '@/shared/content';
 import { Input, Tooltip } from '@/shared/ui';
 
-import { useCalculator } from '../model';
+import { CALCULATOR_TIP, useCalculator } from '../model';
 import { CalculatorButtons, CalculatorLog } from '.';
 
 const CalculatorWidget = () => {
@@ -10,7 +9,7 @@ const CalculatorWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.calculator}>
+				<Tooltip content={CALCULATOR_TIP}>
 					<h1 className="core-header">Калькулятор</h1>
 				</Tooltip>
 			</div>

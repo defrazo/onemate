@@ -1,11 +1,10 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { WIDGET_TIPS } from '@/shared/content';
 import { useCopy } from '@/shared/lib/hooks';
 import { ErrorFallback, Tooltip } from '@/shared/ui';
 
-import { useCurrency } from '../model';
+import { CURRENCY_TIP, useCurrency } from '../model';
 import { CurrencyControls } from '.';
 
 const CurrencyWidget = () => {
@@ -16,7 +15,7 @@ const CurrencyWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.currency}>
+				<Tooltip content={CURRENCY_TIP}>
 					<h1 className="core-header">Конвертер валют</h1>
 				</Tooltip>
 			</div>

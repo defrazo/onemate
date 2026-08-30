@@ -2,9 +2,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { IconAdd } from '@/shared/assets/icons';
-import { WIDGET_TIPS } from '@/shared/content';
 import { Button, Tooltip } from '@/shared/ui';
 
+import { NOTES_TIP } from '../model';
 import { NotesCard, NotesList } from '.';
 
 const NotesWidget = () => {
@@ -21,7 +21,7 @@ const NotesWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.notes}>
+				<Tooltip content={NOTES_TIP}>
 					<h1 className="core-header">Заметки</h1>
 				</Tooltip>
 			</div>

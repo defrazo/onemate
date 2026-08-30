@@ -2,9 +2,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import LocationSearch from '@/features/location-search';
-import { WIDGET_TIPS } from '@/shared/content';
 import { Button, LoadFallback, Tooltip } from '@/shared/ui';
 
+import { WEATHER_TIP } from '../model';
 import { Current, Forecast } from '.';
 
 const WeatherWidget = () => {
@@ -13,7 +13,7 @@ const WeatherWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.weather}>
+				<Tooltip content={WEATHER_TIP}>
 					<h1 className="core-header">Погода</h1>
 				</Tooltip>
 			</div>
