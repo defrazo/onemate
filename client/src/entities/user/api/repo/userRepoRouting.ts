@@ -1,15 +1,15 @@
-import type { Feature, Operation, UserStore } from '@/entities/user';
+import type { Feature, Operation } from '@/entities/user';
 import { PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { IUserRepo, Role, User } from '../../model';
+import type { IUserRepo, IUserRoutingPort, Role, User } from '../../model';
 import { UserRepoDemo, UserRepoLaravel } from '.';
 
 export class UserRepoRouting implements IUserRepo {
 	private readonly realRepo: IUserRepo;
 	private readonly demoRepo: IUserRepo;
 
-	constructor(private readonly userStore: UserStore) {
+	constructor(private readonly userStore: IUserRoutingPort) {
 		this.realRepo = new UserRepoLaravel();
 		this.demoRepo = new UserRepoDemo(() => this.userStore.user);
 	}

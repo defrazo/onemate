@@ -1,4 +1,4 @@
-import type { User } from '.';
+import type { Role, User } from '.';
 
 export interface IBaseUserPort {
 	readonly id: string | null;
@@ -16,20 +16,26 @@ export interface IUserProfilePort extends IBaseUserPort {
 export interface IUserAuthPort extends IBaseUserPort {
 	readonly email: string;
 
-	setUser(user: User): void;
-	loadUser(): Promise<void>;
-	reset(): void;
+	setUser(user: User | null): void;
+	// loadUser(): Promise<void>;
+	// reset(): void;
+	clearSession(): void;
 }
 
-export interface IUserAccountPort extends IBaseUserPort {
-	loadUser(): Promise<void>;
-	updateEmail(email: string, currentPassword: string): Promise<void>;
-	updateUsername(username: string): Promise<void>;
-	updatePassword(currentPassword: string, password: string, passwordConfirmation: string): Promise<void>;
-	cancelPendingEmail(): Promise<void>;
-	resendPendingEmail(): Promise<void>;
-	deleteAccount(): Promise<void>;
-	restoreAccount(): Promise<void>;
+// export interface IUserAccountPort extends IBaseUserPort {
+// 	loadUser(): Promise<void>;
+// 	updateEmail(email: string, currentPassword: string): Promise<void>;
+// 	updateUsername(username: string): Promise<void>;
+// 	updatePassword(currentPassword: string, password: string, passwordConfirmation: string): Promise<void>;
+// 	cancelPendingEmail(): Promise<void>;
+// 	resendPendingEmail(): Promise<void>;
+// 	deleteAccount(): Promise<void>;
+// 	restoreAccount(): Promise<void>;
+// }
+
+export interface IUserRoutingPort {
+	readonly user: User | null;
+	readonly userRole: Role;
 }
 
 export interface IUserRepo {

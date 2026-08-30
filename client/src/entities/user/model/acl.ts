@@ -1,7 +1,7 @@
 export const FEATURES = {
 	user: ['read', 'save', 'delete'],
 	profile: ['read', 'save', 'delete'],
-	city: ['read', 'save', 'delete'],
+	location: ['read', 'save', 'delete'],
 	notes: ['read', 'save'],
 	activity: ['read', 'save', 'delete'],
 	device: ['read'],
@@ -18,7 +18,7 @@ export const ACL: Record<Role, Capabilities> = {
 	user: {
 		user: { read: true, save: true, delete: true },
 		profile: { read: true, save: true, delete: true },
-		city: { read: true, save: true, delete: true },
+		location: { read: true, save: true, delete: true },
 		notes: { read: true, save: true },
 		activity: { read: true, save: true, delete: true },
 		device: { read: true },
@@ -28,7 +28,7 @@ export const ACL: Record<Role, Capabilities> = {
 	demo: {
 		user: { read: true, save: true, delete: true },
 		profile: { read: true, save: true, delete: false },
-		city: { read: true, save: true, delete: true },
+		location: { read: true, save: true, delete: true },
 		notes: { read: true, save: true },
 		activity: { read: true, save: true, delete: true },
 		device: { read: true },
