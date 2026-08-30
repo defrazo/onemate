@@ -1,7 +1,6 @@
-import { WIDGET_TIPS } from '@/shared/content';
 import { Tooltip } from '@/shared/ui';
 
-import { useCalendar } from '../model';
+import { CALENDAR_TIP, useCalendar } from '../model';
 import { CalendarControls, CalendarGrid, CalendarNav } from '.';
 
 const CalendarWidget = () => {
@@ -20,7 +19,7 @@ const CalendarWidget = () => {
 	return (
 		<>
 			<div className="flex items-center">
-				<Tooltip content={WIDGET_TIPS.calendar}>
+				<Tooltip content={CALENDAR_TIP}>
 					<h1 className="core-header">Календарь</h1>
 				</Tooltip>
 			</div>

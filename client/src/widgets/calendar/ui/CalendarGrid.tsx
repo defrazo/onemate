@@ -1,11 +1,12 @@
 import { isSameDay, isToday } from 'date-fns';
 
-import { WEEKDAYS_RU_SHORT } from '@/shared/lib/constants';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { generateCalendarDays, getDateFromDay, isInRange } from '../lib';
 import type { DateRange } from '../model';
+
+const WEEKDAYS_RU_SHORT = ['Пн', 'Вт', 'Ср', 'Чт', 'Пт', 'Сб', 'Вс'] as const;
 
 interface CalendarGridProps {
 	currentDate: Date;
