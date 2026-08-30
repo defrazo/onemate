@@ -1,39 +1,149 @@
+import { useEffect, useMemo, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import type { Gender } from '@/entities/user-profile';
-import LocationSearch from '@/features/location';
+import type { Gender, UserProfile } from '@/entities/user-profile';
+import { DEFAULT_AVATAR } from '@/entities/user-profile/model';
+import LocationSearch from '@/features/location-search';
 import { AvatarPicker } from '@/features/user-avatar';
 import { IconTrash } from '@/shared/assets/icons';
-import { DEFAULT_AVATAR } from '@/shared/lib/constants';
 import { useModalBack } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
 import { Button, Input, LoadFallback, Radio, SelectExt, Thumbnail } from '@/shared/ui';
 import { MobileUserMenu } from '@/widgets/user-menu';
 
-import { genderOptions } from '../lib';
+import { genderOptions, getAvailableDays } from '../lib';
 import { useProfile } from '../model';
 
+type PersonalDraft = {
+	firstName: string;
+	lastName: string;
+	username: string;
+	birthYear: string;
+	birthMonth: string;
+	birthDay: string;
+	gender: Gender;
+};
+
 export const PersonalTab = observer(() => {
-	const { cityStore, modalStore, notifyStore, profileStore: store, userProfileStore } = useStore();
+	const { modalStore, notifyStore, userStore, userProfileStore } = useStore();
 	const { device } = useProfile();
+
 	useModalBack(<MobileUserMenu />);
 
-	const handleSave = async () => {
-		try {
-			if (store.firstName) await validateName(store.firstName);
-			if (store.lastName) await validateName(store.lastName);
-			if (store.username) await validateUsername(store.username);
+	const [draft, setDraft] = useState<PersonalDraft>({
+		firstName: '',
+		lastName: '',
+		username: '',
+		birthYear: '',
+		birthMonth: '',
+		birthDay: '',
+		gender: '',
+	});
 
-			await store.saveChanges();
+	const [isSaving, setIsSaving] = useState(false);
+
+	const createDraft = (): PersonalDraft => ({
+		firstName: userProfileStore.firstName,
+		lastName: userProfileStore.lastName,
+		username: userStore.username,
+		birthYear: userProfileStore.birthYear,
+		birthMonth: userProfileStore.birthMonth,
+		birthDay: userProfileStore.birthDay,
+		gender: userProfileStore.gender,
+	});
+
+	useEffect(() => {
+		if (!userProfileStore.isReady) return;
+
+		setDraft(createDraft());
+	}, [userProfileStore.isReady, userStore.id]);
+
+	const days = useMemo(
+		() => getAvailableDays(draft.birthYear, draft.birthMonth),
+		[draft.birthYear, draft.birthMonth]
+	);
+
+	const isDirty =
+		draft.firstName !== userProfileStore.firstName ||
+		draft.lastName !== userProfileStore.lastName ||
+		draft.username !== userStore.username ||
+		draft.birthYear !== userProfileStore.birthYear ||
+		draft.birthMonth !== userProfileStore.birthMonth ||
+		draft.birthDay !== userProfileStore.birthDay ||
+		draft.gender !== userProfileStore.gender;
+
+	const updateField = <K extends keyof PersonalDraft>(key: K, value: PersonalDraft[K]): void => {
+		setDraft((prev) => ({
+			...prev,
+			[key]: value,
+		}));
+	};
+
+	const createBirthDate = (): string | null => {
+		if (!draft.birthYear || !draft.birthMonth || !draft.birthDay) {
+			return null;
+		}
+
+		const month = draft.birthMonth.padStart(2, '0');
+		const day = draft.birthDay.padStart(2, '0');
+
+		return `${draft.birthYear}-${month}-${day}`;
+	};
+
+	const handleCancel = (): void => {
+		setDraft(createDraft());
+	};
+
+	const handleSave = async (): Promise<void> => {
+		if (!isDirty || isSaving) return;
+
+		try {
+			setIsSaving(true);
+
+			if (draft.firstName) {
+				await validateName(draft.firstName);
+			}
+
+			if (draft.lastName) {
+				await validateName(draft.lastName);
+			}
+
+			if (draft.username) {
+				await validateUsername(draft.username);
+			}
+
+			const profile: UserProfile = {
+				first_name: draft.firstName.trim(),
+				last_name: draft.lastName.trim(),
+				birth_date: createBirthDate(),
+				gender: draft.gender,
+
+				// Контактные данные эта форма не редактирует.
+				phones: userProfileStore.phone,
+				additional_emails: userProfileStore.email,
+			};
+
+			await userProfileStore.updateProfile(profile);
+
+			if (draft.username !== userStore.username) {
+				await userStore.updateUsername(draft.username.trim());
+			}
+
+			setDraft(createDraft());
+
 			notifyStore.setNotice('Данные успешно сохранены', 'success');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Проверьте введенные данные', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Проверьте введенные данные', 'error');
+		} finally {
+			setIsSaving(false);
 		}
 	};
 
-	if (!store.isReady) return <LoadFallback />;
+	if (!userProfileStore.isReady) {
+		return <LoadFallback />;
+	}
 
 	return (
 		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 select-none md:p-4 md:shadow-(--shadow)">
@@ -63,10 +173,10 @@ export const PersonalTab = observer(() => {
 							autoComplete="new-password"
 							id="firstName"
 							placeholder="Ваше имя"
-							value={store.firstName}
+							value={draft.firstName}
 							variant="ghost"
-							onBlur={(e) => store.updateField('first_name', e.target.value.trim())}
-							onChange={(e) => store.updateField('first_name', e.target.value)}
+							onBlur={(e) => updateField('firstName', e.target.value.trim())}
+							onChange={(e) => updateField('firstName', e.target.value)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
@@ -77,10 +187,10 @@ export const PersonalTab = observer(() => {
 							autoComplete="new-password"
 							id="lastName"
 							placeholder="Ваша фамилия"
-							value={store.lastName}
+							value={draft.lastName}
 							variant="ghost"
-							onBlur={(e) => store.updateField('last_name', e.target.value.trim())}
-							onChange={(e) => store.updateField('last_name', e.target.value)}
+							onBlur={(e) => updateField('lastName', e.target.value.trim())}
+							onChange={(e) => updateField('lastName', e.target.value)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
@@ -91,10 +201,10 @@ export const PersonalTab = observer(() => {
 							autoComplete="username"
 							id="username"
 							placeholder="Ваш никнейм"
-							value={store.username}
+							value={draft.username}
 							variant="ghost"
-							onBlur={(e) => store.updateField('username', e.target.value.trim())}
-							onChange={(e) => store.updateField('username', e.target.value)}
+							onBlur={(e) => updateField('username', e.target.value.trim())}
+							onChange={(e) => updateField('username', e.target.value)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
@@ -105,12 +215,15 @@ export const PersonalTab = observer(() => {
 								nullable
 								options={generateYears()}
 								placeholder="Год"
-								value={store.birthYear}
+								value={draft.birthYear}
 								variant="embedded"
-								onChange={(value) => {
-									store.updateField('birth_year', value);
-									store.updateField('birth_day', '');
-								}}
+								onChange={(value) =>
+									setDraft((prev) => ({
+										...prev,
+										birthYear: value,
+										birthDay: '',
+									}))
+								}
 							/>
 							<SelectExt
 								direction="up"
@@ -118,22 +231,25 @@ export const PersonalTab = observer(() => {
 								nullable
 								options={generateMonth()}
 								placeholder="Месяц"
-								value={store.birthMonth}
+								value={draft.birthMonth}
 								variant="embedded"
-								onChange={(value) => {
-									store.updateField('birth_month', value);
-									store.updateField('birth_day', '');
-								}}
+								onChange={(value) =>
+									setDraft((prev) => ({
+										...prev,
+										birthMonth: value,
+										birthDay: '',
+									}))
+								}
 							/>
 							<SelectExt
-								disabled={!store.birthYear || store.birthMonth === ''}
+								disabled={!draft.birthYear || draft.birthMonth === ''}
 								justify="center"
 								nullable
-								options={store.days.map((d) => ({ value: d, label: d }))}
+								options={days.map((day) => ({ value: day, label: day }))}
 								placeholder="День"
-								value={store.birthDay}
+								value={draft.birthDay}
 								variant="embedded"
-								onChange={(value) => store.updateField('birth_day', value)}
+								onChange={(value) => updateField('birthDay', value)}
 							/>
 						</div>
 					</div>
@@ -143,8 +259,8 @@ export const PersonalTab = observer(() => {
 							className="flex-col gap-4 md:flex-row"
 							name="gender"
 							options={genderOptions}
-							value={store.gender}
-							onChange={(e) => store.updateField('gender', e.target.value as Gender)}
+							value={draft.gender}
+							onChange={(e) => updateField('gender', e.target.value as Gender)}
 						/>
 					</div>
 					<div className="flex flex-col gap-1">
@@ -152,16 +268,29 @@ export const PersonalTab = observer(() => {
 							Город
 						</label>
 						<div className="flex gap-2">
-							<LocationSearch />
+							<LocationSearch
+								value={userProfileStore.location}
+								onSelect={(city) => userProfileStore.setLocation(city)}
+							/>
 							<Button
 								centerIcon={<IconTrash className="size-6" />}
 								className="hover:text-(--status-error)"
 								size="custom"
 								title="Удалить"
 								variant="custom"
-								onClick={() => {
-									cityStore.deleteCity();
-									notifyStore.setNotice('Данные о местоположении удалены!', 'success');
+								onClick={async () => {
+									try {
+										await userProfileStore.deleteLocation();
+
+										notifyStore.setNotice('Данные о местоположении удалены!', 'success');
+									} catch (error) {
+										notifyStore.setNotice(
+											error instanceof Error
+												? error.message
+												: 'Не удалось удалить местоположение',
+											'error'
+										);
+									}
 								}}
 							/>
 						</div>
@@ -169,20 +298,18 @@ export const PersonalTab = observer(() => {
 					<div className="flex justify-center gap-4 md:justify-start">
 						<Button
 							className="w-28"
-							disabled={!store.isDirty}
-							loading={store.isLoading}
+							disabled={!isDirty}
+							loading={isSaving}
 							variant="accent"
 							onClick={handleSave}
 						>
 							Сохранить
 						</Button>
 						<Button
-							disabled={device !== 'mobile' && !store.isDirty}
+							disabled={device !== 'mobile' && !isDirty}
 							variant="warning"
 							onClick={() =>
-								device === 'mobile'
-									? modalStore.setModal(<MobileUserMenu />, 'sheet')
-									: store.loadDraft()
+								device === 'mobile' ? modalStore.setModal(<MobileUserMenu />, 'sheet') : handleCancel()
 							}
 						>
 							Отменить

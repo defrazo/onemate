@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import UserAvatar from '@/features/user-avatar';
 import { cn } from '@/shared/lib/utils';
-import { Button, Divider, LoadFallback, Preloader } from '@/shared/ui';
+import { Button, Divider, Preloader } from '@/shared/ui';
 
 import type { ProfileNavButton } from '../model';
 import { useProfile } from '../model';
@@ -16,17 +16,15 @@ const buttons: ProfileNavButton[] = [
 ];
 
 export const ProfileNav = observer(() => {
-	const { profileStore, userStore } = useStore();
+	const { userProfileStore, userStore } = useStore();
 	const { searchParams, navigate } = useProfile();
 
 	const currentTab = searchParams.get('tab') || 'preview';
 
-	if (!profileStore.isReady) return <LoadFallback />;
-
 	return (
 		<div className="core-card core-base flex h-fit w-full flex-col gap-4 shadow-(--shadow) select-none">
-			{!profileStore.isReady ? (
-				<div className="flex min-h-[19.625rem] items-center justify-center">
+			{!userProfileStore.isReady ? (
+				<div className="flex min-h-78.5 items-center justify-center">
 					<Preloader className="size-25" />
 				</div>
 			) : (
