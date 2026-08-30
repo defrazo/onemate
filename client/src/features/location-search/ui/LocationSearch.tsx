@@ -1,3 +1,4 @@
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -5,30 +6,57 @@ import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
 import { Input, Preloader, SuggestionList } from '@/shared/ui';
 
-import { useLocationChannel } from '../model';
+import { LocationSearchStore } from '../model';
 
-const LocationSearch = () => {
-	const { locationStore: store, notifyStore } = useStore();
+interface LocationSearchProps {
+	value: City | null;
+	onSelect: (city: City) => void | Promise<void>;
+	validate?: (city: City) => void | Promise<void>;
+}
 
-	useLocationChannel();
+const LocationSearch = ({ value, onSelect, validate }: LocationSearchProps) => {
+	const { notifyStore } = useStore();
+
+	const [store] = useState(() => new LocationSearchStore());
 
 	const handleSelect = async (city: City) => {
 		try {
-			await store.selectCity(city);
+			if (validate) await validate(city);
+
+			await onSelect(city);
+
+			store.selectCity(city);
+
 			notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Произошла ошибка', 'error');
 		}
 	};
 
 	const handleGeolocation = async () => {
 		try {
 			const city = await store.detectCityByGeolocation();
+
+			if (validate) await validate(city);
+
+			await onSelect(city);
+
+			store.selectCity(city);
+
 			notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
-		} catch (error: any) {
-			notifyStore.setNotice(error.message || 'Произошла ошибка', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Произошла ошибка', 'error');
 		}
 	};
+
+	useEffect(() => {
+		store.init();
+		return () => store.destroy();
+	}, [store]);
+
+	useEffect(() => {
+		store.setValue(value);
+	}, [store, value]);
 
 	return (
 		<div className="relative w-full">
@@ -43,7 +71,7 @@ const LocationSearch = () => {
 					) : (
 						<IconLocation
 							className="size-7 cursor-pointer hover:text-(--accent-hover)"
-							onClick={() => handleGeolocation()}
+							onClick={() => void handleGeolocation()}
 						/>
 					)
 				}
@@ -53,18 +81,14 @@ const LocationSearch = () => {
 				onChange={(e) => store.setQuery(e.target.value)}
 				onFocus={() => store.setFocused(true)}
 			/>
+
 			<SuggestionList
 				items={store.searchResults}
 				renderItem={(city) => (
 					<div
-						onClick={async () => {
-							try {
-								await handleSelect(city);
-							} finally {
-								store.finishSelecting();
-							}
-						}}
+						onClick={() => void handleSelect(city)}
 						onPointerDown={() => store.startSelecting()}
+						onPointerUp={() => store.finishSelecting()}
 					>
 						<strong>{city.name}</strong> <span>{city.region && `(${city.region})`}</span>
 					</div>
