@@ -33,7 +33,6 @@ class UserProfileController extends Controller
                 Rule::in(['male', 'female']),
             ],
 
-            'location' => ['nullable', 'string', 'max:255'],
             'phones' => ['nullable', 'array'],
             'phones.*' => ['string'],
             'additional_emails' => ['nullable', 'array'],

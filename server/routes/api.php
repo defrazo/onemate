@@ -7,7 +7,7 @@ use App\Http\Controllers\Kanban\KanbanColumnController;
 use App\Http\Controllers\Kanban\KanbanTaskController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
-use App\Http\Controllers\User\UserCityController;
+use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Http\Middleware\EnsureAccountIsActive;
@@ -51,7 +51,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
     Route::post('/user/restore', [UserAccountController::class, 'restore'])
-        ->middleware('throttle:3,1');
+        ->middleware('throttle:5,1');
 
     // Active only (not deleted)
     Route::middleware(EnsureAccountIsActive::class)->group(function () {
@@ -80,10 +80,10 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/user/profile/theme', [UserProfileController::class, 'updateTheme']);
         Route::patch('/user/profile/widgets', [UserProfileController::class, 'updateWidgets']);
 
-        // Weather city
-        Route::get('/user/city', [UserCityController::class, 'show']);
-        Route::put('/user/city', [UserCityController::class, 'update']);
-        Route::delete('/user/city', [UserCityController::class, 'destroy']);
+        // Locations
+        Route::get('/user/locations/{type}', [UserLocationController::class, 'show']);
+        Route::put('/user/locations/{type}', [UserLocationController::class, 'update']);
+        Route::delete('/user/locations/{type}', [UserLocationController::class, 'destroy']);
 
         // Activity
         Route::get('/user/activity', [UserAuthLogController::class, 'index']);

@@ -47,9 +47,9 @@ class User extends Authenticatable implements MustVerifyEmail
         return $this->hasMany(UserNote::class);
     }
 
-    public function city(): HasOne
+    public function locations(): HasMany
     {
-        return $this->hasOne(UserCity::class);
+        return $this->hasMany(UserLocation::class);
     }
 
     public function authLogs(): HasMany

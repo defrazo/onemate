@@ -12,7 +12,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'last_name',
     'birth_date',
     'gender',
-    'location',
     'phones',
     'additional_emails',
     'theme',
