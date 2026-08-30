@@ -1,1 +1,1 @@
-export { cleanup, key } from './utils';
+export { cacheKey, cleanupCache } from './utils';

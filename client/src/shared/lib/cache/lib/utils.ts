@@ -1,27 +1,19 @@
 import { LS_PREFIX } from '@/shared/lib/storage';
 
-import type { Cache } from '../model';
+import type { Cache, CacheSection } from '../model';
 
-export const key = (id: string) => `${LS_PREFIX}cache_${id}`;
+export const cacheKey = (id: string): string => `${LS_PREFIX}cache_${id}`;
 
-export const cleanup = (cache: Cache): Cache => {
-	const out: Cache = { ts: cache.ts };
+const cleanupSection = (section?: CacheSection): CacheSection | undefined => {
+	if (!section) return undefined;
 
-	if (cache.ui) {
-		const ui: NonNullable<Cache['ui']> = {};
-		if (cache.ui.widgets_sequence !== undefined) ui.widgets_sequence = cache.ui.widgets_sequence;
-		if (cache.ui.widgets_slots !== undefined) ui.widgets_slots = cache.ui.widgets_slots;
-		if (cache.ui.avatar_url !== undefined) ui.avatar_url = cache.ui.avatar_url;
-		if (cache.ui.weather !== undefined) ui.weather = cache.ui.weather;
-		if (Object.keys(ui).length) out.ui = ui;
-	}
+	const entries = Object.entries(section).filter(([, value]) => value !== undefined);
+	return entries.length ? Object.fromEntries(entries) : undefined;
+};
 
-	if (cache.auth) {
-		const auth: NonNullable<Cache['auth']> = {};
-		if (cache.auth.user_id !== undefined) auth.user_id = cache.auth.user_id;
-		if (cache.auth.deleted_at !== undefined) auth.deleted_at = cache.auth.deleted_at;
-		if (Object.keys(auth).length) out.auth = auth;
-	}
+export const cleanupCache = (cache: Cache): Cache => {
+	const ui = cleanupSection(cache.ui);
+	const auth = cleanupSection(cache.auth);
 
-	return out;
+	return { ts: cache.ts, ...(ui && { ui }), ...(auth && { auth }) };
 };

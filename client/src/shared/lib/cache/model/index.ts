@@ -1,3 +1,2 @@
-export { clearCache, readCache, writeCache } from './cache';
-export { cache } from './cacheCommands';
-export type { Cache, Patch } from './types';
+export { clearCache, readCache, writeCache } from '../api/cache';
+export type { Cache, CachePatch, CacheSection } from './types';
