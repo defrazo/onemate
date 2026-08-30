@@ -1,3 +1,3 @@
-export { DeviceProviderApi } from './deviceProviderApi';
-export { DeviceProviderDemo } from './deviceProviderDemo';
-export { DeviceProviderRouting } from './deviceProviderRouting';
+export { DeviceProviderDemo } from './device.provider.demo';
+export { DeviceProviderApi } from './device.provider.real';
+export { DeviceProviderRouting } from './device.provider.routing';

@@ -2,7 +2,7 @@ import { storage } from '@/shared/lib/storage';
 import { generateUUID, key, randomNumber, toPlain } from '@/shared/lib/utils';
 
 import type { ActivityLog, IActivityRepo } from '../../model';
-import { fakeLog } from '../demo';
+import { fakeLog } from '..';
 
 export class ActivityRepoDemo implements IActivityRepo {
 	async loadActivityLog(id: string): Promise<ActivityLog[]> {

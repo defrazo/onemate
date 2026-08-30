@@ -1,11 +1,8 @@
+import { API_URLS } from '@/shared/lib/constants';
+import { ApiError, EmptyResultError } from '@/shared/lib/errors';
 import { generateUUID, randomNumber } from '@/shared/lib/utils';
 
-import type { ActivityLog } from '../../model';
-
-type FakeLocation = {
-	city: string;
-	region: string;
-};
+import type { ActivityLog } from '../model';
 
 export const fakeLog = (opts: { createdAtMs: number; id: string }): ActivityLog => {
 	const ip = fakeIP();
@@ -29,7 +26,7 @@ export const fakeIP = (): string => {
 	return `${randPubA()}.${randomNumber(0, 255)}.${randomNumber(0, 255)}.${randomNumber(1, 254)}`;
 };
 
-export const fakeLocation = (): FakeLocation => {
+export const fakeLocation = (): { city: string; region: string } => {
 	return CITIES[Math.floor(Math.random() * CITIES.length)];
 };
 
@@ -51,3 +48,24 @@ const CITIES = [
 	{ city: 'Вашингтон', region: 'District of Columbia' },
 	{ city: 'Барселона', region: 'Catalonia' },
 ];
+
+export const fetchIP = async (): Promise<string> => {
+	const maxAttempts = 3;
+
+	for (let attempt = 1; attempt <= maxAttempts; attempt++) {
+		try {
+			const response = await fetch(API_URLS.IPIFY);
+			if (!response.ok) throw new ApiError();
+
+			const data = await response.json();
+			if (!data?.ip || typeof data.ip !== 'string') throw new EmptyResultError('Не удалось определить IP-адрес');
+
+			return data.ip;
+		} catch (error) {
+			if (attempt === maxAttempts) throw error;
+			await new Promise((resolve) => setTimeout(resolve, 500));
+		}
+	}
+
+	throw new EmptyResultError('Не удалось определить IP-адрес');
+};

@@ -1,7 +1,7 @@
 import { getBrowserInfo } from '@/shared/lib/utils';
 
 import type { DeviceData, IDeviceProvider } from '../../model';
-import { fakeIP, fakeLocation } from '../demo';
+import { fakeIP, fakeLocation } from '..';
 
 export class DeviceProviderDemo implements IDeviceProvider {
 	async getDeviceData(): Promise<DeviceData> {
