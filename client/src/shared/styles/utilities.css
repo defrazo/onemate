@@ -36,4 +36,14 @@
 		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		transform-origin: 50% 40%;
 	}
+
+	/* Скрыть скроллбар */
+	.hide-scrollbar {
+		scrollbar-width: none;
+		-ms-overflow-style: none;
+	}
+
+	.hide-scrollbar::-webkit-scrollbar {
+		display: none;
+	}
 }
