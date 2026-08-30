@@ -1,7 +1,7 @@
 import type { AnchorHTMLAttributes, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {

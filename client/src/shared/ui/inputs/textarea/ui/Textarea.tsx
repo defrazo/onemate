@@ -1,6 +1,6 @@
 import type { TextareaHTMLAttributes } from 'react';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {

@@ -1,7 +1,7 @@
 import type { ButtonHTMLAttributes, MouseEvent, ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 import { Preloader } from '@/shared/ui';
 

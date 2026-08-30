@@ -1,6 +1,6 @@
 import type { InputHTMLAttributes, ReactNode } from 'react';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {

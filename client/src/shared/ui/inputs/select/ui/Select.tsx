@@ -1,7 +1,7 @@
 import type { SelectHTMLAttributes } from 'react';
 
 import { IconDown } from '@/shared/assets/icons';
-import { getComponentStyles, sizes, variants } from '@/shared/lib/ui-kit';
+import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface SelectOption {
