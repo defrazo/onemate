@@ -1,17 +1,16 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import { createDefaultAuthForm } from '@/shared/lib/constants';
+import { type AuthData, type AuthType, createDefaultAuthForm } from '.';
 
-import type { AuthData, AuthType } from '.';
+const CONFIRM_TIMEOUT = 120;
 
 export class AuthFormStore {
 	private interval: ReturnType<typeof setInterval> | null = null;
-	private inited: boolean = false;
 
 	authForm: AuthData = createDefaultAuthForm();
-	login: string = '';
-	resetMode: boolean = false;
-	timer: number = 0;
+	login = '';
+	resetMode = false;
+	timer = 0;
 
 	get username(): string {
 		return this.authForm.username;
@@ -42,19 +41,19 @@ export class AuthFormStore {
 	}
 
 	get isLogin(): boolean {
-		return this.authForm.authType === 'login';
+		return this.authType === 'login';
 	}
 
 	get isRegister(): boolean {
-		return this.authForm.authType === 'register';
+		return this.authType === 'register';
 	}
 
 	get isConfirm(): boolean {
-		return this.authForm.authType === 'confirm';
+		return this.authType === 'confirm';
 	}
 
 	get isReset(): boolean {
-		return this.authForm.authType === 'reset';
+		return this.authType === 'reset';
 	}
 
 	update<K extends keyof AuthData>(field: K, value: AuthData[K]): void {
@@ -70,51 +69,69 @@ export class AuthFormStore {
 	}
 
 	switchToConfirm(email: string): void {
-		this.update('email', email);
-		this.update('authType', 'confirm');
+		this.authForm.email = email;
+		this.authForm.authType = 'confirm';
+
 		this.startTimer();
 	}
 
 	startTimer(): void {
-		this.clearInterval();
-		this.timer = 120;
+		this.clearTimer();
+		this.timer = CONFIRM_TIMEOUT;
+
 		this.interval = setInterval(() => {
 			runInAction(() => {
 				this.timer = Math.max(0, this.timer - 1);
-				if (this.timer === 0) this.clearInterval();
+				if (this.timer === 0) this.clearTimer();
 			});
 		}, 1000);
 	}
 
+	private clearTimer(): void {
+		if (!this.interval) return;
+
+		clearInterval(this.interval);
+		this.interval = null;
+	}
+
 	constructor() {
-		makeAutoObservable<this, 'inited' | 'interval'>(this, {
-			inited: false,
-			interval: false,
+		makeObservable(this, {
+			authForm: observable,
+			login: observable,
+			resetMode: observable,
+			timer: observable,
+
+			username: computed,
+			password: computed,
+			passwordConfirm: computed,
+			email: computed,
+			inviteCode: computed,
+			privacyAccepted: computed,
+			authType: computed,
+			isLogin: computed,
+			isRegister: computed,
+			isConfirm: computed,
+			isReset: computed,
+
+			update: action,
+			setLogin: action,
+			setResetMode: action,
+			switchToConfirm: action,
+			startTimer: action,
+			reset: action,
 		});
 	}
 
-	init(): void {
-		if (this.inited) return;
-		this.inited = true;
-	}
-
 	destroy(): void {
-		this.clearInterval();
-		this.inited = false;
+		this.clearTimer();
 	}
 
 	reset(): void {
+		this.clearTimer();
+
 		this.authForm = createDefaultAuthForm();
 		this.login = '';
-		this.timer = 0;
 		this.resetMode = false;
-		this.clearInterval();
-	}
-
-	private clearInterval(): void {
-		if (this.interval) {
-			clearInterval(this.interval);
-			this.interval = null;
-		}
+		this.timer = 0;
 	}
 }

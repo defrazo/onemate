@@ -27,13 +27,11 @@ export const authApi = {
 
 	async register(payload: RegisterPayload): Promise<void> {
 		await csrf();
-
 		await api.post('/register', payload);
 	},
 
 	async login(payload: LoginPayload): Promise<AuthResponse> {
 		await csrf();
-
 		const { data } = await api.post<AuthResponse>('/login', payload);
 		return data;
 	},
@@ -50,25 +48,21 @@ export const authApi = {
 
 	async logout(): Promise<void> {
 		await csrf();
-
 		await api.post('/logout');
 	},
 
 	async resendVerification(email: string): Promise<void> {
 		await csrf();
-
 		await api.post('/email/resend', { email: email.trim().toLowerCase() });
 	},
 
 	async forgotPassword(payload: ForgotPasswordPayload): Promise<void> {
 		await csrf();
-
 		await api.post('/forgot-password', { email: payload.email.trim().toLowerCase() });
 	},
 
 	async resetPassword(payload: ResetPasswordPayload): Promise<void> {
 		await csrf();
-
 		await api.post('/reset-password', { ...payload, email: payload.email.trim().toLowerCase() });
 	},
 };

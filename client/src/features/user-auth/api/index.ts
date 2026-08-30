@@ -1,3 +1,4 @@
+export { authApi } from './auth';
 export type {
 	AuthResponse,
 	AuthSessionResponse,
