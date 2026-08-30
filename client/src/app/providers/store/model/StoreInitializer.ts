@@ -9,13 +9,9 @@ export class StoreInitializer {
 	private static readonly REACTIVE_STORES: ReadonlyArray<InitKeys> = [
 		'themeStore',
 		'userProfileStore',
-		'profileStore',
-		'accountStore',
-		'cityStore',
-		'locationStore',
 		'deviceActivityStore',
-		'notesStore',
 		'weatherStore',
+		'notesStore',
 		'currencyStore',
 	] as const;
 
