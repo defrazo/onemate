@@ -1,5 +1,5 @@
 import type { UserStore } from '@/entities/user';
-import type { Theme } from '@/features/theme-switcher';
+import type { Theme } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
 import type { IUserProfileRepo, UserProfile } from '../../model';

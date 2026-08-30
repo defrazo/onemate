@@ -1,5 +1,5 @@
-import type { Theme } from '@/features/theme-switcher';
 import { api } from '@/shared/api';
+import type { Theme } from '@/shared/config';
 
 import type { IUserProfileRepo, UserProfile } from '../../model';
 

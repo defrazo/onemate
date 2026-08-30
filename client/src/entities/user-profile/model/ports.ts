@@ -1,14 +1,12 @@
-import type { Theme } from '@/features/theme-switcher';
+import type { Theme } from '@/shared/config';
 
 import type { Gender, UserProfile } from '.';
 
-export interface IUserProfileAccountPort {
+export interface IBaseUserProfilePort {
 	readonly isReady: boolean;
-	loadProfile(): Promise<void>;
 }
 
-export interface IUserProfileProfilePort {
-	readonly isReady: boolean;
+export interface IUserProfileProfilePort extends IBaseUserProfilePort {
 	readonly firstName: string;
 	readonly lastName: string;
 	readonly birthYear: string;
@@ -17,13 +15,13 @@ export interface IUserProfileProfilePort {
 	readonly gender: Gender;
 	readonly phone: string[];
 	readonly email: string[];
-	loadProfile(): Promise<void>;
+
 	updateProfile(profile: UserProfile): Promise<void>;
 }
 
-export interface IUserProfileThemePort {
-	readonly isReady: boolean;
+export interface IUserProfileThemePort extends IBaseUserProfilePort {
 	readonly theme: Theme;
+
 	updateTheme(theme: Theme): Promise<void>;
 }
 

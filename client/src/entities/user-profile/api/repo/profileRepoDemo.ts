@@ -1,4 +1,4 @@
-import type { Theme } from '@/features/theme-switcher';
+import type { Theme } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
