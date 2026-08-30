@@ -15,14 +15,7 @@ export type ToastOptions = {
 	onClick?: () => void;
 };
 
-export interface ToastProps {
-	toastId: string | number;
-	type: NotifyType;
-	message: string;
-	options?: ToastOptions;
-}
-
-export interface Notification {
+export type Notification = {
 	message: string;
 	type: NotifyType;
-}
+};

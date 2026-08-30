@@ -4,7 +4,7 @@ import { IconError, IconInfo, IconSuccess, IconWarning } from '@/shared/assets/i
 import { cn } from '@/shared/lib/utils';
 
 import { iconColor, leftBorder } from '../lib';
-import type { ToastProps } from '../model';
+import type { NotifyType, ToastOptions } from '../model';
 
 const iconMap = {
 	success: <IconSuccess />,
@@ -12,6 +12,13 @@ const iconMap = {
 	warning: <IconWarning />,
 	info: <IconInfo />,
 };
+
+interface ToastProps {
+	toastId: string | number;
+	type: NotifyType;
+	message: string;
+	options?: ToastOptions;
+}
 
 export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 	const Icon = iconMap[type];
