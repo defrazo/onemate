@@ -10,20 +10,11 @@ const ThemeSwitcher = () => {
 	const alt = isDark ? 'Светлая тема' : 'Темная тема';
 	const image = isDark ? Day : Night;
 	const title = isDark ? 'Активировать светлую тему' : 'Активировать темную тему';
-	const handleToogle = () => themeStore.toggleTheme();
 
 	return (
-		<div className="size-7">
-			<img
-				alt={alt}
-				className="cursor-pointer"
-				decoding="async"
-				loading="lazy"
-				src={image}
-				title={title}
-				onClick={handleToogle}
-			/>
-		</div>
+		<button className="size-7 cursor-pointer" title={title} type="button" onClick={() => themeStore.toggleTheme()}>
+			<img alt={alt} decoding="async" src={image} />
+		</button>
 	);
 };
 
