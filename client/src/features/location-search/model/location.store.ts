@@ -74,8 +74,6 @@ export class LocationSearchStore extends AsyncStore {
 			const city = await fetchCityByCoordinates(position.coords.latitude, position.coords.longitude);
 			if (!city) throw new Error('Город не найден по координатам');
 
-			// this.selectCity(city);
-
 			return city;
 		});
 	}

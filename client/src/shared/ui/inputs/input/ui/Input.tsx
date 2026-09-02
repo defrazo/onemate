@@ -31,8 +31,8 @@ const Input = ({
 	};
 
 	const iconPadding = {
-		leftPadding: leftIcon ? 'pl-10' : '',
-		rightPadding: rightIcon ? 'pr-10' : '',
+		leftPadding: leftIcon ? 'pl-11.5' : '',
+		rightPadding: rightIcon ? 'pr-11.5' : '',
 	};
 
 	return (

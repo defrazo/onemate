@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Logo } from '@/shared/assets/images';
+import { IconLogo } from '@/shared/assets/images';
 import { usePageTitle, useRemainingTime } from '@/shared/lib/hooks';
 import { msFromDays } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
@@ -10,16 +10,17 @@ import { useDeletedAccount } from '../model';
 
 const DeletedAccountPage = () => {
 	usePageTitle('Аккаунт удален');
-	const { userProfileStore, userStore } = useStore();
 
+	const { userStore } = useStore();
 	const { handleRestore, handleExit } = useDeletedAccount();
+
 	const { days } = useRemainingTime(userStore.deletedAt, msFromDays(30));
 
 	return (
 		<div className="mx-4 flex min-h-screen flex-col items-center justify-center gap-2">
 			<div className="core-card core-base flex flex-col items-center gap-2 shadow-(--shadow) md:w-lg">
 				<div className="flex flex-col items-center gap-2 select-none">
-					<img alt="Логотип" className="size-20" decoding="async" loading="lazy" src={Logo} />
+					<img alt="Логотип" className="size-20" decoding="async" loading="lazy" src={IconLogo} />
 					<h1 className="core-header">Аккаунт OneMate удален</h1>
 				</div>
 				<p className="mb-1 text-center text-sm">

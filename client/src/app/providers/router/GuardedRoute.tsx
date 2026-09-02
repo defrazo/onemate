@@ -8,7 +8,7 @@ import { useStore } from '../store';
 export const GuardedRoute = observer(() => {
 	const { authStore, userStore } = useStore();
 
-	if (authStore.isLoading) return <PreloaderExt />;
+	if (authStore.isInitializing) return <PreloaderExt />;
 
 	if (!userStore.id) return <Navigate replace to="/" />;
 

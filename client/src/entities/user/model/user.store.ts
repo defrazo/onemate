@@ -113,7 +113,6 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 
 		makeObservable<this, 'reset'>(this, {
 			user: observable,
-			lastId: observable,
 
 			id: computed,
 			username: computed,

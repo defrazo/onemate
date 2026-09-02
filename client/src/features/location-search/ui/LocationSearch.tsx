@@ -26,10 +26,9 @@ const LocationSearch = ({ value, onSelect, validate }: LocationSearchProps) => {
 			await onSelect(city);
 
 			store.selectCity(city);
-
 			notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
-		} catch (error) {
-			notifyStore.setNotice(error instanceof Error ? error.message : 'Произошла ошибка', 'error');
+		} catch {
+			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}
 	};
 
@@ -42,10 +41,9 @@ const LocationSearch = ({ value, onSelect, validate }: LocationSearchProps) => {
 			await onSelect(city);
 
 			store.selectCity(city);
-
 			notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
-		} catch (error) {
-			notifyStore.setNotice(error instanceof Error ? error.message : 'Произошла ошибка', 'error');
+		} catch {
+			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}
 	};
 
@@ -81,7 +79,6 @@ const LocationSearch = ({ value, onSelect, validate }: LocationSearchProps) => {
 				onChange={(e) => store.setQuery(e.target.value)}
 				onFocus={() => store.setFocused(true)}
 			/>
-
 			<SuggestionList
 				items={store.searchResults}
 				renderItem={(city) => (
