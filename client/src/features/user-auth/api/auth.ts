@@ -53,7 +53,7 @@ export const authApi = {
 
 	async resendVerification(email: string): Promise<void> {
 		await csrf();
-		await api.post('/email/resend', { email: email.trim().toLowerCase() });
+		await api.post('/email/verify/resend', { email: email.trim().toLowerCase() });
 	},
 
 	async forgotPassword(payload: ForgotPasswordPayload): Promise<void> {

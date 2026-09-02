@@ -1,13 +1,9 @@
-// import { useTranslation } from 'react-i18next';
-
 interface PrivacyConsentProps {
 	checked: boolean;
 	onChange: (value: boolean) => void;
 }
 
 export const PrivacyConsent = ({ checked, onChange }: PrivacyConsentProps) => {
-	// const { t } = useTranslation('auth');
-
 	return (
 		<label className="mx-auto mt-1 flex w-full items-center justify-center gap-3 text-xs text-(--color-secondary) select-none md:mt-0 md:text-sm">
 			<input
@@ -18,14 +14,14 @@ export const PrivacyConsent = ({ checked, onChange }: PrivacyConsentProps) => {
 				onChange={(e) => onChange(e.target.checked)}
 			/>
 			<span>
-				{/* {t(($) => $.common.privacy.part1)} */}
+				Я даю согласие на{' '}
 				<a
 					className="text-(--accent-primary) hover:underline"
-					href="/privacy"
+					href="/privacy-policy"
 					rel="noopener noreferrer"
 					target="_blank"
 				>
-					{/* {t(($) => $.common.privacy.part2)} */}
+					обработку персональных данных
 				</a>
 			</span>
 		</label>

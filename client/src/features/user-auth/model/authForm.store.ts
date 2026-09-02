@@ -1,16 +1,11 @@
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable, observable } from 'mobx';
 
 import { type AuthData, type AuthType, createDefaultAuthForm } from '.';
 
-const CONFIRM_TIMEOUT = 120;
-
 export class AuthFormStore {
-	private interval: ReturnType<typeof setInterval> | null = null;
-
 	authForm: AuthData = createDefaultAuthForm();
 	login = '';
 	resetMode = false;
-	timer = 0;
 
 	get username(): string {
 		return this.authForm.username;
@@ -32,7 +27,7 @@ export class AuthFormStore {
 		return this.authForm.inviteCode;
 	}
 
-	get privacyAccepted(): boolean {
+	get isPrivacyAccepted(): boolean {
 		return this.authForm.privacyAccepted;
 	}
 
@@ -52,8 +47,8 @@ export class AuthFormStore {
 		return this.authType === 'confirm';
 	}
 
-	get isReset(): boolean {
-		return this.authType === 'reset';
+	get isForgot(): boolean {
+		return this.authType === 'forgot';
 	}
 
 	update<K extends keyof AuthData>(field: K, value: AuthData[K]): void {
@@ -64,34 +59,24 @@ export class AuthFormStore {
 		this.login = value;
 	}
 
-	setResetMode(value: boolean): void {
-		this.resetMode = value;
+	switchToLogin(): void {
+		this.authForm.authType = 'login';
+		this.resetMode = false;
 	}
 
-	switchToConfirm(email: string): void {
-		this.authForm.email = email;
+	switchToRegister(): void {
+		this.authForm.authType = 'register';
+		this.resetMode = false;
+	}
+
+	switchToForgot(): void {
+		this.authForm.authType = 'forgot';
+		this.resetMode = true;
+	}
+
+	switchToConfirm(email?: string): void {
+		if (email) this.authForm.email = email;
 		this.authForm.authType = 'confirm';
-
-		this.startTimer();
-	}
-
-	startTimer(): void {
-		this.clearTimer();
-		this.timer = CONFIRM_TIMEOUT;
-
-		this.interval = setInterval(() => {
-			runInAction(() => {
-				this.timer = Math.max(0, this.timer - 1);
-				if (this.timer === 0) this.clearTimer();
-			});
-		}, 1000);
-	}
-
-	private clearTimer(): void {
-		if (!this.interval) return;
-
-		clearInterval(this.interval);
-		this.interval = null;
 	}
 
 	constructor() {
@@ -99,39 +84,32 @@ export class AuthFormStore {
 			authForm: observable,
 			login: observable,
 			resetMode: observable,
-			timer: observable,
 
 			username: computed,
 			password: computed,
 			passwordConfirm: computed,
 			email: computed,
 			inviteCode: computed,
-			privacyAccepted: computed,
+			isPrivacyAccepted: computed,
 			authType: computed,
 			isLogin: computed,
 			isRegister: computed,
 			isConfirm: computed,
-			isReset: computed,
+			isForgot: computed,
 
 			update: action,
 			setLogin: action,
-			setResetMode: action,
+			switchToLogin: action,
+			switchToRegister: action,
+			switchToForgot: action,
 			switchToConfirm: action,
-			startTimer: action,
 			reset: action,
 		});
 	}
 
-	destroy(): void {
-		this.clearTimer();
-	}
-
 	reset(): void {
-		this.clearTimer();
-
 		this.authForm = createDefaultAuthForm();
 		this.login = '';
 		this.resetMode = false;
-		this.timer = 0;
 	}
 }

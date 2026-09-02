@@ -1,4 +1,4 @@
-export type AuthType = 'login' | 'register' | 'confirm' | 'reset';
+export type AuthType = 'login' | 'register' | 'confirm' | 'forgot';
 
 export type AuthData = {
 	username: string;
@@ -8,9 +8,4 @@ export type AuthData = {
 	inviteCode: string;
 	privacyAccepted: boolean;
 	authType: AuthType;
-};
-
-export type PasswordRule = {
-	label: string;
-	test: (pass: string) => boolean;
 };

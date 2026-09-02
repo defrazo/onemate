@@ -2,12 +2,12 @@ import { action, computed, makeObservable, observable } from 'mobx';
 
 import type { IUserAuthPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
-import { validateEmail, validatePasswords, validateUsername } from '@/shared/lib/validators';
 
 import { authApi } from '../api';
 import type { IAuthDevicePort } from '.';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
+	isInitializing = true;
 	lastAuthTime = 0;
 
 	get isReady(): boolean {
@@ -59,23 +59,14 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	): Promise<boolean> {
 		if (this.isLoading) return false;
 
-		const normalizedUsername = username.trim();
-		const normalizedEmail = email.trim().toLowerCase();
-
-		await validateUsername(normalizedUsername);
-		await validateEmail(normalizedEmail);
-		await validatePasswords(password, passwordConfirm);
-
-		if (!privacyAccepted) throw new Error('Необходимо принять политику конфиденциальности');
-
 		return this.withLoading(async () => {
 			await authApi.register({
-				username: normalizedUsername,
-				email: normalizedEmail,
+				username: username.trim(),
+				email: email.trim().toLowerCase(),
 				password,
 				password_confirmation: passwordConfirm,
 				invite_token: inviteToken,
-				privacy_accepted: true,
+				privacy_accepted: privacyAccepted,
 			});
 
 			return true;
@@ -85,12 +76,8 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	async resendConfirmation(email: string): Promise<boolean> {
 		if (this.isLoading) return false;
 
-		const normalizedEmail = email.trim().toLowerCase();
-
-		await validateEmail(normalizedEmail);
-
 		return this.withLoading(async () => {
-			await authApi.resendVerification(normalizedEmail);
+			await authApi.resendVerification(email.trim().toLowerCase());
 			return true;
 		});
 	}
@@ -98,12 +85,8 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	async forgotPassword(email: string): Promise<boolean> {
 		if (this.isLoading) return false;
 
-		const normalizedEmail = email.trim().toLowerCase();
-
-		await validateEmail(normalizedEmail);
-
 		return this.withLoading(async () => {
-			await authApi.forgotPassword({ email: normalizedEmail });
+			await authApi.forgotPassword({ email: email.trim().toLowerCase() });
 			return true;
 		});
 	}
@@ -111,14 +94,9 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	async resetPassword(email: string, token: string, password: string, passwordConfirm: string): Promise<boolean> {
 		if (this.isLoading) return false;
 
-		const normalizedEmail = email.trim().toLowerCase();
-
-		await validateEmail(normalizedEmail);
-		await validatePasswords(password, passwordConfirm);
-
 		return this.withLoading(async () => {
 			await authApi.resetPassword({
-				email: normalizedEmail,
+				email: email.trim().toLowerCase(),
 				token,
 				password,
 				password_confirmation: passwordConfirm,
@@ -138,16 +116,14 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	}
 
 	private async checkAuth(): Promise<void> {
-		await this.withLoading(async () => {
-			const { authenticated, user } = await authApi.getSession();
+		const { authenticated, user } = await authApi.getSession();
 
-			if (!authenticated || !user) {
-				this.userStore.setUser(null);
-				return;
-			}
+		if (!authenticated || !user) {
+			this.userStore.setUser(null);
+			return;
+		}
 
-			this.userStore.setUser(user);
-		});
+		this.userStore.setUser(user);
 	}
 
 	private updateAuthTime(): void {
@@ -158,6 +134,7 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		super();
 
 		makeObservable<this, 'updateAuthTime' | 'reset'>(this, {
+			isInitializing: observable,
 			lastAuthTime: observable,
 			isReady: computed,
 
@@ -170,7 +147,11 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		if (this.inited) return;
 		this.inited = true;
 
-		await this.checkAuth();
+		try {
+			await this.checkAuth();
+		} finally {
+			this.isInitializing = false;
+		}
 	}
 
 	protected reset(): void {
