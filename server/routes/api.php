@@ -38,6 +38,9 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->middleware('throttle:5,1');
 
 // Email verification
+Route::post('/email/verify/resend', [EmailVerificationController::class, 'resendVerification'])
+    ->middleware('throttle:3,1');
+
 Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verifyEmail'])
     ->middleware(['signed:relative', 'throttle:6,1'])
     ->name('verification.verify');
@@ -58,9 +61,6 @@ Route::middleware('auth:sanctum')->group(function () {
         // Account
         Route::patch('/user/email', [UserAccountController::class, 'updateEmail'])
             ->middleware('throttle:5,1');
-
-        Route::post('/email/resend', [EmailVerificationController::class, 'resendVerification'])
-            ->middleware('throttle:3,1');
 
         Route::delete('/user/email/pending', [UserAccountController::class, 'cancelPendingEmail']);
 
