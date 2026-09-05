@@ -1,1 +1,1 @@
-export { default, PreloaderExt } from './ui';
+export { default, PreloaderExt, PreloaderMini } from './ui';
