@@ -23,29 +23,34 @@ class UserProfileController extends Controller
     public function update(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'avatar_url' => ['nullable', 'string'],
-            'first_name' => ['nullable', 'string', 'max:255'],
-            'last_name' => ['nullable', 'string', 'max:255'],
-            'birth_date' => ['nullable', 'date'],
+            'avatar_url' => ['sometimes', 'nullable', 'string'],
+
+            'first_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'last_name' => ['sometimes', 'nullable', 'string', 'max:255'],
+            'birth_date' => ['sometimes', 'nullable', 'date'],
             'gender' => [
+                'sometimes',
                 'nullable',
                 'string',
                 Rule::in(['male', 'female']),
             ],
 
-            'phones' => ['nullable', 'array'],
+            'phones' => ['sometimes', 'nullable', 'array'],
             'phones.*' => ['string'],
-            'additional_emails' => ['nullable', 'array'],
+
+            'additional_emails' => ['sometimes', 'nullable', 'array'],
             'additional_emails.*' => ['email'],
+
             'theme' => [
-                'required',
+                'sometimes',
                 'string',
                 Rule::in(['light', 'dark']),
             ],
 
-            'widgets_sequence' => ['nullable', 'array'],
+            'widgets_sequence' => ['sometimes', 'nullable', 'array'],
             'widgets_sequence.*' => ['string'],
-            'widgets_slots' => ['nullable', 'array'],
+
+            'widgets_slots' => ['sometimes', 'nullable', 'array'],
             'widgets_slots.*' => ['string'],
         ]);
 
@@ -53,8 +58,7 @@ class UserProfileController extends Controller
             ->profile()
             ->firstOrCreate();
 
-        $profile->fill($data);
-        $profile->save();
+        $profile->update($data);
 
         return response()->json([
             'profile' => $profile,

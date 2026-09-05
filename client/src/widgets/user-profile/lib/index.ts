@@ -1,1 +1,1 @@
-export { genderOptions, getAvailableDays } from './utils';
+export { genderOptions, getAvailableDays, normalizeArray, withEmptySlot } from './utils';

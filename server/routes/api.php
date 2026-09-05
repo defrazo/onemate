@@ -59,6 +59,9 @@ Route::middleware('auth:sanctum')->group(function () {
     // Active only (not deleted)
     Route::middleware(EnsureAccountIsActive::class)->group(function () {
         // Account
+        Route::patch('/user/username', [UserAccountController::class, 'updateUsername'])
+            ->middleware('throttle:5,1');
+
         Route::patch('/user/email', [UserAccountController::class, 'updateEmail'])
             ->middleware('throttle:5,1');
 

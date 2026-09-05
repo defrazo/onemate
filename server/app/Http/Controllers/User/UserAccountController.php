@@ -17,6 +17,29 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class UserAccountController extends Controller
 {
+    public function updateUsername(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'username' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                Rule::unique('users', 'username')->ignore($user->id),
+            ],
+        ]);
+
+        $user->update([
+            'username' => $validated['username'],
+        ]);
+
+        return response()->json([
+            'user' => $user->fresh(),
+        ]);
+    }
+
     public function updatePassword(Request $request): JsonResponse
     {
         $data = $request->validate([

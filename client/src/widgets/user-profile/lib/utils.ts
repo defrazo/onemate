@@ -13,3 +13,12 @@ export const genderOptions: GenderOption[] = [
 	{ value: 'female', label: 'Женский' },
 	{ value: '', label: 'Не указывать' },
 ];
+
+export const normalizeArray = (values: string[]): string[] => values.map((value) => value.trim()).filter(Boolean);
+
+export const withEmptySlot = (values: string[], max: number): string[] => {
+	const result = [...values];
+	if (result.length < max && (result.length === 0 || result[result.length - 1].trim() !== '')) result.push('');
+
+	return result.length ? result : [''];
+};
