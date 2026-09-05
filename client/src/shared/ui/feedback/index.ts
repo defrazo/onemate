@@ -3,5 +3,5 @@ export { default as ConfirmDialog } from './confirm-dialog';
 export { default as ErrorFallback } from './error-fallback';
 export { default as LoadFallback } from './load-fallback';
 export { default as MobileBlocker } from './mobile-blocker';
-export { default as Preloader, PreloaderExt } from './preloader';
+export { default as Preloader, PreloaderExt, PreloaderMini } from './preloader';
 export { default as UnderConstruction } from './under-construction';

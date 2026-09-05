@@ -33,6 +33,8 @@ const Radio = ({
 		<div className={cn('flex gap-2', className)}>
 			{options.map((option) => {
 				const isDisabled = props.disabled || option.disabled;
+				const isChecked = value === option.value;
+
 				const styles = getComponentStyles({
 					variant,
 					size,
@@ -51,21 +53,31 @@ const Radio = ({
 						)}
 					>
 						<input
-							checked={value === option.value}
-							className={cn(
-								styles,
-								'rounded-full border border-solid',
-								value === option.value
-									? 'group-hover:border-none'
-									: 'group-hover:border-(--accent-default)'
-							)}
+							checked={isChecked}
+							className="sr-only"
 							disabled={isDisabled}
 							type="radio"
 							value={option.value ?? ''}
 							onChange={onChange}
 							{...props}
 						/>
-						<span className={cn(styles, 'flex w-fit items-center group-hover:text-(--accent-default)')}>
+
+						<span
+							className={cn(
+								styles,
+								'flex shrink-0 items-center justify-center rounded-full border border-solid',
+								isChecked ? 'border-(--accent-default)' : 'group-hover:border-(--accent-default)'
+							)}
+						>
+							<span
+								className={cn(
+									'size-2 rounded-full bg-(--accent-default) transition-opacity',
+									isChecked ? 'opacity-100' : 'opacity-0'
+								)}
+							/>
+						</span>
+
+						<span className="flex w-fit items-center group-hover:text-(--accent-default)">
 							{option.label}
 						</span>
 					</label>

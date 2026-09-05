@@ -18,7 +18,11 @@ const WeatherWidget = () => {
 				</Tooltip>
 			</div>
 			<div className="relative flex flex-1 flex-col justify-between">
-				<LocationSearch value={weatherStore.location} onSelect={(city) => weatherStore.setLocation(city)} />
+				<LocationSearch
+					showGeolocation
+					value={weatherStore.location}
+					onSelect={(city) => weatherStore.setLocation(city)}
+				/>
 				{weatherStore.isLoading && !weatherStore.isReady ? (
 					<LoadFallback />
 				) : (

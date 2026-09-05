@@ -13,8 +13,8 @@ const NotesWidget = () => {
 	const handleAdd = () => {
 		try {
 			notesStore.addNote();
-		} catch (error) {
-			notifyStore.setNotice(error instanceof Error ? error.message : 'Не удалось добавить заметку', 'error');
+		} catch {
+			notifyStore.setNotice('Не удалось добавить заметку', 'error');
 		}
 	};
 

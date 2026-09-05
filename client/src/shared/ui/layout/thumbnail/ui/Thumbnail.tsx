@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import { Preloader } from '@/shared/ui/feedback';
+import { PreloaderMini } from '@/shared/ui/feedback';
 
 interface ThumbnailProps {
 	src: string;
@@ -12,13 +12,9 @@ interface ThumbnailProps {
 
 const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: ThumbnailProps) => {
 	return (
-		<div
-			className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}
-			onClick={onClick}
-			onContextMenu={(e) => e.preventDefault()}
-		>
+		<div className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}>
 			{isLoading ? (
-				<Preloader className="size-6 border-3 border-t-(--border-alt)" />
+				<PreloaderMini />
 			) : (
 				<img
 					alt={alt}
@@ -27,6 +23,8 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 					loading="lazy"
 					src={src}
 					title={title}
+					onClick={onClick}
+					onContextMenu={(e) => e.preventDefault()}
 				/>
 			)}
 		</div>
