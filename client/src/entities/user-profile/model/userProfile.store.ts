@@ -9,7 +9,14 @@ import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
 import { userProfileCache, type UserProfileCacheData } from '../lib';
-import type { Gender, IUserProfileProfilePort, IUserProfileRepo, IUserProfileThemePort, UserProfile } from '.';
+import type {
+	Gender,
+	IUserProfileProfilePort,
+	IUserProfileRepo,
+	IUserProfileThemePort,
+	UserProfile,
+	UserProfilePatch,
+} from '.';
 import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from '.';
 
 export class UserProfileStore extends AsyncStore implements IUserProfileProfilePort, IUserProfileThemePort {
@@ -86,11 +93,11 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		return this.profile?.gender ?? '';
 	}
 
-	get phone(): string[] {
+	get phones(): string[] {
 		return this.profile?.phones ?? [''];
 	}
 
-	get email(): string[] {
+	get emails(): string[] {
 		return this.profile?.additional_emails ?? [''];
 	}
 
@@ -142,19 +149,22 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		this.applyLocation(location);
 	}
 
-	async updateProfile(profile: UserProfile): Promise<void> {
+	async updateProfile(patch: UserProfilePatch): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.isLoading) return;
 
 		await this.withLoading(async () => {
-			const normalizedProfile: UserProfile = {
-				...profile,
-				phones: (profile.phones ?? []).map((phone) => phone.trim()).filter(Boolean),
-				additional_emails: (profile.additional_emails ?? []).map((email) => email.trim()).filter(Boolean),
+			const normalized: UserProfilePatch = {
+				...patch,
+				...(patch.phones !== undefined && {
+					phones: patch.phones?.map((phone) => phone.trim()).filter(Boolean) ?? null,
+				}),
+				...(patch.additional_emails !== undefined && {
+					additional_emails: patch.additional_emails?.map((email) => email.trim()).filter(Boolean) ?? null,
+				}),
 			};
 
-			const updated = await this.repo.updateProfile(userId, normalizedProfile);
-
+			const updated = await this.repo.updateProfile(userId, normalized);
 			const nextProfile = { ...createDefaultProfile(), ...updated };
 
 			this.applyProfile(nextProfile);
@@ -322,8 +332,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 			birthMonth: computed,
 			birthDay: computed,
 			gender: computed,
-			phone: computed,
-			email: computed,
+			phones: computed,
+			emails: computed,
 			theme: computed,
 			widgets: computed,
 			slots: computed,

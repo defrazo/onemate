@@ -2,7 +2,7 @@ import type { UserStore } from '@/entities/user';
 import type { Theme } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { IUserProfileRepo, UserProfile } from '../../model';
+import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
 import { ProfileRepoDemo, ProfileRepoLaravel } from '.';
 
 export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo {
@@ -24,9 +24,9 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 		return this.getTargetRepo().loadProfile(id);
 	}
 
-	async updateProfile(id: string, profile: UserProfile): Promise<UserProfile> {
+	async updateProfile(id: string, patch: UserProfilePatch): Promise<UserProfile> {
 		this.checkPermission('profile', 'save');
-		return this.getTargetRepo().updateProfile(id, profile);
+		return this.getTargetRepo().updateProfile(id, patch);
 	}
 
 	async updateAvatar(id: string, avatar: string): Promise<void> {

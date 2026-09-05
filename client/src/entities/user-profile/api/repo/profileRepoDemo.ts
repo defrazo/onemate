@@ -2,7 +2,7 @@ import type { Theme } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { IUserProfileRepo, UserProfile } from '../../model';
+import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
 
 export class ProfileRepoDemo implements IUserProfileRepo {
 	constructor(private readonly loadInitialProfile: (id: string) => Promise<UserProfile>) {}
@@ -16,9 +16,13 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		return structuredClone(initial);
 	}
 
-	async updateProfile(id: string, profile: UserProfile): Promise<UserProfile> {
-		storage.set(key(id, 'profile'), toPlain(profile));
-		return structuredClone(profile);
+	async updateProfile(id: string, patch: UserProfilePatch): Promise<UserProfile> {
+		const profile = await this.loadProfile(id);
+		const updated = { ...profile, ...patch };
+
+		storage.set(key(id, 'profile'), toPlain(updated));
+
+		return structuredClone(updated);
 	}
 
 	async updateAvatar(id: string, avatar: string): Promise<void> {

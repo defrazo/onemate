@@ -7,7 +7,6 @@ export type UserProfile = {
 	last_name: string;
 	birth_date?: string | null;
 	gender: Gender;
-	location?: string | null;
 	phones?: string[] | null;
 	additional_emails?: string[] | null;
 	theme?: 'light' | 'dark';
@@ -18,3 +17,5 @@ export type UserProfile = {
 	created_at?: string;
 	updated_at?: string;
 };
+
+export type UserProfilePatch = Partial<UserProfile>;
