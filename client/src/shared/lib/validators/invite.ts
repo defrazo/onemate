@@ -1,4 +1,6 @@
-export const validateInvite = (invite: string): 'empty' | 'invalid' | 'valid' => {
+import type { ValidationResult } from '.';
+
+export const validateInvite = (invite: string): ValidationResult => {
 	const normalized = invite.trim();
 	if (!normalized) return 'empty';
 

@@ -9,7 +9,7 @@ import { emailCooldown, useAuth } from '../../model';
 import { InputLabel, PasswordInput } from '../components';
 
 export const LoginForm = observer(() => {
-	const { authFormStore, authStore, notifyStore } = useStore();
+	const { authFormStore, authStore, notifyStore, userStore } = useStore();
 	const { checkLogin, checkPassword } = useAuth();
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
@@ -21,7 +21,7 @@ export const LoginForm = observer(() => {
 		try {
 			await authStore.login(authFormStore.login, authFormStore.password);
 
-			notifyStore.setNotice('Вход выполнен', 'success');
+			notifyStore.setNotice(`Добро пожаловать, ${userStore.username}`, 'success');
 		} catch (error: unknown) {
 			if (
 				axios.isAxiosError<{ code?: string; email?: string }>(error) &&

@@ -1,4 +1,6 @@
-export const validatePhone = (phone: string): 'empty' | 'invalid' | 'valid' => {
+import type { ValidationResult } from '.';
+
+export const validatePhone = (phone: string): ValidationResult => {
 	const normalized = phone.trim();
 	if (!normalized) return 'empty';
 

@@ -22,7 +22,7 @@ export const Modal = observer(({ children, onBack, onClose }: ModalProps) => {
 					{onBack && <IconBack className="w-5 cursor-pointer hover:text-(--accent-hover)" onClick={onBack} />}
 					{onClose && (
 						<IconClose
-							className="ml-auto w-5 cursor-pointer hover:text-(--accent-hover)"
+							className="z-10 ml-auto w-5 cursor-pointer hover:text-(--accent-hover)"
 							onClick={onClose}
 						/>
 					)}

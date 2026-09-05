@@ -1,4 +1,6 @@
-export const validateUsername = (username: string): 'empty' | 'invalid' | 'valid' => {
+import type { ValidationResult } from '.';
+
+export const validateUsername = (username: string): ValidationResult => {
 	const normalized = username.trim();
 	if (!normalized) return 'empty';
 

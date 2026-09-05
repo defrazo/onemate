@@ -1,6 +1,6 @@
-import { validateEmail, validateUsername } from '.';
+import { validateEmail, validateUsername, ValidationResult } from '.';
 
-export const validateLogin = (login: string): 'empty' | 'invalid' | 'valid' => {
+export const validateLogin = (login: string): ValidationResult => {
 	const normalized = login.trim();
 	if (!normalized) return 'empty';
 

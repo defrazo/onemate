@@ -1,4 +1,6 @@
-export const validateEmail = (email: string): 'empty' | 'invalid' | 'valid' => {
+import type { ValidationResult } from '.';
+
+export const validateEmail = (email: string): ValidationResult => {
 	const normalized = email.trim();
 	if (!normalized) return 'empty';
 

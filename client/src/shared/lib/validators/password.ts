@@ -1,4 +1,6 @@
-export const validatePassword = (password: string): 'empty' | 'invalid' | 'valid' => {
+import type { ValidationResult } from '.';
+
+export const validatePassword = (password: string): ValidationResult => {
 	if (!password) return 'empty';
 
 	const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)[A-Za-z\d]{8,}$/;
