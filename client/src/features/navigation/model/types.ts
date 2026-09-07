@@ -4,6 +4,8 @@ export type NavItem = {
 	to: string;
 	icon: ReactNode;
 	label: string;
-	order?: number;
-	onClick?: () => void;
+	order: number;
+	mobile?: boolean;
+	external?: boolean;
+	primaryMobile?: boolean;
 };

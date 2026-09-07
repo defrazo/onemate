@@ -1,29 +1,22 @@
-import { Package2 } from 'lucide-react';
-
-import { useStore } from '@/app/providers';
-import { IconDash, IconKanban, IconLogin, IconMain, IconTodo } from '@/shared/assets/icons';
-import AuthContainer from '@/widgets/authorization';
+import {
+	IconAppsFilled,
+	IconLayoutDashboardFilled,
+	IconLayoutKanbanFilled,
+	IconSquareCheckFilled,
+} from '@tabler/icons-react';
 
 import type { NavItem } from '.';
 
-export const getNavItems = (isAuth: boolean): NavItem[] => {
-	const { authFormStore, modalStore } = useStore();
-
-	const openAuth = () => {
-		authFormStore.update('authType', 'login');
-		authFormStore.setResetMode(false);
-		modalStore.setModal(<AuthContainer />);
-	};
-
-	if (isAuth) {
-		return [
-			{ to: '/', icon: <IconMain />, label: 'Главная', order: 1 },
-			{ to: '/dashboard', icon: <IconDash className="size-full" />, label: 'Dashboard', order: 4 },
-			{ to: '/todo', icon: <IconTodo className="size-full" />, label: 'ToDo', order: 3 },
-			{ to: '/kanban', icon: <IconKanban />, label: 'Kanban', order: 2 },
-			{ to: 'https://toolbox.letunoff.ru/', icon: <Package2 />, label: 'ToolBox', order: 2 },
-		];
-	} else {
-		return [{ to: '', icon: <IconLogin />, label: 'Войти', onClick: openAuth }];
-	}
-};
+export const navItems: NavItem[] = [
+	{ to: '/dashboard', icon: <IconLayoutDashboardFilled />, label: 'Dashboard', order: 3, primaryMobile: true },
+	{ to: '/todo', icon: <IconSquareCheckFilled />, label: 'ToDo', order: 2 },
+	{ to: '/kanban', icon: <IconLayoutKanbanFilled />, label: 'Kanban', order: 4 },
+	{
+		to: 'https://toolbox.letunoff.ru/',
+		icon: <IconAppsFilled />,
+		label: 'ToolBox',
+		order: 5,
+		mobile: false,
+		external: true,
+	},
+];
