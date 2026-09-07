@@ -3,12 +3,14 @@ import { useLocation } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import NavigationLinks from '@/features/navigation';
+import { Navbar } from '@/features/navigation';
+import { LoginButton } from '@/features/user-auth';
 
-const MobileTabBar = () => {
+export const MobileTabBar = observer(() => {
+	const location = useLocation();
+
 	const { userStore } = useStore();
 
-	const location = useLocation();
 	const pathes = ['/', '/terms-of-service', '/privacy-policy', '/about'];
 
 	const [hidden, setHidden] = useState<boolean>(false);
@@ -51,16 +53,10 @@ const MobileTabBar = () => {
 
 	return (
 		<div
-			className="fixed inset-x-0 z-40 flex h-12 w-full items-center justify-around border-t border-solid border-(--border-alt) bg-(--bg-tertiary) shadow transition-all duration-300"
-			style={{ bottom: 0, transform: hidden ? 'translateY(100%)' : 'translateY(0)' }}
+			className="fixed inset-x-0 bottom-0 z-40 flex h-12 items-center bg-(--bg-tertiary) shadow transition-transform duration-300"
+			style={{ transform: hidden ? 'translateY(140%)' : 'translateY(0)' }}
 		>
-			<NavigationLinks
-				className="no-touch-callout flex h-full w-full items-center justify-around"
-				isAuth={Boolean(userStore.id)}
-				variant="mobile"
-			/>
+			{userStore.id ? <Navbar variant="mobile" /> : <LoginButton />}
 		</div>
 	);
-};
-
-export default observer(MobileTabBar);
+});
