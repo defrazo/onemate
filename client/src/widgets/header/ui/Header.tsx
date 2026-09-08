@@ -6,7 +6,7 @@ import { Navbar } from '@/features/navigation';
 import { ThemeSwitcher } from '@/features/theme-switcher';
 import { LoginButton } from '@/features/user-auth';
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
-import { Logo, Time } from '@/shared/ui';
+import { DateTime, Logo } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 export const Header = observer(() => {
@@ -16,22 +16,32 @@ export const Header = observer(() => {
 	const { authStore } = useStore();
 
 	const headerRef = useRef<HTMLDivElement>(null);
+
+	const isAuth = authStore.isReady;
 	const showNavbar = device === 'desktop' || (device === 'tablet' && orientation === 'landscape');
+	const showLogin = !isAuth && showNavbar;
 
 	return (
 		<header
 			ref={headerRef}
-			className="z-30 flex justify-between rounded-xl bg-(--bg-tertiary) px-4 py-2 shadow-(--shadow) select-none md:py-3 print:hidden"
+			className="z-30 flex items-center justify-between rounded-xl bg-(--bg-tertiary) px-4 py-2 shadow-(--shadow) select-none md:py-2 print:hidden"
 		>
-			<Logo size="lg" />
+			<Logo isLink size="lg" />
 
-			{authStore.isReady && showNavbar && <Navbar variant="desktop" />}
+			{isAuth && showNavbar && <Navbar variant="desktop" />}
 
 			<div className="flex items-center gap-4">
-				{!authStore.isReady && showNavbar && <LoginButton />}
-				{authStore.isReady && <UserMenuButton headerRef={headerRef} />}
-				<Time />
-				{!authStore.isReady && <ThemeSwitcher />}
+				{showLogin && <LoginButton />}
+				{showLogin && <div className="h-7 w-px bg-(--border-alt)" />}
+
+				{isAuth && <ThemeSwitcher />}
+
+				{isAuth && <UserMenuButton headerRef={headerRef} />}
+				{isAuth && <div className="h-7 w-px bg-(--border-alt)" />}
+
+				<DateTime />
+
+				{!isAuth && <ThemeSwitcher />}
 			</div>
 		</header>
 	);
