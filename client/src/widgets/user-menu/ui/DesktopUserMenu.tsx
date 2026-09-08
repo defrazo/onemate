@@ -1,90 +1,62 @@
 import { useNavigate } from 'react-router-dom';
+import { IconLogout2, IconSettings } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { IconContacts, IconDay, IconLogout, IconMain, IconNight, IconShield, IconUser } from '@/shared/assets/icons';
+import { UserInfo } from '@/entities/user-profile';
 import { Button, Divider } from '@/shared/ui';
 
-import type { UserButton } from '../model';
-import { UserMenuInfo } from '.';
+import { userMenuLinks } from '../model';
 
 export const DesktopUserMenu = observer(() => {
-	const { authStore, modalStore, themeStore } = useStore();
 	const navigate = useNavigate();
 
-	const userButtons: UserButton[] = [
-		{
-			id: 'overview',
-			icon: <IconMain className="size-6" />,
-			label: 'Мой профиль',
-		},
-		{
-			id: 'personal',
-			icon: <IconUser className="size-6" />,
-			label: 'Личные данные',
-		},
-		{
-			id: 'contacts',
-			icon: <IconContacts className="size-6" />,
-			label: 'Контактные данные',
-		},
-		{
-			id: 'secure',
-			icon: <IconShield className="size-6" />,
-			label: 'Безопасность',
-		},
-		{
-			id: 'theme',
-			icon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
-			action: () => {
-				themeStore.toggleTheme();
-				modalStore.closeModal();
-			},
-			label: (
-				<>
-					Тема оформления:
-					<span className="ml-1 font-semibold">{themeStore.currentTheme}</span>
-				</>
-			),
-		},
-	];
+	const { authStore, modalStore } = useStore();
+
+	const handleNavigate = (to: string) => {
+		modalStore.closeModal();
+		navigate(to);
+	};
+
+	const handleLogout = async () => {
+		await authStore.logout();
+		modalStore.closeModal();
+		navigate('/');
+	};
 
 	return (
-		<div className="core-border absolute right-2.5 flex w-xs flex-col rounded-t-none! bg-(--bg-secondary) py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
-			<UserMenuInfo className="mt-2.5 px-4 py-2" />
-			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
-			{userButtons.map(({ id, label, icon, action }) => {
-				const isThemeToggle = id === 'theme';
-				const handleClick = isThemeToggle
-					? action
-					: () => {
-							modalStore.closeModal();
-							navigate(`/account/profile?tab=${id}`);
-						};
-				return (
+		<div className="core-border absolute right-2.5 flex w-68 flex-col rounded-xl rounded-t-none! bg-(--bg-secondary) p-1.5 shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
+			<UserInfo className="px-2.5 py-2" />
+			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
+			<div className="flex flex-col">
+				<Button
+					className="h-8 justify-start rounded-lg px-2.5 font-medium hover:bg-white/6 hover:text-(--accent-default)"
+					leftIcon={<IconSettings className="size-4.5" />}
+					variant="mobile"
+					onClick={() => handleNavigate('/account/profile?tab=overview')}
+				>
+					<span className="trim">Настройки аккаунта</span>
+				</Button>
+				{userMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
-						key={id}
-						className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
-						leftIcon={icon}
+						key={to}
+						className="h-7 justify-start rounded-lg px-2.5 text-sm text-(--color-secondary) hover:bg-white/6 hover:text-(--color-primary)"
+						leftIcon={<Icon className="size-4.5" />}
 						variant="mobile"
-						onClick={handleClick}
+						onClick={() => handleNavigate(to)}
 					>
-						{label}
+						<span className="trim">{label}</span>
 					</Button>
-				);
-			})}
-			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
+				))}
+			</div>
+			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
 			<Button
-				className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
-				leftIcon={<IconLogout className="size-6" />}
+				className="h-8 justify-start rounded-lg px-2.5 font-medium hover:bg-white/6 hover:text-(--accent-default)"
+				leftIcon={<IconLogout2 className="size-4.5" />}
 				variant="mobile"
-				onClick={async () => {
-					await authStore.logout();
-					modalStore.closeModal();
-					navigate('/');
-				}}
+				onClick={handleLogout}
 			>
-				Выйти
+				<span className="trim">Выйти</span>
 			</Button>
 		</div>
 	);

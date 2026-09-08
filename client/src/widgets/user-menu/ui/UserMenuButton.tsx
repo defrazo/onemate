@@ -1,7 +1,8 @@
 import { type RefObject, useEffect } from 'react';
+import { IconChevronDown } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import UserAvatar from '@/features/user-avatar';
+import { UserAvatar } from '@/entities/user-profile';
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
@@ -12,10 +13,10 @@ interface UserMenuButtonProps {
 }
 
 export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
-	const { modalStore } = useStore();
-
 	const device = useDeviceType();
 	const orientation = useOrientation();
+
+	const { modalStore } = useStore();
 
 	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
 
@@ -29,7 +30,7 @@ export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
 			return;
 		}
 
-		const position = { top: rect.bottom + window.scrollY - 10, left: rect.right + window.scrollX };
+		const position = { top: rect.bottom + window.scrollY - 7, left: rect.right + window.scrollX };
 
 		device === 'mobile' || (device === 'tablet' && orientation === 'portrait')
 			? modalStore.setModal(<MobileUserMenu />, 'sheet')
@@ -45,11 +46,16 @@ export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
 
 	return (
 		<Button
-			centerIcon={<UserAvatar className="size-10 ring-(--accent-hover) hover:ring-2" />}
+			className="group rounded-xl bg-white/4 px-2 py-1.5 transition-colors hover:bg-white/8"
+			rightIcon={
+				<IconChevronDown className="size-4 text-(--color-secondary) transition-[color,transform] group-hover:text-(--accent-default)" />
+			}
 			size="custom"
 			title="Открыть меню пользователя"
 			variant="custom"
 			onClick={handleUserMenuClick}
-		/>
+		>
+			<UserAvatar className="size-9" />
+		</Button>
 	);
 };

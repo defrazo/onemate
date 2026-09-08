@@ -1,135 +1,73 @@
-import type { ReactElement } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { IconChevronRight, IconLogout2 } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import {
-	IconAbout,
-	IconAgreement,
-	IconContacts,
-	IconDay,
-	IconForward,
-	IconLogout,
-	IconNight,
-	IconSecure,
-	IconShield,
-	IconUser,
-} from '@/shared/assets/icons';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { UserInfo } from '@/entities/user-profile';
+import { accountSettingsTabs, type TabId } from '@/features/account-settings';
 import { Button, Divider } from '@/shared/ui';
-import type { TabId } from '@/widgets/user-profile';
-import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
 
-import type { UserButton } from '../model';
-import { UserMenuInfo } from '.';
+import { profileTabs, userMenuLinks } from '../model';
 
 export const MobileUserMenu = observer(() => {
-	const { authStore, modalStore, themeStore } = useStore();
-	const device = useDeviceType();
 	const navigate = useNavigate();
 
-	const tabs: Record<TabId, ReactElement> = {
-		overview: <OverviewTab />,
-		personal: <PersonalTab />,
-		contacts: <ContactsTab />,
-		secure: <SecureTab />,
+	const { authStore, modalStore } = useStore();
+
+	const handleNavigate = (to: string) => {
+		modalStore.closeModal();
+		navigate(to);
 	};
 
-	const goTo = (tab: TabId) => {
-		device === 'mobile' ? modalStore.setModal(tabs[tab], 'sheet') : navigate(`/account/profile?tab=${tab}`);
+	const handleLogout = async () => {
+		await authStore.logout();
+		modalStore.closeModal();
+		navigate('/');
 	};
 
-	const userButtons: UserButton[] = [
-		{
-			id: 'personal',
-			leftIcon: <IconUser className="size-6" />,
-			action: () => goTo('personal'),
-			label: 'Личные данные',
-		},
-		{
-			id: 'contacts',
-			leftIcon: <IconContacts className="size-6" />,
-			action: () => goTo('contacts'),
-			label: 'Контактные данные',
-		},
-		{
-			id: 'secure',
-			leftIcon: <IconShield className="size-6" />,
-			action: () => goTo('secure'),
-			label: 'Безопасность',
-		},
-		{
-			id: 'theme',
-			leftIcon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
-			action: () => themeStore.toggleTheme(),
-			label: (
-				<div className="flex justify-between">
-					<span>Тема оформления:</span>
-					<span className="text-(--accent-default)">{themeStore.currentTheme}</span>
-				</div>
-			),
-		},
-		{
-			id: 'terms',
-			leftIcon: <IconAgreement className="size-6" />,
-			action: () => {
-				navigate('/terms-of-service');
-				modalStore.closeModal();
-			},
-			label: 'Пользовательское соглашение',
-		},
-		{
-			id: 'privacy',
-			leftIcon: <IconSecure className="size-6" />,
-			action: () => {
-				navigate('/privacy-policy');
-				modalStore.closeModal();
-			},
-			label: 'Политика конфиденциальности',
-		},
-		{
-			id: 'about',
-			leftIcon: <IconAbout className="size-6" />,
-			action: () => {
-				navigate('/about');
-				modalStore.closeModal();
-			},
-			label: 'О проекте',
-		},
-	];
+	const openProfileTab = (tab: TabId) => {
+		const Tab = accountSettingsTabs[tab];
+		modalStore.setModal(<Tab />, 'sheet', { back: () => modalStore.setModal(<MobileUserMenu />, 'sheet') });
+	};
 
 	return (
-		<div className="top-6 flex h-[calc(100%-1.5rem)] w-full flex-col gap-2 overflow-auto overscroll-contain pb-2">
-			<UserMenuInfo />
-			<Divider />
-			{userButtons.map(({ id, label, leftIcon, action }) => {
-				return (
+		<div className="flex h-full w-full flex-col overflow-auto overscroll-contain pb-2">
+			<UserInfo className="px-2.5 py-2" />
+			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
+			<div className="flex flex-col">
+				{profileTabs.map(({ id, icon: Icon, label }) => (
 					<Button
 						key={id}
-						className="h-10 text-sm"
-						leftIcon={leftIcon}
-						rightIcon={<IconForward className="size-4" />}
-						size="custom"
+						className="h-10 justify-start rounded-lg px-2.5 font-medium active:bg-white/6 active:text-(--accent-default)"
+						leftIcon={<Icon className="size-4.5" />}
+						rightIcon={<IconChevronRight className="size-3.5 text-(--color-secondary)" />}
 						variant="mobile"
-						onClick={action}
+						onClick={() => openProfileTab(id)}
 					>
-						<span className="w-full text-left">{label}</span>
+						<span className="trim w-full text-left">{label}</span>
 					</Button>
-				);
-			})}
-			<Divider />
+				))}
+				{userMenuLinks.map(({ to, icon: Icon, label }) => (
+					<Button
+						key={to}
+						className="h-10 justify-start rounded-lg px-2.5 text-(--color-secondary) active:bg-white/6 active:text-(--color-primary)"
+						leftIcon={<Icon className="size-4.5" />}
+						rightIcon={<IconChevronRight className="size-3.5 text-(--color-secondary)" />}
+						variant="mobile"
+						onClick={() => handleNavigate(to)}
+					>
+						<span className="trim w-full text-left">{label}</span>
+					</Button>
+				))}
+			</div>
+			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
 			<Button
-				className="h-10 justify-start"
-				leftIcon={<IconLogout className="size-6" />}
-				size="custom"
+				className="h-10 justify-start rounded-lg px-2.5 font-medium active:bg-white/6 active:text-(--accent-default)"
+				leftIcon={<IconLogout2 className="size-4.5" />}
 				variant="mobile"
-				onClick={() => {
-					authStore.logout();
-					modalStore.closeModal();
-					navigate('/');
-				}}
+				onClick={handleLogout}
 			>
-				Выйти
+				<span className="trim">Выйти</span>
 			</Button>
 		</div>
 	);
