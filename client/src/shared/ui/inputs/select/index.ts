@@ -1,1 +1,1 @@
-export { Select } from './ui';
+export { Select, SelectExt } from './ui';
