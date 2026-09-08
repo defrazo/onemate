@@ -3,10 +3,10 @@ import { IconKeyFilled, IconMailFilled, IconUserFilled } from '@tabler/icons-rea
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button, Input } from '@/shared/ui';
+import { Button, Input, InputLabel } from '@/shared/ui';
 
 import { emailCooldown, useAuth } from '../../model';
-import { InputLabel, PasswordHint, PasswordInput } from '../components';
+import { PasswordHint, PasswordInput } from '../components';
 
 export const RegisterForm = observer(() => {
 	const { authFormStore, authStore, notifyStore } = useStore();

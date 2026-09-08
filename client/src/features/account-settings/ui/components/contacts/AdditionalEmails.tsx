@@ -3,8 +3,8 @@ import { IconMailOpenedFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { InputLabel, useAuth } from '@/features/user-auth';
-import { Collapse, Input } from '@/shared/ui';
+import { useAuth } from '@/features/user-auth';
+import { Collapse, Input, InputLabel } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
 import { FormActions, RemoveButton } from '..';

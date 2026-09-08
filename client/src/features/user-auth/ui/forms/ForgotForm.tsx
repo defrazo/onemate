@@ -3,10 +3,9 @@ import { IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button, Input } from '@/shared/ui';
+import { Button, Input, InputLabel } from '@/shared/ui';
 
 import { useAuth } from '../../model';
-import { InputLabel } from '../components';
 
 export const ForgotForm = observer(() => {
 	const { authStore, modalStore, notifyStore } = useStore();

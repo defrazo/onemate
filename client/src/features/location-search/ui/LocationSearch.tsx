@@ -4,9 +4,8 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
-import { InputLabel } from '@/features/user-auth';
 import { IconLocation } from '@/shared/assets/icons';
-import { Input, Preloader, SuggestionList } from '@/shared/ui';
+import { Input, InputLabel, Preloader, SuggestionList } from '@/shared/ui';
 
 import { LocationSearchStore } from '../model';
 

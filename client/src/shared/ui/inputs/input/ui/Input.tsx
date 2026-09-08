@@ -12,7 +12,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 	justify?: 'start' | 'center' | 'end';
 }
 
-const Input = ({
+export const Input = ({
 	leftIcon,
 	rightIcon,
 	error = false,
@@ -43,5 +43,3 @@ const Input = ({
 		</div>
 	);
 };
-
-export default Input;

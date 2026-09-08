@@ -3,8 +3,7 @@ import { IconPhoneFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { InputLabel } from '@/features/user-auth';
-import { Collapse, PhoneInput } from '@/shared/ui';
+import { Collapse, InputLabel, PhoneInput } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
 import { FormActions, RemoveButton } from '..';

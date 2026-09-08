@@ -4,10 +4,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { Gender } from '@/entities/user-profile';
-import { InputLabel } from '@/features/user-auth';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
-import { Collapse, Input, Radio, SelectExt } from '@/shared/ui';
+import { Collapse, Input, InputLabel, Radio, SelectExt } from '@/shared/ui';
 
 import { genderOptions, getAvailableDays } from '../../../lib';
 import type { PersonalDraft } from '../../../model';
