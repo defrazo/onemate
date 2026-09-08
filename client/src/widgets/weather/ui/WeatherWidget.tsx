@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { LocationSearch } from '@/features/location-search';
-import { Button, LoadFallback, Tooltip } from '@/shared/ui';
+import { Button, LoadingState, Tooltip } from '@/shared/ui';
 
 import { WEATHER_TIP } from '../model';
 import { Current, Forecast } from '.';
@@ -24,7 +24,7 @@ export const WeatherWidget = observer(() => {
 					onSelect={(city) => weatherStore.setLocation(city)}
 				/>
 				{weatherStore.isLoading && !weatherStore.isReady ? (
-					<LoadFallback />
+					<LoadingState size="lg" />
 				) : (
 					<>
 						{weatherStore.isOpenCurrent ? (

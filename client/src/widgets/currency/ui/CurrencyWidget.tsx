@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { ErrorFallback, Tooltip } from '@/shared/ui';
+import { LoadingError, Tooltip } from '@/shared/ui';
 
 import { CURRENCY_TIP, useCurrency } from '../model';
 import { CurrencyControls } from '.';
@@ -22,7 +22,7 @@ export const CurrencyWidget = observer(() => {
 				</Tooltip>
 			</div>
 			{!currencyStore.isReady ? (
-				<ErrorFallback onRetry={() => currencyStore.init()} />
+				<LoadingError size="lg" onRetry={() => currencyStore.init()} />
 			) : (
 				<>
 					<div

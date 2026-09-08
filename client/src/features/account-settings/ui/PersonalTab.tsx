@@ -2,7 +2,7 @@ import { IconUserFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadFallback } from '@/shared/ui';
+import { LoadingState } from '@/shared/ui';
 
 import { SectionHeader } from './components';
 import { AvatarSection, PersonalDataSection } from './components/personal';
@@ -16,7 +16,7 @@ export const PersonalTab = observer(() => {
 			<div className="flex flex-col gap-4 md:flex-row">
 				{!userProfileStore.isReady ? (
 					<div className="min-h-103 w-full">
-						<LoadFallback />
+						<LoadingState size="lg" />
 					</div>
 				) : (
 					<>

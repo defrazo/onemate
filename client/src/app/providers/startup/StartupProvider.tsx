@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { App } from '@/app/App';
 import { IconWarning } from '@/shared/assets/icons';
-import { PreloaderExt } from '@/shared/ui';
+import { SplashScreen } from '@/shared/ui';
 
 import { getRootStore, StoreProvider } from '../store';
 
@@ -32,7 +32,7 @@ const AppInitializer = () => {
 		void initialize();
 	}, []);
 
-	if (state === 'loading') return <PreloaderExt />;
+	if (state === 'loading') return <SplashScreen />;
 
 	if (state === 'error') {
 		return (

@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
-import { ErrorFallback } from '@/shared/ui';
+import { LoadingError } from '@/shared/ui';
 
 import { initKanban } from '.';
 
@@ -68,7 +68,7 @@ export const KanbanPage = () => {
 
 			{(loading || error) && (
 				<div className="absolute inset-0 flex items-center justify-center">
-					<ErrorFallback delay={7000} message="Что-то пошло не так..." onRetry={init} />
+					<LoadingError message="Что-то пошло не так..." size="xl" onRetry={init} />
 				</div>
 			)}
 		</div>

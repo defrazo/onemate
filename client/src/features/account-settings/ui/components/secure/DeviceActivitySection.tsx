@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { IconDesktop, IconPhone } from '@/shared/assets/icons';
 import { fullDate } from '@/shared/lib/utils';
-import { Button, Divider, PreloaderMini, Tooltip } from '@/shared/ui';
+import { Button, Divider, LoadingState, Tooltip } from '@/shared/ui';
 
 export const DeviceActivitySection = observer(() => {
 	const { deviceActivityStore: store, notifyStore } = useStore();
@@ -27,7 +27,7 @@ export const DeviceActivitySection = observer(() => {
 			<div className="flex flex-1 flex-col">
 				<h3 className="text-(--color-secondary) opacity-70 select-none">Текущее устройство:</h3>
 				{!store.isReady ? (
-					<PreloaderMini />
+					<LoadingState />
 				) : (
 					<div className="flex gap-2">
 						{store.isMobile ? (
@@ -65,7 +65,7 @@ export const DeviceActivitySection = observer(() => {
 					</Button>
 				</div>
 				{!store.isReady ? (
-					<PreloaderMini />
+					<LoadingState />
 				) : (
 					<div className="hide-scrollbar flex flex-1 flex-col overflow-y-auto overscroll-contain pr-1 select-none">
 						{store.activityLog.length === 0 && (

@@ -1,5 +1,5 @@
 import { cn } from '@/shared/lib/utils';
-import { PreloaderMini } from '@/shared/ui/feedback';
+import { LoadingState } from '@/shared/ui/feedback';
 
 interface ThumbnailProps {
 	src: string;
@@ -14,7 +14,7 @@ export const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Th
 	return (
 		<div className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}>
 			{isLoading ? (
-				<PreloaderMini />
+				<LoadingState />
 			) : (
 				<img
 					alt={alt}

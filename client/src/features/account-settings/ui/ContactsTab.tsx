@@ -2,7 +2,7 @@ import { IconBookFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { PreloaderMini } from '@/shared/ui';
+import { LoadingState } from '@/shared/ui';
 
 import { SectionHeader } from './components';
 import { AdditionalEmails, LocationSection, PhonesSection, PrimaryEmail } from './components/contacts';
@@ -15,12 +15,12 @@ export const ContactsTab = observer(() => {
 			<SectionHeader icon={IconBookFilled} title="Контакты и адреса" />
 			<div className="flex min-h-27.5 flex-col gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Местоположение</h2>
-				{!userProfileStore.isLocationReady ? <PreloaderMini /> : <LocationSection />}
+				{!userProfileStore.isLocationReady ? <LoadingState /> : <LocationSection />}
 			</div>
 			<div className="flex min-h-49 flex-col gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Почта</h2>
 				{!userProfileStore.isReady ? (
-					<PreloaderMini />
+					<LoadingState />
 				) : (
 					<>
 						<PrimaryEmail />
@@ -30,7 +30,7 @@ export const ContactsTab = observer(() => {
 			</div>
 			<div className="flex min-h-40 flex-col gap-2">
 				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
-				{!userProfileStore.isReady ? <PreloaderMini /> : <PhonesSection />}
+				{!userProfileStore.isReady ? <LoadingState /> : <PhonesSection />}
 			</div>
 		</div>
 	);

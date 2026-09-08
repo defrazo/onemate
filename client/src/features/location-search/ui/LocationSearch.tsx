@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
-import { Input, InputLabel, Preloader, SuggestionList } from '@/shared/ui';
+import { Input, InputLabel, LoadingState, SuggestionList } from '@/shared/ui';
 
 import { LocationSearchStore } from '../model';
 
@@ -71,7 +71,7 @@ export const LocationSearch = observer(
 					placeholder="Введите город"
 					rightIcon={
 						store.isLoading ? (
-							<Preloader className="size-7 border-(--border-alt) border-t-(--bg-tertiary)" />
+							<LoadingState className="mr-1" size="sm" />
 						) : onRemove && value ? (
 							<IconTrashFilled
 								className="mr-1 ml-1.5 size-5.5 cursor-pointer opacity-50 transition-all hover:text-(--status-error) hover:opacity-100"

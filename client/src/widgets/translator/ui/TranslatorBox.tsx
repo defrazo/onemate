@@ -2,7 +2,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useCopy } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { Preloader, SelectExt, Textarea } from '@/shared/ui';
+import { LoadingState, SelectExt, Textarea } from '@/shared/ui';
 
 import type { TranslatorStore } from '../model';
 import { TranslatorBoxActions } from '.';
@@ -24,7 +24,7 @@ export const TranslatorBox = observer(({ store, text, language, type, onChangeLa
 		<div className="core-border relative flex flex-1 flex-col">
 			<div className="flex h-full min-h-28 flex-1 items-center justify-center">
 				{store.isLoading && !isSource ? (
-					<Preloader className="z-20 size-15" />
+					<LoadingState size="lg" />
 				) : (
 					<>
 						<Textarea
