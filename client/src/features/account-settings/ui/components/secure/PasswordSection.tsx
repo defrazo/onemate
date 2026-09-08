@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { PasswordHint, PasswordInput, useAuth } from '@/features/user-auth';
-import { Collapse } from '@/shared/ui';
+import { PasswordHint, useAuth } from '@/features/user-auth';
+import { Collapse, PasswordInput } from '@/shared/ui';
 
 import { useProfile } from '../../../model';
 import { FormActions } from '..';

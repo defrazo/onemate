@@ -3,10 +3,10 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button } from '@/shared/ui';
+import { Button, PasswordInput } from '@/shared/ui';
 
 import { useAuth } from '../../model';
-import { PasswordHint, PasswordInput } from '../components';
+import { PasswordHint } from '../components';
 
 export const ResetForm = observer(({ email, token }: { email: string; token: string }) => {
 	const navigate = useNavigate();

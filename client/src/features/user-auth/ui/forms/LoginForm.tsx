@@ -3,10 +3,9 @@ import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button, Input, InputLabel } from '@/shared/ui';
+import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
 import { emailCooldown, useAuth } from '../../model';
-import { PasswordInput } from '../components';
 
 export const LoginForm = observer(() => {
 	const { authFormStore, authStore, notifyStore, userStore } = useStore();

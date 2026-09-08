@@ -3,9 +3,9 @@ import { IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { PasswordInput, useAuth } from '@/features/user-auth';
+import { useAuth } from '@/features/user-auth';
 import { IconWarning } from '@/shared/assets/icons';
-import { Collapse, Input, InputLabel } from '@/shared/ui';
+import { Collapse, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
 import { FormActions } from '..';
 import { PendingEmailDialog } from '.';
