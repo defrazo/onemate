@@ -3,8 +3,8 @@ import type { ReactNode } from 'react';
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import Footer from '@/widgets/footer';
-import Header from '@/widgets/header';
-import MobileTabBar from '@/widgets/mobile-tab-bar';
+import { Header } from '@/widgets/header';
+import { MobileTabBar } from '@/widgets/mobile-tab-bar';
 
 interface AppShellProps {
 	children: ReactNode;
@@ -57,11 +57,7 @@ export const AppShell = ({
 				</div>
 				{!showMobileTabBar && !hideFooter && <Footer />}
 			</div>
-			{showMobileTabBar && !(landscape && landscapeMode) && (
-				<div className="h-12">
-					<MobileTabBar />
-				</div>
-			)}
+			{showMobileTabBar && !(landscape && landscapeMode) && <MobileTabBar />}
 		</div>
 	);
 };

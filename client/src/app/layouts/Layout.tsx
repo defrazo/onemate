@@ -1,11 +1,17 @@
 import type { ComponentProps } from 'react';
 import { Outlet } from 'react-router-dom';
 
+import { usePageTitle } from '@/shared/lib/hooks';
+
 import { AppShell } from './AppShell';
 
-type AppLayoutProps = Omit<ComponentProps<typeof AppShell>, 'children'>;
+interface LayoutProps extends Omit<ComponentProps<typeof AppShell>, 'children'> {
+	title?: string;
+}
 
-export const Layout = (props: AppLayoutProps) => {
+export const Layout = ({ title, ...props }: LayoutProps) => {
+	usePageTitle(title);
+
 	return (
 		<AppShell {...props}>
 			<Outlet />

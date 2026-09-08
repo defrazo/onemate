@@ -1,9 +1,10 @@
 import type { RouteObject } from 'react-router-dom';
 
 import { Layout, StaticPageLayout } from '@/app/layouts';
+import { ProfileNav } from '@/features/account-settings';
 import AboutPage from '@/pages/about';
 import DeletedAccountPage from '@/pages/account-deleted';
-import UserProfilePage from '@/pages/account-profile';
+import { AccountProfilePage } from '@/pages/account-profile';
 import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
 import DashboardPage from '@/pages/dashboard';
 import DemoInfoPage from '@/pages/demo-info';
@@ -15,7 +16,6 @@ import PrivacyPolicyPage from '@/pages/privacy-policy';
 import TermsOfServicePage from '@/pages/terms-of-service';
 import TodoPage from '@/pages/to-do';
 import { SettingsLeft, SettingsRight } from '@/widgets/generator';
-import { ProfileNav } from '@/widgets/user-profile';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
 
@@ -32,7 +32,7 @@ export const routes: RouteObject[] = [
 				children: [
 					{
 						element: <Layout hideLeftOnMobile leftSide={<ProfileNav />} />,
-						children: [{ path: '/account/profile', element: <UserProfilePage /> }],
+						children: [{ path: '/account/profile', element: <AccountProfilePage /> }],
 					},
 					{
 						element: <Layout hideFooter />,
@@ -55,10 +55,7 @@ export const routes: RouteObject[] = [
 		children: [
 			{
 				element: <Layout />,
-				children: [
-					{ path: '/', element: <HomePage /> },
-					{ path: '/about', element: <AboutPage /> },
-				],
+				children: [{ path: '/', element: <HomePage /> }],
 			},
 			{
 				children: [
@@ -77,6 +74,10 @@ export const routes: RouteObject[] = [
 	{
 		element: <StaticPageLayout title="О демо-режиме OneMate" />,
 		children: [{ path: '/demo-info', element: <DemoInfoPage /> }],
+	},
+	{
+		element: <Layout title="О проекте" />,
+		children: [{ path: '/about', element: <AboutPage /> }],
 	},
 	{
 		element: <StaticPageLayout title="Пользовательское соглашение" />,
