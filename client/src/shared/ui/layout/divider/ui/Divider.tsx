@@ -3,8 +3,8 @@ import { cn } from '@/shared/lib/utils';
 interface DividerProps {
 	className?: string;
 	variant?: 'default' | 'custom';
-	margY?: 'none' | 'sm' | 'md' | 'lg';
-	margX?: 'none' | 'sm' | 'md' | 'lg';
+	margY?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
+	margX?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
 const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
@@ -16,6 +16,7 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	};
 
 	const marginsY = {
+		xs: 'my-1',
 		sm: 'my-2',
 		md: 'my-4',
 		lg: 'my-6',
@@ -23,6 +24,7 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	};
 
 	const marginsX = {
+		xs: 'mx-1',
 		sm: 'mx-2',
 		md: 'mx-4',
 		lg: 'mx-6',
