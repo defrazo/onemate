@@ -82,12 +82,10 @@ export const SelectList = ({
 				>
 					{option.icon && (
 						<img
-							alt=""
 							className="no-touch-callout size-6 rounded-lg"
 							decoding="async"
 							loading="lazy"
 							src={option.icon}
-							onContextMenu={(e) => e.preventDefault()}
 						/>
 					)}
 					<span className="font-bold">{option.label}</span>

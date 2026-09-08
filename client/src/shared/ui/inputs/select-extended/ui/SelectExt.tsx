@@ -66,12 +66,10 @@ const SelectExt = ({
 			>
 				{selectedOption?.icon && (
 					<img
-						alt=""
 						className="no-touch-callout mr-2 size-6 rounded-xl"
 						decoding="async"
 						loading="lazy"
 						src={selectedOption.icon}
-						onContextMenu={(e) => e.preventDefault()}
 					/>
 				)}
 				<span

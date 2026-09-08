@@ -37,7 +37,6 @@ const NotFoundPage = () => {
 					alt="Иллюстрация: страница не найдена"
 					className="no-touch-callout max-h-[45vh] xl:max-h-[65vh]"
 					src={NotFound}
-					onContextMenu={(e) => e.preventDefault()}
 				/>
 			</div>
 		</div>

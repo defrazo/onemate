@@ -24,7 +24,6 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 					src={src}
 					title={title}
 					onClick={onClick}
-					onContextMenu={(e) => e.preventDefault()}
 				/>
 			)}
 		</div>

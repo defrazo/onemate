@@ -27,7 +27,6 @@ export const ConditionIcon = observer(({ condition, description, className }: Co
 			loading="lazy"
 			src={icon}
 			width="100%"
-			onContextMenu={(e) => e.preventDefault()}
 		/>
 	);
 });
