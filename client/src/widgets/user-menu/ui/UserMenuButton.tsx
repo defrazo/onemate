@@ -8,11 +8,7 @@ import { Button } from '@/shared/ui';
 
 import { DesktopUserMenu, MobileUserMenu } from '.';
 
-interface UserMenuButtonProps {
-	headerRef: RefObject<HTMLDivElement | null>;
-}
-
-export const UserMenuButton = ({ headerRef }: UserMenuButtonProps) => {
+export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElement | null> }) => {
 	const device = useDeviceType();
 	const orientation = useOrientation();
 

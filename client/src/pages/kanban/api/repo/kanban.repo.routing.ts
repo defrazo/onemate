@@ -1,5 +1,4 @@
-import type { UserStore } from '@/entities/user';
-import { PermissionService } from '@/entities/user';
+import { PermissionService, type UserStore } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
 import type {

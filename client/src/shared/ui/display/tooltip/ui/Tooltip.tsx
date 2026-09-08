@@ -3,8 +3,7 @@ import { createPortal } from 'react-dom';
 
 import { cn } from '@/shared/lib/utils';
 
-import type { Placement } from '../model';
-import { useTooltip } from '../model';
+import { type Placement, useTooltip } from '../model';
 
 interface TooltipProps {
 	content?: ReactNode;

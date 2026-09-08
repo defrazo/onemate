@@ -14,19 +14,13 @@ export type CurrencyCacheData = {
 export const currencyCache = {
 	read(): CurrencyCacheData | null {
 		const cached = storage.get(CACHE_KEY);
-
-		if (!cached || typeof cached !== 'object') {
-			return null;
-		}
+		if (!cached || typeof cached !== 'object') return null;
 
 		return cached as CurrencyCacheData;
 	},
 
 	write(rates: RatesResponse): void {
-		storage.set(CACHE_KEY, {
-			rates,
-			cachedAt: Date.now(),
-		});
+		storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
 	},
 
 	isFresh(cache: CurrencyCacheData): boolean {

@@ -11,8 +11,9 @@ import { DemoBanner } from '@/shared/ui';
 import { RouterProvider, useStore } from './providers';
 
 export const App = observer(() => {
-	const { userStore } = useStore();
 	const device = useDeviceType();
+
+	const { userStore } = useStore();
 
 	return (
 		<BrowserRouter>

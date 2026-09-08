@@ -7,11 +7,7 @@ import { getWindDirection } from '../lib';
 import type { ConditionCode, CurrentType } from '../model';
 import { ConditionIcon } from '.';
 
-interface CurrentProps {
-	current: CurrentType | null;
-}
-
-export const Current = ({ current }: CurrentProps) => {
+export const Current = ({ current }: { current: CurrentType | null }) => {
 	if (!current) return null;
 
 	const {

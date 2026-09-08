@@ -8,11 +8,7 @@ import { Button, Textarea } from '@/shared/ui';
 import { renderResult } from '../lib';
 import type { ResultItem } from '../model';
 
-interface CalculatorLogProps {
-	result: ResultItem[];
-}
-
-export const CalculatorLog = ({ result }: CalculatorLogProps) => {
+export const CalculatorLog = ({ result }: { result: ResultItem[] }) => {
 	const device = useDeviceType();
 	const ortientation = useOrientation();
 	const [isVisible, setIsVisible] = useState<boolean>(false);

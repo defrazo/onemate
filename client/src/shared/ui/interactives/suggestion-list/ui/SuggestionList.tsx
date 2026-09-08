@@ -15,7 +15,7 @@ export const SuggestionList = <T,>({ items, onSelect, renderItem, className }: S
 	return (
 		<div
 			className={cn(
-				'hide-scrollbar absolute top-full left-0 z-30 mt-1.5 max-h-72 w-full overflow-y-auto rounded-xl border border-solid border-(--border-color) bg-(--bg-secondary) p-1 shadow-[0_12px_32px_rgba(0,0,0,0.35)]',
+				'hide-scrollbar absolute top-full left-0 z-30 mt-1.5 max-h-72 w-full overflow-y-auto rounded-xl border border-(--border-color) bg-(--bg-secondary) p-1 shadow-[0_12px_32px_rgba(0,0,0,0.35)]',
 				className
 			)}
 		>

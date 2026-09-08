@@ -36,8 +36,8 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 	const form = document.createElement('form');
 	form.className = 'contents';
 
-	const onSubmit = (event: SubmitEvent) => {
-		event.preventDefault();
+	const onSubmit = (e: SubmitEvent) => {
+		e.preventDefault();
 		handleSubmit();
 	};
 
@@ -173,13 +173,13 @@ export const editColumn = (options: EditColumnOptions): EditColumnInstance => {
 	}
 
 	// === ACTION FUNCTIONS ===
-	function onKeyDown(event: KeyboardEvent) {
-		if (event.key !== 'Enter') return;
-		if (event.isComposing || event.defaultPrevented) return;
+	function onKeyDown(e: KeyboardEvent) {
+		if (e.key !== 'Enter') return;
+		if (e.isComposing || e.defaultPrevented) return;
 		if (submitButton.disabled) return;
-		if (event.target instanceof HTMLTextAreaElement) return;
+		if (e.target instanceof HTMLTextAreaElement) return;
 
-		event.preventDefault();
+		e.preventDefault();
 		form.requestSubmit();
 	}
 

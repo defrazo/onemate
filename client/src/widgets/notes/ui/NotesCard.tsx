@@ -9,11 +9,7 @@ import { Textarea } from '@/shared/ui';
 
 import { NotesCardActions } from '.';
 
-interface NotesCardProps {
-	id: string;
-}
-
-export const NotesCard = observer(({ id }: NotesCardProps) => {
+export const NotesCard = observer(({ id }: { id: string }) => {
 	const { notesStore: store } = useStore();
 	const { attributes, listeners, transform, transition, isDragging, setNodeRef } = useSortable({ id });
 

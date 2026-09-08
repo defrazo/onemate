@@ -14,14 +14,14 @@ export const VerifyEmailPage = () => {
 	const { id, hash } = useParams();
 	const [searchParams] = useSearchParams();
 
+	usePageTitle('Подтверждение аккаунта');
+
 	const { authFormStore, authStore, modalStore, userStore } = useStore();
 
 	const [status, setStatus] = useState<Status>('loading');
 
 	const type = searchParams.get('type') ?? 'register';
 	const isPending = type === 'pending';
-
-	usePageTitle('Подтверждение аккаунта');
 
 	useEffect(() => {
 		const expires = searchParams.get('expires');

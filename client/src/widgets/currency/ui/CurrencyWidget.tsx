@@ -8,8 +8,10 @@ import { CURRENCY_TIP, useCurrency } from '../model';
 import { CurrencyControls } from '.';
 
 export const CurrencyWidget = observer(() => {
-	const { currencyStore } = useStore();
 	const copy = useCopy();
+
+	const { currencyStore } = useStore();
+
 	const { exchangeRate, exchangeResult } = useCurrency();
 
 	return (

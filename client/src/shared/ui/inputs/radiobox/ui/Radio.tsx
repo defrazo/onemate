@@ -65,7 +65,7 @@ export const Radio = ({
 						<span
 							className={cn(
 								styles,
-								'flex shrink-0 items-center justify-center rounded-full border border-solid',
+								'flex shrink-0 items-center justify-center rounded-full border',
 								isChecked ? 'border-(--accent-default)' : 'group-hover:border-(--accent-default)'
 							)}
 						>

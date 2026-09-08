@@ -5,9 +5,7 @@ import type { UserProfile } from '../model';
 export type UserProfileCacheData = Pick<UserProfile, 'avatar_url' | 'widgets_sequence' | 'widgets_slots'>;
 
 const patch = (userId: string, data: Partial<UserProfileCacheData>): void => {
-	writeCache(userId, {
-		ui: data,
-	});
+	writeCache(userId, { ui: data });
 };
 
 export const userProfileCache = {
@@ -25,21 +23,15 @@ export const userProfileCache = {
 	patch,
 
 	setAvatar(userId: string, avatarUrl: UserProfile['avatar_url']): void {
-		patch(userId, {
-			avatar_url: avatarUrl,
-		});
+		patch(userId, { avatar_url: avatarUrl });
 	},
 
 	setWidgets(userId: string, widgets: UserProfile['widgets_sequence']): void {
-		patch(userId, {
-			widgets_sequence: widgets,
-		});
+		patch(userId, { widgets_sequence: widgets });
 	},
 
 	setSlots(userId: string, slots: UserProfile['widgets_slots']): void {
-		patch(userId, {
-			widgets_slots: slots,
-		});
+		patch(userId, { widgets_slots: slots });
 	},
 
 	sync(userId: string, profile: UserProfile): void {

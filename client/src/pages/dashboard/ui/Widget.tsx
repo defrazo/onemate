@@ -5,12 +5,7 @@ import { CSS } from '@dnd-kit/utilities';
 import { IconMove } from '@/shared/assets/icons';
 import { Button } from '@/shared/ui';
 
-interface WidgetProps {
-	id: string;
-	content: ReactNode;
-}
-
-export const Widget = ({ id, content }: WidgetProps) => {
+export const Widget = ({ id, content }: { id: string; content: ReactNode }) => {
 	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
 
 	const combinedStyle: CSSProperties = {

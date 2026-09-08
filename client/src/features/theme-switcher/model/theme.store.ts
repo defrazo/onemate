@@ -50,8 +50,8 @@ export class ThemeStore extends BaseStore {
 		return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME;
 	}
 
-	private onStorage = (event: StorageEvent): void => {
-		if (event.key !== LS_CACHE_UI || !event.newValue) return;
+	private onStorage = (e: StorageEvent): void => {
+		if (e.key !== LS_CACHE_UI || !e.newValue) return;
 
 		const theme = this.getStoredTheme();
 		this.setLocalTheme(theme);

@@ -1,10 +1,6 @@
 import type { Slide } from '../model';
 
-interface SlideProps {
-	slide: Slide;
-}
-
-export const SlideItem = ({ slide }: SlideProps) => {
+export const SlideItem = ({ slide }: { slide: Slide }) => {
 	return (
 		<div className="flex flex-col items-center gap-1.5 py-4 text-sm transition-transform duration-500 hover:scale-[1.3]">
 			<div className="rounded-xl bg-(--accent-default)">

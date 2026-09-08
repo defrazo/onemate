@@ -11,7 +11,7 @@ export const PersonalOverview = observer(() => {
 	const { userProfileStore, userStore } = useStore();
 	const { formattedBirthDate } = useProfile();
 
-	const gender = genderOptions.find((option) => option.value === userProfileStore.gender)?.label;
+	const gender = genderOptions.find((option) => option.value === userProfileStore.gender)?.value;
 
 	return (
 		<OverviewSection icon={IconUserFilled} title="Личные данные">

@@ -16,8 +16,9 @@ interface NotesCardActionsProps {
 }
 
 export const NotesCardActions = observer(({ id, text, attributes, listeners }: NotesCardActionsProps) => {
-	const { notesStore, notifyStore } = useStore();
 	const copy = useCopy();
+
+	const { notesStore, notifyStore } = useStore();
 
 	const handleRemove = (id: string) => {
 		try {

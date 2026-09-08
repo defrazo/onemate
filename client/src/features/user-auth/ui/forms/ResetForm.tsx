@@ -8,7 +8,6 @@ import { Button, PasswordInput, PasswordRules } from '@/shared/ui';
 
 export const ResetForm = observer(({ email, token }: { email: string; token: string }) => {
 	const navigate = useNavigate();
-
 	const { checkPassword } = useValidation();
 
 	const { authFormStore, authStore, notifyStore } = useStore();
@@ -45,7 +44,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 					placeholder="Пароль"
 					value={authFormStore.password}
 					onBlur={() => setShowHint(false)}
-					onChange={(event) => authFormStore.update('password', event.target.value)}
+					onChange={(e) => authFormStore.update('password', e.target.value)}
 					onFocus={() => setShowHint(true)}
 				/>
 				<PasswordRules password={authFormStore.password} showHint={showHint} />
@@ -56,9 +55,9 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 				name="password-confirm"
 				placeholder="Подтвердите пароль"
 				value={authFormStore.passwordConfirm}
-				onChange={(event) => authFormStore.update('passwordConfirm', event.target.value)}
-				onPaste={(event) => {
-					event.preventDefault();
+				onChange={(e) => authFormStore.update('passwordConfirm', e.target.value)}
+				onPaste={(e) => {
+					e.preventDefault();
 					notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 				}}
 			/>

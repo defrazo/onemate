@@ -11,33 +11,16 @@ export type NotesCacheData = {
 export const notesCache = {
 	read(userId: string): NotesCacheData | null {
 		const cached = readCache(userId)?.ui?.notes;
-
-		if (!cached) {
-			return null;
-		}
+		if (!cached) return null;
 
 		const data = cached as Partial<NotesCacheData>;
 
-		if (!Array.isArray(data.notes)) {
-			return null;
-		}
+		if (!Array.isArray(data.notes)) return null;
 
-		return {
-			notes: data.notes,
-			dirty: data.dirty === true,
-			updatedAt: data.updatedAt ?? 0,
-		};
+		return { notes: data.notes, dirty: data.dirty === true, updatedAt: data.updatedAt ?? 0 };
 	},
 
 	write(userId: string, notes: Note[], dirty: boolean): void {
-		writeCache(userId, {
-			ui: {
-				notes: {
-					notes,
-					dirty,
-					updatedAt: Date.now(),
-				},
-			},
-		});
+		writeCache(userId, { ui: { notes: { notes, dirty, updatedAt: Date.now() } } });
 	},
 };

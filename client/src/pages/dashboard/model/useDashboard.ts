@@ -7,11 +7,12 @@ import { widgets } from '../lib';
 import type { WidgetItem } from '.';
 
 export const useDashboard = () => {
-	const { userProfileStore: store } = useStore();
 	const sensors = useSensors(useSensor(PointerSensor));
 
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
+	const { userProfileStore: store } = useStore();
+
+	const handleDragEnd = (e: DragEndEvent) => {
+		const { active, over } = e;
 		if (!over || active.id === over.id) return;
 
 		const activeId = active.id.toString();

@@ -6,11 +6,11 @@ import { useDeviceType } from '@/shared/lib/hooks';
 import { BottomSheet, Dropdown, Modal } from '.';
 
 export const ModalManager = observer(() => {
+	const device = useDeviceType();
+
 	const { modalStore } = useStore();
 
 	const modal = modalStore.modal;
-	const device = useDeviceType();
-
 	if (!modal || modal.type === 'none') return null;
 
 	const componentMap = {

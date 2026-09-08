@@ -4,11 +4,7 @@ import { Tooltip } from '@/shared/ui';
 import type { ConditionCode, ForecastType } from '../model';
 import { ConditionIcon } from '.';
 
-interface ForecastProps {
-	forecast: ForecastType[];
-}
-
-export const Forecast = ({ forecast }: ForecastProps) => {
+export const Forecast = ({ forecast }: { forecast: ForecastType[] }) => {
 	return (
 		<>
 			<div className="flex flex-1 py-4 xl:py-2">
@@ -17,7 +13,7 @@ export const Forecast = ({ forecast }: ForecastProps) => {
 						key={date}
 						className={cn(
 							'flex flex-col justify-between',
-							idx !== forecast.length - 1 && 'border-r border-solid border-(--border-color)'
+							idx !== forecast.length - 1 && 'border-r border-(--border-color)'
 						)}
 					>
 						<div className="flex flex-col items-center justify-center gap-1 text-sm capitalize md:text-base">

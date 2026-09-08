@@ -2,8 +2,7 @@ import type { ReactNode } from 'react';
 
 import { IconEmpty } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
-import type { TabOption } from '@/shared/ui';
-import { TabSlider } from '@/shared/ui';
+import { type TabOption, TabSlider } from '@/shared/ui';
 
 interface WidgetPanel {
 	tabs: TabOption[];

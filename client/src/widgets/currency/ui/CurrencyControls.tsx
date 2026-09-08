@@ -6,11 +6,7 @@ import { Button } from '@/shared/ui';
 import type { CurrencyStore } from '../model';
 import { CurrencyBlock } from '.';
 
-interface CurrencyControlsProps {
-	store: CurrencyStore;
-}
-
-export const CurrencyControls = observer(({ store }: CurrencyControlsProps) => {
+export const CurrencyControls = observer(({ store }: { store: CurrencyStore }) => {
 	return (
 		<div className="flex flex-col">
 			<Button

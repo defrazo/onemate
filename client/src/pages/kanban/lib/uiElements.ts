@@ -113,8 +113,8 @@ export const customSelect = <T extends string | number = number>(
 		optionsContainer.appendChild(option);
 	});
 
-	const onSelectedClick = (event: MouseEvent) => {
-		event.stopPropagation();
+	const onSelectedClick = (e: MouseEvent) => {
+		e.stopPropagation();
 		closeAllSelects(optionsContainer);
 
 		optionsContainer.classList.toggle('hidden');
@@ -128,10 +128,8 @@ export const customSelect = <T extends string | number = number>(
 		}
 	};
 
-	const onDocumentClick = (event: MouseEvent) => {
-		if (!container.contains(event.target as Node)) {
-			optionsContainer.classList.add('hidden');
-		}
+	const onDocumentClick = (e: MouseEvent) => {
+		if (!container.contains(e.target as Node)) optionsContainer.classList.add('hidden');
 	};
 
 	selected.addEventListener('click', onSelectedClick);

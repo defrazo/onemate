@@ -58,8 +58,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		'absolute top-8 right-0 z-10 hidden w-fit divide-y divide-(--border-color)'
 	);
 
-	const onOptionsButtonClick = (event: MouseEvent) => {
-		event.stopPropagation();
+	const onOptionsButtonClick = (e: MouseEvent) => {
+		e.stopPropagation();
 
 		document.querySelectorAll('[data-task-options]').forEach((menu) => {
 			if (menu !== optionsMenu) menu.classList.add('hidden');
@@ -68,8 +68,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		optionsMenu.classList.toggle('hidden');
 	};
 
-	const onDocumentClick = (event: MouseEvent) => {
-		const target = event.target as Node | null;
+	const onDocumentClick = (e: MouseEvent) => {
+		const target = e.target as Node | null;
 		if (!target) return;
 
 		if (!taskCard.contains(target)) optionsMenu.classList.add('hidden');

@@ -14,12 +14,12 @@ export const createOverlay = () => {
 	document.body.style.overflow = 'hidden';
 
 	// === ACTION FUNCTIONS ===
-	function onClickOutside(event: MouseEvent) {
-		if (event.target === overlay) close();
+	function onClickOutside(e: MouseEvent) {
+		if (e.target === overlay) close();
 	}
 
-	function onEscape(event: KeyboardEvent) {
-		if (event.key === 'Escape') close();
+	function onEscape(e: KeyboardEvent) {
+		if (e.key === 'Escape') close();
 	}
 
 	queueMicrotask(() => {

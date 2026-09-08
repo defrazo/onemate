@@ -2,8 +2,7 @@ import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
 import { getDefaultColumns, getDefaultTasks, notifier, now } from '../lib';
 import { MESSAGES } from '../lib/constants';
-import type { IKanbanRepo } from '.';
-import { type Column, CreateColumnInput, createState, CreateTaskInput, type Task } from '.';
+import { type Column, CreateColumnInput, createState, CreateTaskInput, type IKanbanRepo, type Task } from '.';
 
 const createRepoMock = (): IKanbanRepo => ({
 	fetchColumns: vi.fn(),

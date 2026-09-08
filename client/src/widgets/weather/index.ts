@@ -1,3 +1,2 @@
-export type { CurrentType, ForecastType } from './model';
-export { WeatherStore } from './model';
+export { type CurrentType, type ForecastType, WeatherStore } from './model';
 export { WeatherWidget } from './ui';

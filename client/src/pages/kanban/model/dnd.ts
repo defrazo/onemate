@@ -13,10 +13,10 @@ export const setupDnD = (
 
 	const autoScroll = enableAutoScroll(board);
 
-	const onDragStart = (event: DragEvent) => {
+	const onDragStart = (e: DragEvent) => {
 		board.dataset.dragging = 'true';
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		const taskCard = target.closest<HTMLElement>('[data-task-id]');
 		if (taskCard) {
@@ -34,9 +34,9 @@ export const setupDnD = (
 				ghost.remove();
 			});
 
-			event.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
-			event.dataTransfer!.setData('text/plain', taskCard.dataset.id!);
-			event.dataTransfer!.effectAllowed = 'move';
+			e.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
+			e.dataTransfer!.setData('text/plain', taskCard.dataset.id!);
+			e.dataTransfer!.effectAllowed = 'move';
 			return;
 		}
 
@@ -56,25 +56,25 @@ export const setupDnD = (
 				ghost.remove();
 			});
 
-			event.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
-			event.dataTransfer!.setData('text/plain', column.dataset.columnId!);
-			event.dataTransfer!.effectAllowed = 'move';
+			e.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
+			e.dataTransfer!.setData('text/plain', column.dataset.columnId!);
+			e.dataTransfer!.effectAllowed = 'move';
 			return;
 		}
 
-		event.preventDefault();
+		e.preventDefault();
 	};
 
-	const onDragOver = (event: DragEvent) => {
-		event.preventDefault();
+	const onDragOver = (e: DragEvent) => {
+		e.preventDefault();
 
 		if (!draggingElement || !placeholder) return;
 
-		event.dataTransfer!.dropEffect = 'move';
+		e.dataTransfer!.dropEffect = 'move';
 
-		autoScroll.update(event.clientX, event.clientY);
+		autoScroll.update(e.clientX, e.clientY);
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		if (currentDragType === 'task') {
 			const targetContainer = target.closest<HTMLElement>('[data-tasks-container]');
@@ -90,7 +90,7 @@ export const setupDnD = (
 			if (targetCard === draggingElement) return;
 
 			const rect = targetCard.getBoundingClientRect();
-			const isAfter = event.clientY > rect.top + rect.height / 2;
+			const isAfter = e.clientY > rect.top + rect.height / 2;
 			const referenceNode = isAfter ? targetCard.nextElementSibling : targetCard;
 
 			if (placeholder.nextElementSibling !== referenceNode) {
@@ -107,7 +107,7 @@ export const setupDnD = (
 			if (!targetColumnId || targetColumnId === draggingElement) return;
 
 			const rect = targetColumnId.getBoundingClientRect();
-			const isAfter = event.clientX > rect.left + rect.width / 2;
+			const isAfter = e.clientX > rect.left + rect.width / 2;
 			const referenceNode = isAfter ? targetColumnId.nextElementSibling : targetColumnId;
 
 			if (placeholder.nextElementSibling !== referenceNode) {
@@ -117,9 +117,9 @@ export const setupDnD = (
 		}
 	};
 
-	const onDragDrop = (event: DragEvent) => {
+	const onDragDrop = (e: DragEvent) => {
 		delete board.dataset.dragging;
-		event.preventDefault();
+		e.preventDefault();
 		autoScroll.stop();
 
 		if (!draggingElement || !placeholder) return;
@@ -282,29 +282,29 @@ export const enableMouseScroll = (container: HTMLElement) => {
 
 	const MOVE_THRESHOLD = 5;
 
-	const onMouseDown = (event: MouseEvent) => {
-		if (event.button !== 0) return;
+	const onMouseDown = (e: MouseEvent) => {
+		if (e.button !== 0) return;
 		if (container.dataset.dragging) return;
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		if (target.closest('button, input, textarea, select, [data-task-id]')) return;
 
 		isDown = true;
 		moved = false;
-		startX = event.pageX;
+		startX = e.pageX;
 		scrollLeft = container.scrollLeft;
 	};
 
-	const onMouseMove = (event: MouseEvent) => {
+	const onMouseMove = (e: MouseEvent) => {
 		if (!isDown || container.dataset.dragging) return;
 
-		const dx = event.pageX - startX;
+		const dx = e.pageX - startX;
 
 		if (!moved && Math.abs(dx) < MOVE_THRESHOLD) return;
 
 		moved = true;
-		event.preventDefault();
+		e.preventDefault();
 		container.scrollLeft = scrollLeft - dx;
 		container.style.cursor = 'grabbing';
 	};

@@ -9,8 +9,8 @@ declare module '*.webp' {
 }
 
 declare module '*.svg' {
-	import { ReactComponent as ReactComponent } from 'react';
-	export { ReactComponent };
+	const content: string;
+	export default content;
 }
 
 declare module '*.svg?react' {
@@ -20,11 +20,6 @@ declare module '*.svg?react' {
 }
 
 declare module '*.svg?raw' {
-	const content: string;
-	export default content;
-}
-
-declare module '*.svg' {
 	const content: string;
 	export default content;
 }

@@ -38,7 +38,7 @@ export const SelectList = ({
 	return (
 		<ul
 			className={cn(
-				'core-base hide-scrollbar absolute right-0 z-30 -my-px max-h-48 w-full min-w-max overflow-y-auto rounded-xl border-solid border-(--accent-default-op) text-center',
+				'core-base hide-scrollbar absolute right-0 z-30 -my-px max-h-48 w-full min-w-max overflow-y-auto rounded-xl border-(--accent-default-op) text-center',
 				addStyle,
 				openUpwards
 					? `bottom-full border ${variant === 'embedded' && 'rounded-b-none border-b-0'}`

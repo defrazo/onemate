@@ -15,8 +15,9 @@ import { useStore } from '@/app/providers';
 import { useDeviceType } from '.';
 
 export const useModalBack = (target: ReactNode) => {
-	const { modalStore } = useStore();
 	const device = useDeviceType();
+
+	const { modalStore } = useStore();
 
 	useEffect(() => {
 		if (device !== 'mobile') return;

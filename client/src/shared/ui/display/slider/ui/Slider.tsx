@@ -1,11 +1,7 @@
 import type { Slide } from '../model';
 import { SlideItem } from '.';
 
-interface SliderProps {
-	slides: Slide[];
-}
-
-export const Slider = ({ slides }: SliderProps) => {
+export const Slider = ({ slides }: { slides: Slide[] }) => {
 	const doubledSlides = [...slides, ...slides];
 
 	return (

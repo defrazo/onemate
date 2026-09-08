@@ -14,11 +14,11 @@
 
 		applyTheme(theme);
 
-		window.addEventListener('storage', function (event) {
-			if (event.key !== KEY || !event.newValue) return;
+		window.addEventListener('storage', function (e) {
+			if (e.key !== KEY || !e.newValue) return;
 
 			try {
-				var theme = JSON.parse(event.newValue).theme;
+				var theme = JSON.parse(e.newValue).theme;
 				if (theme === 'light' || theme === 'dark') applyTheme(theme);
 			} catch {}
 		});

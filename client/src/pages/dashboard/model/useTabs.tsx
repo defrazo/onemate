@@ -6,6 +6,7 @@ const EMPTY = '__empty__';
 
 export const useTabs = () => {
 	const { userProfileStore: store } = useStore();
+
 	const tabs: TabOption[] = [
 		{ value: 'calculator', label: <Calculator /> },
 		{ value: 'calendar', label: <Calendar /> },

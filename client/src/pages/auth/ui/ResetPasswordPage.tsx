@@ -5,9 +5,13 @@ import { AuthFormHeader, AuthWrapper, ResetForm, UserAuth } from '@/features/use
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
+const title = 'Восстановить пароль';
+
 export const ResetPasswordPage = () => {
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
+
+	usePageTitle(title);
 
 	const { authFormStore, modalStore } = useStore();
 
@@ -15,10 +19,6 @@ export const ResetPasswordPage = () => {
 	const email = searchParams.get('email');
 
 	const isValidResetLink = !!token && !!email;
-
-	const title = 'Восстановить пароль';
-
-	usePageTitle(title);
 
 	return (
 		<AuthWrapper isPage>

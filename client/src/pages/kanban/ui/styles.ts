@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils';
 
 const base = {
 	button: 'cursor-pointer rounded-xl transition-colors select-none disabled:cursor-default disabled:opacity-70',
-	border: 'border border-solid',
+	border: 'border',
 	primaryText: 'cursor-default text-sm leading-4 select-none 2xl:text-base',
 	secondaryText: 'cursor-default text-xs leading-4 select-none 2xl:text-sm',
 };

@@ -1,9 +1,4 @@
-interface PrivacyConsentProps {
-	checked: boolean;
-	onChange: (value: boolean) => void;
-}
-
-export const PrivacyConsent = ({ checked, onChange }: PrivacyConsentProps) => {
+export const PrivacyConsent = ({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) => {
 	return (
 		<label className="mx-auto mt-1 flex w-full items-center justify-center gap-3 text-xs text-(--color-secondary) select-none md:mt-0 md:text-sm">
 			<input

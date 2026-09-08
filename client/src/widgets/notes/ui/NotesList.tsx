@@ -15,14 +15,15 @@ interface NotesListProps {
 }
 
 export const NotesList = observer(({ children }: NotesListProps) => {
-	const { notesStore: store } = useStore();
-	const sensors = useSensors(useSensor(PointerSensor));
 	const orientation = useOrientation();
+	const sensors = useSensors(useSensor(PointerSensor));
+
+	const { notesStore: store } = useStore();
 
 	const visibleNotes = store.focusedId ? store.notes.filter((note) => note.id === store.focusedId) : store.notes;
 
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
+	const handleDragEnd = (e: DragEndEvent) => {
+		const { active, over } = e;
 
 		if (active.id !== over?.id) {
 			const oldIndex = store.notes.findIndex((n) => n.id === active.id);

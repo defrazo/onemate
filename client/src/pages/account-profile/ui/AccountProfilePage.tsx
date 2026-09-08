@@ -7,12 +7,11 @@ import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
 
 export const AccountProfilePage = () => {
 	const device = useDeviceType();
+	const [searchParams, setSearchParams] = useSearchParams();
 
 	usePageTitle('Профиль');
 
 	const { modalStore } = useStore();
-
-	const [searchParams, setSearchParams] = useSearchParams();
 
 	const tab = searchParams.get('tab');
 	const currentTab: TabId = isAccountSettingsTab(tab) ? tab : 'overview';
