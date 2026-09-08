@@ -1,8 +1,9 @@
 import type { ReactNode } from 'react';
+import { IconChevronLeft } from '@tabler/icons-react';
 
-import { IconBack } from '@/shared/assets/icons';
 import { useBodyScrollLock } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
+import { Button } from '@/shared/ui';
 
 import { useDragger } from '../model';
 import { DragHandle } from '.';
@@ -14,9 +15,9 @@ interface BottomSheetProps {
 }
 
 export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => {
-	const { positionY, isDragging, bind, getLineClass } = useDragger(onClose);
-
 	useBodyScrollLock(true);
+
+	const { positionY, isDragging, bind, getLineClass } = useDragger(onClose);
 
 	return (
 		<>
@@ -42,9 +43,16 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 					<DragHandle getLineClass={getLineClass} />
 				</div>
 				{onBack && (
-					<div className="absolute top-8.5 w-1/4 pl-2" onClick={onBack}>
-						<IconBack className="size-5 cursor-pointer hover:text-(--accent-hover)" />
-					</div>
+					<Button
+						className="absolute top-2 right-2 rounded-lg bg-white/5 px-2 py-1 text-xs text-(--color-secondary) active:bg-white/10"
+						leftIcon={<IconChevronLeft className="size-3" />}
+						size="custom"
+						type="button"
+						variant="mobile"
+						onClick={onBack}
+					>
+						Назад
+					</Button>
 				)}
 				<div className="px-2" {...bind()} style={{ touchAction: 'pan-y' }}>
 					{children}
