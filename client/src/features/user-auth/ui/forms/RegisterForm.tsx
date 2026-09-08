@@ -3,10 +3,9 @@ import { IconKeyFilled, IconMailFilled, IconUserFilled } from '@tabler/icons-rea
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
+import { Button, Input, InputLabel, PasswordInput, PasswordRules } from '@/shared/ui';
 
 import { emailCooldown, useAuth } from '../../model';
-import { PasswordHint } from '../components';
 
 export const RegisterForm = observer(() => {
 	const { authFormStore, authStore, notifyStore } = useStore();
@@ -88,7 +87,7 @@ export const RegisterForm = observer(() => {
 					onChange={(e) => authFormStore.update('password', e.target.value)}
 					onFocus={() => setShowHint(true)}
 				/>
-				<PasswordHint password={authFormStore.password} showHint={showHint} />
+				<PasswordRules password={authFormStore.password} showHint={showHint} />
 			</div>
 			<PasswordInput
 				autoComplete="new-password"

@@ -1,3 +1,3 @@
-export { AuthFormHeader, AuthWrapper, LoginButton, PasswordHint } from './components';
+export { AuthFormHeader, AuthWrapper, LoginButton } from './components';
 export { ResetForm } from './forms';
 export { UserAuth } from './UserAuth';

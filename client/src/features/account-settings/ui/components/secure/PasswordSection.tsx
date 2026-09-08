@@ -2,8 +2,8 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { PasswordHint, useAuth } from '@/features/user-auth';
-import { Collapse, PasswordInput } from '@/shared/ui';
+import { useAuth } from '@/features/user-auth';
+import { Collapse, PasswordInput, PasswordRules } from '@/shared/ui';
 
 import { useProfile } from '../../../model';
 import { FormActions } from '..';
@@ -80,7 +80,7 @@ export const PasswordSection = observer(() => {
 					onChange={(e) => setPassNew(e.target.value)}
 					onFocus={() => setShowHint(true)}
 				/>
-				<PasswordHint password={passNew} showHint={showHint} />
+				<PasswordRules password={passNew} showHint={showHint} />
 			</div>
 			<PasswordInput
 				autoComplete="new-password"

@@ -3,10 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button, PasswordInput } from '@/shared/ui';
+import { Button, PasswordInput, PasswordRules } from '@/shared/ui';
 
 import { useAuth } from '../../model';
-import { PasswordHint } from '../components';
 
 export const ResetForm = observer(({ email, token }: { email: string; token: string }) => {
 	const navigate = useNavigate();
@@ -49,7 +48,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 					onChange={(event) => authFormStore.update('password', event.target.value)}
 					onFocus={() => setShowHint(true)}
 				/>
-				<PasswordHint password={authFormStore.password} showHint={showHint} />
+				<PasswordRules password={authFormStore.password} showHint={showHint} />
 			</div>
 			<PasswordInput
 				autoComplete="new-password"
