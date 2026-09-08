@@ -6,7 +6,7 @@ import { useDeviceType } from '@/shared/lib/hooks';
 import { storage } from '@/shared/lib/storage';
 import { Button } from '@/shared/ui';
 
-const DemoBanner = () => {
+export const DemoBanner = () => {
 	const device = useDeviceType();
 	const [isVisible, setIsVisible] = useState<boolean>(true);
 
@@ -58,5 +58,3 @@ const DemoBanner = () => {
 		</div>
 	);
 };
-
-export default DemoBanner;

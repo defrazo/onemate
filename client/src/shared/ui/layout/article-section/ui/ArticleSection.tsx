@@ -10,7 +10,7 @@ interface ArticleSectionProps {
 	first?: boolean;
 }
 
-const ArticleSection = ({ id, title, children, first = false }: ArticleSectionProps) => {
+export const ArticleSection = ({ id, title, children, first = false }: ArticleSectionProps) => {
 	return (
 		<>
 			<Divider />
@@ -29,5 +29,3 @@ const ArticleSection = ({ id, title, children, first = false }: ArticleSectionPr
 		</>
 	);
 };
-
-export default ArticleSection;

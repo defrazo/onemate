@@ -7,7 +7,7 @@ interface DividerProps {
 	margX?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
-const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
+export const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
 	const base = 'h-px';
 
 	const variants = {
@@ -37,5 +37,3 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 		</div>
 	);
 };
-
-export default Divider;

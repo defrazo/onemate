@@ -3,7 +3,7 @@ import { Input, Tooltip } from '@/shared/ui';
 import { CALCULATOR_TIP, useCalculator } from '../model';
 import { CalculatorButtons, CalculatorLog } from '.';
 
-const CalculatorWidget = () => {
+export const CalculatorWidget = () => {
 	const { display, handleButtonClick, result } = useCalculator();
 
 	return (
@@ -29,5 +29,3 @@ const CalculatorWidget = () => {
 		</>
 	);
 };
-
-export default CalculatorWidget;

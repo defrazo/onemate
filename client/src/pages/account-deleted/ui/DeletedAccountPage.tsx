@@ -8,7 +8,7 @@ import { Button } from '@/shared/ui';
 
 import { useDeletedAccount } from '../model';
 
-const DeletedAccountPage = () => {
+export const DeletedAccountPage = observer(() => {
 	usePageTitle('Аккаунт удален');
 
 	const { userStore } = useStore();
@@ -46,6 +46,4 @@ const DeletedAccountPage = () => {
 			</div>
 		</div>
 	);
-};
-
-export default observer(DeletedAccountPage);
+});

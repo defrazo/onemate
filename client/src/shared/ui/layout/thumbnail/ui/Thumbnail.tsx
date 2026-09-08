@@ -10,7 +10,7 @@ interface ThumbnailProps {
 	onClick?: () => void;
 }
 
-const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: ThumbnailProps) => {
+export const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: ThumbnailProps) => {
 	return (
 		<div className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}>
 			{isLoading ? (
@@ -29,5 +29,3 @@ const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Thumbnail
 		</div>
 	);
 };
-
-export default Thumbnail;

@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { PrivacyPolicyPage } from './ui';

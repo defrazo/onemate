@@ -6,7 +6,7 @@ import { Divider } from '@/shared/ui';
 import { features, principles, stack } from '../lib';
 import { FeatureCard, Section, TechIcon } from '.';
 
-const AboutPage = () => {
+export const AboutPage = () => {
 	usePageTitle('О проекте');
 
 	return (
@@ -119,5 +119,3 @@ const AboutPage = () => {
 		</div>
 	);
 };
-
-export default AboutPage;

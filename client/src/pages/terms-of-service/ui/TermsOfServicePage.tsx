@@ -1,6 +1,6 @@
 import { ArticleSection, PrintButton } from '@/shared/ui';
 
-const TermsOfServicePage = () => {
+export const TermsOfServicePage = () => {
 	return (
 		<>
 			<header className="flex flex-col items-center">
@@ -167,5 +167,3 @@ const TermsOfServicePage = () => {
 		</>
 	);
 };
-
-export default TermsOfServicePage;

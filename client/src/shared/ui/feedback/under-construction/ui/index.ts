@@ -1,1 +1,1 @@
-export { default } from './UnderConstruction';
+export { UnderConstruction } from './UnderConstruction';

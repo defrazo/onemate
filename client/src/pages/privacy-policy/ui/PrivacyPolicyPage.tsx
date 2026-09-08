@@ -1,6 +1,6 @@
 import { ArticleSection, PrintButton } from '@/shared/ui';
 
-const PrivacyPolicyPage = () => {
+export const PrivacyPolicyPage = () => {
 	return (
 		<>
 			<header className="flex flex-col items-center">
@@ -153,5 +153,3 @@ const PrivacyPolicyPage = () => {
 		</>
 	);
 };
-
-export default PrivacyPolicyPage;

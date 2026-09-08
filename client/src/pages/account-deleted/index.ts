@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { DeletedAccountPage } from './ui';

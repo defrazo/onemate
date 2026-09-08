@@ -1,4 +1,3 @@
 export { TranslatorProviderRouting } from './api';
-export type { Textbox } from './model';
-export { TranslatorStore } from './model';
-export { default } from './ui';
+export { type Textbox, TranslatorStore } from './model';
+export { TranslatorWidget } from './ui';

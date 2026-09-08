@@ -1,1 +1,1 @@
-export { default } from './DeletedAccountPage';
+export { DeletedAccountPage } from './DeletedAccountPage';

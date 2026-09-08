@@ -1,1 +1,1 @@
-export { default } from './StartupProvider';
+export { StartupProvider } from './StartupProvider';

@@ -7,7 +7,7 @@ import { Button, Tooltip } from '@/shared/ui';
 import { NOTES_TIP } from '../model';
 import { NotesCard, NotesList } from '.';
 
-const NotesWidget = () => {
+export const NotesWidget = observer(() => {
 	const { notesStore, notifyStore } = useStore();
 
 	const handleAdd = () => {
@@ -46,6 +46,4 @@ const NotesWidget = () => {
 			</div>
 		</>
 	);
-};
-
-export default observer(NotesWidget);
+});

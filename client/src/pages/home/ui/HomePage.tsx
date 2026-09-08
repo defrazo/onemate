@@ -4,7 +4,7 @@ import { Slider } from '@/shared/ui';
 
 import { slides } from '../lib';
 
-const HomePage = () => {
+export const HomePage = () => {
 	usePageTitle('Главная');
 
 	return (
@@ -27,5 +27,3 @@ const HomePage = () => {
 		</div>
 	);
 };
-
-export default HomePage;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 
-import App from '@/app';
+import { App } from '@/app/App';
 import { IconWarning } from '@/shared/assets/icons';
 import { PreloaderExt } from '@/shared/ui';
 
-import StoreProvider, { getRootStore } from '../store';
+import { getRootStore, StoreProvider } from '../store';
 
 const rootStore = getRootStore();
 
@@ -64,12 +64,10 @@ const AppInitializer = () => {
 	return <App />;
 };
 
-const StartupProvider = () => {
+export const StartupProvider = () => {
 	return (
 		<StoreProvider>
 			<AppInitializer />
 		</StoreProvider>
 	);
 };
-
-export default StartupProvider;

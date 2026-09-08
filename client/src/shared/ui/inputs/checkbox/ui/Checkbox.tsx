@@ -19,7 +19,7 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'siz
 	error?: boolean;
 }
 
-const Checkbox = ({
+export const Checkbox = ({
 	name,
 	value,
 	options,
@@ -78,5 +78,3 @@ const Checkbox = ({
 		</div>
 	);
 };
-
-export default Checkbox;

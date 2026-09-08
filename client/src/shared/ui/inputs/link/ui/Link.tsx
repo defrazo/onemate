@@ -15,7 +15,7 @@ interface LinkProps extends AnchorHTMLAttributes<HTMLAnchorElement> {
 	size?: keyof typeof sizes.button;
 }
 
-const Link = ({
+export const Link = ({
 	to,
 	active = false,
 	disabled,
@@ -38,5 +38,3 @@ const Link = ({
 		</RouterLink>
 	);
 };
-
-export default Link;

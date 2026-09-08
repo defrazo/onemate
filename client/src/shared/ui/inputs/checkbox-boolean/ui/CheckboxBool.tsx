@@ -15,7 +15,7 @@ interface CheckboxBoolProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 
 	error?: boolean;
 }
 
-const CheckboxBool = ({
+export const CheckboxBool = ({
 	checked,
 	onChange,
 	disabled = false,
@@ -58,5 +58,3 @@ const CheckboxBool = ({
 		</label>
 	);
 };
-
-export default CheckboxBool;

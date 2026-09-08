@@ -123,7 +123,7 @@ export class TranslatorStore extends AsyncStore {
 		super.destroy();
 	}
 
-	protected reset(): void {
+	reset(): void {
 		this.cancelRequest();
 		this.textboxes = createDefaultTranslator();
 	}

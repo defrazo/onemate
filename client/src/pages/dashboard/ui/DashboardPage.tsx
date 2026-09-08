@@ -10,7 +10,7 @@ import { widgets } from '../lib';
 import { useDashboard, useTabs } from '../model';
 import { Widget, WidgetPanel } from '.';
 
-const DashboardPage = () => {
+export const DashboardPage = observer(() => {
 	usePageTitle('Dashboard');
 	const device = useDeviceType();
 	const orientation = useOrientation();
@@ -67,6 +67,4 @@ const DashboardPage = () => {
 			)}
 		</>
 	);
-};
-
-export default observer(DashboardPage);
+});

@@ -9,7 +9,7 @@ interface Section {
 	title: string;
 }
 
-const TableOfContents = () => {
+export const TableOfContents = () => {
 	const [sections, setSections] = useState<Section[]>([]);
 	const [activeId, setActiveId] = useState<string | null>(null);
 
@@ -83,5 +83,3 @@ const TableOfContents = () => {
 		</nav>
 	);
 };
-
-export default TableOfContents;

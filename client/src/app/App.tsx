@@ -10,7 +10,7 @@ import { DemoBanner } from '@/shared/ui';
 
 import { RouterProvider, useStore } from './providers';
 
-const App = () => {
+export const App = observer(() => {
 	const { userStore } = useStore();
 	const device = useDeviceType();
 
@@ -22,6 +22,4 @@ const App = () => {
 			<Toaster duration={5000} position={device === 'desktop' ? 'bottom-right' : 'top-left'} />
 		</BrowserRouter>
 	);
-};
-
-export default observer(App);
+});

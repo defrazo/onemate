@@ -20,7 +20,7 @@ interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'siz
 	align?: 'left' | 'center' | 'right';
 }
 
-const Select = ({
+export const Select = ({
 	options,
 	placeholder,
 	variant = 'default',
@@ -64,5 +64,3 @@ const Select = ({
 		</div>
 	);
 };
-
-export default Select;

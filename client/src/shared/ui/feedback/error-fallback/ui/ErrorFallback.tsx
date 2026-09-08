@@ -12,7 +12,7 @@ interface ErrorFallbackProps {
 
 const DELAY = 5000; // 10 секунд
 
-const ErrorFallback = ({
+export const ErrorFallback = ({
 	icon = true,
 	message = 'Не удалось загрузить данные',
 	delay = DELAY,
@@ -47,5 +47,3 @@ const ErrorFallback = ({
 		</div>
 	);
 };
-
-export default ErrorFallback;

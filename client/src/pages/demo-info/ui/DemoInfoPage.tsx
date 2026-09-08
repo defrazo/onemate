@@ -2,7 +2,7 @@ import { ArticleSection } from '@/shared/ui';
 
 import { FaqItem } from '.';
 
-const DemoInfoPage = () => {
+export const DemoInfoPage = () => {
 	return (
 		<>
 			<header className="flex flex-col items-center">
@@ -133,5 +133,3 @@ const DemoInfoPage = () => {
 		</>
 	);
 };
-
-export default DemoInfoPage;

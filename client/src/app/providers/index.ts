@@ -1,3 +1,3 @@
-export { default as RouterProvider } from './router';
-export { default as StartupProvider } from './startup';
-export { getRootStore, RootStore, default as StoreProvider, useStore } from './store';
+export { RouterProvider } from './router';
+export { StartupProvider } from './startup';
+export { getRootStore, RootStore, StoreProvider, useStore } from './store';

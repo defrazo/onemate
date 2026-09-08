@@ -1,1 +1,1 @@
-export { default } from './LoadFallback';
+export { LoadFallback } from './LoadFallback';

@@ -1,4 +1,4 @@
-import Preloader from '.';
+import { Preloader } from '.';
 
 export const PreloaderMini = () => {
 	return (

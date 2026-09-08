@@ -9,7 +9,7 @@ interface SuggestionListProps<T> {
 	className?: string;
 }
 
-const SuggestionList = <T,>({ items, onSelect, renderItem, className }: SuggestionListProps<T>) => {
+export const SuggestionList = <T,>({ items, onSelect, renderItem, className }: SuggestionListProps<T>) => {
 	if (items.length === 0) return null;
 
 	return (
@@ -31,5 +31,3 @@ const SuggestionList = <T,>({ items, onSelect, renderItem, className }: Suggesti
 		</div>
 	);
 };
-
-export default SuggestionList;

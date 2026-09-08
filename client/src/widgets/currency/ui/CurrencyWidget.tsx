@@ -7,7 +7,7 @@ import { ErrorFallback, Tooltip } from '@/shared/ui';
 import { CURRENCY_TIP, useCurrency } from '../model';
 import { CurrencyControls } from '.';
 
-const CurrencyWidget = () => {
+export const CurrencyWidget = observer(() => {
 	const { currencyStore } = useStore();
 	const copy = useCopy();
 	const { exchangeRate, exchangeResult } = useCurrency();
@@ -42,6 +42,4 @@ const CurrencyWidget = () => {
 			)}
 		</>
 	);
-};
-
-export default observer(CurrencyWidget);
+});

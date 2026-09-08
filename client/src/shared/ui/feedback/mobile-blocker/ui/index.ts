@@ -1,1 +1,1 @@
-export { default } from './MobileBlocker';
+export { MobileBlocker } from './MobileBlocker';

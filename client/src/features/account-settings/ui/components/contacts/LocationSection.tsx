@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { City, isSameCity } from '@/entities/city';
-import LocationSearch from '@/features/location-search';
+import { LocationSearch } from '@/features/location-search';
 import { Collapse } from '@/shared/ui';
 
 import { FormActions } from '..';

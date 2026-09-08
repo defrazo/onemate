@@ -1,1 +1,1 @@
-export { default } from './ArticleSection';
+export { ArticleSection } from './ArticleSection';

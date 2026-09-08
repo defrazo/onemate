@@ -3,11 +3,7 @@ import { Printer } from 'lucide-react';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-interface PrintButtonProps {
-	className?: string;
-}
-
-const PrintButton = ({ className }: PrintButtonProps) => {
+export const PrintButton = ({ className }: { className?: string }) => {
 	return (
 		<Button
 			centerIcon={<Printer className="size-6" />}
@@ -21,5 +17,3 @@ const PrintButton = ({ className }: PrintButtonProps) => {
 		</Button>
 	);
 };
-
-export default PrintButton;

@@ -7,7 +7,7 @@ import { Button } from '@/shared/ui/inputs';
 
 const BASE_BOTTOM = 16;
 
-const ScrollToTop = ({ footerSelector = 'footer' }) => {
+export const ScrollToTop = ({ footerSelector = 'footer' }) => {
 	const [visible, setVisible] = useState<boolean>(false);
 	const [extraBottom, setExtraBottom] = useState<number>(0);
 	const device = useDeviceType();
@@ -59,5 +59,3 @@ const ScrollToTop = ({ footerSelector = 'footer' }) => {
 		/>
 	);
 };
-
-export default ScrollToTop;

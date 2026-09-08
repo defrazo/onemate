@@ -18,7 +18,7 @@ interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' 
 	labelSide?: 'left' | 'right';
 }
 
-const Radio = ({
+export const Radio = ({
 	value,
 	options,
 	onChange,
@@ -86,5 +86,3 @@ const Radio = ({
 		</div>
 	);
 };
-
-export default Radio;

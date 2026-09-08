@@ -1,2 +1,2 @@
-export { default } from './SelectExt';
+export { SelectExt } from './SelectExt';
 export { SelectList } from './SelectList';

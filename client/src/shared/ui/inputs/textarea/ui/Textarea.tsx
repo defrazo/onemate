@@ -10,7 +10,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 	error?: boolean;
 }
 
-const Textarea = ({
+export const Textarea = ({
 	variant = 'default',
 	size = 'md',
 	resize = 'none',
@@ -29,5 +29,3 @@ const Textarea = ({
 
 	return <textarea className={cn(styles, resizeStyles[resize], className)} {...props} />;
 };
-
-export default Textarea;

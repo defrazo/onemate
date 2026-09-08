@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import Footer from '@/widgets/footer';
+import { FooterWidget } from '@/widgets/footer';
 import { Header } from '@/widgets/header';
 import { MobileTabBar } from '@/widgets/mobile-tab-bar';
 
@@ -55,7 +55,7 @@ export const AppShell = ({
 					<main className="flex min-w-0 flex-1">{children}</main>
 					{right && <aside className="flex">{right}</aside>}
 				</div>
-				{!showMobileTabBar && !hideFooter && <Footer />}
+				{!showMobileTabBar && !hideFooter && <FooterWidget />}
 			</div>
 			{showMobileTabBar && !(landscape && landscapeMode) && <MobileTabBar />}
 		</div>

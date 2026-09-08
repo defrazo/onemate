@@ -15,7 +15,7 @@ interface TooltipProps {
 	portalContainer?: Element;
 }
 
-const Tooltip = ({
+export const Tooltip = ({
 	content,
 	className,
 	children,
@@ -67,5 +67,3 @@ const Tooltip = ({
 		</>
 	);
 };
-
-export default Tooltip;

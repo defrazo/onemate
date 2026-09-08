@@ -9,7 +9,7 @@ import { Button, Tooltip } from '@/shared/ui';
 import { TRANSLATOR_TIP } from '../model';
 import { TranslatorBox } from '.';
 
-const TranslatorWidget = () => {
+export const TranslatorWidget = observer(() => {
 	const { notifyStore, translatorStore: store } = useStore();
 
 	const handleClear = () => {
@@ -76,6 +76,4 @@ const TranslatorWidget = () => {
 			</div>
 		</>
 	);
-};
-
-export default observer(TranslatorWidget);
+});

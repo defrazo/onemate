@@ -6,7 +6,7 @@ import { ErrorFallback } from '@/shared/ui';
 
 import { initKanban } from '.';
 
-const KanbanPage = () => {
+export const KanbanPage = () => {
 	const { userStore } = useStore();
 
 	usePageTitle('Kanban');
@@ -74,5 +74,3 @@ const KanbanPage = () => {
 		</div>
 	);
 };
-
-export default KanbanPage;

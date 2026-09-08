@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { ErrorFallback } from './ui';

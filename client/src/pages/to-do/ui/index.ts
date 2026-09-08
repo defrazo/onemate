@@ -1,1 +1,1 @@
-export { default } from './TodoPage';
+export { TodoPage } from './TodoPage';

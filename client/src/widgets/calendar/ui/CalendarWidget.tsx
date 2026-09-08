@@ -3,7 +3,7 @@ import { Tooltip } from '@/shared/ui';
 import { CALENDAR_TIP, useCalendar } from '../model';
 import { CalendarControls, CalendarGrid, CalendarNav } from '.';
 
-const CalendarWidget = () => {
+export const CalendarWidget = () => {
 	const {
 		currentDate,
 		handleDayClick,
@@ -39,5 +39,3 @@ const CalendarWidget = () => {
 		</>
 	);
 };
-
-export default CalendarWidget;

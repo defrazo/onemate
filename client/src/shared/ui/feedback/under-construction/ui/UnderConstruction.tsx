@@ -6,7 +6,7 @@ interface Props {
 	suggestions?: React.ReactNode;
 }
 
-const UnderConstruction = ({ title = 'Страница в разработке', suggestions }: Props) => {
+export const UnderConstruction = ({ title = 'Страница в разработке', suggestions }: Props) => {
 	return (
 		<div className="flex flex-1 flex-col justify-evenly select-none lg:flex-row lg:justify-between">
 			<div className="flex flex-col items-center justify-center gap-4 xl:flex-1 xl:gap-8">
@@ -45,5 +45,3 @@ const UnderConstruction = ({ title = 'Страница в разработке',
 		</div>
 	);
 };
-
-export default UnderConstruction;

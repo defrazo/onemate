@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { DemoBanner } from './ui';

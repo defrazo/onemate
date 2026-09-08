@@ -9,7 +9,7 @@ interface ZoomOnHoverprops {
 	className?: string;
 }
 
-const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: ZoomOnHoverprops) => {
+export const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: ZoomOnHoverprops) => {
 	return (
 		<div
 			className={cn(
@@ -26,5 +26,3 @@ const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: Z
 		</div>
 	);
 };
-
-export default ZoomOnHover;

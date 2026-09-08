@@ -9,7 +9,7 @@ interface ConfirmDialogProps {
 	onConfirm: (confirm: boolean) => void;
 }
 
-const ConfirmDialog = ({
+export const ConfirmDialog = ({
 	title = 'Вы уверены?',
 	description,
 	confirmLabel = 'Подтвердить',
@@ -34,5 +34,3 @@ const ConfirmDialog = ({
 		</div>
 	);
 };
-
-export default ConfirmDialog;

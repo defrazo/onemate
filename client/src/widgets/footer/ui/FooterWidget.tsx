@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { links, socials } from '../lib';
 
-const FooterWidget = () => (
+export const FooterWidget = () => (
 	<footer className="core-card flex items-center justify-between bg-(--bg-tertiary) p-4 shadow-(--shadow) select-none print:hidden">
 		<ul className="flex flex-col items-center text-center text-xs md:flex-row md:gap-x-4 lg:text-base">
 			{links.map(({ title, to }) => (
@@ -20,5 +20,3 @@ const FooterWidget = () => (
 		</div>
 	</footer>
 );
-
-export default FooterWidget;

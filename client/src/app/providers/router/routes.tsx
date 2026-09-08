@@ -2,21 +2,21 @@ import type { RouteObject } from 'react-router-dom';
 
 import { Layout, StaticPageLayout } from '@/app/layouts';
 import { ProfileNav } from '@/features/account-settings';
-import AboutPage from '@/pages/about';
-import DeletedAccountPage from '@/pages/account-deleted';
+import { AboutPage } from '@/pages/about';
+import { DeletedAccountPage } from '@/pages/account-deleted';
 import { AccountProfilePage } from '@/pages/account-profile';
 import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
-import DashboardPage from '@/pages/dashboard';
-import DemoInfoPage from '@/pages/demo-info';
-import GeneratorPage from '@/pages/generator';
-import HomePage from '@/pages/home';
-import KanbanPage from '@/pages/kanban';
-import NotFoundPage from '@/pages/not-found';
-import PrivacyPolicyPage from '@/pages/privacy-policy';
-import TermsOfServicePage from '@/pages/terms-of-service';
-import TodoPage from '@/pages/to-do';
-import { SettingsLeft, SettingsRight } from '@/widgets/generator';
+import { DashboardPage } from '@/pages/dashboard';
+import { DemoInfoPage } from '@/pages/demo-info';
+import { HomePage } from '@/pages/home';
+// import GeneratorPage from '@/pages/generator';
+import { KanbanPage } from '@/pages/kanban';
+import { NotFoundPage } from '@/pages/not-found';
+import { PrivacyPolicyPage } from '@/pages/privacy-policy';
+import { TermsOfServicePage } from '@/pages/terms-of-service';
+import { TodoPage } from '@/pages/to-do';
 
+// import { SettingsLeft, SettingsRight } from '@/widgets/generator';
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
 
 export const routes: RouteObject[] = [
@@ -65,12 +65,12 @@ export const routes: RouteObject[] = [
 			},
 		],
 	},
-	{
-		element: (
-			<Layout hideLeftOnMobile hideRightOnMobile leftSide={<SettingsLeft />} rightSide={<SettingsRight />} />
-		),
-		children: [{ path: '/generator', element: <GeneratorPage /> }],
-	},
+	// {
+	// 	element: (
+	// 		<Layout hideLeftOnMobile hideRightOnMobile leftSide={<SettingsLeft />} rightSide={<SettingsRight />} />
+	// 	),
+	// 	children: [{ path: '/generator', element: <GeneratorPage /> }],
+	// },
 	{
 		element: <StaticPageLayout title="О демо-режиме OneMate" />,
 		children: [{ path: '/demo-info', element: <DemoInfoPage /> }],

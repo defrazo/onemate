@@ -1,13 +1,13 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import LocationSearch from '@/features/location-search';
+import { LocationSearch } from '@/features/location-search';
 import { Button, LoadFallback, Tooltip } from '@/shared/ui';
 
 import { WEATHER_TIP } from '../model';
 import { Current, Forecast } from '.';
 
-const WeatherWidget = () => {
+export const WeatherWidget = observer(() => {
 	const { weatherStore } = useStore();
 
 	return (
@@ -40,6 +40,4 @@ const WeatherWidget = () => {
 			</div>
 		</>
 	);
-};
-
-export default observer(WeatherWidget);
+});

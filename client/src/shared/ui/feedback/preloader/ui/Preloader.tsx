@@ -1,10 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-interface PreloaderProps {
-	className?: string;
-}
-
-const Preloader = ({ className }: PreloaderProps) => {
+export const Preloader = ({ className }: { className?: string }) => {
 	return (
 		<div
 			className={cn(
@@ -14,5 +10,3 @@ const Preloader = ({ className }: PreloaderProps) => {
 		/>
 	);
 };
-
-export default Preloader;

@@ -2,7 +2,7 @@ import { NotFound } from '@/shared/assets/images';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Link } from '@/shared/ui';
 
-const NotFoundPage = () => {
+export const NotFoundPage = () => {
 	usePageTitle('Страница не найдена');
 
 	return (
@@ -42,5 +42,3 @@ const NotFoundPage = () => {
 		</div>
 	);
 };
-
-export default NotFoundPage;

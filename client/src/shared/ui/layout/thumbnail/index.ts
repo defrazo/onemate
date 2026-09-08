@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { Thumbnail } from './ui';
