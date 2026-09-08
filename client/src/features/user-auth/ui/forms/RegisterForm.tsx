@@ -3,13 +3,15 @@ import { IconKeyFilled, IconMailFilled, IconUserFilled } from '@tabler/icons-rea
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel, PasswordInput, PasswordRules } from '@/shared/ui';
 
-import { emailCooldown, useAuth } from '../../model';
+import { emailCooldown } from '../../model';
 
 export const RegisterForm = observer(() => {
+	const { checkUsername, checkEmail, checkPassword, checkInvite } = useValidation();
+
 	const { authFormStore, authStore, notifyStore } = useStore();
-	const { checkUsername, checkEmail, checkPassword, checkInvite } = useAuth();
 
 	const [showHint, setShowHint] = useState(false);
 

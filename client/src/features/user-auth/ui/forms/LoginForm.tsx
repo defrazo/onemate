@@ -3,13 +3,15 @@ import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
-import { emailCooldown, useAuth } from '../../model';
+import { emailCooldown } from '../../model';
 
 export const LoginForm = observer(() => {
+	const { checkLogin, checkPassword } = useValidation();
+
 	const { authFormStore, authStore, notifyStore, userStore } = useStore();
-	const { checkLogin, checkPassword } = useAuth();
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();

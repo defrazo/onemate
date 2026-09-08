@@ -3,15 +3,15 @@ import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useValidation } from '@/shared/lib/hooks';
 import { Button, PasswordInput, PasswordRules } from '@/shared/ui';
-
-import { useAuth } from '../../model';
 
 export const ResetForm = observer(({ email, token }: { email: string; token: string }) => {
 	const navigate = useNavigate();
 
+	const { checkPassword } = useValidation();
+
 	const { authFormStore, authStore, notifyStore } = useStore();
-	const { checkPassword } = useAuth();
 
 	const [showHint, setShowHint] = useState(false);
 

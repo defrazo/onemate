@@ -3,7 +3,7 @@ import { IconMailOpenedFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useAuth } from '@/features/user-auth';
+import { useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, InputLabel } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
@@ -12,8 +12,9 @@ import { FormActions, RemoveButton } from '..';
 const MAX_EMAILS = 3;
 
 export const AdditionalEmails = observer(() => {
+	const { checkEmail } = useValidation();
+
 	const { notifyStore, userProfileStore } = useStore();
-	const { checkEmail } = useAuth();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [emails, setEmails] = useState<string[]>(() => withEmptySlot(userProfileStore.emails ?? [], MAX_EMAILS));

@@ -1,3 +1,13 @@
+/**
+ * useValidation – хук для проверки данных формы.
+ *
+ * Использует валидаторы из shared/lib/validators и показывает уведомления
+ * при ошибках проверки.
+ *
+ * Возвращает методы проверки для email, username, имени, пароля, логина и инвайт-кода.
+ * Каждый метод возвращает true при успешной проверке и false при ошибке.
+ */
+
 import { useStore } from '@/app/providers';
 import {
 	validateEmail,
@@ -8,7 +18,7 @@ import {
 	validateUsername,
 } from '@/shared/lib/validators';
 
-export const useAuth = () => {
+export const useValidation = () => {
 	const { notifyStore } = useStore();
 
 	const notify = (msg: string) => notifyStore.setNotice(msg, 'info');

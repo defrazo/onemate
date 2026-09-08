@@ -3,16 +3,17 @@ import { IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useAuth } from '@/features/user-auth';
 import { IconWarning } from '@/shared/assets/icons';
+import { useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
 import { FormActions } from '..';
 import { PendingEmailDialog } from '.';
 
 export const PrimaryEmail = observer(() => {
+	const { checkEmail, checkPassword } = useValidation();
+
 	const { modalStore, notifyStore, userStore } = useStore();
-	const { checkEmail, checkPassword } = useAuth();
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [mainEmail, setMainEmail] = useState(userStore.email);

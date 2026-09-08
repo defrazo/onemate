@@ -3,13 +3,13 @@ import { IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel } from '@/shared/ui';
 
-import { useAuth } from '../../model';
-
 export const ForgotForm = observer(() => {
+	const { checkEmail } = useValidation();
+
 	const { authStore, modalStore, notifyStore } = useStore();
-	const { checkEmail } = useAuth();
 
 	const [email, setEmail] = useState('');
 

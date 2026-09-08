@@ -2,16 +2,17 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useAuth } from '@/features/user-auth';
+import { useValidation } from '@/shared/lib/hooks';
 import { Collapse, PasswordInput, PasswordRules } from '@/shared/ui';
 
 import { useProfile } from '../../../model';
 import { FormActions } from '..';
 
 export const PasswordSection = observer(() => {
+	const { checkPassword } = useValidation();
+
 	const { notifyStore, userStore } = useStore();
 	const { formattedDate } = useProfile();
-	const { checkPassword } = useAuth();
 
 	const [passOld, setPassOld] = useState('');
 	const [passNew, setPassNew] = useState('');

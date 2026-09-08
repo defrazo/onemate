@@ -3,13 +3,15 @@ import { IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel } from '@/shared/ui';
 
-import { emailCooldown, useAuth } from '../../model';
+import { emailCooldown } from '../../model';
 
 export const ResendEmailForm = observer(() => {
+	const { checkEmail } = useValidation();
+
 	const { authFormStore, authStore, notifyStore, userStore } = useStore();
-	const { checkEmail } = useAuth();
 
 	const defaultEmail = userStore.pendingEmail || authFormStore.email || '';
 
