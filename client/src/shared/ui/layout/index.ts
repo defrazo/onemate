@@ -1,3 +1,3 @@
-export { default as ArticleSection } from './article-section';
-export { default as Divider } from './divider';
-export { default as Thumbnail } from './thumbnail';
+export * from './article-section';
+export * from './divider';
+export * from './thumbnail';

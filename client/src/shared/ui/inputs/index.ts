@@ -1,9 +1,9 @@
-export { default as Button } from './button';
-export { default as Checkbox } from './checkbox';
-export { default as CheckboxBool } from './checkbox-boolean';
-export { Input, InputLabel, PasswordInput, PhoneInput } from './input';
-export { default as Link } from './link';
-export { default as Radio } from './radiobox';
-export { default as Select } from './select';
-export { default as SelectExt } from './select-extended';
-export { default as Textarea } from './textarea';
+export * from './button';
+export * from './checkbox';
+export * from './checkbox-boolean';
+export * from './input';
+export * from './link';
+export * from './radiobox';
+export * from './select';
+export * from './select-extended';
+export * from './textarea';
