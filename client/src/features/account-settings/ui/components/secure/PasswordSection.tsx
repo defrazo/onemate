@@ -4,14 +4,13 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { PasswordHint, PasswordInput, useAuth } from '@/features/user-auth';
 import { Collapse } from '@/shared/ui';
-import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { useProfile } from '../../../model';
 import { FormActions } from '..';
 
 export const PasswordSection = observer(() => {
-	const { modalStore, notifyStore, userStore } = useStore();
-	const { device, formattedDate } = useProfile();
+	const { notifyStore, userStore } = useStore();
+	const { formattedDate } = useProfile();
 	const { checkPassword } = useAuth();
 
 	const [passOld, setPassOld] = useState('');
@@ -51,15 +50,6 @@ export const PasswordSection = observer(() => {
 		} finally {
 			setIsLoading(false);
 		}
-	};
-
-	const handleCancel = (): void => {
-		if (device === 'mobile') {
-			modalStore.setModal(<MobileUserMenu />, 'sheet');
-			return;
-		}
-
-		clearPasswords();
 	};
 
 	return (
@@ -110,7 +100,7 @@ export const PasswordSection = observer(() => {
 				<FormActions
 					isLoading={isLoading}
 					saveDisabled={!canSave}
-					onCancel={handleCancel}
+					onCancel={clearPasswords}
 					onSave={handleSave}
 				/>
 			</Collapse>

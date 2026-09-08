@@ -2,17 +2,16 @@ import { useState } from 'react';
 
 import { useStore } from '@/app/providers';
 import { AVATAR_ENTRIES, AvatarId } from '@/shared/assets/images/avatars';
-import { useDeviceType, useModalBack } from '@/shared/lib/hooks';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
-import { PersonalTab } from '@/widgets/user-profile';
+
+import { PersonalTab } from '../..';
 
 export const AvatarPicker = () => {
 	const device = useDeviceType();
 
 	const { modalStore, notifyStore, userProfileStore } = useStore();
-
-	useModalBack(<PersonalTab />);
 
 	const [isLoading, setIsLoading] = useState(false);
 	const [selectedAvatar, setSelectedAvatar] = useState<AvatarId | null>(null);
@@ -40,15 +39,15 @@ export const AvatarPicker = () => {
 	};
 
 	return (
-		<div className="-mt-6 flex w-120 flex-col rounded-xl pb-2 md:pb-0">
-			<h2 className="text-lg font-semibold">Выберите аватар</h2>
+		<div className="-mt-6 flex min-w-80 flex-col rounded-xl pb-2 md:pb-0 lg:w-120">
+			<h2 className="font-semibold lg:text-lg">Выберите аватар</h2>
 			<div className="my-2 flex flex-wrap justify-between gap-2">
 				{AVATAR_ENTRIES.map(([id, src], idx) => (
 					<img
 						key={id}
 						alt={`Аватар ${idx}`}
 						className={cn(
-							'aspect-square size-15 cursor-pointer rounded-full object-cover transition hover:scale-[1.15] xl:size-28',
+							'aspect-square size-20 cursor-pointer rounded-full object-cover transition hover:scale-[1.15] xl:size-28',
 							selectedAvatar === id && 'ring-3 ring-(--color-accent)'
 						)}
 						src={src}

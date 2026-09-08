@@ -1,14 +1,9 @@
 import { IconDeviceDesktop, IconKeyFilled, IconTrashXFilled } from '@tabler/icons-react';
 
-import { useModalBack } from '@/shared/lib/hooks';
-import { MobileUserMenu } from '@/widgets/user-menu';
-
 import { SectionHeader } from './components';
 import { DeleteAccountSection, DeviceActivitySection, PasswordSection } from './components/secure';
 
 export const SecureTab = () => {
-	useModalBack(<MobileUserMenu />);
-
 	return (
 		<div className="flex flex-col gap-4">
 			<div className="core-base flex flex-col gap-2 rounded-xl pb-4 md:p-4 md:shadow-(--shadow)">

@@ -2,7 +2,7 @@ import type { Icon } from '@tabler/icons-react';
 
 import type { Gender } from '@/entities/user-profile';
 
-export type TabId = 'overview' | 'personal' | 'contacts' | 'secure';
+import type { TabId } from '.';
 
 export type GenderOption = {
 	value: Gender;

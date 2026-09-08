@@ -1,9 +1,10 @@
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { IconBookFilled, IconHomeFilled, IconShieldLockFilled, IconUserFilled } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
 
-import { type ProfileNavButton, useProfile } from '../../../model';
+import type { ProfileNavButton } from '../../../model';
 
 const buttons: ProfileNavButton[] = [
 	{ id: 'overview', title: 'Главная', icon: IconHomeFilled },
@@ -13,7 +14,8 @@ const buttons: ProfileNavButton[] = [
 ];
 
 export const ProfileMenu = () => {
-	const { searchParams, navigate } = useProfile();
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
 
 	const currentTab = searchParams.get('tab') || 'overview';
 

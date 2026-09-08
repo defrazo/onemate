@@ -1,33 +1,38 @@
-import { JSX, useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { accountSettingsTabs, isAccountSettingsTab, type TabId } from '@/features/account-settings';
 import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
-import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
 
-const AccountProfilePage = () => {
+export const AccountProfilePage = () => {
+	const device = useDeviceType();
+
 	usePageTitle('Профиль');
 
 	const { modalStore } = useStore();
-	const device = useDeviceType();
-	const [searchParams] = useSearchParams();
 
-	const currentTab = searchParams.get('tab') || 'preview';
-	const tabComponents: Record<string, JSX.Element> = {
-		overview: <OverviewTab />,
-		personal: <PersonalTab />,
-		contacts: <ContactsTab />,
-		secure: <SecureTab />,
-	};
+	const [searchParams, setSearchParams] = useSearchParams();
 
-	const targetTab = tabComponents[currentTab];
+	const tab = searchParams.get('tab');
+	const currentTab: TabId = isAccountSettingsTab(tab) ? tab : 'overview';
+
+	const Tab = accountSettingsTabs[currentTab];
 
 	useEffect(() => {
-		if (!targetTab) return;
-		device === 'mobile' ? modalStore.setModal(targetTab, 'sheet') : modalStore.closeModal();
-	}, [device, targetTab, modalStore]);
+		if (!isAccountSettingsTab(tab)) {
+			const params = new URLSearchParams(searchParams);
+			params.set('tab', 'overview');
 
-	return device !== 'mobile' ? <div className="w-full max-w-2xl">{targetTab}</div> : null;
+			setSearchParams(params, { replace: true });
+		}
+	}, [tab]);
+
+	const content = <Tab />;
+
+	useEffect(() => {
+		device === 'mobile' ? modalStore.setModal(content, 'sheet') : modalStore.closeModal();
+	}, [device, currentTab]);
+
+	return device !== 'mobile' ? <div className="w-full max-w-2xl">{content}</div> : null;
 };
-
-export default AccountProfilePage;

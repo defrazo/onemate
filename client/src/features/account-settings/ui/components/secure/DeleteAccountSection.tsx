@@ -1,11 +1,12 @@
+import { useNavigate } from 'react-router-dom';
+
 import { useStore } from '@/app/providers';
 import { Button, ConfirmDialog } from '@/shared/ui';
 
-import { useProfile } from '../../../model';
-
 export const DeleteAccountSection = () => {
+	const navigate = useNavigate();
+
 	const { modalStore, notifyStore, userStore } = useStore();
-	const { navigate } = useProfile();
 
 	const handleDelete = async (): Promise<void> => {
 		const confirmed = await new Promise<boolean>((resolve) => {

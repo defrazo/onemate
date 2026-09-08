@@ -5,16 +5,12 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { InputLabel, PasswordInput, useAuth } from '@/features/user-auth';
 import { IconWarning } from '@/shared/assets/icons';
-import { useDeviceType } from '@/shared/lib/hooks';
 import { Collapse, Input } from '@/shared/ui';
-import { MobileUserMenu } from '@/widgets/user-menu';
 
 import { FormActions } from '..';
 import { PendingEmailDialog } from '.';
 
 export const PrimaryEmail = observer(() => {
-	const device = useDeviceType();
-
 	const { modalStore, notifyStore, userStore } = useStore();
 	const { checkEmail, checkPassword } = useAuth();
 
@@ -26,15 +22,11 @@ export const PrimaryEmail = observer(() => {
 	const mainEmailChanged = mainEmail.trim().toLowerCase() !== userStore.email.trim().toLowerCase();
 	const showEmailChange = mainEmailChanged && !userStore.isEmailPending;
 
-	const handlePendingEmail = (): void => {
-		modalStore.setModal(<PendingEmailDialog />);
-	};
+	const handlePendingEmail = (): void => modalStore.setModal(<PendingEmailDialog />);
 
 	const handleCancel = (): void => {
 		setMainEmail(userStore.email);
 		setPassword('');
-
-		if (device === 'mobile') modalStore.setModal(<MobileUserMenu />, 'sheet');
 	};
 
 	const handleSave = async (): Promise<void> => {
