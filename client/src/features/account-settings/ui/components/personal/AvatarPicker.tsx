@@ -61,6 +61,7 @@ export const AvatarPicker = () => {
 					)}
 					disabled={isLoading || !canSaveAvatar}
 					loading={isLoading}
+					loadingText="Сохранение..."
 					onClick={applyAvatar}
 				>
 					Применить аватар

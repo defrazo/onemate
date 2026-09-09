@@ -61,7 +61,12 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 					notifyStore.setNotice('Подтвердите пароль, введя его вручную', 'error');
 				}}
 			/>
-			<Button className="core-elements mt-4 h-10 w-full" loading={authStore.isLoading} type="submit">
+			<Button
+				className="core-elements mt-4 h-10 w-full"
+				loading={authStore.isLoading}
+				loadingText="Выполняется сохранение..."
+				type="submit"
+			>
 				Сохранить пароль
 			</Button>
 		</form>

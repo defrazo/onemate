@@ -23,11 +23,13 @@ export const AuthDemo = observer(() => {
 	return (
 		<Tooltip className="w-full" content="Запустить демо-режим">
 			<Button
-				className="flex h-10 w-full gap-2 text-sm hover:text-(--accent-text) hover:opacity-100 md:text-base"
+				className="flex h-10 w-full text-sm hover:text-(--accent-text) hover:opacity-100 md:text-base"
 				loading={authStore.isLoading}
+				loadingText="Выполняется вход..."
+				rightIcon={<IconMask className="size-5" />}
 				onClick={handleDemo}
 			>
-				Войти как гость <IconMask className="size-5" />
+				Войти как гость
 			</Button>
 		</Tooltip>
 	);

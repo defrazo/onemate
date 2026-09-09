@@ -71,7 +71,12 @@ export const LoginForm = observer(() => {
 			>
 				Забыли пароль?
 			</Button>
-			<Button className="core-elements mt-4 h-10 w-full" loading={authStore.isLoading} type="submit">
+			<Button
+				className="core-elements mt-4 h-10 w-full"
+				loading={authStore.isLoading}
+				loadingText="Выполняется вход..."
+				type="submit"
+			>
 				Войти
 			</Button>
 		</form>

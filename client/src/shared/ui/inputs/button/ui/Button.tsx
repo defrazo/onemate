@@ -3,11 +3,12 @@ import { useNavigate } from 'react-router-dom';
 
 import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
-import { Preloader } from '@/shared/ui';
+import { Spinner } from '@/shared/ui';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	navigateTo?: string;
 	loading?: boolean;
+	loadingText?: ReactNode;
 	active?: boolean;
 	leftIcon?: ReactNode;
 	centerIcon?: ReactNode;
@@ -21,6 +22,7 @@ export const Button = ({
 	navigateTo,
 	onClick,
 	loading = false,
+	loadingText,
 	active = false,
 	leftIcon,
 	centerIcon,
@@ -47,6 +49,8 @@ export const Button = ({
 		onClick?.(e);
 	};
 
+	const content = centerIcon ?? children;
+
 	return (
 		<button
 			className={cn(styles, className, 'group')}
@@ -56,7 +60,10 @@ export const Button = ({
 			{...props}
 		>
 			{loading ? (
-				<Preloader className="size-6 border-3 border-t-(--border-alt)" />
+				<>
+					<Spinner className="mr-2 size-4 border-2" />
+					<span>{loadingText ?? content}</span>
+				</>
 			) : (
 				<>
 					{leftIcon && <span className="mr-2">{leftIcon}</span>}

@@ -63,6 +63,7 @@ export const ResendEmailForm = observer(() => {
 				className="core-elements mt-4 h-10 w-full"
 				disabled={isCooldown}
 				loading={authStore.isLoading}
+				loadingText="Выполняется отправка..."
 				type="submit"
 			>
 				{isCooldown ? `Отправить повторно через ${cooldown} сек.` : 'Отправить письмо повторно'}

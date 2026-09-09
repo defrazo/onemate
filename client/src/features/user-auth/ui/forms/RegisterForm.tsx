@@ -113,7 +113,12 @@ export const RegisterForm = observer(() => {
 				variant="ghost"
 				onChange={(e) => authFormStore.update('inviteCode', e.target.value)}
 			/>
-			<Button className="core-elements mt-4 h-10 w-full" loading={authStore.isLoading} type="submit">
+			<Button
+				className="core-elements mt-4 h-10 w-full"
+				loading={authStore.isLoading}
+				loadingText="Выполняется регистрация..."
+				type="submit"
+			>
 				Зарегистрироваться
 			</Button>
 		</form>
