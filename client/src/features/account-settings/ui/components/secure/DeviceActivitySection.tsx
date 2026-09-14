@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { IconDesktop, IconPhone } from '@/shared/assets/icons';
 import { fullDate } from '@/shared/lib/utils';
-import { Button, Divider, LoadingState, Tooltip } from '@/shared/ui';
+import { Button, Divider, EmptyHistory, LoadingState, Tooltip } from '@/shared/ui';
 
 export const DeviceActivitySection = observer(() => {
 	const { deviceActivityStore: store, notifyStore } = useStore();
@@ -68,11 +68,7 @@ export const DeviceActivitySection = observer(() => {
 					<LoadingState />
 				) : (
 					<div className="hide-scrollbar flex flex-1 flex-col overflow-y-auto overscroll-contain pr-1 select-none">
-						{store.activityLog.length === 0 && (
-							<span className="flex h-full items-center justify-center text-(--color-disabled)">
-								История пуста
-							</span>
-						)}
+						{store.activityLog.length === 0 && <EmptyHistory description="Записи появятся здесь" />}
 						{store.activityLog.map(
 							({ id, city, region, browser, is_mobile, ip_address, created_at }, idx) => (
 								<div key={id} className="snap-start">
