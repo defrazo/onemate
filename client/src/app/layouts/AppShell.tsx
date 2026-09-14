@@ -36,7 +36,7 @@ export const AppShell = ({
 
 	return (
 		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base">
-			<div className="flex flex-1 flex-col px-4 pb-4">
+			<div className="flex flex-1 flex-col px-4 pb-16">
 				{!landscape && <Header />}
 				<div
 					className={cn(

@@ -6,20 +6,24 @@ import { observer } from 'mobx-react-lite';
 
 import { useDeviceType, useOrientation, usePageTitle } from '@/shared/lib/hooks';
 
-import { widgets } from '../lib';
-import { useDashboard, useTabs } from '../model';
-import { Widget, WidgetPanel } from '.';
+import { useDashboard, useTabs, widgets } from '../model';
+import { Widget, WidgetPanel } from './components';
 
 export const DashboardPage = observer(() => {
-	usePageTitle('Dashboard');
 	const device = useDeviceType();
 	const orientation = useOrientation();
+
+	usePageTitle('Dashboard');
 
 	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
 	const { slots, setSlot, tabsFor, EMPTY } = useTabs();
 
-	const widgetById = useMemo(() => new Map(widgets.map(({ id, content }) => [id, content] as const)), []);
-	const slotContent = (id: string | undefined) => (id === EMPTY ? null : (widgetById.get(id ?? '') ?? null));
+	const widgetById = useMemo(() => new Map(widgets.map((widget) => [widget.id, widget])), []);
+
+	const slotContent = (id: string | undefined) => {
+		if (id === EMPTY || !id) return null;
+		return widgetById.get(id)?.content ?? null;
+	};
 
 	return (
 		<>
@@ -32,8 +36,8 @@ export const DashboardPage = observer(() => {
 						onDragEnd={(e) => handleDragEnd(e)}
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
-							{widgetsOrder.map(({ id, content }) => (
-								<Widget key={id} content={content} id={id} />
+							{widgetsOrder.map((widget) => (
+								<Widget key={widget.id} {...widget} />
 							))}
 						</SortableContext>
 					</DndContext>

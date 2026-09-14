@@ -3,8 +3,7 @@ import { arrayMove } from '@dnd-kit/sortable';
 
 import { useStore } from '@/app/providers';
 
-import { widgets } from '../lib';
-import type { WidgetItem } from '.';
+import { type WidgetItem, widgets } from '.';
 
 export const useDashboard = () => {
 	const sensors = useSensors(useSensor(PointerSensor));
@@ -27,8 +26,8 @@ export const useDashboard = () => {
 		store.updateWidgetSequence(newOrder);
 	};
 
-	const getWidgets = (ids: string[]) =>
-		ids.map((id) => widgets.find((w) => w.id === id)).filter(Boolean) as WidgetItem[];
+	const widgetMap = new Map(widgets.map((widget) => [widget.id, widget]));
+	const getWidgets = (ids: string[]) => ids.map((id) => widgetMap.get(id)).filter(Boolean) as WidgetItem[];
 
 	const rowIds = store.widgets;
 	const widgetsOrder = getWidgets(rowIds);

@@ -1,8 +1,11 @@
-import type { ReactNode } from 'react';
+import type { TablerIcon } from '@tabler/icons-react';
 
 export type WidgetItem = {
 	id: string;
-	content: ReactNode;
+	title: string;
+	icon: TablerIcon;
+	content: React.ReactNode;
+	tip: React.ReactNode;
 };
 
 export type SlotKey = 'topL' | 'topR' | 'botL' | 'botR';
