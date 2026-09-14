@@ -1,12 +1,12 @@
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { calculatorButtons } from '../lib';
+import { buttons } from '../../model';
 
-export const CalculatorButtons = ({ onClick }: { onClick: (value: string) => void }) => {
+export const Buttons = ({ onClick }: { onClick: (value: string) => void }) => {
 	return (
 		<div className="grid flex-1 grid-cols-4 gap-2">
-			{calculatorButtons.map(({ label, type, colSpan = 1 }) => (
+			{buttons.map(({ label, type, colSpan = 1 }) => (
 				<Button
 					key={label}
 					className={cn(

@@ -7,7 +7,7 @@ import {
 	IconWorldDollar,
 } from '@tabler/icons-react';
 
-import { CALCULATOR_TIP, CalculatorWidget } from '@/widgets/calculator';
+import { Calculator, CALCULATOR_TIP } from '@/widgets/calculator';
 import { CALENDAR_TIP, CalendarWidget } from '@/widgets/calendar';
 import { CURRENCY_TIP, CurrencyWidget } from '@/widgets/currency';
 import { NOTES_TIP, NotesWidget } from '@/widgets/notes';
@@ -19,7 +19,7 @@ export const widgets = [
 		id: 'calculator',
 		title: 'Калькулятор',
 		icon: IconCalculator,
-		content: <CalculatorWidget />,
+		content: <Calculator />,
 		tip: CALCULATOR_TIP,
 	},
 	{

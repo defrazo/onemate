@@ -1,6 +1,4 @@
-import type { CalculatorButton } from '../model';
-
-export const calculatorButtons: CalculatorButton[] = [
+export const buttons = [
 	{ label: 'ON/C', type: 'operator' },
 	{ label: 'OFF', type: 'operator' },
 	{ label: '%', type: 'operator' },
