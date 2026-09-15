@@ -44,8 +44,9 @@ const AppInitializer = () => {
 					<h2 className="text-xl font-semibold">Не удалось загрузить OneMate</h2>
 					{error?.message && (
 						<div className="w-full rounded-xl bg-white/[0.035] px-3 py-2.5">
-							<p className="text-xs wrap-break-word text-(--color-secondary) opacity-50">
-								{error.message}
+							<p className="flex flex-col text-xs wrap-break-word">
+								<span>Произошла ошибка при инициализации приложения:</span>
+								<span className="text-(--color-secondary) opacity-50">{error.message}</span>
 							</p>
 						</div>
 					)}

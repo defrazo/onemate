@@ -54,12 +54,7 @@ export class RootStore implements AllStores {
 			this.isInitialized = true;
 			this.isDestroyed = false;
 		} catch (error) {
-			throw new Error(
-				`Произошла ошибка при инициализации приложения: ${
-					error instanceof Error ? error.message : String(error)
-				}`,
-				{ cause: error }
-			);
+			throw new Error(error instanceof Error ? error.message : String(error), { cause: error });
 		}
 	}
 
