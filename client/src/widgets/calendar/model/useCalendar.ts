@@ -1,47 +1,47 @@
-import { useEffect, useState } from 'react';
+import { useState } from 'react';
 import { addMonths, subMonths } from 'date-fns';
 
-import { calculateNewRange, formatRange, getDateFromDay, getRangeLength, hasWeekendInRange } from '../lib';
+import { getDateInMonth, getNextRange, getRangeInfo, hasWeekendInRange } from '../lib';
 import type { DateRange } from '.';
 
 export const useCalendar = () => {
-	const [currentDate, setCurrentDate] = useState<Date>(new Date());
-	const [includeWeekends, setIncludeWeekends] = useState<boolean>(true);
+	const [currentMonth, setCurrentMonth] = useState(new Date());
 	const [range, setRange] = useState<DateRange>([null, null]);
-	const [rangeState, setRangeState] = useState<string>('');
+	const [includeWeekends, setIncludeWeekends] = useState(false);
+	const [isControlsOpen, setIsControlsOpen] = useState(false);
 
-	const formattedRange = range[0] && range[1] ? formatRange(range[0], range[1]) : '';
-	const rangeWithWeekend = getRangeLength(range, includeWeekends);
+	const rangeInfo = getRangeInfo(range, includeWeekends);
 
-	const handlePrev = () => setCurrentDate(subMonths(currentDate, 1));
-	const handleNext = () => setCurrentDate(addMonths(currentDate, 1));
+	const prevMonth = () => setCurrentMonth((date) => subMonths(date, 1));
+	const nextMonth = () => setCurrentMonth((date) => addMonths(date, 1));
 
-	const handleDayClick = (day: number) => {
-		const clickedDate = getDateFromDay(currentDate, day);
-		setRange((prev) => calculateNewRange(clickedDate, prev));
+	const selectDay = (day: number) => {
+		const date = getDateInMonth(currentMonth, day);
+		const nextRange = getNextRange(date, range);
+
+		setRange(nextRange);
+		setIncludeWeekends(hasWeekendInRange(nextRange));
+		setIsControlsOpen(true);
 	};
 
-	const getRangeDescription = (): string => {
-		const [start, end] = range;
-		if (!start || !end) return '\u2800';
+	const toggleWeekends = () => setIncludeWeekends((value) => !value);
 
-		let text = `${formattedRange}: ${rangeWithWeekend} дней`;
-		if (hasWeekendInRange(range)) text += includeWeekends ? ' (вкл. выходные)' : ' (без выходных)';
-
-		return text;
+	const resetRange = () => {
+		setRange([null, null]);
+		setIncludeWeekends(false);
 	};
-
-	useEffect(() => setRangeState(getRangeDescription()), [range, includeWeekends]);
 
 	return {
-		currentDate,
-		handleDayClick,
-		handleNext,
-		handlePrev,
-		includeWeekends,
+		currentMonth,
 		range,
-		rangeState,
-		setIncludeWeekends,
-		setRange,
+		rangeInfo,
+		includeWeekends,
+		isControlsOpen,
+		selectDay,
+		prevMonth,
+		nextMonth,
+		resetRange,
+		toggleWeekends,
+		setIsControlsOpen,
 	};
 };
