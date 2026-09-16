@@ -2,6 +2,7 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
+import { formatFixed } from '@/shared/lib/utils';
 
 import { fetchRates } from '../api';
 import { currencyCache, currencyIcons, currencyNames, sortCodesByPopularity } from '../lib';
@@ -61,6 +62,22 @@ export class CurrencyStore extends AsyncStore {
 		}, {} as RatesList);
 	}
 
+	get exchangeRate(): string {
+		const baseRate = this.ratesList[this.baseCode]?.value ?? 0;
+		const targetRate = this.ratesList[this.targetCode]?.value ?? 0;
+
+		const ratio = baseRate > 0 ? targetRate / baseRate : 0;
+
+		const baseName = this.ratesList[this.baseCode]?.name ?? this.baseCode;
+		const targetName = this.ratesList[this.targetCode]?.name ?? this.targetCode;
+
+		return `1 ${baseName} = ${formatFixed(ratio, 2)} ${targetName}`;
+	}
+
+	get conversionResult(): string {
+		return `${formatFixed(this.baseValue, 2)} ${this.baseCode} = ${formatFixed(this.targetValue, 2)} ${this.targetCode}`;
+	}
+
 	get isDefault(): boolean {
 		const defaults = createDefaultCurrencies();
 
@@ -77,12 +94,6 @@ export class CurrencyStore extends AsyncStore {
 		);
 	}
 
-	updateCurrencies<K extends keyof Currency>(index: number, key: K, value: Currency[K]): void {
-		const updated = [...this.currencies];
-		updated[index] = { ...updated[index], [key]: value };
-		this.currencies = updated;
-	}
-
 	selectCurrency(selectedCode: string, type: 'base' | 'target'): void {
 		const base = this.currencies[0];
 		const target = this.currencies[1];
@@ -94,40 +105,34 @@ export class CurrencyStore extends AsyncStore {
 
 		const index = type === 'base' ? 0 : 1;
 
-		this.updateCurrencies(index, 'code', selectedCode);
+		this.updateCurrency(index, 'code', selectedCode);
 		this.recalcTarget();
 	}
 
-	handleCurrencyValue(index: number, amount: number): void {
-		const fromIndex = index as 0 | 1;
-		const toIndex = fromIndex === 0 ? 1 : 0;
+	setCurrencyValue(index: 0 | 1, amount: number): void {
+		const targetIndex = index === 0 ? 1 : 0;
 
 		if (!this.isReady) {
-			this.updateCurrencies(fromIndex, 'value', amount);
+			this.updateCurrency(index, 'value', amount);
 			return;
 		}
 
-		const fromCode = this.currencies[fromIndex].code;
-		const toCode = this.currencies[toIndex].code;
+		const fromCode = this.currencies[index].code;
+		const toCode = this.currencies[targetIndex].code;
 
 		const toValue = this.convertCurrency(amount, fromCode, toCode);
 
-		this.updateCurrencies(fromIndex, 'value', amount);
-		this.updateCurrencies(toIndex, 'value', toValue);
+		this.updateCurrency(index, 'value', amount);
+		this.updateCurrency(targetIndex, 'value', toValue);
 	}
 
 	swapCurrencies(): void {
 		const [base, target] = this.currencies;
 
-		const newBase = { ...base, code: target.code };
-
-		const newTarget = {
-			type: 'target' as const,
-			code: base.code,
-			value: this.convertCurrency(newBase.value, newBase.code, base.code),
-		};
-
-		this.currencies = [newBase, newTarget];
+		this.currencies = [
+			{ type: 'base', code: target.code, value: target.value },
+			{ type: 'target', code: base.code, value: base.value },
+		];
 	}
 
 	clear(): void {
@@ -156,6 +161,12 @@ export class CurrencyStore extends AsyncStore {
 		});
 	}
 
+	private updateCurrency<K extends keyof Currency>(index: number, key: K, value: Currency[K]): void {
+		const updated = [...this.currencies];
+		updated[index] = { ...updated[index], [key]: value };
+		this.currencies = updated;
+	}
+
 	private applyRates(rates: RatesResponse): void {
 		this.rates = rates;
 		this.recalcTarget();
@@ -169,7 +180,7 @@ export class CurrencyStore extends AsyncStore {
 
 		const value = this.convertCurrency(base.value, base.code, targetCode);
 
-		this.updateCurrencies(1, 'value', value);
+		this.updateCurrency(1, 'value', value);
 	}
 
 	private getRate(code: string): number {
@@ -189,7 +200,7 @@ export class CurrencyStore extends AsyncStore {
 	constructor(private readonly userStore: IBaseUserPort) {
 		super();
 
-		makeObservable<this, 'rates' | 'applyRates' | 'reset'>(this, {
+		makeObservable<this, 'rates' | 'updateCurrency' | 'applyRates' | 'reset'>(this, {
 			rates: observable,
 			currencies: observable,
 
@@ -201,8 +212,11 @@ export class CurrencyStore extends AsyncStore {
 			currencyOptions: computed,
 			ratesList: computed,
 			isDefault: computed,
+			exchangeRate: computed,
+			conversionResult: computed,
 
-			updateCurrencies: action,
+			updateCurrency: action,
+			setCurrencyValue: action,
 			swapCurrencies: action,
 			clear: action,
 			applyRates: action,

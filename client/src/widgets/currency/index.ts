@@ -1,2 +1,2 @@
-export { type Currency, CurrencyStore } from './model';
-export { CurrencyWidget } from './ui';
+export { CURRENCY_TIP, CurrencyStore } from './model';
+export { Currency } from './ui';
