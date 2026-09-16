@@ -14,6 +14,7 @@ interface AppShellProps {
 	hideRightOnMobile?: boolean;
 	hideFooter?: boolean;
 	landscapeMode?: boolean;
+	fillViewport?: boolean;
 }
 
 export const AppShell = ({
@@ -24,6 +25,7 @@ export const AppShell = ({
 	hideRightOnMobile = false,
 	hideFooter = false,
 	landscapeMode = false,
+	fillViewport = false,
 }: AppShellProps) => {
 	const device = useDeviceType();
 	const orientation = useOrientation();
@@ -31,16 +33,21 @@ export const AppShell = ({
 	const left = hideLeftOnMobile && device === 'mobile' ? null : leftSide;
 	const right = hideRightOnMobile && device === 'mobile' ? null : rightSide;
 
-	const showMobileTabBar = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
+	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 	const landscape = orientation === 'landscape' && landscapeMode && device === 'mobile';
 
 	return (
-		<div className="mx-auto flex min-h-svh w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base">
-			<div className="flex flex-1 flex-col px-4 pb-16">
+		<div
+			className={cn(
+				'mx-auto flex w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base',
+				!isMobile && fillViewport ? 'h-svh overflow-hidden' : 'min-h-svh'
+			)}
+		>
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-16 xl:pb-4">
 				{!landscape && <Header />}
 				<div
 					className={cn(
-						`grid flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4`,
+						`grid min-h-0 flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4`,
 						left && right
 							? 'grid-cols-[250px_1fr_250px]'
 							: left
@@ -52,12 +59,12 @@ export const AppShell = ({
 					)}
 				>
 					{left && <aside className="flex">{left}</aside>}
-					<main className="flex min-w-0 flex-1">{children}</main>
+					<main className="flex min-h-0 min-w-0 flex-1">{children}</main>
 					{right && <aside className="flex">{right}</aside>}
 				</div>
-				{!showMobileTabBar && !hideFooter && <FooterWidget />}
+				{!isMobile && !hideFooter && <FooterWidget />}
 			</div>
-			{showMobileTabBar && !(landscape && landscapeMode) && <MobileTabBar />}
+			{isMobile && !(landscape && landscapeMode) && <MobileTabBar />}
 		</div>
 	);
 };

@@ -28,7 +28,7 @@ export const DashboardPage = observer(() => {
 	return (
 		<>
 			{device === 'desktop' || (device === 'tablet' && orientation === 'landscape') ? (
-				<div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
+				<div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
 					<DndContext
 						collisionDetection={closestCenter}
 						modifiers={[restrictToParentElement]}

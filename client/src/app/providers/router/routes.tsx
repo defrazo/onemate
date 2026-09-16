@@ -33,7 +33,7 @@ export const routes: RouteObject[] = [
 						children: [{ path: '/account/profile', element: <AccountProfilePage /> }],
 					},
 					{
-						element: <Layout hideFooter />,
+						element: <Layout fillViewport hideFooter />,
 						children: [{ path: '/dashboard', element: <DashboardPage /> }],
 					},
 					{

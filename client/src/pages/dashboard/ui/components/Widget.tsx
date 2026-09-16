@@ -20,7 +20,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-card group core-base relative flex flex-1 flex-col justify-between gap-2 shadow-(--shadow) select-none"
+			className="core-card group core-base relative flex min-h-0 min-w-0 flex-col gap-2 shadow-(--shadow) select-none"
 			style={combinedStyle}
 		>
 			<header className="flex items-center justify-between">
@@ -40,7 +40,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 					{...attributes}
 				/>
 			</header>
-			{content}
+			<div className="flex min-h-0 flex-1 flex-col">{content}</div>
 		</div>
 	);
 });
