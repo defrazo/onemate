@@ -8,32 +8,27 @@ export const DeleteAccountSection = () => {
 
 	const { modalStore, notifyStore, userStore } = useStore();
 
-	const handleDelete = async (): Promise<void> => {
-		const confirmed = await new Promise<boolean>((resolve) => {
-			modalStore.setModal(
-				<ConfirmDialog
-					cancelLabel="Отмена"
-					confirmLabel="Удалить"
-					description="У вас будет 30 дней на его восстановление. По истечении этого срока данные будут безвозвратно удалены."
-					title="Удалить аккаунт?"
-					onConfirm={(ok) => {
-						resolve(ok);
+	const handleDelete = () => {
+		modalStore.setModal(
+			<ConfirmDialog
+				confirmLabel="Удалить"
+				description="У вас будет 30 дней на восстановление аккаунта. После этого данные будут удалены безвозвратно."
+				title="Удалить аккаунт?"
+				variant="danger"
+				onCancel={() => modalStore.closeModal()}
+				onConfirm={async () => {
+					try {
+						await userStore.deleteAccount();
+
 						modalStore.closeModal();
-					}}
-				/>
-			);
-		});
-
-		if (!confirmed) return;
-
-		try {
-			await userStore.deleteAccount();
-
-			notifyStore.setNotice('Аккаунт успешно удален', 'success');
-			navigate('/');
-		} catch {
-			notifyStore.setNotice('Произошла ошибка при удалении аккаунта', 'error');
-		}
+						notifyStore.setNotice('Аккаунт успешно удалён', 'success');
+						navigate('/');
+					} catch {
+						notifyStore.setNotice('Произошла ошибка при удалении аккаунта', 'error');
+					}
+				}}
+			/>
+		);
 	};
 
 	return (

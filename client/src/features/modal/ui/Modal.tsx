@@ -17,12 +17,12 @@ export const Modal = observer(({ children, onBack, onClose }: ModalProps) => {
 
 	return ReactDOM.createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-			<div className="core-base core-card core-border max-w-fit flex-col shadow-2xl">
+			<div className="core-card core-border max-w-fit flex-col bg-(--bg-secondary)/70 shadow-2xl backdrop-blur-sm">
 				<div className="top-4 flex h-4 w-full justify-between">
 					{onBack && <IconBack className="w-5 cursor-pointer hover:text-(--accent-hover)" onClick={onBack} />}
 					{onClose && (
 						<IconClose
-							className="z-10 ml-auto w-5 cursor-pointer hover:text-(--accent-hover)"
+							className="z-10 ml-auto w-5 cursor-pointer text-(--color-secondary) hover:text-(--accent-hover)"
 							onClick={onClose}
 						/>
 					)}

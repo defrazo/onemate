@@ -34,7 +34,7 @@ export const PendingEmailDialog = () => {
 				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-default)/12">
 					<IconMailCheck className="size-5.5 text-(--accent-default)" />
 				</div>
-				<div className="flex h-full flex-col justify-between select-none">
+				<div className="flex h-full flex-col justify-between gap-0.5 select-none">
 					<h2 className="text-xl font-semibold">Подтвердите смену e-mail</h2>
 					<p className="trim text-sm text-(--color-secondary) opacity-60">
 						Мы ждём подтверждения по ссылке из письма
@@ -57,7 +57,7 @@ export const PendingEmailDialog = () => {
 					Для завершения смены адреса перейдите по ссылке в письме, отправленном на текущую почту.
 				</p>
 			</div>
-			<div className="mx-auto flex h-8 gap-3">
+			<div className="flex h-8 justify-end gap-3">
 				<Button variant="accent" onClick={handleResend}>
 					Отправить повторно
 				</Button>
