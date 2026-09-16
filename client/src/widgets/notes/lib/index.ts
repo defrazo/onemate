@@ -1,1 +1,1 @@
-export { notesCache, type NotesCacheData } from './notesCache';
+export * from './notesCache';

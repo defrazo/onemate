@@ -27,7 +27,7 @@ class UserNoteController extends Controller
         $data = $request->validate([
             'notes' => ['required', 'array', 'min:1', 'max:50'],
             'notes.*.id' => ['required', 'uuid'],
-            'notes.*.text' => ['required', 'string', 'max:5000'],
+            'notes.*.text' => ['required', 'string', 'max:2000'],
             'notes.*.order_idx' => ['required', 'integer', 'min:0'],
         ]);
 

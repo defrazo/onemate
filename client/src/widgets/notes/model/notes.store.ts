@@ -13,10 +13,15 @@ export class NotesStore extends AsyncStore {
 
 	notes: Note[] = [];
 	draft: Note[] = [];
-	focusedId: string | null = null;
+	activeNoteId: string | null = null;
 
 	get isReady(): boolean {
 		return this.notes.length > 0;
+	}
+
+	get activeNote(): Note | null {
+		if (!this.activeNoteId) return null;
+		return this.draft.find((note) => note.id === this.activeNoteId) ?? null;
 	}
 
 	private get canAddMore(): boolean {
@@ -27,8 +32,12 @@ export class NotesStore extends AsyncStore {
 		return this.draft.length > 1;
 	}
 
-	setFocusedId(id: string | null): void {
-		this.focusedId = id;
+	openNote(id: string): void {
+		this.activeNoteId = id;
+	}
+
+	closeNote(): void {
+		this.activeNoteId = null;
 	}
 
 	updateNote<K extends keyof Note>(id: string, key: K, value: Note[K]): void {
@@ -100,7 +109,7 @@ export class NotesStore extends AsyncStore {
 	}
 
 	private async syncDraftToServer(userId: string): Promise<void> {
-		if (this.userStore.id !== userId || !this.hasDraftChanged() || this.focusedId) return;
+		if (this.userStore.id !== userId || !this.hasDraftChanged() || this.activeNoteId) return;
 
 		const draft = this.draft.map((note) => ({ ...note }));
 
@@ -171,13 +180,15 @@ export class NotesStore extends AsyncStore {
 		makeObservable<this, 'canAddMore' | 'canDeleteMore' | 'reset' | 'applyNotes' | 'applyDirtyDraft'>(this, {
 			notes: observable,
 			draft: observable,
-			focusedId: observable,
+			activeNoteId: observable,
 
+			activeNote: computed,
 			isReady: computed,
 			canAddMore: computed,
 			canDeleteMore: computed,
 
-			setFocusedId: action,
+			openNote: action,
+			closeNote: action,
 			updateNote: action,
 			updateOrder: action,
 			addNote: action,
@@ -190,7 +201,7 @@ export class NotesStore extends AsyncStore {
 
 		this.track(
 			reaction(
-				() => this.focusedId,
+				() => this.activeNoteId,
 				(focused) => {
 					if (focused === null && this.hasDraftChanged()) this.scheduleServerUpdate();
 				}
@@ -221,7 +232,7 @@ export class NotesStore extends AsyncStore {
 	protected reset(): void {
 		this.notes = [];
 		this.draft = [];
-		this.focusedId = null;
+		this.activeNoteId = null;
 		this.lastSnapshot = '';
 
 		this.debouncer.cancel();
