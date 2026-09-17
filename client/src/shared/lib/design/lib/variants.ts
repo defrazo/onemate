@@ -26,7 +26,7 @@ export const variants: Record<Component, Record<string, string>> = {
 		),
 		warning: cn(
 			'rounded-xl border',
-			'border-(--border-color) bg-(--bg-tertiary) text-(--color-disabled)',
+			'border-(--border-color) bg-(--bg-tertiary)',
 			'hover:border-(--status-error) hover:bg-(--status-error) hover:text-(--accent-text)'
 		),
 		mobile: 'bg-transparent text-(--color-primary)',

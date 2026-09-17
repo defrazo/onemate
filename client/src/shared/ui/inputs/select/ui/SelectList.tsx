@@ -38,11 +38,11 @@ export const SelectList = ({
 	return (
 		<ul
 			className={cn(
-				'core-base hide-scrollbar absolute right-0 z-30 -my-px max-h-48 w-full min-w-max overflow-y-auto rounded-xl border-(--accent-default-op) text-center',
+				'core-base hide-scrollbar core-border absolute right-1 z-30 max-h-48 w-full min-w-max overflow-y-auto p-1 text-center',
 				addStyle,
 				openUpwards
-					? `bottom-full border ${variant === 'embedded' && 'rounded-b-none border-b-0'}`
-					: `top-full border ${variant === 'embedded' && 'rounded-t-none border-t-0'}`
+					? `bottom-full ${variant === 'embedded' && 'rounded-b-none border-b-0'}`
+					: `top-full ${variant === 'embedded' && 'rounded-t-none border-t-0'}`
 			)}
 			role="listbox"
 			tabIndex={-1}
@@ -69,9 +69,9 @@ export const SelectList = ({
 					key={option.value}
 					aria-selected={option.value === value}
 					className={cn(
-						'flex w-full cursor-pointer items-center gap-2 p-2 text-sm whitespace-nowrap hover:bg-(--accent-hover) hover:text-(--accent-text)',
+						'flex w-full cursor-pointer items-center gap-2 rounded-lg px-3 py-1 text-sm whitespace-nowrap transition-colors hover:bg-white/6 hover:text-(--accent-text)',
 						justifies[justify],
-						option.value === value && 'text-(--accent-hover)'
+						option.value === value && 'text-(--accent-default)'
 					)}
 					role="option"
 					onClick={() => {

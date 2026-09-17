@@ -35,7 +35,7 @@ export const DateTime = () => {
 
 	return (
 		<div className="hidden flex-col items-center gap-2 xl:flex">
-			<time className="trim text-lg font-semibold text-(--color-primary) tabular-nums" dateTime={dateTime.iso}>
+			<time className="trim text-lg font-bold text-(--color-primary) tabular-nums" dateTime={dateTime.iso}>
 				{dateTime.time}
 			</time>
 			<span className="trim text-xs text-(--color-secondary)">{dateTime.date}</span>

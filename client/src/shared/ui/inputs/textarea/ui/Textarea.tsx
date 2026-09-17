@@ -1,9 +1,10 @@
-import type { TextareaHTMLAttributes } from 'react';
+import type { Ref, TextareaHTMLAttributes } from 'react';
 
 import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
+	ref?: Ref<HTMLTextAreaElement>;
 	variant?: keyof typeof variants.textarea;
 	size?: keyof typeof sizes.textarea;
 	resize?: 'none' | 'vertical' | 'horizontal' | 'both';
@@ -11,6 +12,7 @@ interface TextareaProps extends TextareaHTMLAttributes<HTMLTextAreaElement> {
 }
 
 export const Textarea = ({
+	ref,
 	variant = 'default',
 	size = 'md',
 	resize = 'none',
@@ -27,5 +29,5 @@ export const Textarea = ({
 		both: 'resize',
 	};
 
-	return <textarea className={cn(styles, resizeStyles[resize], className)} {...props} />;
+	return <textarea ref={ref} className={cn(styles, resizeStyles[resize], className)} {...props} />;
 };

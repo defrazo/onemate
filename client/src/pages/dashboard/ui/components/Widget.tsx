@@ -40,7 +40,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 					{...attributes}
 				/>
 			</header>
-			<div className="flex min-h-0 flex-1 flex-col">{content}</div>
+			<div className="flex min-h-0 flex-1 flex-col gap-2">{content}</div>
 		</div>
 	);
 });

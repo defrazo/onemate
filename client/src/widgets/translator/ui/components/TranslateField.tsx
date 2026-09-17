@@ -17,7 +17,12 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 	const text = isSource ? translatorStore.sourceText : translatorStore.targetText;
 
 	return (
-		<div className="flex min-w-0 flex-1 flex-col xl:first:border-r xl:first:border-(--border-color)">
+		<div
+			className={cn(
+				'flex min-w-0 flex-1 flex-col border-(--border-color)',
+				isSource ? 'xl:border-r' : 'border-t xl:border-t-0'
+			)}
+		>
 			<Textarea
 				className={cn(
 					'h-full min-h-0 flex-1 resize-none overflow-auto px-2 py-3',

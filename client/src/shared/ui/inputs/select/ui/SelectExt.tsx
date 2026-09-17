@@ -1,6 +1,6 @@
 import type { HTMLAttributes } from 'react';
+import { IconChevronDown } from '@tabler/icons-react';
 
-import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
@@ -49,7 +49,7 @@ export const SelectExt = ({
 	const styles = getComponentStyles({ variant, size, error, disabled: disabled, component: 'selectExt' });
 
 	return (
-		<div ref={wrapperRef} className="relative flex size-full">
+		<div ref={wrapperRef} className="group/select relative flex size-full">
 			<button
 				ref={buttonRef}
 				aria-expanded={isOpen}
@@ -66,7 +66,7 @@ export const SelectExt = ({
 			>
 				{selectedOption?.icon && (
 					<img
-						className="no-touch-callout mr-2 size-6 rounded-xl"
+						className="no-touch-callout mr-2 size-6 rounded-lg"
 						decoding="async"
 						loading="lazy"
 						src={selectedOption.icon}
@@ -74,17 +74,17 @@ export const SelectExt = ({
 				)}
 				<span
 					className={cn(
-						'w-full text-center',
+						'w-full text-center group-hover/select:text-(--accent-default)',
 						visibleDown && 'pr-2',
 						!selectedOption && 'text-(--color-primary)',
-						isOpen && 'text-(--accent-hover)'
+						isOpen && 'text-(--accent-default)'
 					)}
 				>
 					{selectedOption?.label ?? placeholder}
 				</span>
 				{visibleDown && (
-					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-						<IconDown className="size-4" />
+					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 group-hover/select:text-(--accent-default)">
+						<IconChevronDown className="size-4" />
 					</div>
 				)}
 			</button>

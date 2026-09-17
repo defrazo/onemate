@@ -42,7 +42,7 @@ export const Translator = observer(() => {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
 			<Controls />
-			<div className="grid min-h-0 flex-1 grid-cols-1 xl:grid-cols-2">
+			<div className="grid min-h-0 flex-1 grid-cols-1 gap-2 xl:grid-cols-2 xl:gap-0">
 				<TranslateField side="source" />
 				<TranslateField side="target" />
 			</div>
