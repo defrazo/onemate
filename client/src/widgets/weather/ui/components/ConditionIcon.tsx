@@ -3,20 +3,21 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 
-import { conditionIcons } from '../lib';
-import type { ConditionCode } from '../model';
+import { conditionIcons } from '../../lib';
+import type { ConditionCode } from '../../model';
 
 interface ConditionIconProps {
 	condition: ConditionCode;
 	description: string;
+	title?: string;
 	className?: string;
 }
 
-export const ConditionIcon = observer(({ condition, description, className }: ConditionIconProps) => {
+export const ConditionIcon = observer(({ condition, description, title, className }: ConditionIconProps) => {
 	const { themeStore } = useStore();
 
-	const theme = themeStore.theme;
-	const icon = conditionIcons[theme][condition] || conditionIcons[theme].default;
+	const icons = conditionIcons[themeStore.theme];
+	const icon = icons[condition] ?? icons.default;
 
 	return (
 		<img
@@ -26,6 +27,7 @@ export const ConditionIcon = observer(({ condition, description, className }: Co
 			height="100%"
 			loading="lazy"
 			src={icon}
+			title={title}
 			width="100%"
 		/>
 	);

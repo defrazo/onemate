@@ -34,7 +34,7 @@ export type ForecastType = {
 	minTemp: number;
 	maxTemp: number;
 	description: string;
-	icon: string;
+	icon: ConditionCode;
 };
 
 type WeatherMain = {
@@ -53,5 +53,5 @@ type WeatherWind = {
 
 type WeatherDescription = {
 	description: string;
-	icon: string;
+	icon: ConditionCode;
 };

@@ -28,7 +28,7 @@ export class WeatherStore extends AsyncStore {
 		return this.currentLocation?.name ?? '';
 	}
 
-	setIsOpenCurrent(): void {
+	toggleView(): void {
 		this.isOpenCurrent = !this.isOpenCurrent;
 	}
 
@@ -135,7 +135,7 @@ export class WeatherStore extends AsyncStore {
 			location: computed,
 			locationName: computed,
 
-			setIsOpenCurrent: action,
+			toggleView: action,
 			applyLocation: action,
 			applyWeather: action,
 			reset: action,
