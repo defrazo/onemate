@@ -1,3 +1,4 @@
+export { TRANSLATE_DELAY, TRANSLATOR_MAX_LENGTH } from './constants';
 export { createDefaultTranslator } from './defaults';
 export type { ITranslatorProvider } from './ports';
 export { TRANSLATOR_TIP } from './tip';

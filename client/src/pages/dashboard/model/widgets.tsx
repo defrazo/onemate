@@ -11,7 +11,7 @@ import { Calculator, CALCULATOR_TIP } from '@/widgets/calculator';
 import { Calendar, CALENDAR_TIP } from '@/widgets/calendar';
 import { Currency, CURRENCY_TIP } from '@/widgets/currency';
 import { Notes, NOTES_TIP } from '@/widgets/notes';
-import { TRANSLATOR_TIP, TranslatorWidget } from '@/widgets/translator';
+import { Translator, TRANSLATOR_TIP } from '@/widgets/translator';
 import { Weather, WEATHER_TIP } from '@/widgets/weather';
 
 export const widgets = [
@@ -20,5 +20,5 @@ export const widgets = [
 	{ id: 'weather', title: 'Погода', icon: IconCloudStorm, content: <Weather />, tip: WEATHER_TIP },
 	{ id: 'notes', title: 'Заметки', icon: IconNote, content: <Notes />, tip: NOTES_TIP },
 	{ id: 'currency', title: 'Конвертер валют', icon: IconWorldDollar, content: <Currency />, tip: CURRENCY_TIP },
-	{ id: 'translator', title: 'Переводчик', icon: IconLanguage, content: <TranslatorWidget />, tip: TRANSLATOR_TIP },
+	{ id: 'translator', title: 'Переводчик', icon: IconLanguage, content: <Translator />, tip: TRANSLATOR_TIP },
 ];

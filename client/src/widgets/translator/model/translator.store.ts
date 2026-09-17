@@ -3,7 +3,16 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { AsyncStore } from '@/shared/lib/store';
 
 import { availableLanguages } from '../lib';
-import { createDefaultTranslator, type ITranslatorProvider, type Language, type Textbox } from '.';
+import {
+	createDefaultTranslator,
+	type ITranslatorProvider,
+	type Language,
+	type Textbox,
+	TRANSLATOR_MAX_LENGTH,
+} from '.';
+
+const SOURCE_INDEX = 0;
+const TARGET_INDEX = 1;
 
 export class TranslatorStore extends AsyncStore {
 	private abort: AbortController | null = null;
@@ -21,50 +30,65 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	get sourceLang(): string {
-		return this.textboxes[0].language;
+		return this.textboxes[SOURCE_INDEX].language;
 	}
 
 	get targetLang(): string {
-		return this.textboxes[1].language;
+		return this.textboxes[TARGET_INDEX].language;
 	}
 
 	get sourceText(): string {
-		return this.textboxes[0].text;
+		return this.textboxes[SOURCE_INDEX].text;
 	}
 
 	get targetText(): string {
-		return this.textboxes[1].text;
+		return this.textboxes[TARGET_INDEX].text;
 	}
 
 	get languages(): Language[] {
 		return TranslatorStore.languagesCache;
 	}
 
-	updateTextbox<K extends keyof Textbox>(index: number, key: K, value: Textbox[K]): void {
-		const updated = [...this.textboxes];
-		updated[index] = { ...updated[index], [key]: value };
-		this.textboxes = updated;
+	setSourceText(value: string): void {
+		const text = value.slice(0, TRANSLATOR_MAX_LENGTH);
+
+		this.updateTextbox(SOURCE_INDEX, 'text', text);
+
+		if (!text.trim()) {
+			this.cancelRequest();
+			this.updateTextbox(TARGET_INDEX, 'text', '');
+		}
 	}
 
-	swapLanguages(): void {
+	setSourceLanguage(language: string): void {
+		this.updateTextbox(SOURCE_INDEX, 'language', language);
+	}
+
+	setTargetLanguage(language: string): void {
+		this.updateTextbox(TARGET_INDEX, 'language', language);
+	}
+
+	clear(): void {
+		this.cancelRequest();
+		this.updateTextbox(SOURCE_INDEX, 'text', '');
+		this.updateTextbox(TARGET_INDEX, 'text', '');
+	}
+
+	swap(): void {
 		const [source, target] = this.textboxes;
+
+		this.cancelRequest();
+
 		this.textboxes = [
 			{ ...source, language: target.language, text: target.text },
 			{ ...target, language: source.language, text: source.text },
 		];
-
-		void this.translateText();
 	}
 
-	private cancelRequest(): void {
-		this.abort?.abort();
-		this.abort = null;
-	}
-
-	async translateText(): Promise<void> {
+	async translate(): Promise<void> {
 		if (!this.sourceText.trim() || this.sourceLang === this.targetLang) {
 			this.cancelRequest();
-			this.updateTextbox(1, 'text', '');
+			this.updateTextbox(TARGET_INDEX, 'text', '');
 			return;
 		}
 
@@ -84,7 +108,7 @@ export class TranslatorStore extends AsyncStore {
 
 				if (controller.signal.aborted) return;
 
-				if (result != null) this.updateTextbox(1, 'text', result);
+				if (result != null) this.updateTextbox(TARGET_INDEX, 'text', result);
 			});
 		} catch (error) {
 			if (error instanceof DOMException && error.name === 'AbortError') return;
@@ -94,10 +118,21 @@ export class TranslatorStore extends AsyncStore {
 		}
 	}
 
+	private updateTextbox<K extends keyof Textbox>(index: number, key: K, value: Textbox[K]): void {
+		const updated = [...this.textboxes];
+		updated[index] = { ...updated[index], [key]: value };
+		this.textboxes = updated;
+	}
+
+	private cancelRequest(): void {
+		this.abort?.abort();
+		this.abort = null;
+	}
+
 	constructor(private readonly provider: ITranslatorProvider) {
 		super();
 
-		makeObservable<this, 'reset'>(this, {
+		makeObservable<this, 'updateTextbox' | 'reset'>(this, {
 			textboxes: observable,
 
 			isReady: computed,
@@ -108,9 +143,18 @@ export class TranslatorStore extends AsyncStore {
 			languages: computed,
 
 			updateTextbox: action,
-			swapLanguages: action,
+			setSourceText: action,
+			setSourceLanguage: action,
+			setTargetLanguage: action,
+			clear: action,
+			swap: action,
 			reset: action,
 		});
+
+		this.setSourceLanguage = this.setSourceLanguage.bind(this);
+		this.setTargetLanguage = this.setTargetLanguage.bind(this);
+		this.clear = this.clear.bind(this);
+		this.swap = this.swap.bind(this);
 	}
 
 	init(): void {
