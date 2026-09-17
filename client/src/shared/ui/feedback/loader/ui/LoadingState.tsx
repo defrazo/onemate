@@ -2,9 +2,10 @@ import { cn } from '@/shared/lib/utils';
 
 import { Spinner } from '.';
 
-export type SpinnerSize = 'sm' | 'md' | 'lg' | 'xl';
+export type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 
 const sizes = {
+	xs: 'size-4 border-2',
 	sm: 'size-5 border-2',
 	md: 'size-7 border-3',
 	lg: 'size-20 border-4',
