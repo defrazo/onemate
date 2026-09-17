@@ -24,7 +24,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 	const hasStart = range[0];
 
 	return (
-		<div className="flex flex-col border-t border-(--border-color)">
+		<div className="flex flex-col">
 			<div className="my-2 flex h-8 items-center">
 				{rangeInfo ? (
 					<>
@@ -88,14 +88,13 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						'h-8 px-3 text-xs hover:border-transparent hover:enabled:bg-(--warning-default)/80 xl:text-sm',
 						!isMobile && 'core-border w-32'
 					)}
-					disabled={!hasStart}
-					leftIcon={!isMobile && <IconTrash className="size-4.5" />}
+					leftIcon={!isMobile && hasStart && <IconTrash className="size-4.5" />}
 					size="custom"
-					title="Сбросить"
+					title={hasStart ? 'Сбросить' : 'Отмена'}
 					variant="mobile"
 					onClick={onReset}
 				>
-					{!isMobile && 'Сбросить'}
+					{!isMobile && hasStart ? 'Сбросить' : 'Отмена'}
 				</Button>
 			</div>
 		</div>

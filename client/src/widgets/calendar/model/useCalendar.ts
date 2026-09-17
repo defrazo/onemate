@@ -27,6 +27,11 @@ export const useCalendar = () => {
 	const toggleWeekends = () => setIncludeWeekends((value) => !value);
 
 	const resetRange = () => {
+		if (!range[0]) {
+			setIsControlsOpen(false);
+			return;
+		}
+
 		setRange([null, null]);
 		setIncludeWeekends(false);
 	};

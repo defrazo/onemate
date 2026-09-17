@@ -29,7 +29,7 @@ export const Calendar = () => {
 			<Grid month={currentMonth} range={range} selectDay={selectDay} />
 			<Collapse open={!isControlsOpen}>
 				<Button
-					className="h-8 w-full text-sm"
+					className="mx-auto h-6 w-60 rounded-lg text-sm text-(--color-primary)"
 					leftIcon={<IconCalendarStats className="size-4" />}
 					variant="accent"
 					onClick={() => setIsControlsOpen(true)}
