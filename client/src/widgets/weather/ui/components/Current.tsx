@@ -31,7 +31,7 @@ export const Current = observer(() => {
 	const condition = weather[0];
 
 	return (
-		<div className="grid flex-1 grid-cols-2 grid-rows-3 items-center gap-x-4 py-3">
+		<div className="grid flex-1 grid-cols-2 grid-rows-3 items-center gap-x-4 py-1 xl:py-3">
 			<div className="flex justify-start">
 				<div className="flex items-center gap-2.5">
 					<div className="h-9 w-0.5 bg-(--accent-default)" />
@@ -43,7 +43,7 @@ export const Current = observer(() => {
 					</div>
 				</div>
 			</div>
-			<div className="grid grid-cols-2">
+			<div className="flex grid-cols-2 flex-col gap-2 xl:grid">
 				<Metric icon={IconTemperatureSun} label="Максимум" value={`${Math.round(temp_max)}°`} />
 				<Metric icon={IconTemperatureSnow} label="Минимум" value={`${Math.round(temp_min)}°`} />
 			</div>
@@ -54,14 +54,14 @@ export const Current = observer(() => {
 					description={condition.description}
 				/>
 			</div>
-			<div className="grid grid-cols-2">
+			<div className="flex grid-cols-2 flex-col gap-2 xl:grid">
 				<Metric icon={IconSunrise} label="Восход" value={formatTime(sunrise)} />
 				<Metric icon={IconSunset} label="Закат" value={formatTime(sunset)} />
 			</div>
 			<div className="flex justify-center">
 				<span className="trim text-2xl xl:text-3xl 2xl:text-5xl">{Math.round(temp)}°C</span>
 			</div>
-			<div className="grid grid-cols-2">
+			<div className="flex grid-cols-2 flex-col gap-2 xl:grid">
 				<Tooltip content={getWindDirection(deg)}>
 					<Metric icon={IconWind} label="Ветер" value={`${speed} м/с`} />
 				</Tooltip>

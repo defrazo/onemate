@@ -27,8 +27,8 @@ export const Forecast = observer(() => {
 						title={capitalizeFirstLetter(description)}
 					/>
 					<div className="flex items-baseline justify-center gap-1">
-						<span className="text-xl font-bold text-(--accent-default)">{maxTemp}°</span>
-						<span className="text-sm text-(--color-secondary)">/ {minTemp}°</span>
+						<span className="text-base font-bold text-(--accent-default) xl:text-xl">{maxTemp}°</span>
+						<span className="text-xs text-(--color-secondary) xl:text-sm">/ {minTemp}°</span>
 					</div>
 				</div>
 			))}
