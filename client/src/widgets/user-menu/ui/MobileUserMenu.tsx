@@ -7,7 +7,7 @@ import { UserInfo } from '@/entities/user-profile';
 import { accountSettingsTabs, type TabId } from '@/features/account-settings';
 import { Button, Divider } from '@/shared/ui';
 
-import { profileTabs, userMenuLinks } from '../model';
+import { mobileUserMenuLinks, profileTabs } from '../model';
 
 export const MobileUserMenu = observer(() => {
 	const navigate = useNavigate();
@@ -47,7 +47,7 @@ export const MobileUserMenu = observer(() => {
 						<span className="trim w-full text-left">{label}</span>
 					</Button>
 				))}
-				{userMenuLinks.map(({ to, icon: Icon, label }) => (
+				{mobileUserMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
 						className="h-10 justify-start rounded-lg px-2.5 text-(--color-secondary) active:bg-white/6 active:text-(--color-primary)"

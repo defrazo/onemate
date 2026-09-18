@@ -1,2 +1,2 @@
-export { profileTabs, userMenuLinks } from './menuItems';
+export { desktopUserLinks, mobileUserMenuLinks, profileTabs } from './menuItems';
 export type { UserButton } from './types';
