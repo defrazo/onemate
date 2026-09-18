@@ -42,7 +42,7 @@ export const PersonalDataSection = observer(() => {
 		draft.birthDay !== userProfileStore.birthDay ||
 		draft.gender !== userProfileStore.gender;
 
-	const updateField = <K extends keyof PersonalDraft>(key: K, value: PersonalDraft[K]): void => {
+	const updateField = <K extends keyof PersonalDraft>(key: K, value: PersonalDraft[K]) => {
 		setDraft((prev) => ({ ...prev, [key]: value }));
 	};
 
@@ -55,7 +55,7 @@ export const PersonalDataSection = observer(() => {
 		return `${draft.birthYear}-${month}-${day}`;
 	};
 
-	const handleCancel = (): void => setDraft(createDraft());
+	const handleCancel = () => setDraft(createDraft());
 
 	const handleSave = async (): Promise<void> => {
 		if (isLoading || !isDirty) return;
@@ -193,7 +193,7 @@ export const PersonalDataSection = observer(() => {
 			<div className="flex flex-col gap-1">
 				<span className="text-(--color-secondary) opacity-70">Пол</span>
 				<Radio
-					className="flex-col gap-4 md:flex-row"
+					className="flex flex-wrap gap-4 md:flex-row"
 					name="gender"
 					options={genderOptions}
 					value={draft.gender}

@@ -25,7 +25,7 @@ export const PhonesSection = observer(() => {
 
 	const isChanged = JSON.stringify(currentPhones) !== JSON.stringify(savedPhones);
 
-	const handleChange = (index: number, value: string): void => {
+	const handleChange = (index: number, value: string) => {
 		setPhones((prev) => {
 			const next = [...prev];
 			next[index] = value;
@@ -37,7 +37,7 @@ export const PhonesSection = observer(() => {
 		});
 	};
 
-	const handleRemove = (index: number): void => {
+	const handleRemove = (index: number) => {
 		setPhones((prev) =>
 			withEmptySlot(
 				prev.filter((_, i) => i !== index),
@@ -46,7 +46,7 @@ export const PhonesSection = observer(() => {
 		);
 	};
 
-	const handleCancel = (): void => {
+	const handleCancel = () => {
 		setPhones(withEmptySlot(userProfileStore.phones ?? [], MAX_PHONES));
 	};
 
@@ -71,7 +71,6 @@ export const PhonesSection = observer(() => {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<span className="text-(--color-secondary) opacity-70">Телефон</span>
 			<div className="flex flex-col gap-2">
 				{phones.map((phone, index) => {
 					const isLast = index === phones.length - 1;

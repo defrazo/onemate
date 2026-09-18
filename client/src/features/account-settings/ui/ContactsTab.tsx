@@ -1,4 +1,4 @@
-import { IconBookFilled } from '@tabler/icons-react';
+import { IconMail, IconMapPin, IconPhone } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -11,14 +11,13 @@ export const ContactsTab = observer(() => {
 	const { userProfileStore } = useStore();
 
 	return (
-		<div className="core-base flex cursor-default flex-col gap-4 rounded-xl pb-4 select-none md:p-4 md:shadow-(--shadow)">
-			<SectionHeader icon={IconBookFilled} title="Контакты и адреса" />
-			<div className="flex min-h-27.5 flex-col gap-2">
-				<h2 className="mr-auto text-xl font-semibold">Местоположение</h2>
+		<div className="flex flex-col gap-4 divide-y divide-(--border-color) xl:divide-y-0">
+			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-37.5 xl:rounded-xl">
+				<SectionHeader icon={IconMapPin} title="Местоположение" />
 				{!userProfileStore.isLocationReady ? <LoadingState /> : <LocationSection />}
 			</div>
-			<div className="flex min-h-49 flex-col gap-2">
-				<h2 className="mr-auto text-xl font-semibold">Почта</h2>
+			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-59 xl:rounded-xl">
+				<SectionHeader icon={IconMail} title="Почта" />
 				{!userProfileStore.isReady ? (
 					<LoadingState />
 				) : (
@@ -28,8 +27,8 @@ export const ContactsTab = observer(() => {
 					</>
 				)}
 			</div>
-			<div className="flex min-h-40 flex-col gap-2">
-				<h2 className="mr-auto text-xl font-semibold">Телефон</h2>
+			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-43 xl:rounded-xl">
+				<SectionHeader icon={IconPhone} title="Телефоны" />
 				{!userProfileStore.isReady ? <LoadingState /> : <PhonesSection />}
 			</div>
 		</div>

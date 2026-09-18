@@ -1,12 +1,13 @@
-import { type ComponentType } from 'react';
+import type { ComponentType } from 'react';
 
-import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '../ui';
+import { ContactsTab, InterfaceTab, OverviewTab, PersonalTab, SecureTab } from '../ui';
 
 export const accountSettingsTabs = {
 	overview: OverviewTab,
 	personal: PersonalTab,
 	contacts: ContactsTab,
 	secure: SecureTab,
+	interface: InterfaceTab,
 } satisfies Record<string, ComponentType>;
 
 export type TabId = keyof typeof accountSettingsTabs;

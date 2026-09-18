@@ -1,4 +1,4 @@
-import { IconBookFilled } from '@tabler/icons-react';
+import { IconBook } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -22,7 +22,7 @@ export const ContactsOverview = observer(() => {
 	const { userProfileStore, userStore } = useStore();
 
 	return (
-		<OverviewSection icon={IconBookFilled} title="Контакты и адреса">
+		<OverviewSection icon={IconBook} title="Контакты и адреса">
 			<OverviewRow label="Город" value={userProfileStore.location?.name} />
 			<OverviewRow label="Основная почта" value={userStore.email} />
 			<OverviewRow label="Номер телефона" value={renderValues(userProfileStore.phones)} />

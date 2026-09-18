@@ -1,5 +1,5 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
-import { IconBookFilled, IconHomeFilled, IconShieldLockFilled, IconUserFilled } from '@tabler/icons-react';
+import { IconBook, IconHome, IconShieldLock, IconStack2, IconUser } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
@@ -7,10 +7,11 @@ import { Button, Divider } from '@/shared/ui';
 import type { ProfileNavButton } from '../../../model';
 
 const buttons: ProfileNavButton[] = [
-	{ id: 'overview', title: 'Главная', icon: IconHomeFilled },
-	{ id: 'personal', title: 'Личные данные', icon: IconUserFilled },
-	{ id: 'contacts', title: 'Контакты и адреса', icon: IconBookFilled },
-	{ id: 'secure', title: 'Безопасность', icon: IconShieldLockFilled },
+	{ id: 'overview', title: 'Главная', icon: IconHome },
+	{ id: 'personal', title: 'Личные данные', icon: IconUser },
+	{ id: 'contacts', title: 'Контакты и адреса', icon: IconBook },
+	{ id: 'secure', title: 'Безопасность', icon: IconShieldLock },
+	{ id: 'interface', title: 'Интерфейс', icon: IconStack2 },
 ];
 
 export const ProfileMenu = () => {
@@ -21,9 +22,13 @@ export const ProfileMenu = () => {
 
 	return (
 		<div className="core-base flex flex-col gap-2 rounded-xl p-3 shadow-(--shadow) select-none">
-			<div className="flex flex-col text-center">
+			<div className="flex flex-col items-center text-center">
 				<h1 className="text-xl font-semibold">Настройки</h1>
-				<span className="text-sm text-(--color-secondary) opacity-60">Управление аккаунтом</span>
+				<div className="flex h-5.5 items-center justify-center rounded-lg bg-(--accent-default)/10 px-2 py-1">
+					<span className="trim text-sm text-(--accent-default)">
+						{currentTab === 'interface' ? 'Персонализация OneMate' : 'Управление аккаунтом'}
+					</span>
+				</div>
 			</div>
 			<Divider className="w-full bg-(--border-color)" />
 			<div className="flex flex-col gap-2">

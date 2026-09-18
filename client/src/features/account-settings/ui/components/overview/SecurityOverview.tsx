@@ -1,4 +1,4 @@
-import { IconShieldLockFilled } from '@tabler/icons-react';
+import { IconShieldLock } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -14,7 +14,7 @@ export const SecurityOverview = observer(() => {
 	const currentDevice = deviceInfo ? `${deviceInfo.browser} (IP: ${deviceInfo.ip})` : 'Не указано';
 
 	return (
-		<OverviewSection icon={IconShieldLockFilled} title="Безопасность">
+		<OverviewSection icon={IconShieldLock} title="Безопасность">
 			<OverviewRow label="Пароль изменён" value={formattedDate} />
 			<OverviewRow label="Текущее устройство" value={currentDevice} />
 		</OverviewSection>

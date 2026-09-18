@@ -1,4 +1,4 @@
-import { IconUserFilled } from '@tabler/icons-react';
+import { IconUser } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -14,7 +14,7 @@ export const PersonalOverview = observer(() => {
 	const gender = genderOptions.find((option) => option.value === userProfileStore.gender)?.value;
 
 	return (
-		<OverviewSection icon={IconUserFilled} title="Личные данные">
+		<OverviewSection icon={IconUser} title="Личные данные">
 			<OverviewRow label="Имя" value={userProfileStore.firstName} />
 			<OverviewRow label="Фамилия" value={userProfileStore.lastName} />
 			<OverviewRow label="Никнейм" value={userStore.username} />
