@@ -7,6 +7,7 @@ import type { ThemeStore } from '@/features/theme-switcher';
 import type { NotifyStore } from '@/features/toast';
 import type { AuthFormStore, AuthStore } from '@/features/user-auth';
 import type { CurrencyStore } from '@/widgets/currency';
+import type { NetworkStore } from '@/widgets/network';
 import type { NotesStore } from '@/widgets/notes';
 import type { TranslatorStore } from '@/widgets/translator';
 import type { WeatherStore } from '@/widgets/weather';
@@ -21,6 +22,7 @@ export type AllStores = {
 	themeStore: ThemeStore;
 	notificationStore: NotificationStore;
 	deviceActivityStore: DeviceActivityStore;
+	networkStore: NetworkStore;
 	weatherStore: WeatherStore;
 	notesStore: NotesStore;
 	currencyStore: CurrencyStore;
@@ -34,6 +36,7 @@ export type InitKeys =
 	| 'authStore'
 	| 'deviceActivityStore'
 	| 'notesStore'
+	| 'networkStore'
 	| 'weatherStore'
 	| 'currencyStore';
 

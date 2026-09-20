@@ -21,7 +21,6 @@ export class UserRepoRouting implements IUserRepo {
 	protected checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string): void {
 		if (!PermissionService.canPerform(this.role, feature, operation)) {
 			const defaultMsg = this.role === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав';
-
 			throw new PermissionError(message ?? defaultMsg);
 		}
 	}
@@ -36,19 +35,16 @@ export class UserRepoRouting implements IUserRepo {
 
 	async updateUsername(username: string): Promise<User> {
 		this.checkPermission('user', 'save');
-
 		return this.getTargetRepo().updateUsername(username);
 	}
 
 	async updateEmail(email: string, currentPassword: string): Promise<User> {
 		this.checkPermission('user', 'save');
-
 		return this.getTargetRepo().updateEmail(email, currentPassword);
 	}
 
 	async updatePassword(currentPassword: string, password: string, passwordConfirmation: string): Promise<User> {
 		this.checkPermission('user', 'save');
-
 		return this.getTargetRepo().updatePassword(currentPassword, password, passwordConfirmation);
 	}
 
@@ -58,25 +54,21 @@ export class UserRepoRouting implements IUserRepo {
 
 	async resendPendingEmail(): Promise<void> {
 		this.checkPermission('user', 'save');
-
 		return this.getTargetRepo().resendPendingEmail();
 	}
 
 	async cancelPendingEmail(): Promise<User> {
 		this.checkPermission('user', 'save');
-
 		return this.getTargetRepo().cancelPendingEmail();
 	}
 
 	async deleteAccount(): Promise<User> {
 		this.checkPermission('user', 'delete', 'Удаление аккаунта недоступно в демо-режиме');
-
 		return this.getTargetRepo().deleteAccount();
 	}
 
 	async restoreAccount(): Promise<User> {
 		this.checkPermission('user', 'save', 'Восстановление аккаунта недоступно в демо-режиме');
-
 		return this.getTargetRepo().restoreAccount();
 	}
 }

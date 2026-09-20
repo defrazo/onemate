@@ -1,3 +1,3 @@
-export { UserRepoDemo } from './userRepoDemo';
-export { UserRepoLaravel } from './userRepoLaravel';
-export { UserRepoRouting } from './userRepoRouting';
+export { UserRepoDemo } from './user.repo.demo';
+export { UserRepoLaravel } from './user.repo.laravel';
+export { UserRepoRouting } from './user.repo.routing';

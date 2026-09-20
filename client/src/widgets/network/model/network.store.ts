@@ -1,93 +1,155 @@
-import { makeAutoObservable, runInAction } from 'mobx';
+import { action, makeObservable, observable, reaction } from 'mobx';
 
-import {
-	checkMonitoredService,
-	createMonitoredService,
-	deleteMonitoredService,
-	getMonitoredServices,
-	updateMonitoredService,
-} from '../api';
-import type { CreateMonitoredService, MonitoredService, UpdateMonitoredService } from '.';
+import type { IBaseUserPort } from '@/entities/user';
+import { AsyncStore } from '@/shared/lib/store';
 
-export class NetworkStore {
+import { networkCache } from '../lib';
+import type {
+	AddressCheckResult,
+	CreateMonitoredService,
+	INetworkRepo,
+	MonitoredService,
+	MonitoringHistory,
+	PortCheckResult,
+	SslCheckResult,
+	UpdateMonitoredService,
+} from '.';
+
+export class NetworkStore extends AsyncStore {
 	services: MonitoredService[] = [];
-	isLoading = false;
 	isReady = false;
-	error: string | null = null;
 
-	constructor() {
-		makeAutoObservable(this);
+	async loadServices(userId: string): Promise<void> {
+		const cached = networkCache.read(userId);
+		if (cached) this.applyServices(cached.services);
+
+		if (this.isLoading) return;
+
+		await this.withLoading(async () => {
+			const services = await this.repo.loadServices();
+
+			if (this.userStore.id !== userId) return;
+
+			this.applyServices(services);
+			networkCache.write(userId, services);
+		});
 	}
 
-	async loadServices(): Promise<void> {
-		if (this.isLoading) {
-			return;
-		}
-
-		this.isLoading = true;
-		this.error = null;
-
-		try {
-			const services = await getMonitoredServices();
-
-			runInAction(() => {
-				this.services = services;
-				this.isReady = true;
-			});
-		} catch (error) {
-			runInAction(() => {
-				this.error = error instanceof Error ? error.message : 'Не удалось загрузить ресурсы.';
-			});
-		} finally {
-			runInAction(() => {
-				this.isLoading = false;
-			});
-		}
+	async loadHistory(id: number): Promise<MonitoringHistory> {
+		return this.repo.loadHistory(id);
 	}
 
 	async addService(data: CreateMonitoredService): Promise<MonitoredService> {
-		const service = await createMonitoredService(data);
+		const service = await this.repo.createService(data);
 
-		runInAction(() => {
-			this.services.unshift(service);
-		});
+		this.prependService(service);
+		this.persistCache();
 
 		return service;
 	}
 
 	async checkService(id: number): Promise<MonitoredService> {
-		const service = await checkMonitoredService(id);
+		const service = await this.repo.checkService(id);
 
-		runInAction(() => {
-			const index = this.services.findIndex((currentService) => currentService.id === service.id);
-
-			if (index !== -1) {
-				this.services[index] = service;
-			}
-		});
+		this.replaceService(service);
+		this.persistCache();
 
 		return service;
 	}
 
 	async updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService> {
-		const service = await updateMonitoredService(id, data);
+		const service = await this.repo.updateService(id, data);
 
-		runInAction(() => {
-			const index = this.services.findIndex((currentService) => currentService.id === id);
-
-			if (index !== -1) {
-				this.services[index] = service;
-			}
-		});
+		this.replaceService(service);
+		this.persistCache();
 
 		return service;
 	}
 
 	async deleteService(id: number): Promise<void> {
-		await deleteMonitoredService(id);
+		await this.repo.deleteService(id);
 
-		runInAction(() => {
-			this.services = this.services.filter((service) => service.id !== id);
+		this.removeService(id);
+		this.persistCache();
+	}
+
+	async checkAddress(url: string): Promise<AddressCheckResult> {
+		return this.repo.checkAddress(url);
+	}
+
+	async checkPort(host: string, port: number): Promise<PortCheckResult> {
+		return this.repo.checkPort(host, port);
+	}
+
+	async checkSsl(host: string): Promise<SslCheckResult> {
+		return this.repo.checkSsl(host);
+	}
+
+	private applyServices(services: MonitoredService[]): void {
+		this.services = services;
+		this.isReady = true;
+	}
+
+	private prependService(service: MonitoredService): void {
+		this.services.unshift(service);
+	}
+
+	private replaceService(service: MonitoredService): void {
+		const index = this.services.findIndex((currentService) => currentService.id === service.id);
+		if (index !== -1) this.services[index] = service;
+	}
+
+	private removeService(id: number): void {
+		this.services = this.services.filter((service) => service.id !== id);
+	}
+
+	private persistCache(): void {
+		const userId = this.userStore.id;
+		if (!userId) return;
+
+		networkCache.write(userId, this.services);
+	}
+
+	constructor(
+		private readonly userStore: IBaseUserPort,
+		private readonly repo: INetworkRepo
+	) {
+		super();
+
+		makeObservable<this, 'applyServices' | 'prependService' | 'replaceService' | 'removeService' | 'reset'>(this, {
+			services: observable,
+			isReady: observable,
+
+			applyServices: action,
+			prependService: action,
+			replaceService: action,
+			removeService: action,
+			reset: action,
 		});
+	}
+
+	init(): void {
+		if (this.inited) return;
+		this.inited = true;
+
+		this.track(
+			reaction(
+				() => this.userStore.id,
+				(userId) => {
+					if (!userId) {
+						this.reset();
+						return;
+					}
+
+					void this.loadServices(userId);
+				},
+				{ fireImmediately: true }
+			)
+		);
+	}
+
+	protected reset(): void {
+		this.services = [];
+		this.isReady = false;
 	}
 }

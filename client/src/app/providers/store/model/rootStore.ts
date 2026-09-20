@@ -10,6 +10,7 @@ export class RootStore implements AllStores {
 	public readonly authFormStore: AllStores['authFormStore'];
 	public readonly themeStore: AllStores['themeStore'];
 	public readonly deviceActivityStore: AllStores['deviceActivityStore'];
+	public readonly networkStore: AllStores['networkStore'];
 	public readonly weatherStore: AllStores['weatherStore'];
 	public readonly notesStore: AllStores['notesStore'];
 	public readonly currencyStore: AllStores['currencyStore'];
@@ -31,6 +32,7 @@ export class RootStore implements AllStores {
 		this.authFormStore = allStores.authFormStore;
 		this.themeStore = allStores.themeStore;
 		this.deviceActivityStore = allStores.deviceActivityStore;
+		this.networkStore = allStores.networkStore;
 		this.weatherStore = allStores.weatherStore;
 		this.notesStore = allStores.notesStore;
 		this.currencyStore = allStores.currencyStore;

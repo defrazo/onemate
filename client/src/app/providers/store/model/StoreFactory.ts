@@ -8,6 +8,7 @@ import { ThemeStore } from '@/features/theme-switcher';
 import { NotifyStore } from '@/features/toast';
 import { AuthFormStore, AuthStore } from '@/features/user-auth';
 import { CurrencyStore } from '@/widgets/currency';
+import { NetworkRepoRouting, NetworkStore } from '@/widgets/network';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { WeatherStore } from '@/widgets/weather';
@@ -49,6 +50,7 @@ export class StoreFactory {
 		);
 
 		// Widgets
+		const networkStore = new NetworkStore(userStore, new NetworkRepoRouting(userStore));
 		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
 		const notesStore = new NotesStore(userStore, new NotesRepoRouting(userStore));
 		const currencyStore = new CurrencyStore(userStore);
@@ -71,6 +73,7 @@ export class StoreFactory {
 			deviceActivityStore,
 
 			// Widgets
+			networkStore,
 			weatherStore,
 			notesStore,
 			currencyStore,
