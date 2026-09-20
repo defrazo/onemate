@@ -1,24 +1,27 @@
-import {
-	IconCalculator,
-	IconCalendarWeek,
-	IconCloudStorm,
-	IconLanguage,
-	IconNote,
-	IconWorldDollar,
-} from '@tabler/icons-react';
+import type { JSX, ReactNode } from 'react';
 
+import { type WidgetId, WIDGETS } from '@/shared/config';
 import { Calculator, CALCULATOR_TIP } from '@/widgets/calculator';
 import { Calendar, CALENDAR_TIP } from '@/widgets/calendar';
 import { Currency, CURRENCY_TIP } from '@/widgets/currency';
+import { Network, NETWORK_TIP } from '@/widgets/network';
 import { Notes, NOTES_TIP } from '@/widgets/notes';
 import { Translator, TRANSLATOR_TIP } from '@/widgets/translator';
 import { Weather, WEATHER_TIP } from '@/widgets/weather';
 
-export const widgets = [
-	{ id: 'calculator', title: 'Калькулятор', icon: IconCalculator, content: <Calculator />, tip: CALCULATOR_TIP },
-	{ id: 'calendar', title: 'Календарь', icon: IconCalendarWeek, content: <Calendar />, tip: CALENDAR_TIP },
-	{ id: 'weather', title: 'Погода', icon: IconCloudStorm, content: <Weather />, tip: WEATHER_TIP },
-	{ id: 'notes', title: 'Заметки', icon: IconNote, content: <Notes />, tip: NOTES_TIP },
-	{ id: 'currency', title: 'Конвертер валют', icon: IconWorldDollar, content: <Currency />, tip: CURRENCY_TIP },
-	{ id: 'translator', title: 'Переводчик', icon: IconLanguage, content: <Translator />, tip: TRANSLATOR_TIP },
-];
+interface DashboardWidgetConfig {
+	content: ReactNode;
+	tip: JSX.Element;
+}
+
+const dashboardWidgets = {
+	calculator: { content: <Calculator />, tip: CALCULATOR_TIP },
+	calendar: { content: <Calendar />, tip: CALENDAR_TIP },
+	weather: { content: <Weather />, tip: WEATHER_TIP },
+	notes: { content: <Notes />, tip: NOTES_TIP },
+	currency: { content: <Currency />, tip: CURRENCY_TIP },
+	translator: { content: <Translator />, tip: TRANSLATOR_TIP },
+	network: { content: <Network />, tip: NETWORK_TIP },
+} satisfies Record<WidgetId, DashboardWidgetConfig>;
+
+export const widgets = WIDGETS.map((widget) => ({ ...widget, ...dashboardWidgets[widget.id] }));

@@ -19,7 +19,7 @@ export const Card = observer(({ id }: { id: string }) => {
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-border group/note flex min-h-24 shrink-0 bg-(--bg-secondary) py-2 pl-2"
+			className="core-border group/note flex min-h-24 shrink-0 bg-(--bg-secondary) py-2 pl-2 transition-colors hover:bg-white/3"
 			style={{ transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 0 }}
 		>
 			<button

@@ -1,5 +1,10 @@
 import axios from 'axios';
 
+type LaravelErrorResponse = {
+	code?: string;
+	message?: string;
+};
+
 const errorMessages: Record<string, string> = {
 	INVALID_INVITE: 'Некорректный инвайт-код',
 	PRIVACY_NOT_ACCEPTED: 'Требуется согласие на ПД',
@@ -12,10 +17,12 @@ const errorMessages: Record<string, string> = {
 };
 
 export const handleLaravelError = (error: unknown): never => {
-	if (axios.isAxiosError<{ code?: string }>(error)) {
-		const code = error.response?.data?.code;
+	if (axios.isAxiosError<LaravelErrorResponse>(error)) {
+		const { code, message } = error.response?.data ?? {};
 
 		if (code && errorMessages[code]) throw new Error(errorMessages[code]);
+
+		if (message) throw new Error(message);
 
 		throw error;
 	}

@@ -74,7 +74,7 @@ export const SelectExt = ({
 				)}
 				<span
 					className={cn(
-						'w-full text-center group-hover/select:text-(--accent-default)',
+						'w-full text-center transition-colors group-hover/select:enabled:text-(--accent-default)',
 						visibleDown && 'pr-2',
 						!selectedOption && 'text-(--color-primary)',
 						isOpen && 'text-(--accent-default)'
@@ -83,7 +83,7 @@ export const SelectExt = ({
 					{selectedOption?.label ?? placeholder}
 				</span>
 				{visibleDown && (
-					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 group-hover/select:text-(--accent-default)">
+					<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2 transition-colors group-hover/select:enabled:text-(--accent-default)">
 						<IconChevronDown className="size-4" />
 					</div>
 				)}

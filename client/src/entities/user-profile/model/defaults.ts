@@ -1,4 +1,4 @@
-import { DEFAULT_THEME } from '@/shared/config';
+import { DEFAULT_THEME, type WidgetId } from '@/shared/config';
 
 import type { UserProfile } from '.';
 
@@ -6,11 +6,10 @@ const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
 const DEFAULT_WIDGETS = ['calculator', 'calendar', 'notes', 'currency', 'weather', 'translator'] as const;
-type WidgetId = (typeof DEFAULT_WIDGETS)[number];
 export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
-export const createDefaultSlots = (): string[] => [...DEFAULT_SLOTS];
+export const createDefaultSlots = (): WidgetId[] => [...DEFAULT_SLOTS];
 
 const DEFAULT_PROFILE: UserProfile = {
 	avatar_url: null,
@@ -23,6 +22,7 @@ const DEFAULT_PROFILE: UserProfile = {
 	theme: DEFAULT_THEME,
 	widgets_sequence: createDefaultWidgets(),
 	widgets_slots: createDefaultSlots(),
+	network_notifications_enabled: true,
 	password_changed_at: null,
 };
 export const createDefaultProfile = (): UserProfile => clone(DEFAULT_PROFILE);
@@ -38,6 +38,7 @@ const DEMO_PROFILE: UserProfile = {
 	theme: DEFAULT_THEME,
 	widgets_sequence: createDefaultWidgets(),
 	widgets_slots: createDefaultSlots(),
+	network_notifications_enabled: true,
 	password_changed_at: null,
 };
 export const createDemoProfile = (): UserProfile => clone(DEMO_PROFILE);

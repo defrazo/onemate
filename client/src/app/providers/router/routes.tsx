@@ -55,13 +55,12 @@ export const routes: RouteObject[] = [
 				element: <Layout />,
 				children: [{ path: '/', element: <HomePage /> }],
 			},
-			{
-				children: [
-					{ path: '/email/verify/:id/:hash', element: <VerifyEmailPage /> },
-					{ path: '/reset-password', element: <ResetPasswordPage /> },
-				],
-			},
+			{ children: [{ path: '/reset-password', element: <ResetPasswordPage /> }] },
 		],
+	},
+	{
+		path: '/email/verify/:id/:hash',
+		element: <VerifyEmailPage />,
 	},
 	{
 		element: <StaticPageLayout title="О демо-режиме OneMate" />,

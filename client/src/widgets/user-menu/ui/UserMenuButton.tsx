@@ -14,6 +14,8 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 
 	const { modalStore } = useStore();
 
+	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
+
 	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
 
 	const handleUserMenuClick = () => {
@@ -28,7 +30,7 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 
 		const position = { top: rect.bottom + window.scrollY - 7, left: rect.right + window.scrollX };
 
-		device === 'mobile' || (device === 'tablet' && orientation === 'portrait')
+		isMobile
 			? modalStore.setModal(<MobileUserMenu />, 'sheet')
 			: modalStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
 	};
@@ -42,9 +44,11 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 
 	return (
 		<Button
-			className="group rounded-xl bg-white/4 px-2 py-1.5 transition-colors hover:bg-white/8"
+			className="group xl:rounded-xl xl:bg-white/4 xl:px-2 xl:py-1.5 xl:transition-colors xl:hover:bg-white/8"
 			rightIcon={
-				<IconChevronDown className="size-4 text-(--color-secondary) transition-[color,transform] group-hover:text-(--accent-default)" />
+				!isMobile && (
+					<IconChevronDown className="size-4 text-(--color-secondary) transition-colors group-hover:text-(--accent-default)" />
+				)
 			}
 			size="custom"
 			title="Открыть меню пользователя"

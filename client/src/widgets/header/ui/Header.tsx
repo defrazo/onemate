@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { Navbar } from '@/features/navigation';
+import { NotificationButton } from '@/features/notifications';
 import { ThemeSwitcher } from '@/features/theme-switcher';
 import { LoginButton } from '@/features/user-auth';
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
@@ -18,8 +19,8 @@ export const Header = observer(() => {
 	const headerRef = useRef<HTMLDivElement>(null);
 
 	const isAuth = authStore.isReady;
-	const showNavbar = device === 'desktop' || (device === 'tablet' && orientation === 'landscape');
-	const showLogin = !isAuth && showNavbar;
+	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
+	const showLogin = !isAuth && isMobile;
 
 	return (
 		<header
@@ -28,16 +29,16 @@ export const Header = observer(() => {
 		>
 			<Logo isLink size="lg" />
 
-			{isAuth && showNavbar && <Navbar variant="desktop" />}
+			{isAuth && !isMobile && <Navbar variant="desktop" />}
 
 			<div className="flex items-center gap-4">
 				{showLogin && <LoginButton />}
 				{showLogin && <div className="h-7 w-px bg-(--border-alt)" />}
 
-				{isAuth && <ThemeSwitcher />}
+				{isAuth && <NotificationButton />}
 
 				{isAuth && <UserMenuButton headerRef={headerRef} />}
-				{isAuth && <div className="h-7 w-px bg-(--border-alt)" />}
+				{isAuth && !isMobile && <div className="h-7 w-px bg-(--border-alt)" />}
 
 				<DateTime />
 

@@ -4,4 +4,5 @@ export * from './input';
 export * from './link';
 export * from './radiobox';
 export * from './select';
+export * from './switch';
 export * from './textarea';

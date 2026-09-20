@@ -23,7 +23,7 @@ export class NotificationStore extends AsyncStore {
 	browserNotificationsEnabled =
 		'Notification' in window &&
 		Notification.permission === 'granted' &&
-		storage.get(BROWSER_NOTIFICATIONS_KEY) === 'true';
+		storage.get(BROWSER_NOTIFICATIONS_KEY) === true;
 
 	get unreadCount(): number {
 		return this.notifications.filter((notification) => notification.readAt === null).length;
@@ -36,17 +36,20 @@ export class NotificationStore extends AsyncStore {
 	async setBrowserNotificationsEnabled(enabled: boolean): Promise<void> {
 		if (!enabled) {
 			this.browserNotificationsEnabled = false;
-			storage.set(BROWSER_NOTIFICATIONS_KEY, 'false');
+			storage.set(BROWSER_NOTIFICATIONS_KEY, false);
 			return;
 		}
 
 		if (!this.browserNotificationsSupported) return;
 
 		const permission = await Notification.requestPermission();
+		const isEnabled = permission === 'granted';
 
-		runInAction(() => (this.browserNotificationsEnabled = permission === 'granted'));
+		runInAction(() => {
+			this.browserNotificationsEnabled = isEnabled;
+		});
 
-		storage.set(BROWSER_NOTIFICATIONS_KEY, String(permission === 'granted'));
+		storage.set(BROWSER_NOTIFICATIONS_KEY, isEnabled);
 	}
 
 	showBrowserNotifications(notifications: AppNotification[]): void {
