@@ -24,7 +24,7 @@ export const ProfileMenu = () => {
 		<div className="core-base flex flex-col gap-2 rounded-xl p-3 shadow-(--shadow) select-none">
 			<div className="flex flex-col items-center text-center">
 				<h1 className="text-xl font-semibold">Настройки</h1>
-				<div className="flex h-5.5 items-center justify-center rounded-lg bg-(--accent-default)/10 px-2 py-1">
+				<div className="my-1 flex h-5.5 items-center justify-center rounded-lg bg-(--accent-default)/10 px-2 py-1">
 					<span className="trim text-sm text-(--accent-default)">
 						{currentTab === 'interface' ? 'Персонализация OneMate' : 'Управление аккаунтом'}
 					</span>
