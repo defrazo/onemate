@@ -3,8 +3,9 @@ import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
 import { ActivityRepoRouting, DeviceActivityStore, DeviceProviderRouting } from '@/features/device-activity';
 import { ModalStore } from '@/features/modal';
-import { NotifyStore } from '@/features/notification';
+import { NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
+import { NotifyStore } from '@/features/toast';
 import { AuthFormStore, AuthStore } from '@/features/user-auth';
 import { CurrencyStore } from '@/widgets/currency';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
@@ -39,6 +40,7 @@ export class StoreFactory {
 		const authStore = new AuthStore(userStore);
 		const authFormStore = new AuthFormStore();
 		const themeStore = new ThemeStore(userStore, userProfileStore);
+		const notificationStore = new NotificationStore(userStore);
 		const deviceActivityStore = new DeviceActivityStore(
 			userStore,
 			authStore,
@@ -65,6 +67,7 @@ export class StoreFactory {
 			authStore,
 			authFormStore,
 			themeStore,
+			notificationStore,
 			deviceActivityStore,
 
 			// Widgets

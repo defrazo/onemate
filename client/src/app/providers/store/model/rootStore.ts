@@ -3,6 +3,7 @@ import { type AllStores, StoreFactory, StoreInitializer } from '.';
 export class RootStore implements AllStores {
 	public readonly userStore: AllStores['userStore'];
 	public readonly notifyStore: AllStores['notifyStore'];
+	public readonly notificationStore: AllStores['notificationStore'];
 	public readonly modalStore: AllStores['modalStore'];
 	public readonly userProfileStore: AllStores['userProfileStore'];
 	public readonly authStore: AllStores['authStore'];
@@ -23,6 +24,7 @@ export class RootStore implements AllStores {
 
 		this.userStore = allStores.userStore;
 		this.notifyStore = allStores.notifyStore;
+		this.notificationStore = allStores.notificationStore;
 		this.modalStore = allStores.modalStore;
 		this.userProfileStore = allStores.userProfileStore;
 		this.authStore = allStores.authStore;

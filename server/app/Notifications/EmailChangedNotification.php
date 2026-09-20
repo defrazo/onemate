@@ -21,7 +21,12 @@ class EmailChangedNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
+    }
+
+    public function databaseType(object $notifiable): string
+    {
+        return 'account.email_changed';
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -32,5 +37,13 @@ class EmailChangedNotification extends Notification implements ShouldQueue
                 'oldEmail' => $this->oldEmail,
                 'newEmail' => $notifiable->email,
             ]);
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return [
+            'title' => 'E-mail изменён',
+            'message' => 'Основной e-mail вашей учётной записи был успешно изменён.',
+        ];
     }
 }

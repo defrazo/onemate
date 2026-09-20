@@ -17,7 +17,12 @@ class AccountRestoredNotification extends Notification implements ShouldQueue
 
     public function via(object $notifiable): array
     {
-        return ['mail'];
+        return ['mail', 'database'];
+    }
+
+    public function databaseType(object $notifiable): string
+    {
+        return 'account.restored';
     }
 
     public function toMail(object $notifiable): MailMessage
@@ -25,5 +30,13 @@ class AccountRestoredNotification extends Notification implements ShouldQueue
         return (new MailMessage)
             ->subject('Аккаунт OneMate восстановлен')
             ->view('emails.account-restored');
+    }
+
+    public function toDatabase(object $notifiable): array
+    {
+        return [
+            'title' => 'Аккаунт восстановлен',
+            'message' => 'Ваша учётная запись была успешно восстановлена.',
+        ];
     }
 }

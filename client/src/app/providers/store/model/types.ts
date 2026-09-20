@@ -2,8 +2,9 @@ import type { UserStore } from '@/entities/user';
 import type { UserProfileStore } from '@/entities/user-profile';
 import type { DeviceActivityStore } from '@/features/device-activity';
 import type { ModalStore } from '@/features/modal';
-import type { NotifyStore } from '@/features/notification';
+import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
+import type { NotifyStore } from '@/features/toast';
 import type { AuthFormStore, AuthStore } from '@/features/user-auth';
 import type { CurrencyStore } from '@/widgets/currency';
 import type { NotesStore } from '@/widgets/notes';
@@ -18,6 +19,7 @@ export type AllStores = {
 	authStore: AuthStore;
 	authFormStore: AuthFormStore;
 	themeStore: ThemeStore;
+	notificationStore: NotificationStore;
 	deviceActivityStore: DeviceActivityStore;
 	weatherStore: WeatherStore;
 	notesStore: NotesStore;
@@ -27,6 +29,7 @@ export type AllStores = {
 
 export type InitKeys =
 	| 'themeStore'
+	| 'notificationStore'
 	| 'userProfileStore'
 	| 'authStore'
 	| 'deviceActivityStore'

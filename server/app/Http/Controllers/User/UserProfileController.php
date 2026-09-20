@@ -52,6 +52,8 @@ class UserProfileController extends Controller
 
             'widgets_slots' => ['sometimes', 'nullable', 'array'],
             'widgets_slots.*' => ['string'],
+
+            'network_notifications_enabled' => ['sometimes', 'boolean'],
         ]);
 
         $profile = $request->user()
