@@ -104,8 +104,8 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 		this.setUser(await this.userRepo.cancelPendingEmail());
 	}
 
-	async verifyPendingEmail(id: string, hash: string, params: Record<string, string>): Promise<User> {
-		return this.userRepo.verifyPendingEmail(id, hash, params);
+	async verifyPendingEmail(id: string, hash: string, params: Record<string, string>): Promise<void> {
+		this.setUser(await this.userRepo.verifyPendingEmail(id, hash, params));
 	}
 
 	constructor() {

@@ -1,4 +1,4 @@
-export type Gender = 'male' | 'female' | '';
+import type { WidgetId } from '@/shared/config';
 
 export type UserProfile = {
 	user_id?: string;
@@ -10,8 +10,9 @@ export type UserProfile = {
 	phones?: string[] | null;
 	additional_emails?: string[] | null;
 	theme?: 'light' | 'dark';
-	widgets_sequence?: string[] | null;
-	widgets_slots?: string[] | null;
+	widgets_sequence?: WidgetId[] | null;
+	widgets_slots?: WidgetId[] | null;
+	network_notifications_enabled?: boolean;
 	password_changed_at?: string | null;
 	deleted_at?: string | null;
 	created_at?: string;
@@ -19,3 +20,5 @@ export type UserProfile = {
 };
 
 export type UserProfilePatch = Partial<UserProfile>;
+
+export type Gender = 'male' | 'female' | '';

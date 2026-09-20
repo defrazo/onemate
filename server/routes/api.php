@@ -5,6 +5,11 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Kanban\KanbanColumnController;
 use App\Http\Controllers\Kanban\KanbanTaskController;
+use App\Http\Controllers\Network\AddressCheckController;
+use App\Http\Controllers\Network\MonitoredServiceController;
+use App\Http\Controllers\Network\PortCheckController;
+use App\Http\Controllers\Network\SslCheckController;
+use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
 use App\Http\Controllers\User\UserLocationController;
@@ -48,6 +53,11 @@ Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 've
 Route::get('/user/email/verify/{id}/{hash}', [UserAccountController::class, 'verifyPendingEmail'])
     ->middleware('signed:relative')
     ->name('pending-email.verify');
+
+// Network
+Route::post('/network/address/check', AddressCheckController::class);
+Route::post('/network/port/check', PortCheckController::class);
+Route::post('/network/ssl/check', SslCheckController::class);
 
 // Authenticated all
 Route::middleware('auth:sanctum')->group(function () {
@@ -113,5 +123,20 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/kanban/tasks/{task}', [KanbanTaskController::class, 'update']);
         Route::patch('/kanban/tasks/{task}/position', [KanbanTaskController::class, 'move']);
         Route::delete('/kanban/tasks/{task}', [KanbanTaskController::class, 'destroy']);
+
+        // Network
+        Route::get('/network/services', [MonitoredServiceController::class, 'index']);
+        Route::post('/network/services', [MonitoredServiceController::class, 'store']);
+        Route::patch('/network/services/{service}', [MonitoredServiceController::class, 'update']);
+        Route::delete('/network/services/{service}', [MonitoredServiceController::class, 'destroy']);
+        Route::post('/network/services/{service}/check', [MonitoredServiceController::class, 'check']);
+        Route::get('/network/services/{service}/history', [MonitoredServiceController::class, 'history']);
+
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/read-all', [NotificationController::class, 'readAll']);
+        Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read']);
+        Route::delete('/notifications', [NotificationController::class, 'destroyAll']);
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
     });
 });

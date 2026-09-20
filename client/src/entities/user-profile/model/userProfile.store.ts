@@ -4,7 +4,7 @@ import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AVATAR_ENTRIES, AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import { DEFAULT_THEME, type Theme } from '@/shared/config';
+import { DEFAULT_THEME, type Theme, type WidgetId } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
@@ -105,11 +105,11 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		return this.profile?.theme ?? DEFAULT_THEME;
 	}
 
-	get widgets(): string[] {
+	get widgets(): WidgetId[] {
 		return this.profile?.widgets_sequence ?? createDefaultWidgets();
 	}
 
-	get slots(): string[] {
+	get slots(): WidgetId[] {
 		return this.profile?.widgets_slots ?? createDefaultSlots();
 	}
 
@@ -191,7 +191,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme));
 	}
 
-	async updateWidgetSequence(widgets: string[]): Promise<void> {
+	async updateWidgetSequence(widgets: WidgetId[]): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.arraysEqual(this.profile?.widgets_sequence, widgets)) return;
 
@@ -203,7 +203,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		);
 	}
 
-	async updateWidgetSlots(slots: string[]): Promise<void> {
+	async updateWidgetSlots(slots: WidgetId[]): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.arraysEqual(this.profile?.widgets_slots, slots)) return;
 
@@ -211,6 +211,13 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		userProfileCache.setSlots(userId, slots);
 
 		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots));
+	}
+
+	async replaceWidget(currentId: WidgetId, nextId: WidgetId): Promise<void> {
+		const widgets = this.widgets.map((id) => (id === currentId ? nextId : id));
+		const slots = this.slots.map((id) => (id === currentId ? nextId : id));
+
+		await Promise.all([this.updateWidgetSequence(widgets), this.updateWidgetSlots(slots)]);
 	}
 
 	async markPasswordChanged(userId: string): Promise<void> {
