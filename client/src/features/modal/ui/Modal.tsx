@@ -3,8 +3,7 @@ import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react-lite';
 
 import { IconBack, IconClose } from '@/shared/assets/icons';
-
-import { useEscapeClose } from '../model';
+import { useEscapeClose } from '@/shared/lib/hooks';
 
 interface ModalProps {
 	children: ReactNode;

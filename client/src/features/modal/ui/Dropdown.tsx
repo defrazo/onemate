@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { observer } from 'mobx-react-lite';
 
-import { useEscapeClose } from '../model';
+import { useEscapeClose } from '@/shared/lib/hooks';
 
 interface DropdownProps {
 	children: ReactNode;
