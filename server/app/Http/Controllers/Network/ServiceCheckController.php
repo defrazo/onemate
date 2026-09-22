@@ -3,14 +3,14 @@
 namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\Network\CheckAddressRequest;
-use App\Services\Network\AddressCheckService;
+use App\Http\Requests\Network\CheckServiceRequest;
+use App\Services\Network\ServiceCheckService;
 use Illuminate\Http\JsonResponse;
 use InvalidArgumentException;
 
-class AddressCheckController extends Controller
+class ServiceCheckController extends Controller
 {
-    public function __invoke(CheckAddressRequest $request, AddressCheckService $service): JsonResponse
+    public function __invoke(CheckServiceRequest $request, ServiceCheckService $service): JsonResponse
     {
         try {
             return response()->json(

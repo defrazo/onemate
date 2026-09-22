@@ -5,9 +5,9 @@ use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Kanban\KanbanColumnController;
 use App\Http\Controllers\Kanban\KanbanTaskController;
-use App\Http\Controllers\Network\AddressCheckController;
 use App\Http\Controllers\Network\MonitoredServiceController;
 use App\Http\Controllers\Network\PortCheckController;
+use App\Http\Controllers\Network\ServiceCheckController;
 use App\Http\Controllers\Network\SslCheckController;
 use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserAccountController;
@@ -55,7 +55,7 @@ Route::get('/user/email/verify/{id}/{hash}', [UserAccountController::class, 'ver
     ->name('pending-email.verify');
 
 // Network
-Route::post('/network/address/check', AddressCheckController::class);
+Route::post('/network/service/check', ServiceCheckController::class);
 Route::post('/network/port/check', PortCheckController::class);
 Route::post('/network/ssl/check', SslCheckController::class);
 

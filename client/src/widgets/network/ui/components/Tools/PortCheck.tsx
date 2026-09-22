@@ -1,106 +1,167 @@
 import { useState } from 'react';
-import { IconArrowLeft, IconPlugConnected } from '@tabler/icons-react';
+import { IconAlertCircle, IconLink, IconMobiledata, IconPlugConnected, IconWorld, IconX } from '@tabler/icons-react';
 
-import { Button, Input } from '@/shared/ui';
+import { useStore } from '@/app/providers';
+import { useCopy } from '@/shared/lib/hooks';
+import { Button, Input, InputLabel } from '@/shared/ui';
 
-import { checkPort } from '../../../api';
+import { getResponseTimeClass, portResultToCopy } from '../../../lib';
 import type { PortCheckResult } from '../../../model';
+import { CopyButton, Metric, StatusDot, ViewHeader } from '..';
 
 export const PortCheck = ({ onBack }: { onBack: () => void }) => {
+	const copy = useCopy();
+
+	const { networkStore, notifyStore } = useStore();
+
 	const [host, setHost] = useState('');
 	const [port, setPort] = useState('');
 	const [result, setResult] = useState<PortCheckResult | null>(null);
+
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const handleSubmit = async (event: React.SubmitEvent<HTMLFormElement>) => {
-		event.preventDefault();
+	const portNumber = Number(port);
+	const isValid = host.trim() !== '' && Number.isInteger(portNumber) && portNumber >= 1 && portNumber <= 65535;
 
-		const portNumber = Number(port);
+	const statusLabel = result?.status === 'open' ? 'Порт открыт' : 'Порт закрыт';
 
-		if (!host.trim() || !Number.isInteger(portNumber) || portNumber < 1 || portNumber > 65535 || isLoading) {
-			return;
-		}
+	const handleHostChange = (value: string) => {
+		setHost(value);
+		setResult(null);
+		setError(null);
+	};
+
+	const handlePortChange = (value: string) => {
+		setPort(value);
+		setResult(null);
+		setError(null);
+	};
+
+	const handleCopy = () => {
+		if (!result) return;
+		copy(portResultToCopy(result), 'Результат скопирован!');
+	};
+
+	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+		e.preventDefault();
+
+		if (!isValid || isLoading) return;
 
 		setIsLoading(true);
 		setError(null);
-		setResult(null);
 
 		try {
-			const response = await checkPort(host.trim(), portNumber);
-
-			setResult(response);
+			setResult(await networkStore.checkPort(host.trim(), Number(port)));
 		} catch (error) {
-			setError(error instanceof Error ? error.message : 'Не удалось проверить порт.');
+			error instanceof Error ? setError(error.message) : notifyStore.setNotice('Что-то пошло не так', 'error');
 		} finally {
 			setIsLoading(false);
 		}
 	};
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col">
-			<div className="flex items-center gap-2">
-				<Button
-					centerIcon={<IconArrowLeft className="size-4" />}
-					size="custom"
-					title="Назад"
-					variant="mobile"
-					onClick={onBack}
-				/>
-				<div className="flex items-center gap-2">
-					<IconPlugConnected className="size-4 text-(--accent-default)" />
-					<span className="text-sm">Проверка порта</span>
-				</div>
-			</div>
-			<form className="flex flex-1 flex-col justify-center gap-3" onSubmit={handleSubmit}>
-				<div className="grid grid-cols-[1fr_120px] gap-2">
+		<div className="flex h-full min-h-0 flex-col gap-2">
+			<ViewHeader icon={IconPlugConnected} title="Проверка порта" onBack={onBack} />
+			<form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+				<div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_144px]">
 					<Input
-						name="host"
-						placeholder="example.com"
+						autoComplete="url"
+						id="host"
+						inputMode="url"
+						leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
+						placeholder="https://example.com"
+						rightIcon={
+							host && (
+								<IconX
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+									onClick={() => handleHostChange('')}
+								/>
+							)
+						}
+						type="text"
 						value={host}
-						onChange={(event) => setHost(event.target.value)}
+						variant="ghost"
+						onChange={(event) => handleHostChange(event.target.value)}
 					/>
 					<Input
+						autoComplete="off"
+						id="port"
+						leftIcon={<InputLabel htmlFor="port" icon={IconMobiledata} />}
 						max="65535"
 						min="1"
-						name="port"
 						placeholder="443"
+						rightIcon={
+							port && (
+								<IconX
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+									onClick={() => handlePortChange('')}
+								/>
+							)
+						}
 						type="number"
 						value={port}
-						onChange={(event) => setPort(event.target.value)}
+						variant="ghost"
+						onChange={(event) => handlePortChange(event.target.value)}
 					/>
 				</div>
-				<Button disabled={!host.trim() || !port || isLoading} type="submit" variant="accent">
-					{isLoading ? 'Проверяем...' : 'Проверить'}
-				</Button>
-				{result && (
-					<div className="mt-2 flex flex-col gap-2">
-						<div className="flex items-center gap-2">
-							<span
-								className={`size-2 rounded-full ${
-									result.status === 'open' ? 'bg-green-500' : 'bg-red-500'
-								}`}
-							/>
-							<span className="text-sm">{result.status === 'open' ? 'Порт открыт' : 'Порт закрыт'}</span>
+				<div className="flex flex-wrap items-center justify-end gap-3">
+					{result && <CopyButton onClick={handleCopy} />}
+					{error && (
+						<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
+							<IconAlertCircle className="size-3.5" />
+							<span>{error}</span>
 						</div>
-						<div className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-xs">
-							<span className="text-(--color-secondary)">Адрес</span>
-							<span>{result.host}</span>
-							<span className="text-(--color-secondary)">Порт</span>
-							<span>{result.port}</span>
-							{result.responseTime !== null && (
-								<>
-									<span className="text-(--color-secondary)">Ответ</span>
-									<span>{result.responseTime} мс</span>
-								</>
-							)}
-							<span className="text-(--color-secondary)">IP</span>
-							<span>{result.ip}</span>
-						</div>
-					</div>
-				)}
-				{error && <p className="text-xs text-red-500">{error}</p>}
+					)}
+					<Button
+						className="h-7 min-w-36 rounded-lg text-sm"
+						disabled={!isValid || isLoading}
+						loading={isLoading}
+						loadingText="Проверяем..."
+						size="custom"
+						title="Проверить порт"
+						type="submit"
+						variant="accent"
+					>
+						Проверить
+					</Button>
+				</div>
 			</form>
+			{result && (
+				<div className="flex flex-col">
+					<div className="mb-3 flex items-center gap-2">
+						<span className="text-xs text-(--color-secondary)">Результат</span>
+						<div className="h-px flex-1 bg-(--border-color)" />
+					</div>
+					<div className="flex flex-col">
+						<div className="flex min-w-0 items-center gap-1">
+							<StatusDot status={result.status === 'open' ? 'up' : 'down'} />
+							<span className="max-w-64 min-w-0 truncate">{result.host}</span>
+						</div>
+						<span className="flex items-center gap-1 text-(--color-secondary)">
+							<IconWorld className="size-3 shrink-0" />
+							<span className="text-xs tabular-nums">{result.ip}</span>
+						</span>
+					</div>
+					<div className="my-3 grid shrink-0 grid-cols-3 rounded-xl bg-white/5 py-2.5">
+						<Metric
+							label="Отклик"
+							style={getResponseTimeClass(result.responseTime)}
+							value={result.responseTime !== null ? `${result.responseTime} мс` : '–'}
+						/>
+						<Metric
+							label="Порт"
+							style={result.status === 'open' ? 'text-(--status-success)' : 'text-(--status-error)'}
+							value={String(result.port)}
+						/>
+						<Metric
+							label="Статус"
+							style={result.status === 'open' ? 'text-(--status-success)' : 'text-(--status-error)'}
+							value={statusLabel}
+						/>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 };

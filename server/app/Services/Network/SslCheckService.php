@@ -2,18 +2,22 @@
 
 namespace App\Services\Network;
 
+use App\Services\Network\Support\HostNormalizer;
+use App\Services\Network\Support\PublicHostResolver;
+
 class SslCheckService
 {
     private const PORT = 443;
 
     private const TIMEOUT = 5;
 
-    public function __construct(private readonly PublicHostResolver $hostResolver)
+    public function __construct(private readonly HostNormalizer $hostNormalizer, private readonly PublicHostResolver $hostResolver)
     {
     }
 
     public function check(string $host): array
     {
+        $host = $this->hostNormalizer->normalize($host);
         $ip = $this->hostResolver->resolve($host);
 
         $context = stream_context_create([

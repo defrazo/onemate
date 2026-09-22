@@ -1,12 +1,12 @@
 import { api } from '@/shared/api';
 
 import type {
-	AddressCheckResult,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
+	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
 } from '../../model';
@@ -27,7 +27,7 @@ export class NetworkRepoLaravel implements INetworkRepo {
 		return service;
 	}
 
-	async checkService(id: number): Promise<MonitoredService> {
+	async checkMonitoredService(id: number): Promise<MonitoredService> {
 		const { data } = await api.post<MonitoredService>(`/network/services/${id}/check`);
 		return data;
 	}
@@ -41,8 +41,8 @@ export class NetworkRepoLaravel implements INetworkRepo {
 		await api.delete(`/network/services/${id}`);
 	}
 
-	async checkAddress(url: string): Promise<AddressCheckResult> {
-		const { data } = await api.post<AddressCheckResult>('/network/address/check', { url });
+	async checkService(url: string): Promise<ServiceCheckResult> {
+		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url });
 		return data;
 	}
 

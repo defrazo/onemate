@@ -4,13 +4,13 @@ import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
 import type {
-	AddressCheckResult,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
 	MonitoringCheck,
 	MonitoringHistory,
 	PortCheckResult,
+	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
 } from '../../model';
@@ -58,14 +58,14 @@ export class NetworkRepoDemo implements INetworkRepo {
 		return structuredClone(service);
 	}
 
-	async checkService(id: number): Promise<MonitoredService> {
+	async checkMonitoredService(id: number): Promise<MonitoredService> {
 		const services = this.readServices();
 		const index = services.findIndex((service) => service.id === id);
 
-		if (index === -1) throw new Error('Ресурс не найден');
+		if (index === -1) throw new Error('Сервис не найден');
 
 		const currentService = services[index];
-		const result = await this.checkAddress(currentService.url);
+		const result = await this.checkService(currentService.url);
 		const now = new Date().toISOString();
 
 		const service: MonitoredService = {
@@ -94,12 +94,22 @@ export class NetworkRepoDemo implements INetworkRepo {
 		const services = this.readServices();
 		const index = services.findIndex((service) => service.id === id);
 
-		if (index === -1) throw new Error('Ресурс не найден');
+		if (index === -1) throw new Error('Сервис не найден');
 
-		const service: MonitoredService = { ...services[index], ...data, updatedAt: new Date().toISOString() };
+		const currentService = services[index];
+		const urlChanged = data.url !== undefined && data.url !== currentService.url;
+
+		const service: MonitoredService = {
+			...currentService,
+			...data,
+			...(urlChanged && { lastStatus: null, lastStatusCode: null, lastResponseTime: null, lastCheckedAt: null }),
+			updatedAt: new Date().toISOString(),
+		};
 
 		services[index] = service;
 		this.writeServices(services);
+
+		if (urlChanged) this.removeHistory(id);
 
 		return structuredClone(service);
 	}
@@ -109,8 +119,8 @@ export class NetworkRepoDemo implements INetworkRepo {
 		this.removeHistory(id);
 	}
 
-	async checkAddress(url: string): Promise<AddressCheckResult> {
-		const { data } = await api.post<AddressCheckResult>('/network/address/check', { url });
+	async checkService(url: string): Promise<ServiceCheckResult> {
+		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url });
 		return data;
 	}
 
@@ -158,7 +168,7 @@ export class NetworkRepoDemo implements INetworkRepo {
 
 	private appendHistory(serviceId: number, check: MonitoringCheck): void {
 		const history = this.readHistory(serviceId);
-		this.writeHistory(serviceId, [check, ...history]);
+		this.writeHistory(serviceId, [...history, check]);
 	}
 
 	private removeHistory(serviceId: number): void {

@@ -1,3 +1,10 @@
-export { MonitoringEmpty, ResourceDetails, ResourceList, ResourceSettings } from './Monitoring';
-export { AddResource, Tools } from './Tools';
+export { AddService } from './AddService';
+export { CopyButton } from './CopyButton';
+export { Details } from './Details';
+export { Empty, List } from './List';
+export { Metric } from './Metric';
+export { Settings } from './Settings';
+export { StatusDot } from './StatusDot';
+export { Tools } from './Tools';
+export { ViewHeader } from './ViewHeader';
 export { ViewSwitch } from './ViewSwitch';

@@ -8,7 +8,7 @@ use App\Http\Requests\Network\UpdateMonitoredServiceRequest;
 use App\Http\Resources\MonitoredServiceResource;
 use App\Models\MonitoredService;
 use App\Services\Network\MonitoredServiceCheckService;
-use App\Services\Network\PublicHostResolver;
+use App\Services\Network\Support\PublicHostResolver;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
@@ -34,7 +34,7 @@ class MonitoredServiceController extends Controller
 
         if (!is_string($host) || $host === '') {
             return response()->json([
-                'message' => 'Некорректный адрес.',
+                'message' => 'Некорректный адрес',
             ], 422);
         }
 
@@ -55,7 +55,7 @@ class MonitoredServiceController extends Controller
                 'url' => $data['url'],
             ]);
 
-        return (new MonitoredServiceResource($service))
+        return (new MonitoredServiceResource($service->refresh()))
             ->response()
             ->setStatusCode(201);
     }
@@ -127,7 +127,7 @@ class MonitoredServiceController extends Controller
             $host = parse_url($data['url'], PHP_URL_HOST);
 
             if (!is_string($host) || $host === '') {
-                abort(422, 'Некорректный адрес.');
+                abort(422, 'Некорректный адрес');
             }
 
             try {

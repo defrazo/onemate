@@ -2,12 +2,13 @@
 
 namespace App\Services\Network;
 
+use App\Services\Network\Support\PublicHostResolver;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
 use InvalidArgumentException;
 
-class AddressCheckService
+class ServiceCheckService
 {
     private const MAX_REDIRECTS = 5;
 
@@ -70,9 +71,7 @@ class AddressCheckService
             ->withOptions([
                 'allow_redirects' => false,
                 'curl' => [
-                    CURLOPT_RESOLVE => [
-                        "{$host}:{$port}:{$ip}",
-                    ],
+                    CURLOPT_RESOLVE => ["{$host}:{$port}:{$ip}"],
                 ],
             ])
             ->get($url);
@@ -83,7 +82,7 @@ class AddressCheckService
         $host = parse_url($url, PHP_URL_HOST);
 
         if (!is_string($host) || $host === '') {
-            throw new InvalidArgumentException('Некорректный адрес.');
+            throw new InvalidArgumentException('Некорректный адрес');
         }
 
         return [

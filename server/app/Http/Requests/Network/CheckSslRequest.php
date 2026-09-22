@@ -2,18 +2,12 @@
 
 namespace App\Http\Requests\Network;
 
-use Illuminate\Foundation\Http\FormRequest;
-
-class CheckSslRequest extends FormRequest
+class CheckSslRequest extends NetworkRequest
 {
     public function rules(): array
     {
         return [
-            'host' => [
-                'required',
-                'string',
-                'max:253',
-            ],
+            'host' => ['required', 'string', 'max:253'],
         ];
     }
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Services\Network;
+namespace App\Services\Network\Support;
 
 use Illuminate\Http\Client\ConnectionException;
 use InvalidArgumentException;
@@ -12,12 +12,12 @@ class PublicHostResolver
         $addresses = $this->resolveAddresses($host);
 
         if ($addresses === []) {
-            throw new ConnectionException('Не удалось определить IP-адрес ресурса.');
+            throw new ConnectionException('Не удалось определить IP-адрес ресурса');
         }
 
         foreach ($addresses as $address) {
             if (!$this->isPublicIp($address)) {
-                throw new InvalidArgumentException('Этот адрес недоступен для проверки.');
+                throw new InvalidArgumentException('Этот адрес недоступен для проверки');
             }
         }
 

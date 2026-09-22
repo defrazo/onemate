@@ -2,11 +2,7 @@ import { IconActivityHeartbeat, IconPlus } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 
-interface MonitoringEmptyProps {
-	onAdd: () => void;
-}
-
-export const MonitoringEmpty = ({ onAdd }: MonitoringEmptyProps) => {
+export const Empty = ({ onAdd }: { onAdd: () => void }) => {
 	return (
 		<div className="flex min-h-0 flex-1 items-center justify-center">
 			<div className="flex max-w-64 flex-col items-center text-center">

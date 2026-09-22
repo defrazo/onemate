@@ -5,12 +5,12 @@ import { AsyncStore } from '@/shared/lib/store';
 
 import { networkCache } from '../lib';
 import type {
-	AddressCheckResult,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
+	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
 } from '.';
@@ -48,8 +48,8 @@ export class NetworkStore extends AsyncStore {
 		return service;
 	}
 
-	async checkService(id: number): Promise<MonitoredService> {
-		const service = await this.repo.checkService(id);
+	async checkMonitoredService(id: number): Promise<MonitoredService> {
+		const service = await this.repo.checkMonitoredService(id);
 
 		this.replaceService(service);
 		this.persistCache();
@@ -73,8 +73,8 @@ export class NetworkStore extends AsyncStore {
 		this.persistCache();
 	}
 
-	async checkAddress(url: string): Promise<AddressCheckResult> {
-		return this.repo.checkAddress(url);
+	async checkService(url: string): Promise<ServiceCheckResult> {
+		return this.repo.checkService(url);
 	}
 
 	async checkPort(host: string, port: number): Promise<PortCheckResult> {

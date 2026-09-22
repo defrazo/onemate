@@ -2,12 +2,11 @@
 
 namespace App\Http\Requests\Network;
 
-class StoreMonitoredServiceRequest extends NetworkRequest
+class CheckServiceRequest extends NetworkRequest
 {
     public function rules(): array
     {
         return [
-            'name' => ['required', 'string', 'max:100'],
             'url' => ['required', 'string', 'max:2048', 'url:http,https'],
         ];
     }

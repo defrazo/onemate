@@ -2,12 +2,12 @@ import { Feature, type IUserRoutingPort, Operation, PermissionService } from '@/
 import { PermissionError } from '@/shared/lib/errors';
 
 import {
-	AddressCheckResult,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
+	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
 } from '../../model';
@@ -48,9 +48,9 @@ export class NetworkRepoRouting implements INetworkRepo {
 		return this.getTargetRepo().createService(data);
 	}
 
-	async checkService(id: number): Promise<MonitoredService> {
+	async checkMonitoredService(id: number): Promise<MonitoredService> {
 		this.checkPermission('network', 'save');
-		return this.getTargetRepo().checkService(id);
+		return this.getTargetRepo().checkMonitoredService(id);
 	}
 
 	async updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService> {
@@ -63,9 +63,9 @@ export class NetworkRepoRouting implements INetworkRepo {
 		await this.getTargetRepo().deleteService(id);
 	}
 
-	async checkAddress(url: string): Promise<AddressCheckResult> {
+	async checkService(url: string): Promise<ServiceCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.realRepo.checkAddress(url);
+		return this.realRepo.checkService(url);
 	}
 
 	async checkPort(host: string, port: number): Promise<PortCheckResult> {
