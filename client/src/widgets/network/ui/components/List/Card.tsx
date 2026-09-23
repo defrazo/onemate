@@ -1,4 +1,4 @@
-import { IconClock, IconPower, IconWorld } from '@tabler/icons-react';
+import { IconClock, IconServer, IconWorld } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
@@ -8,16 +8,38 @@ import type { MonitoredService } from '../../../model';
 import { StatusDot } from '..';
 
 export const Card = ({ service, onClick }: { service: MonitoredService; onClick: () => void }) => {
-	const statusLabel = !service.isActive
-		? 'Отключено'
-		: service.lastCheckedAt
-			? new Date(service.lastCheckedAt).toLocaleString('ru-RU', {
-					day: '2-digit',
-					month: '2-digit',
-					hour: '2-digit',
-					minute: '2-digit',
-				})
-			: 'Ожидает';
+	const lastCheckedAt = service.lastCheckedAt
+		? new Date(service.lastCheckedAt).toLocaleString('ru-RU', {
+				day: '2-digit',
+				month: '2-digit',
+				hour: '2-digit',
+				minute: '2-digit',
+			})
+		: null;
+
+	const renderStatus = () => {
+		if (!service.isActive) return <span className="text-sm text-(--color-disabled)">Отключено</span>;
+		if (service.lastStatus === null) return <span className="text-sm text-(--color-disabled)">Ожидает</span>;
+		if (service.lastStatus === 'down') return <span className="text-sm text-(--status-error)">Недоступен</span>;
+
+		if (service.lastResponseTime !== null) {
+			return (
+				<span
+					className={cn(
+						'shrink-0 text-sm font-bold tabular-nums',
+						getResponseTimeClass(service.lastResponseTime)
+					)}
+				>
+					{service.lastResponseTime} мс
+				</span>
+			);
+		}
+
+		return <span className="text-(--color-disabled)">–</span>;
+	};
+
+	const address = service.type === 'http' ? service.url : `${service.host}:${service.port}`;
+	const AddressIcon = service.type === 'http' ? IconWorld : IconServer;
 
 	return (
 		<Button
@@ -33,35 +55,19 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
 						<span className="truncate text-(--color-primary)">{service.name}</span>
 					</div>
-					{service.isActive && service.lastResponseTime !== null && (
-						<span
-							className={cn(
-								'shrink-0 text-sm font-bold tabular-nums',
-								getResponseTimeClass(service.lastResponseTime)
-							)}
-						>
-							{service.lastResponseTime} мс
-						</span>
-					)}
+					{renderStatus()}
 				</div>
 				<div className="flex items-center justify-between text-sm text-(--color-secondary)">
 					<div className="flex min-w-0 items-center gap-1">
-						<IconWorld className="size-3.5 shrink-0" />
-						<span className="truncate">{service.url}</span>
+						<AddressIcon className="size-3.5 shrink-0" />
+						<span className="truncate">{address}</span>
 					</div>
-					<div
-						className={cn(
-							'flex shrink-0 items-center gap-1 tabular-nums',
-							service.isActive
-								? service.lastCheckedAt
-									? 'text-(--color-secondary)'
-									: 'text-(--color-disabled)'
-								: 'text-(--warning-default)/80'
-						)}
-					>
-						{service.isActive ? <IconClock className="size-3" /> : <IconPower className="size-3" />}
-						<span className="trim">{statusLabel}</span>
-					</div>
+					{lastCheckedAt && (
+						<div className="flex shrink-0 items-center gap-1 tabular-nums" title="Последняя проверка">
+							<IconClock className="size-3" />
+							<span className="trim">{lastCheckedAt}</span>
+						</div>
+					)}
 				</div>
 			</div>
 		</Button>

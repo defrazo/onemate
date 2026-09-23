@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { IconLink, IconWorldWww, IconX } from '@tabler/icons-react';
+import { IconLink, IconPlugConnected, IconServer, IconWorldWww, IconX } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { Button, ConfirmDialog, Input, InputLabel, Switch } from '@/shared/ui';
 
-import type { MonitoredService } from '../../model';
+import type { MonitoredService, UpdateMonitoredService } from '../../model';
 import { ViewHeader } from '.';
 
 interface SettingsProps {
@@ -17,20 +17,39 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	const { modalStore, networkStore, notifyStore } = useStore();
 
 	const [name, setName] = useState(service.name);
-	const [url, setUrl] = useState(service.url);
+	const [url, setUrl] = useState(service.type === 'http' ? service.url : '');
+	const [host, setHost] = useState(service.type === 'tcp' ? service.host : '');
+	const [port, setPort] = useState(service.type === 'tcp' ? String(service.port) : '');
 
 	const [isActive, setIsActive] = useState(service.isActive);
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
 
-	const hasChanges = name.trim() !== service.name || url.trim() !== service.url || isActive !== service.isActive;
-	const isValid = name.trim() !== '' && url.trim() !== '';
+	const portNumber = Number(port);
+
+	const targetChanged =
+		service.type === 'http'
+			? url.trim() !== service.url
+			: host.trim() !== service.host || portNumber !== service.port;
+
+	const hasChanges = name.trim() !== service.name || targetChanged || isActive !== service.isActive;
+
+	const isValid =
+		name.trim() !== '' &&
+		(service.type === 'http'
+			? url.trim() !== ''
+			: host.trim() !== '' && Number.isInteger(portNumber) && portNumber >= 1 && portNumber <= 65535);
 
 	const update = async () => {
 		setIsSaving(true);
 
 		try {
-			await networkStore.updateService(service.id, { name: name.trim(), url: url.trim(), isActive });
+			const data: UpdateMonitoredService =
+				service.type === 'http'
+					? { type: 'http', name: name.trim(), url: url.trim(), isActive }
+					: { type: 'tcp', name: name.trim(), host: host.trim(), port: portNumber, isActive };
+
+			await networkStore.updateService(service.id, data);
 
 			modalStore.closeModal();
 			onBack();
@@ -61,7 +80,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	const save = () => {
 		if (!hasChanges || !isValid || isSaving || isDeleting) return;
 
-		if (url.trim() === service.url) {
+		if (!targetChanged) {
 			void update();
 			return;
 		}
@@ -69,8 +88,8 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Изменить"
-				description="История предыдущих проверок будет удалена."
-				title="Изменить адрес сервиса?"
+				description="История предыдущих проверок будет удалена"
+				title={service.type === 'http' ? 'Изменить адрес сервиса?' : 'Изменить сервер или порт?'}
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
 				onConfirm={update}
@@ -84,7 +103,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Удалить"
-				description="Сервиса и вся история его проверок будут удалены. Это действие нельзя отменить."
+				description="Сервис и вся история его проверок будут удалены. Это действие нельзя отменить."
 				title="Удалить сервис?"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
@@ -121,30 +140,70 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						onChange={(event) => setName(event.target.value)}
 					/>
 				</div>
-				<div className="flex flex-col gap-1">
-					<label className="text-(--color-secondary) opacity-70" htmlFor="url">
-						Адрес
-					</label>
-					<Input
-						autoComplete="url"
-						id="url"
-						inputMode="url"
-						leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
-						placeholder="https://example.com"
-						rightIcon={
-							url && (
-								<IconX
-									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
-									onClick={() => setUrl('')}
-								/>
-							)
-						}
-						type="text"
-						value={url}
-						variant="ghost"
-						onChange={(event) => setUrl(event.target.value)}
-					/>
-				</div>
+				{service.type === 'http' ? (
+					<div className="flex flex-col gap-1">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="url">
+							Адрес
+						</label>
+						<Input
+							autoComplete="url"
+							id="url"
+							inputMode="url"
+							leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
+							placeholder="https://example.com"
+							rightIcon={
+								url && (
+									<IconX
+										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+										onClick={() => setUrl('')}
+									/>
+								)
+							}
+							type="text"
+							value={url}
+							variant="ghost"
+							onChange={(event) => setUrl(event.target.value)}
+						/>
+					</div>
+				) : (
+					<div className="flex flex-col gap-1">
+						<label className="text-(--color-secondary) opacity-70" htmlFor="host">
+							Хост и порт
+						</label>
+						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
+							<Input
+								autoComplete="url"
+								id="host"
+								leftIcon={<InputLabel htmlFor="host" icon={IconServer} />}
+								placeholder="94.232.42.121"
+								rightIcon={
+									host && (
+										<IconX
+											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+											onClick={() => setHost('')}
+										/>
+									)
+								}
+								type="text"
+								value={host}
+								variant="ghost"
+								onChange={(event) => setHost(event.target.value)}
+							/>
+							<Input
+								autoComplete="off"
+								id="port"
+								leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
+								max="65535"
+								min="1"
+								placeholder="22"
+								type="number"
+								value={port}
+								variant="ghost"
+								onChange={(event) => setPort(event.target.value)}
+							/>
+						</div>
+					</div>
+				)}
 				<div className="flex items-center justify-between">
 					<div className="flex min-w-0 flex-col">
 						<span className="text-sm xl:text-base">Мониторинг</span>

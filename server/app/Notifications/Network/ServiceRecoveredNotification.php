@@ -27,8 +27,8 @@ class ServiceRecoveredNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Ресурс снова доступен',
-            'message' => "{$this->service->name} снова отвечает.",
+            'title' => 'Сервис снова доступен',
+            'message' => "{$this->service->name} снова отвечает",
         ];
     }
 }

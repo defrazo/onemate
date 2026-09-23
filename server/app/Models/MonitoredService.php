@@ -8,8 +8,11 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
 #[Fillable([
+    'type',
     'name',
     'url',
+    'host',
+    'port',
     'is_active',
     'last_status',
     'last_status_code',
@@ -21,6 +24,7 @@ class MonitoredService extends Model
     protected function casts(): array
     {
         return [
+            'port' => 'integer',
             'is_active' => 'boolean',
             'last_status_code' => 'integer',
             'last_response_time' => 'integer',

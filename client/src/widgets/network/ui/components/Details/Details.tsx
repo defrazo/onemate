@@ -37,6 +37,8 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 			})
 		: '–';
 
+	const address = service.type === 'http' ? service.url : `${service.host}`;
+
 	const fetchHistory = async (): Promise<void> => {
 		try {
 			const history = await networkStore.loadHistory(service.id);
@@ -56,7 +58,6 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 		try {
 			await networkStore.checkMonitoredService(service.id);
 			await fetchHistory();
-			notifyStore.setNotice('Данные обновлены', 'success');
 		} catch {
 			notifyStore.setNotice('Не удалось выполнить проверку', 'error');
 		} finally {
@@ -88,14 +89,20 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 							onClick={onSettings}
 						/>
 					</div>
-					<a
-						className="block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--color-secondary) hover:text-(--accent-default) lg:text-sm xl:max-w-64"
-						href={service.url}
-						rel="noopener noreferrer"
-						target="_blank"
-					>
-						{service.url}
-					</a>
+					{service.type === 'http' ? (
+						<a
+							className="block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--color-secondary) hover:text-(--accent-default) lg:text-sm xl:max-w-64"
+							href={service.url}
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							{service.url}
+						</a>
+					) : (
+						<span className="max-w-44 truncate text-xs text-(--color-secondary) lg:text-sm xl:max-w-64">
+							{address}
+						</span>
+					)}
 				</div>
 				<div className="flex flex-col gap-0.5 text-(--color-secondary)">
 					<span className="text-xs">Последняя проверка:</span>
@@ -126,12 +133,36 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					style={getResponseTimeClass(service.lastResponseTime)}
 					value={service.lastResponseTime !== null ? `${service.lastResponseTime} мс` : '–'}
 				/>
+				{service.type === 'http' ? (
+					<Metric
+						label="HTTP"
+						style={getStatusCodeClass(service.lastStatusCode)}
+						value={service.lastStatusCode !== null ? String(service.lastStatusCode) : '–'}
+					/>
+				) : (
+					<Metric
+						label="Порт"
+						style={
+							service.lastStatus === 'up'
+								? 'text-(--status-success)'
+								: service.lastStatus === 'down'
+									? 'text-(--status-error)'
+									: undefined
+						}
+						value={String(service.port)}
+					/>
+				)}
 				<Metric
-					label="HTTP"
-					style={getStatusCodeClass(service.lastStatusCode)}
-					value={service.lastStatusCode !== null ? String(service.lastStatusCode) : '–'}
+					label="Статус"
+					style={
+						service.lastStatus === 'up'
+							? 'text-(--status-success)'
+							: service.lastStatus === 'down'
+								? 'text-(--status-error)'
+								: undefined
+					}
+					value={statusLabel}
 				/>
-				<Metric label="Статус" style={getStatusCodeClass(service.lastStatusCode)} value={statusLabel} />
 			</div>
 			<History
 				history={history}

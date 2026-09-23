@@ -1,7 +1,7 @@
 import { Feature, type IUserRoutingPort, Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import {
+import type {
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
@@ -65,16 +65,16 @@ export class NetworkRepoRouting implements INetworkRepo {
 
 	async checkService(url: string): Promise<ServiceCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.realRepo.checkService(url);
+		return this.getTargetRepo().checkService(url);
 	}
 
 	async checkPort(host: string, port: number): Promise<PortCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.realRepo.checkPort(host, port);
+		return this.getTargetRepo().checkPort(host, port);
 	}
 
 	async checkSsl(host: string): Promise<SslCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.realRepo.checkSsl(host);
+		return this.getTargetRepo().checkSsl(host);
 	}
 }

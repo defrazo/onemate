@@ -5,6 +5,7 @@ import { key, toPlain } from '@/shared/lib/utils';
 
 import type {
 	CreateMonitoredService,
+	HttpMonitoredService,
 	INetworkRepo,
 	MonitoredService,
 	MonitoringCheck,
@@ -12,6 +13,7 @@ import type {
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
+	TcpMonitoredService,
 	UpdateMonitoredService,
 } from '../../model';
 
@@ -39,19 +41,22 @@ export class NetworkRepoDemo implements INetworkRepo {
 		const services = this.readServices();
 		const now = new Date().toISOString();
 
-		const service: MonitoredService = {
+		const base = {
 			id: this.getNextId(services),
 			userId: user.id,
 			name: data.name,
-			url: data.url,
 			isActive: true,
 			lastStatus: null,
-			lastStatusCode: null,
 			lastResponseTime: null,
 			lastCheckedAt: null,
 			createdAt: now,
 			updatedAt: now,
 		};
+
+		const service: MonitoredService =
+			data.type === 'http'
+				? { ...base, type: 'http', url: data.url, lastStatusCode: null }
+				: { ...base, type: 'tcp', host: data.host, port: data.port };
 
 		this.writeServices([service, ...services]);
 
@@ -65,27 +70,53 @@ export class NetworkRepoDemo implements INetworkRepo {
 		if (index === -1) throw new Error('Сервис не найден');
 
 		const currentService = services[index];
-		const result = await this.checkService(currentService.url);
 		const now = new Date().toISOString();
 
-		const service: MonitoredService = {
-			...currentService,
-			lastStatus: result.status,
-			lastStatusCode: result.statusCode,
-			lastResponseTime: result.responseTime,
-			lastCheckedAt: now,
-			updatedAt: now,
-		};
+		let service: MonitoredService;
+		let check: MonitoringCheck;
+
+		if (currentService.type === 'http') {
+			const result = await this.checkService(currentService.url);
+
+			service = {
+				...currentService,
+				lastStatus: result.status,
+				lastStatusCode: result.statusCode,
+				lastResponseTime: result.responseTime,
+				lastCheckedAt: now,
+				updatedAt: now,
+			};
+
+			check = {
+				status: result.status,
+				statusCode: result.statusCode,
+				responseTime: result.responseTime,
+				checkedAt: now,
+			};
+		} else {
+			const result = await this.checkPort(currentService.host, currentService.port);
+			const status = result.status === 'open' ? 'up' : 'down';
+
+			service = {
+				...currentService,
+				lastStatus: status,
+				lastResponseTime: result.responseTime,
+				lastCheckedAt: now,
+				updatedAt: now,
+			};
+
+			check = {
+				status,
+				statusCode: null,
+				responseTime: result.responseTime,
+				checkedAt: now,
+			};
+		}
 
 		services[index] = service;
 
 		this.writeServices(services);
-		this.appendHistory(id, {
-			status: result.status,
-			statusCode: result.statusCode,
-			responseTime: result.responseTime,
-			checkedAt: now,
-		});
+		this.appendHistory(id, check);
 
 		return structuredClone(service);
 	}
@@ -97,19 +128,53 @@ export class NetworkRepoDemo implements INetworkRepo {
 		if (index === -1) throw new Error('Сервис не найден');
 
 		const currentService = services[index];
-		const urlChanged = data.url !== undefined && data.url !== currentService.url;
 
-		const service: MonitoredService = {
-			...currentService,
-			...data,
-			...(urlChanged && { lastStatus: null, lastStatusCode: null, lastResponseTime: null, lastCheckedAt: null }),
-			updatedAt: new Date().toISOString(),
-		};
+		if (currentService.type !== data.type) throw new Error('Тип мониторинга нельзя изменить');
+
+		let service: MonitoredService;
+		let targetChanged = false;
+
+		if (currentService.type === 'http' && data.type === 'http') {
+			targetChanged = data.url !== undefined && data.url !== currentService.url;
+
+			const updated: HttpMonitoredService = {
+				...currentService,
+				...data,
+				...(targetChanged && {
+					lastStatus: null,
+					lastStatusCode: null,
+					lastResponseTime: null,
+					lastCheckedAt: null,
+				}),
+				updatedAt: new Date().toISOString(),
+			};
+
+			service = updated;
+		} else if (currentService.type === 'tcp' && data.type === 'tcp') {
+			targetChanged =
+				(data.host !== undefined && data.host !== currentService.host) ||
+				(data.port !== undefined && data.port !== currentService.port);
+
+			const updated: TcpMonitoredService = {
+				...currentService,
+				...data,
+				...(targetChanged && {
+					lastStatus: null,
+					lastResponseTime: null,
+					lastCheckedAt: null,
+				}),
+				updatedAt: new Date().toISOString(),
+			};
+
+			service = updated;
+		} else {
+			throw new Error('Тип мониторинга нельзя изменить');
+		}
 
 		services[index] = service;
 		this.writeServices(services);
 
-		if (urlChanged) this.removeHistory(id);
+		if (targetChanged) this.removeHistory(id);
 
 		return structuredClone(service);
 	}

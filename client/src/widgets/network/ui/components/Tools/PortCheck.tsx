@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconAlertCircle, IconLink, IconMobiledata, IconPlugConnected, IconWorld, IconX } from '@tabler/icons-react';
+import { IconAlertCircle, IconLink, IconNetwork, IconPlugConnected, IconWorld, IconX } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
@@ -62,7 +62,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col gap-2">
-			<ViewHeader icon={IconPlugConnected} title="Проверка порта" onBack={onBack} />
+			<ViewHeader icon={IconNetwork} title="Проверка порта" onBack={onBack} />
 			<form className="flex flex-col gap-2" onSubmit={handleSubmit}>
 				<div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_144px]">
 					<Input
@@ -70,7 +70,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						id="host"
 						inputMode="url"
 						leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
-						placeholder="https://example.com"
+						placeholder="example.com или 94.232.42.121"
 						rightIcon={
 							host && (
 								<IconX
@@ -87,7 +87,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 					<Input
 						autoComplete="off"
 						id="port"
-						leftIcon={<InputLabel htmlFor="port" icon={IconMobiledata} />}
+						leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
 						max="65535"
 						min="1"
 						placeholder="443"

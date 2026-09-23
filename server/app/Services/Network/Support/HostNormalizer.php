@@ -11,7 +11,7 @@ class HostNormalizer
         $value = trim($value);
 
         if ($value === '') {
-            throw new InvalidArgumentException('Укажите адрес ресурса');
+            throw new InvalidArgumentException('Укажите адрес сервиса');
         }
 
         if (filter_var($value, FILTER_VALIDATE_IP)) {
@@ -25,7 +25,7 @@ class HostNormalizer
         $host = parse_url($url, PHP_URL_HOST);
 
         if (!is_string($host) || $host === '') {
-            throw new InvalidArgumentException('Не удалось определить адрес ресурса');
+            throw new InvalidArgumentException('Не удалось определить адрес сервиса');
         }
 
         return $host;

@@ -1,4 +1,4 @@
-export type MonitoringType = 'http' | 'tcp' | 'heartbeat';
+export type MonitoringType = 'http' | 'tcp';
 
 export type ServiceStatus = 'up' | 'down';
 
@@ -28,19 +28,31 @@ export type SslCheckResult = {
 	ip: string;
 };
 
-export type MonitoredService = {
+type BaseMonitoredService = {
 	id: number;
 	userId: string;
 	name: string;
-	url: string;
 	isActive: boolean;
 	lastStatus: ServiceStatus | null;
-	lastStatusCode: number | null;
 	lastResponseTime: number | null;
 	lastCheckedAt: string | null;
 	createdAt: string;
 	updatedAt: string;
 };
+
+export type HttpMonitoredService = BaseMonitoredService & {
+	type: 'http';
+	url: string;
+	lastStatusCode: number | null;
+};
+
+export type TcpMonitoredService = BaseMonitoredService & {
+	type: 'tcp';
+	host: string;
+	port: number;
+};
+
+export type MonitoredService = HttpMonitoredService | TcpMonitoredService;
 
 export type MonitoringCheck = {
 	status: ServiceStatus;
@@ -55,15 +67,12 @@ export type MonitoringHistory = {
 	incidents: number;
 };
 
-export type CreateMonitoredService = {
-	name: string;
-	url: string;
-};
+export type CreateMonitoredService =
+	| { type: 'http'; name: string; url: string }
+	| { type: 'tcp'; name: string; host: string; port: number };
 
-export type UpdateMonitoredService = {
-	name?: string;
-	url?: string;
-	isActive?: boolean;
-};
+export type UpdateMonitoredService =
+	| { type: 'http'; name?: string; url?: string; isActive?: boolean }
+	| { type: 'tcp'; name?: string; host?: string; port?: number; isActive?: boolean };
 
 export type NetworkView = 'monitoring' | 'tools';

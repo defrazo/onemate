@@ -12,7 +12,7 @@ class PublicHostResolver
         $addresses = $this->resolveAddresses($host);
 
         if ($addresses === []) {
-            throw new ConnectionException('Не удалось определить IP-адрес ресурса');
+            throw new ConnectionException('Не удалось определить IP-адрес сервиса');
         }
 
         foreach ($addresses as $address) {

@@ -27,8 +27,8 @@ class ServiceDownNotification extends Notification
     public function toDatabase(object $notifiable): array
     {
         return [
-            'title' => 'Ресурс недоступен',
-            'message' => "{$this->service->name} перестал отвечать.",
+            'title' => 'Сервис недоступен',
+            'message' => "{$this->service->name} перестал отвечать",
         ];
     }
 }

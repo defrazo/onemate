@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Icon, IconCertificate, IconLink, IconPlugConnected, IconPlus } from '@tabler/icons-react';
+import { Icon, IconCertificate, IconLink, IconNetwork, IconPlus } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 
@@ -16,7 +16,7 @@ const tools = [
 	},
 	{
 		id: 'port',
-		icon: IconPlugConnected,
+		icon: IconNetwork,
 		title: 'Проверка порта',
 		description: 'Проверить доступность сетевого порта',
 	},
