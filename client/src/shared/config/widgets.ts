@@ -1,4 +1,5 @@
 import {
+	Icon,
 	IconActivityHeartbeat,
 	IconCalculator,
 	IconCalendarWeek,
@@ -6,13 +7,12 @@ import {
 	IconLanguage,
 	IconNote,
 	IconWorldDollar,
-	type TablerIcon,
 } from '@tabler/icons-react';
 
 interface WidgetConfig {
 	id: string;
 	title: string;
-	icon: TablerIcon;
+	icon: Icon;
 }
 
 export const WIDGETS = [
@@ -26,3 +26,7 @@ export const WIDGETS = [
 ] as const satisfies readonly WidgetConfig[];
 
 export type WidgetId = (typeof WIDGETS)[number]['id'];
+
+export const EMPTY_WIDGET_SLOT = '__empty__' as const;
+
+export type WidgetSlot = WidgetId | typeof EMPTY_WIDGET_SLOT;

@@ -1,5 +1,5 @@
 import { api } from '@/shared/api';
-import type { Theme } from '@/shared/config';
+import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
 
 import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
 
@@ -32,11 +32,11 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 		await api.patch('/user/profile/theme', { theme });
 	}
 
-	async updateWidgets(_id: string, widgets: string[]): Promise<void> {
+	async updateWidgets(_id: string, widgets: WidgetId[]): Promise<void> {
 		await api.patch('/user/profile/widgets', { widgets_sequence: widgets });
 	}
 
-	async updateSlots(_id: string, slots: string[]): Promise<void> {
+	async updateSlots(_id: string, slots: WidgetSlot[]): Promise<void> {
 		await api.patch('/user/profile/widgets', { widgets_slots: slots });
 	}
 

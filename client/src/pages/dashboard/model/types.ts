@@ -1,11 +1,17 @@
-import type { TablerIcon } from '@tabler/icons-react';
+import type { ReactNode } from 'react';
+import type { Icon } from '@tabler/icons-react';
+
+import type { WidgetId } from '@/shared/config';
 
 export type WidgetItem = {
-	id: string;
+	id: WidgetId;
 	title: string;
-	icon: TablerIcon;
-	content: React.ReactNode;
-	tip: React.ReactNode;
+	icon: Icon;
+	content: ReactNode;
+	tip: ReactNode;
 };
 
-export type SlotKey = 'topL' | 'topR' | 'botL' | 'botR';
+export type SwitcherOption = {
+	value: WidgetId;
+	label: ReactNode;
+};

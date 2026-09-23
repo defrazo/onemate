@@ -1,4 +1,4 @@
-import type { Theme } from '@/shared/config';
+import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
@@ -35,12 +35,12 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		storage.set(key(id, 'profile'), toPlain({ ...profile, theme }));
 	}
 
-	async updateWidgets(id: string, widgets: string[]): Promise<void> {
+	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_sequence: widgets }));
 	}
 
-	async updateSlots(id: string, slots: string[]): Promise<void> {
+	async updateSlots(id: string, slots: WidgetSlot[]): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_slots: slots }));
 	}

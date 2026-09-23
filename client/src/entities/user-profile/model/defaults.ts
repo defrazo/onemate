@@ -1,4 +1,4 @@
-import { DEFAULT_THEME, type WidgetId } from '@/shared/config';
+import { DEFAULT_THEME, type WidgetId, type WidgetSlot } from '@/shared/config';
 
 import type { UserProfile } from '.';
 
@@ -9,7 +9,7 @@ const DEFAULT_WIDGETS = ['calculator', 'calendar', 'notes', 'currency', 'weather
 export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
-export const createDefaultSlots = (): WidgetId[] => [...DEFAULT_SLOTS];
+export const createDefaultSlots = (): WidgetSlot[] => [...DEFAULT_SLOTS];
 
 const DEFAULT_PROFILE: UserProfile = {
 	avatar_url: null,

@@ -1,4 +1,4 @@
-import type { WidgetId } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/shared/config';
 
 export type UserProfile = {
 	user_id?: string;
@@ -11,7 +11,7 @@ export type UserProfile = {
 	additional_emails?: string[] | null;
 	theme?: 'light' | 'dark';
 	widgets_sequence?: WidgetId[] | null;
-	widgets_slots?: WidgetId[] | null;
+	widgets_slots?: WidgetSlot[] | null;
 	network_notifications_enabled?: boolean;
 	password_changed_at?: string | null;
 	deleted_at?: string | null;

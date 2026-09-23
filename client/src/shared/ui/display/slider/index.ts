@@ -1,2 +1,1 @@
-export type { TabOption } from './model';
-export { Slider, TabSlider } from './ui';
+export { Slider } from './ui';

@@ -4,7 +4,7 @@ import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AVATAR_ENTRIES, AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import { DEFAULT_THEME, type Theme, type WidgetId } from '@/shared/config';
+import { DEFAULT_THEME, type Theme, type WidgetId, WidgetSlot } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
@@ -109,7 +109,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		return this.profile?.widgets_sequence ?? createDefaultWidgets();
 	}
 
-	get slots(): WidgetId[] {
+	get slots(): WidgetSlot[] {
 		return this.profile?.widgets_slots ?? createDefaultSlots();
 	}
 
@@ -203,7 +203,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 		);
 	}
 
-	async updateWidgetSlots(slots: WidgetId[]): Promise<void> {
+	async updateWidgetSlots(slots: WidgetSlot[]): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.arraysEqual(this.profile?.widgets_slots, slots)) return;
 

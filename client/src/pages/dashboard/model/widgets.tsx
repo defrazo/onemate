@@ -1,4 +1,4 @@
-import type { JSX, ReactNode } from 'react';
+import type { ReactNode } from 'react';
 
 import { type WidgetId, WIDGETS } from '@/shared/config';
 import { Calculator, CALCULATOR_TIP } from '@/widgets/calculator';
@@ -9,11 +9,6 @@ import { Notes, NOTES_TIP } from '@/widgets/notes';
 import { Translator, TRANSLATOR_TIP } from '@/widgets/translator';
 import { Weather, WEATHER_TIP } from '@/widgets/weather';
 
-interface DashboardWidgetConfig {
-	content: ReactNode;
-	tip: JSX.Element;
-}
-
 const dashboardWidgets = {
 	calculator: { content: <Calculator />, tip: CALCULATOR_TIP },
 	calendar: { content: <Calendar />, tip: CALENDAR_TIP },
@@ -22,6 +17,6 @@ const dashboardWidgets = {
 	currency: { content: <Currency />, tip: CURRENCY_TIP },
 	translator: { content: <Translator />, tip: TRANSLATOR_TIP },
 	network: { content: <Network />, tip: NETWORK_TIP },
-} satisfies Record<WidgetId, DashboardWidgetConfig>;
+} satisfies Record<WidgetId, { content: ReactNode; tip: ReactNode }>;
 
 export const widgets = WIDGETS.map((widget) => ({ ...widget, ...dashboardWidgets[widget.id] }));
