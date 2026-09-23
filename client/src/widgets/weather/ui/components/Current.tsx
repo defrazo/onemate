@@ -31,13 +31,13 @@ export const Current = observer(() => {
 	const condition = weather[0];
 
 	return (
-		<div className="grid flex-1 grid-cols-2 grid-rows-3 items-center gap-x-4 py-1 xl:py-3">
+		<div className="grid flex-1 grid-cols-[1fr_auto] grid-rows-3 items-center gap-x-4 py-1 xl:py-3">
 			<div className="flex justify-start">
 				<div className="flex items-center gap-2.5">
 					<div className="h-9 w-0.5 bg-(--accent-default)" />
 					<div className="flex flex-col">
-						<span>{capitalizeFirstLetter(condition.description)}</span>
-						<span className="text-sm text-(--color-secondary)">
+						<span className="text-sm xl:text-base">{capitalizeFirstLetter(condition.description)}</span>
+						<span className="text-xs text-(--color-secondary) xl:text-sm">
 							Ощущается как <span className="text-(--accent-default)">{Math.round(feels_like)}°C</span>
 						</span>
 					</div>

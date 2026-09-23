@@ -30,20 +30,21 @@ export const Tooltip = ({
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 hidden max-w-lg rounded-xl bg-black px-4 py-2 text-sm leading-snug text-(--accent-text) shadow transition-opacity xl:block"
+			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-color) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--color-primary) shadow-lg xl:block"
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>
 			<span
 				className={cn(
-					'pointer-events-none absolute block h-2 w-2 rotate-45 bg-black',
+					'pointer-events-none absolute size-2 rotate-45 border-(--border-color) bg-(--bg-secondary)',
 					(placement === 'top' || placement === 'bottom') && 'left-1/2 -translate-x-1/2',
-					placement === 'top' && '-bottom-1',
-					placement === 'bottom' && '-top-1',
-					placement === 'left' && 'top-1/2 -right-1 -translate-y-1/2',
-					placement === 'right' && 'top-1/2 -left-1 -translate-y-1/2'
+					placement === 'top' && '-bottom-1 border-r border-b',
+					placement === 'bottom' && '-top-1 border-t border-l',
+					placement === 'left' && 'top-1/2 -right-1 -translate-y-1/2 border-t border-r',
+					placement === 'right' && 'top-1/2 -left-1 -translate-y-1/2 border-b border-l'
 				)}
 			/>
+
 			{content}
 		</div>
 	);

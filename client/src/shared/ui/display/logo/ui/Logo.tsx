@@ -8,7 +8,7 @@ type LogoSize = 'sm' | 'md' | 'lg';
 const sizes = {
 	sm: { icon: 'size-5', text: 'text-xl' },
 	md: { icon: 'size-6', text: 'text-2xl' },
-	lg: { icon: 'size-8', text: 'text-3xl' },
+	lg: { icon: 'size-7 xl:size-8', text: 'text-xl xl:text-3xl' },
 } satisfies Record<LogoSize, { icon: string; text: string }>;
 
 interface LogoProps {

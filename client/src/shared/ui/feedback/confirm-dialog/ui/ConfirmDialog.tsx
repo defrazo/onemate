@@ -22,7 +22,7 @@ export const ConfirmDialog = ({
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => (
-	<div className="-mt-4 flex w-sm flex-col gap-4 select-none">
+	<div className="-mt-4 flex flex-col gap-4 pb-4 select-none lg:w-sm lg:pb-0">
 		<div className="flex gap-2">
 			<div
 				className={cn(

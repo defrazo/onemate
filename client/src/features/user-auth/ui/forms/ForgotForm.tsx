@@ -13,7 +13,7 @@ export const ForgotForm = observer(() => {
 
 	const [email, setEmail] = useState('');
 
-	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
+	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
 		if (!checkEmail(email)) return;

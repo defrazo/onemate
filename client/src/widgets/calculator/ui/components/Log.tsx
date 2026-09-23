@@ -11,7 +11,7 @@ export const Log = ({ result }: { result: ResultItem[] }) => {
 	const isMobile = device === 'mobile' || device === 'tablet' || orientation === 'portrait';
 
 	return (
-		<div className={cn('min-h-0 min-w-0 overflow-hidden', isMobile ? 'basis-32' : 'basis-1/2')}>
+		<div className={cn('min-h-0 min-w-0 overflow-hidden', isMobile ? 'basis-28' : 'basis-1/2')}>
 			<div
 				className={cn(
 					'flex h-full min-h-0 flex-col border-(--border-color)',

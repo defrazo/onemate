@@ -62,7 +62,7 @@ export const Button = ({
 			{loading ? (
 				<>
 					<Spinner className="mr-2 size-4 border-2" />
-					<span>{loadingText ?? content}</span>
+					{loadingText ?? content}
 				</>
 			) : (
 				<>

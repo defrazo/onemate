@@ -47,7 +47,7 @@ export const Radio = ({
 					<label
 						key={option.label}
 						className={cn(
-							'group flex items-center gap-2 select-none',
+							'group/radio flex items-center gap-2 select-none',
 							labelSide === 'left' && 'flex-row-reverse',
 							isDisabled ? 'pointer-events-none' : 'cursor-pointer'
 						)}
@@ -66,7 +66,7 @@ export const Radio = ({
 							className={cn(
 								styles,
 								'flex shrink-0 items-center justify-center rounded-full border',
-								isChecked ? 'border-(--accent-default)' : 'group-hover:border-(--accent-default)'
+								isChecked ? 'border-(--accent-default)' : 'group-hover/radio:border-(--accent-default)'
 							)}
 						>
 							<span
@@ -77,7 +77,7 @@ export const Radio = ({
 							/>
 						</span>
 
-						<span className="flex w-fit items-center group-hover:text-(--accent-default)">
+						<span className="flex w-fit items-center group-hover/radio:text-(--accent-default)">
 							{option.label}
 						</span>
 					</label>

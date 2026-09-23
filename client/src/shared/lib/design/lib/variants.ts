@@ -12,11 +12,11 @@ export const variants: Record<Component, Record<string, string>> = {
 		ghost: cn(
 			'rounded-xl border',
 			'border-(--border-color) bg-transparent',
-			'hover:border-(--accent-hover) hover:bg-(--accent-hover) hover:text-(--bg-accent-text) focus-visible:border-(--accent-default)'
+			'hover:bg-white/5 hover:text-(--bg-accent-text) focus-visible:border-(--accent-default)'
 		),
 		accent: cn(
 			'rounded-xl border ring-inset',
-			'border-(--border-light) bg-(--accent-default) text-(--accent-text) ring-(--color-primary)',
+			'border-(--border-light) bg-(--accent-default) disabled:bg-(--bg-tertiary) text-(--accent-text) ring-(--color-primary)',
 			'hover:bg-(--accent-hover) hover:text-(--accent-text) focus-visible:ring-1'
 		),
 		rounded: cn(

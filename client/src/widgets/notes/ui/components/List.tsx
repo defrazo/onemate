@@ -32,7 +32,7 @@ export const List = observer(({ children }: { children: (note: Note) => ReactEle
 			onDragEnd={handleDragEnd}
 		>
 			<SortableContext items={notesStore.draft.map((note) => note.id)} strategy={verticalListSortingStrategy}>
-				<div className="hide-scrollbar flex min-h-0 flex-col gap-2 overflow-y-auto">
+				<div className="hide-scrollbar flex max-h-[60svh] min-h-0 flex-col gap-2 overflow-y-auto md:flex md:max-h-[40svh]">
 					{notesStore.draft.map((note) => children(note))}
 				</div>
 			</SortableContext>

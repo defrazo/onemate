@@ -21,7 +21,7 @@ export const Notes = observer(() => {
 	if (notesStore.activeNote) return <Editor />;
 
 	return (
-		<div className="flex max-h-[40svh] min-h-0 flex-col gap-2 overflow-hidden xl:h-full">
+		<div className="flex min-h-0 flex-col gap-2 overflow-hidden xl:h-full">
 			<List>{(note) => <Card key={note.id} id={note.id} />}</List>
 			<div className="flex shrink-0 items-center justify-between">
 				<div className="flex h-6 min-w-22.5 items-center justify-center gap-1 rounded-lg bg-(--accent-default)/10 px-2 text-sm text-(--accent-default)">

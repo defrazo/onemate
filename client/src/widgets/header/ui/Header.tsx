@@ -20,7 +20,6 @@ export const Header = observer(() => {
 
 	const isAuth = authStore.isReady;
 	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
-	const showLogin = !isAuth && isMobile;
 
 	return (
 		<header
@@ -28,21 +27,25 @@ export const Header = observer(() => {
 			className="z-30 flex items-center justify-between rounded-xl bg-(--bg-tertiary) px-4 py-2 shadow-(--shadow) select-none md:py-2 print:hidden"
 		>
 			<Logo isLink size="lg" />
-
 			{isAuth && !isMobile && <Navbar variant="desktop" />}
-
-			<div className="flex items-center gap-4">
-				{showLogin && <LoginButton />}
-				{showLogin && <div className="h-7 w-px bg-(--border-alt)" />}
-
-				{isAuth && <NotificationButton />}
-
-				{isAuth && <UserMenuButton headerRef={headerRef} />}
-				{isAuth && !isMobile && <div className="h-7 w-px bg-(--border-alt)" />}
-
-				<DateTime />
-
-				{!isAuth && <ThemeSwitcher />}
+			<div className="flex items-center gap-2 xl:gap-4">
+				{!isAuth ? (
+					<>
+						<ThemeSwitcher />
+						<LoginButton />
+					</>
+				) : (
+					<>
+						<NotificationButton />
+						<UserMenuButton headerRef={headerRef} />
+					</>
+				)}
+				{!isMobile && (
+					<>
+						<div className="h-7 w-px bg-(--border-alt)" />
+						<DateTime />
+					</>
+				)}
 			</div>
 		</header>
 	);

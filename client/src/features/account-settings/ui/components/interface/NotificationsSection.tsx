@@ -49,7 +49,7 @@ export const NotificationsSection = observer(() => {
 						<div className="flex flex-col">
 							<span className="text-sm text-(--color-primary)">Сеть</span>
 							<span className="text-xs text-(--color-secondary) opacity-70">
-								Изменение доступности отслеживаемых ресурсов
+								Изменение доступности отслеживаемых сервисов
 							</span>
 						</div>
 					</div>

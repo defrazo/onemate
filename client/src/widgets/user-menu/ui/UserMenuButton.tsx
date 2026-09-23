@@ -44,7 +44,7 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 
 	return (
 		<Button
-			className="group xl:rounded-xl xl:bg-white/4 xl:px-2 xl:py-1.5 xl:transition-colors xl:hover:bg-white/8"
+			className="group xl:rounded-xl xl:bg-white/4 xl:px-2 xl:py-1 xl:transition-colors xl:hover:bg-white/8"
 			rightIcon={
 				!isMobile && (
 					<IconChevronDown className="size-4 text-(--color-secondary) transition-colors group-hover:text-(--accent-default)" />
@@ -55,7 +55,7 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 			variant="custom"
 			onClick={handleUserMenuClick}
 		>
-			<UserAvatar className="size-9" />
+			<UserAvatar className="size-8" />
 		</Button>
 	);
 };
