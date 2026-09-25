@@ -25,7 +25,7 @@ class KanbanColumnController extends Controller
     public function store(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'title' => ['required', 'string', 'max:255'],
+            'title' => ['required', 'string', 'max:20'],
             'task_limit' => ['nullable', 'integer', 'min:1'],
             'position' => ['required', 'numeric'],
             'color' => ['nullable', 'string', 'max:50'],
@@ -48,7 +48,7 @@ class KanbanColumnController extends Controller
         $column = $this->resolveColumn($request, $column);
 
         $data = $request->validate([
-            'title' => ['sometimes', 'required', 'string', 'max:255'],
+            'title' => ['sometimes', 'required', 'string', 'max:20'],
             'task_limit' => ['sometimes', 'nullable', 'integer', 'min:1'],
             'position' => ['sometimes', 'numeric'],
             'color' => ['sometimes', 'nullable', 'string', 'max:50'],

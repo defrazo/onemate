@@ -1,16 +1,19 @@
 type DeviceType = 'mobile' | 'tablet' | 'desktop';
 type DeviceOrientation = 'portrait' | 'landscape';
 
+type DeviceListener = (device: DeviceType) => void;
+type OrientationListener = (orientation: DeviceOrientation) => void;
+
 let currentDevice: DeviceType = typeof window !== 'undefined' ? getDeviceType() : 'desktop';
 let currentOrientation: DeviceOrientation = typeof window !== 'undefined' ? getOrientation() : 'portrait';
 
-const deviceListeners: ((device: DeviceType) => void)[] = [];
-const orientationListeners: ((orientation: DeviceOrientation) => void)[] = [];
+const deviceListeners = new Set<DeviceListener>();
+const orientationListeners = new Set<OrientationListener>();
 
 let isInitialized = false;
 let cleanupGlobalListeners: (() => void) | null = null;
 
-function initDeviceListener() {
+function init() {
 	if (typeof window === 'undefined') return;
 	if (isInitialized) return;
 
@@ -20,22 +23,25 @@ function initDeviceListener() {
 	currentOrientation = getOrientation();
 
 	const onResize = () => {
-		const newDevice = getDeviceType();
+		const nextDevice = getDeviceType();
+		if (nextDevice === currentDevice) return;
 
-		if (newDevice !== currentDevice) {
-			currentDevice = newDevice;
-			deviceListeners.forEach((callback) => callback(currentDevice));
-		}
+		currentDevice = nextDevice;
+		deviceListeners.forEach((listener) => listener(currentDevice));
 	};
 
 	const portraitQuery = window.matchMedia('(orientation: portrait)');
 
-	const onOrientationChange = (e: MediaQueryListEvent) => {
-		currentOrientation = e.matches ? 'portrait' : 'landscape';
-		orientationListeners.forEach((callback) => callback(currentOrientation));
+	const onOrientationChange = (event: MediaQueryListEvent) => {
+		const nextOrientation: DeviceOrientation = event.matches ? 'portrait' : 'landscape';
+		if (nextOrientation === currentOrientation) return;
+
+		currentOrientation = nextOrientation;
+		orientationListeners.forEach((listener) => listener(currentOrientation));
 	};
 
 	window.addEventListener('resize', onResize);
+
 	portraitQuery.addEventListener('change', onOrientationChange);
 
 	cleanupGlobalListeners = () => {
@@ -46,15 +52,20 @@ function initDeviceListener() {
 	};
 }
 
+function destroy() {
+	cleanupGlobalListeners?.();
+}
+
 function getDeviceType(): DeviceType {
 	const width = window.innerWidth;
-	const ua = navigator.userAgent;
+	const userAgent = navigator.userAgent;
 
-	const isIpad = /iPad/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in window);
+	const isIpad = /iPad/.test(userAgent) || (userAgent.includes('Macintosh') && 'ontouchend' in window);
 
 	if (isIpad) return width >= 1280 ? 'desktop' : 'tablet';
 	if (width <= 767) return 'mobile';
 	if (width <= 1023) return 'tablet';
+
 	return 'desktop';
 }
 
@@ -62,29 +73,21 @@ function getOrientation(): DeviceOrientation {
 	return window.matchMedia('(orientation: portrait)').matches ? 'portrait' : 'landscape';
 }
 
-function subscribeDeviceChange(callback: (device: DeviceType) => void) {
-	deviceListeners.push(callback);
-
-	return () => {
-		const index = deviceListeners.indexOf(callback);
-		if (index !== -1) deviceListeners.splice(index, 1);
-	};
+function onDeviceChange(listener: DeviceListener): () => void {
+	deviceListeners.add(listener);
+	return () => deviceListeners.delete(listener);
 }
 
-function subscribeOrientationChange(callback: (orientation: DeviceOrientation) => void) {
-	orientationListeners.push(callback);
-
-	return () => {
-		const index = orientationListeners.indexOf(callback);
-		if (index !== -1) orientationListeners.splice(index, 1);
-	};
+function onOrientationChange(listener: OrientationListener): () => void {
+	orientationListeners.add(listener);
+	return () => orientationListeners.delete(listener);
 }
 
 export const deviceUtils = {
-	init: initDeviceListener,
-	destroy: () => cleanupGlobalListeners?.(),
+	init,
+	destroy,
 	getDevice: () => currentDevice,
 	getOrientation: () => currentOrientation,
-	onDeviceChange: subscribeDeviceChange,
-	onOrientationChange: subscribeOrientationChange,
+	onDeviceChange,
+	onOrientationChange,
 };

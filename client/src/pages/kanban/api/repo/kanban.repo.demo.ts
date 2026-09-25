@@ -1,6 +1,6 @@
 import { generateUUID } from '@/shared/lib/utils';
 
-import { getDefaultColumns, getDefaultTasks, MESSAGES, now } from '../../lib';
+import { MESSAGES, now } from '../../lib';
 import type {
 	Column,
 	CreateColumnInput,
@@ -10,6 +10,7 @@ import type {
 	IKanbanRepo,
 	Task,
 } from '../../model';
+import { getDefaultColumns, getDefaultTasks } from '../../model';
 
 export class KanbanRepoDemo implements IKanbanRepo {
 	private columns: Column[];

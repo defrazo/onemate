@@ -1,4 +1,4 @@
-import type { CreateColumnInput, CreateTaskInput } from '../model';
+import type { CreateColumnInput, CreateTaskInput } from '.';
 
 export const getDefaultColumns = (): CreateColumnInput[] => [
 	{ title: 'Запланировано', color: 'slate', taskLimit: 10, position: 1000 },

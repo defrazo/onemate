@@ -1,13 +1,8 @@
-import addIcon from '@/shared/assets/icons/actions/add.svg?raw';
-import { cn } from '@/shared/lib/utils';
+import { addIcon, insertSvg } from '../lib';
+import { type Column, createState, enableMouseScroll, LIMITS, setupDnD, type Task } from '../model';
+import { createColumn, createTaskCard, editColumn } from '.';
 
-import { insertSvg, LIMITS } from '../lib';
-import { type Column, createState, enableMouseScroll, setupDnD, type Task } from '../model';
-import { button, createColumn, createTaskCard, editColumn, layout } from '.';
-
-type BoardInstance = { element: HTMLElement; destroy: () => void };
-
-export const createBoard = (state: ReturnType<typeof createState>): BoardInstance => {
+export const createBoard = (state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;
 
 	let lastTasks: Task[] = [];
@@ -18,24 +13,22 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 
 	// === BOARD ===
 	const board = document.createElement('div');
-	board.className = cn(
-		layout.row,
-		'h-full max-w-full min-w-0 items-start gap-4 overflow-x-auto xl:overflow-y-hidden'
-	);
+	board.className = 'flex h-full max-w-full min-w-0 items-start gap-4 overflow-x-auto xl:overflow-y-hidden';
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');
-	columnsContainer.className = cn(layout.row, 'size-full items-start gap-4');
+	columnsContainer.className = 'flex size-full items-start gap-4';
 	columnsContainer.dataset.columnsContainer = '';
 
 	// === ADD COLUMN BUTTON ===
 	const addColumnButton = document.createElement('button');
+	addColumnButton.type = 'button';
 	addColumnButton.title = 'Добавить колонку';
-	addColumnButton.className = cn(button.ghost, 'ml-auto h-full shrink-0 p-0 xl:h-[61px]');
-	addColumnButton.addEventListener('click', onAddColumn);
-	insertSvg(addColumnButton, addIcon, 'size-4');
+	addColumnButton.className =
+		'flex h-[39px] w-5.5 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-(--border-color) p-0 px-2 py-1 transition-colors hover:border-transparent hover:bg-(--accent-hover) hover:text-(--accent-text) xl:h-[43px]';
+	insertSvg(addColumnButton, addIcon, 'size-4 shrink-0');
 
-	// === ACTION FUNCTIONS ===
+	// === RENDER COLUMNS ===
 	function renderColumns(columns: Column[], tasks: Task[]) {
 		const actualColumns = new Set(columns.map((column) => column.id));
 
@@ -43,29 +36,34 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 			if (!actualColumns.has(columnId)) destroyColumnInstance(columnId);
 		}
 
-		columns.forEach((column) => {
-			let instance = columnInstances.get(column.id);
+		for (const column of columns) {
 			const tasksCount = tasks.filter((task) => task.columnId === column.id).length;
+
+			let instance = columnInstances.get(column.id);
 
 			if (!instance) {
 				instance = createColumn(column, state);
 				columnInstances.set(column.id, instance);
-
 				columnsContainer.append(instance.element);
-			} else instance.update(column, tasksCount);
-		});
+			}
+
+			instance.update(column, tasksCount);
+		}
 
 		columnsContainer.append(addColumnButton);
+
+		addColumnButton.classList.toggle('hidden', columns.length === 0 || columns.length >= LIMITS.MAX_COLUMNS);
 	}
 
+	// === RENDER TASKS ===
 	function renderTasks(tasks: Task[]) {
-		for (const taskId of [...taskInstances.keys()]) destroyTaskInstance(taskId);
+		for (const taskId of [...taskInstances.keys()]) {
+			destroyTaskInstance(taskId);
+		}
 
 		for (const columnInstance of columnInstances.values()) {
-			const columnElement = columnInstance.element;
-			const columnId = columnElement.dataset.columnId;
-			const tasksContainer = columnElement.querySelector('[data-tasks-container]') as HTMLElement | null;
-			if (!columnId || !tasksContainer) continue;
+			const columnId = columnInstance.element.dataset.columnId;
+			if (!columnId) continue;
 
 			const tasksInColumn = tasks
 				.filter((task) => task.columnId === columnId)
@@ -75,27 +73,16 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 					return a.position - b.position;
 				});
 
-			tasksInColumn.forEach((task) => {
+			for (const task of tasksInColumn) {
 				const card = createTaskCard(task, state);
 				taskInstances.set(task.id, card);
 
-				tasksContainer.append(card.element);
-			});
-
-			const columnsData = state.getColumns();
-			const columnData = columnsData.find((column) => column.id === columnId);
-
-			const limit = columnData?.taskLimit ?? Infinity;
-			const isLimitReached = tasksInColumn.length >= limit;
-
-			const counter = columnElement.querySelector('[data-tasks-counter]') as HTMLElement | null;
-			if (counter) counter.textContent = `Задач: ${tasksInColumn.length} / ${limit === Infinity ? '∞' : limit}`;
-
-			const addTaskButton = columnElement.querySelector('[data-task-add]') as HTMLElement | null;
-			if (addTaskButton) addTaskButton.classList.toggle('hidden', isLimitReached);
+				columnInstance.tasksContainer.append(card.element);
+			}
 		}
 	}
 
+	// === ACTION FUNCTIONS ===
 	function onAddColumn() {
 		columnModal?.close();
 
@@ -118,6 +105,7 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 
 		instance.destroy();
 		instance.element.remove();
+
 		taskInstances.delete(taskId);
 	}
 
@@ -127,17 +115,23 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 
 		const taskIdsInColumn = lastTasks.filter((task) => task.columnId === columnId).map((task) => task.id);
 
-		for (const taskId of taskIdsInColumn) destroyTaskInstance(taskId);
+		for (const taskId of taskIdsInColumn) {
+			destroyTaskInstance(taskId);
+		}
 
 		instance.destroy();
 		instance.element.remove();
+
 		columnInstances.delete(columnId);
 	}
 
 	// === ASSEMBLY ===
 	board.append(columnsContainer);
 
-	// === SUBSCRIBE ===
+	// === EVENTS ===
+	addColumnButton.addEventListener('click', onAddColumn);
+
+	// === DND ===
 	const destroyDnD = setupDnD(
 		board,
 		(taskId, targetColumn, newIndex) => state.moveTask(taskId, targetColumn, newIndex),
@@ -146,34 +140,38 @@ export const createBoard = (state: ReturnType<typeof createState>): BoardInstanc
 
 	const destroyMouseScroll = enableMouseScroll(board);
 
-	const unsubscribeColumns = state.subscribeColumns((columns) => {
-		renderColumns(columns, lastTasks);
-		addColumnButton.classList.toggle('hidden', columns.length >= LIMITS.MAX_COLUMNS);
-	});
+	// === SUBSCRIPTIONS ===
+	const unsubscribeColumns = state.subscribeColumns((columns) => renderColumns(columns, lastTasks));
 
 	const unsubscribeTasks = state.subscribeTasks((tasks) => {
 		lastTasks = tasks;
+
+		renderColumns(state.getColumns(), tasks);
 		renderTasks(tasks);
 	});
 
-	return {
-		element: board,
-		destroy: () => {
-			if (isDestroyed) return;
-			isDestroyed = true;
+	// === LIFECYCLE ===
+	function destroy() {
+		if (isDestroyed) return;
+		isDestroyed = true;
 
-			unsubscribeTasks();
-			unsubscribeColumns();
-			destroyDnD();
-			destroyMouseScroll();
-			addColumnButton.removeEventListener('click', onAddColumn);
+		unsubscribeTasks();
+		unsubscribeColumns();
 
-			columnModal?.close();
-			columnModal = null;
+		destroyDnD();
+		destroyMouseScroll();
 
-			for (const columnId of [...columnInstances.keys()]) destroyColumnInstance(columnId);
+		addColumnButton.removeEventListener('click', onAddColumn);
 
-			board.remove();
-		},
-	};
+		columnModal?.close();
+		columnModal = null;
+
+		for (const columnId of [...columnInstances.keys()]) {
+			destroyColumnInstance(columnId);
+		}
+
+		board.remove();
+	}
+
+	return { element: board, destroy };
 };

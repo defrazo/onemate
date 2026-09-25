@@ -49,6 +49,8 @@ class KanbanTaskController extends Controller
             'completed' => ['required', 'boolean'],
         ]);
 
+        $data['description'] ??= '';
+
         $task = $request->user()
             ->kanbanTasks()
             ->create($data);
@@ -70,7 +72,6 @@ class KanbanTaskController extends Controller
                 Rule::exists('kanban_columns', 'id')
                     ->where('user_id', $request->user()->getKey()),
             ],
-
             'title' => ['sometimes', 'required', 'string', 'max:60'],
             'description' => ['sometimes', 'nullable', 'string', 'max:300'],
             'status' => [
@@ -90,6 +91,10 @@ class KanbanTaskController extends Controller
             'end_date' => ['sometimes', 'nullable', 'date'],
             'completed' => ['sometimes', 'boolean'],
         ]);
+
+        if (array_key_exists('description', $data)) {
+            $data['description'] ??= '';
+        }
 
         $startDate = $data['start_date'] ?? $task->start_date;
         $endDate = array_key_exists('end_date', $data)

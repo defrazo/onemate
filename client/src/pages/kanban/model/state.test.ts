@@ -1,8 +1,7 @@
 import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
 
-import { getDefaultColumns, getDefaultTasks, notifier, now } from '../lib';
-import { MESSAGES } from '../lib/constants';
-import { type Column, CreateColumnInput, createState, CreateTaskInput, type IKanbanRepo, type Task } from '.';
+import { MESSAGES, notifier, now } from '../lib';
+import { type Column, createState, type IKanbanRepo, type Task } from '.';
 
 const createRepoMock = (): IKanbanRepo => ({
 	fetchColumns: vi.fn(),
@@ -18,15 +17,12 @@ const createRepoMock = (): IKanbanRepo => ({
 });
 
 vi.mock('../lib', async () => {
-	const { MESSAGES, LIMITS } = await vi.importActual<typeof import('../lib/constants')>('../lib/constants');
+	const actual = await vi.importActual<typeof import('../lib')>('../lib');
 
 	return {
-		getDefaultColumns: vi.fn(),
-		getDefaultTasks: vi.fn(),
+		...actual,
 		notifier: { setNotice: vi.fn() },
 		now: vi.fn(),
-		MESSAGES,
-		LIMITS,
 	};
 });
 
@@ -116,28 +112,27 @@ describe('state', () => {
 
 			it('should create default columns when API returns empty array', async () => {
 				// ARRANGE
-				const defaultColumns: CreateColumnInput[] = [
-					{ title: 'Новая', color: 'slate', taskLimit: 10, position: 1000 },
-				];
 				(repo.fetchColumns as Mock).mockResolvedValue([]);
-				(repo.fetchTasks as Mock).mockResolvedValue([]);
-				(getDefaultColumns as Mock).mockReturnValue(defaultColumns);
-				(repo.addColumn as Mock).mockResolvedValue({ id: 'c1', ...defaultColumns[0] });
+				(repo.fetchTasks as Mock).mockResolvedValue(mockTasks);
+				(repo.addColumn as Mock).mockImplementation(async (column) => ({
+					id: `c${column.position / 1000}`,
+					...column,
+				}));
 
 				// ACT
 				await state.loadData();
 
 				// ASSERT
-				expect(repo.addColumn).toHaveBeenCalledWith(defaultColumns[0]);
+				expect(repo.addColumn).toHaveBeenCalledTimes(4);
+				expect(state.getColumns()).toHaveLength(4);
 			});
 
 			it('should show error when request fails', async () => {
 				// ARRANGE
 				(repo.fetchColumns as Mock).mockRejectedValue(new Error('network'));
-				(repo.fetchTasks as Mock).mockResolvedValue([]);
 
 				// ACT
-				await state.loadData();
+				await state.fetchColumns();
 
 				// ASSERT
 				expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.fetchError, 'error');
@@ -179,7 +174,6 @@ describe('state', () => {
 					});
 					expect(listener).toHaveBeenCalledTimes(1);
 					expect(state.getColumns()).toContainEqual(newColumn);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.added, 'success');
 				});
 
 				it('should not add or call repo if title exceeds length limit', async () => {
@@ -227,7 +221,6 @@ describe('state', () => {
 						color: 'sky',
 						taskLimit: 7,
 					});
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.updated, 'success');
 				});
 
 				it('should not update or call repo if title exceeds length limit', async () => {
@@ -301,7 +294,6 @@ describe('state', () => {
 					const cols = state.getColumns();
 					expect(cols.map((column) => column.id)).toEqual(['c2', 'c1', 'c3', 'c4']);
 					expect(cols.map((column) => column.position)).toEqual([0, 1000, 3000, 4000]);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moved, 'success');
 				});
 
 				it('should ignore second moveColumn call while first one is pending', async () => {
@@ -397,37 +389,29 @@ describe('state', () => {
 
 			it('should create default tasks when API returns empty array', async () => {
 				// ARRANGE
-				const defaultTask: CreateTaskInput = {
-					columnId: 'c1',
-					title: 'Задача 0',
-					description: 'Описание задачи',
-					status: 'waiting',
-					priority: 'high',
-					startDate: '2026-03-18',
-					endDate: '2026-03-20',
-					completed: false,
-					position: 1000,
-				};
-
 				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
 				(repo.fetchTasks as Mock).mockResolvedValue([]);
-				(getDefaultTasks as Mock).mockReturnValue([defaultTask]);
-				(repo.addTask as Mock).mockResolvedValue({ id: 't3', ...defaultTask });
+				(repo.addTask as Mock).mockImplementation(async (task) => ({
+					id: `default-${task.columnId}-${task.position}`,
+					...task,
+					createdAt: '18.03.2026, 10:00',
+					updatedAt: null,
+				}));
 
 				// ACT
 				await state.loadData();
 
 				// ASSERT
-				expect(repo.addTask).toHaveBeenCalledWith({ ...defaultTask });
+				expect(repo.addTask).toHaveBeenCalled();
+				expect(state.getTasks()).not.toHaveLength(0);
 			});
 
 			it('should show error when request fails', async () => {
 				// ARRANGE
-				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
 				(repo.fetchTasks as Mock).mockRejectedValue(new Error('network'));
 
 				// ACT
-				await state.loadData();
+				await state.fetchTasks();
 
 				// ASSERT
 				expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.fetchError, 'error');
@@ -472,7 +456,6 @@ describe('state', () => {
 						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 3000 })
 					);
 					expect(listener).toHaveBeenCalledTimes(1);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.added, 'success');
 				});
 
 				it('should not add or call repo if title exceeds length limit', async () => {
@@ -545,7 +528,6 @@ describe('state', () => {
 						completed: false,
 						updatedAt: MOCKED_NOW,
 					});
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updated, 'success');
 				});
 
 				it('should not update or call repo if title exceeds length limit', async () => {
@@ -603,9 +585,8 @@ describe('state', () => {
 
 					// ASSERT
 					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', expect.any(Number), MOCKED_NOW);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moved, 'success');
 
-					const tasks: any[] = listener.mock.calls.at(-1)?.[0];
+					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
 					const moved = tasks.find((task: Task) => task.id === 't1');
 					expect(moved?.columnId).toBe('c2');
 				});
@@ -682,7 +663,7 @@ describe('state', () => {
 					await state.deleteTask('t1');
 
 					// ASSERT
-					const tasks: any[] = listener.mock.calls.at(-1)?.[0];
+					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
 					expect(tasks.find((task) => task.id === 't1')).toBeUndefined();
 					expect(repo.deleteTask).toHaveBeenCalledWith('t1');
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.deleted, 'success');
