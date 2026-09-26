@@ -1,1 +1,1 @@
-export { UnderConstruction } from './UnderConstruction';
+export { ComingSoon } from './ComingSoon';

@@ -1,1 +1,1 @@
-export { UnderConstruction } from './ui';
+export { ComingSoon } from './ui';
