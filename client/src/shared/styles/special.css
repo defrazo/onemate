@@ -1,20 +1,41 @@
 @layer utilities {
 
-	/* Стили для печати */
-	.print-container {
-		@apply print:mx-0 print:my-8 print:w-full print:max-w-none print:gap-2 print:p-0 print:font-serif print:text-black;
+	/* Печать */
+	@page {
+		size: A4;
+		margin: 18mm 20mm;
 	}
 
-	.print-header {
-		@apply print:gap-0 print:text-2xl;
-	}
+	@media print {
+		.print-container {
+			width: 100%;
+			max-width: none;
+			margin: 0;
+			padding: 0;
+			font-family: serif;
+			color: #000;
+			text-align: left;
+		}
 
-	.print-content {
-		@apply print:gap-0 print:text-base;
-	}
+		.print-header {
+			gap: 0;
+			font-size: 18pt;
+			line-height: 1.15;
+			color: #000;
+		}
 
-	.print-content h2 {
-		@apply print:text-base;
+		.print-content {
+			gap: 6pt;
+			font-size: 11pt;
+			line-height: 1.45;
+			color: #000;
+		}
+
+		.print-content h2 {
+			font-size: 12pt;
+			line-height: 1.3;
+			color: #000;
+		}
 	}
 
 	/* Маркер точка */

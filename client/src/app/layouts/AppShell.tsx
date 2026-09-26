@@ -39,15 +39,15 @@ export const AppShell = ({
 	return (
 		<div
 			className={cn(
-				'mx-auto flex w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base',
+				'mx-auto flex w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base print:block print:max-w-none print:p-0 print:text-base',
 				!isMobile && fillViewport ? 'h-svh overflow-hidden' : 'min-h-svh'
 			)}
 		>
-			<div className="flex min-h-0 flex-1 flex-col px-4 pb-16 xl:pb-4">
+			<div className="flex min-h-0 flex-1 flex-col px-4 pb-16 xl:pb-4 print:block print:p-0">
 				{!landscape && <Header />}
 				<div
 					className={cn(
-						`grid min-h-0 flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4`,
+						`grid min-h-0 flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4 print:block print:p-0`,
 						left && right
 							? 'grid-cols-[250px_1fr_250px]'
 							: left
@@ -59,7 +59,7 @@ export const AppShell = ({
 					)}
 				>
 					{left && <aside className="flex">{left}</aside>}
-					<main className="flex min-h-0 min-w-0 flex-1">{children}</main>
+					<main className="flex min-h-0 min-w-0 flex-1 print:block print:w-full">{children}</main>
 					{right && <aside className="flex">{right}</aside>}
 				</div>
 				{!isMobile && !hideFooter && <FooterWidget />}

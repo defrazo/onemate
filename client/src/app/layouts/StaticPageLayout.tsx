@@ -10,9 +10,13 @@ export const StaticPageLayout = ({ title, showToc = true }: { title: string; sho
 
 	return (
 		<AppShell hideLeftOnMobile hideRightOnMobile>
-			<div className="mx-auto flex max-w-4xl">
-				{showToc && <TableOfContents />}
-				<div className="print-container flex flex-col items-center gap-4">
+			<div className="relative mx-auto flex w-full max-w-4xl print:block print:max-w-none">
+				{showToc && (
+					<div className="absolute top-0 -left-14 h-full">
+						<TableOfContents />
+					</div>
+				)}
+				<div className="print-container w-full">
 					<Outlet />
 				</div>
 				<ScrollToTop />
