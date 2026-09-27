@@ -1,0 +1,34 @@
+import { Calendar, Currency, Network, Notes, Translator, Weather } from '.';
+
+export const Workspace = () => (
+	<div
+		className="pointer-events-none absolute -bottom-30 left-1/2 z-10 w-full -translate-x-1/2 md:bottom-0 lg:max-w-5xl xl:-bottom-20 2xl:bottom-0"
+		style={{
+			maskImage:
+				'linear-gradient(to bottom, black 0%, black 24%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.35) 72%, transparent 100%)',
+			WebkitMaskImage:
+				'linear-gradient(to bottom, black 0%, black 24%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.35) 72%, transparent 100%)',
+		}}
+	>
+		<div className="relative overflow-hidden rounded-xl border border-white/10 bg-(--bg-secondary)/95 opacity-75 shadow-2xl shadow-black/30">
+			<div className="pointer-events-none absolute inset-0 bg-violet-500/2" />
+			<div className="relative flex h-10 items-center border-b border-white/8">
+				<div className="mx-auto flex items-center gap-5 text-[10px] text-white/20">
+					<span className="font-bold text-(--accent-default)/70">Dashboard</span>
+					<span>ToDo</span>
+					<span>Kanban</span>
+					<span>ToolBox</span>
+				</div>
+			</div>
+			<div className="grid grid-cols-3 gap-3 p-3">
+				<Network />
+				<Calendar />
+				<Notes />
+				<Currency />
+				<Weather />
+				<Translator />
+			</div>
+			<div className="pointer-events-none absolute inset-x-0 top-9 h-20 bg-linear-to-b from-white/2 to-transparent" />
+		</div>
+	</div>
+);

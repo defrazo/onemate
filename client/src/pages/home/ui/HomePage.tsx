@@ -1,29 +1,39 @@
-import { Home } from '@/shared/assets/images';
-import { usePageTitle } from '@/shared/lib/hooks';
-import { Slider } from '@/shared/ui';
+import { useNavigate } from 'react-router-dom';
+import { IconArrowRight } from '@tabler/icons-react';
 
-import { slides } from '../lib';
+import { usePageTitle } from '@/shared/lib/hooks';
+import { Button } from '@/shared/ui';
+
+import { Workspace } from './components';
 
 export const HomePage = () => {
 	usePageTitle('Главная');
 
+	const navigate = useNavigate();
+
 	return (
-		<div className="flex flex-1 flex-col justify-evenly select-none xl:flex-row xl:justify-between">
-			<div className="flex flex-col items-center justify-center xl:flex-1 xl:gap-4">
-				<h1 className="text-center text-[40px] leading-tight font-medium md:text-8xl">
-					Work Smarter <br /> Not Harder
+		<div className="relative flex min-h-0 flex-1 pb-54 select-none md:pb-84 xl:pb-64 2xl:pb-84">
+			<div className="m-auto flex max-w-6xl flex-col items-center text-center">
+				<span className="trim mb-2 font-mono text-xs tracking-wide text-(--color-disabled)/80">
+					PERSONAL WORKSPACE
+				</span>
+				<h1 className="my-4 max-w-md text-4xl font-bold md:my-0 md:max-w-none md:text-5xl lg:text-6xl">
+					Всё нужное в одном месте
 				</h1>
-				<div className="hidden w-xl lg:block">
-					<Slider slides={slides} />
-				</div>
+				<p className="mt-2 max-w-xl text-sm text-(--color-secondary) md:text-base">
+					Личное пространство для работы, идей и повседневных инструментов.
+				</p>
+				<Button
+					className="mt-8 h-9 gap-2 rounded-md px-5"
+					rightIcon={<IconArrowRight className="size-4" />}
+					variant="accent"
+					onClick={() => navigate('/demo')}
+				>
+					Открыть демо
+				</Button>
+				<span className="mt-2 font-mono text-xs text-(--color-disabled)/80">без регистрации</span>
 			</div>
-			<div className="flex items-center justify-center xl:flex-1">
-				<img
-					alt="Иллюстрация: главная страница"
-					className="no-touch-callout max-h-[45vh] md:max-h-[35vh] lg:max-h-[45vh] xl:max-h-[65vh]"
-					src={Home}
-				/>
-			</div>
+			<Workspace />
 		</div>
 	);
 };

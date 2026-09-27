@@ -8,7 +8,7 @@ import { AccountProfilePage } from '@/pages/account-profile';
 import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
 import { DashboardPage } from '@/pages/dashboard';
 import { DemoInfoPage } from '@/pages/demo-info';
-import { HomePage } from '@/pages/home';
+import { Background, HomePage } from '@/pages/home';
 import { KanbanPage } from '@/pages/kanban';
 import { NotFoundPage } from '@/pages/not-found';
 import { PrivacyPolicyPage } from '@/pages/privacy-policy';
@@ -52,7 +52,7 @@ export const routes: RouteObject[] = [
 		element: <PublicRoute />,
 		children: [
 			{
-				element: <Layout />,
+				element: <Layout background={<Background />} />,
 				children: [{ path: '/', element: <HomePage /> }],
 			},
 			{ children: [{ path: '/reset-password', element: <ResetPasswordPage /> }] },
