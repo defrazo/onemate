@@ -2,7 +2,7 @@ import type { ReactNode } from 'react';
 
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { FooterWidget } from '@/widgets/footer';
+import { Footer } from '@/widgets/footer';
 import { Header } from '@/widgets/header';
 import { MobileTabBar } from '@/widgets/mobile-tab-bar';
 
@@ -10,6 +10,7 @@ interface AppShellProps {
 	children: ReactNode;
 	leftSide?: ReactNode;
 	rightSide?: ReactNode;
+	background?: ReactNode;
 	hideLeftOnMobile?: boolean;
 	hideRightOnMobile?: boolean;
 	hideFooter?: boolean;
@@ -21,6 +22,7 @@ export const AppShell = ({
 	children,
 	leftSide,
 	rightSide,
+	background,
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
 	hideFooter = false,
@@ -37,34 +39,39 @@ export const AppShell = ({
 	const landscape = orientation === 'landscape' && landscapeMode && device === 'mobile';
 
 	return (
-		<div
-			className={cn(
-				'mx-auto flex w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base print:block print:max-w-none print:p-0 print:text-base',
-				!isMobile && fillViewport ? 'h-svh overflow-hidden' : 'min-h-svh'
-			)}
-		>
-			<div className="flex min-h-0 flex-1 flex-col px-4 pb-16 xl:pb-4 print:block print:p-0">
-				{!landscape && <Header />}
+		<div className="relative min-h-svh overflow-hidden">
+			{background}
+			<div
+				className={cn(
+					'mx-auto flex w-full flex-col pt-4 text-sm xl:max-w-400 xl:text-base print:block print:max-w-none print:p-0 print:text-base',
+					!isMobile && fillViewport ? 'h-svh overflow-hidden' : 'min-h-svh'
+				)}
+			>
 				<div
-					className={cn(
-						`grid min-h-0 flex-1 gap-4 ${landscape ? '' : 'pt-4'} md:pb-4 print:block print:p-0`,
-						left && right
-							? 'grid-cols-[250px_1fr_250px]'
-							: left
-								? 'grid-cols-[250px_1fr]'
-								: right
-									? 'grid-cols-[1fr_250px]'
-									: '',
-						orientation === 'landscape' ? (landscapeMode ? '' : 'px-[25dvw] md:px-[10dvw] lg:px-0') : ''
-					)}
+					className={`flex min-h-0 flex-1 flex-col px-4 ${background ? '' : 'pb-16'} xl:pb-4 print:block print:p-0`}
 				>
-					{left && <aside className="flex">{left}</aside>}
-					<main className="flex min-h-0 min-w-0 flex-1 print:block print:w-full">{children}</main>
-					{right && <aside className="flex">{right}</aside>}
+					{!landscape && <Header />}
+					<div
+						className={cn(
+							`grid min-h-0 flex-1 gap-4 ${landscape ? '' : 'pt-4'} ${background ? 'md:pb-0' : 'md:pb-4'} print:block print:p-0`,
+							left && right
+								? 'grid-cols-[250px_1fr_250px]'
+								: left
+									? 'grid-cols-[250px_1fr]'
+									: right
+										? 'grid-cols-[1fr_250px]'
+										: '',
+							orientation === 'landscape' ? (landscapeMode ? '' : 'px-[25dvw] md:px-[10dvw] lg:px-0') : ''
+						)}
+					>
+						{left && <aside className="flex">{left}</aside>}
+						<main className="flex min-h-0 min-w-0 flex-1 print:block print:w-full">{children}</main>
+						{right && <aside className="flex">{right}</aside>}
+					</div>
+					{!isMobile && !hideFooter && <Footer />}
 				</div>
-				{!isMobile && !hideFooter && <FooterWidget />}
+				{isMobile && !(landscape && landscapeMode) && <MobileTabBar />}
 			</div>
-			{isMobile && !(landscape && landscapeMode) && <MobileTabBar />}
 		</div>
 	);
 };
