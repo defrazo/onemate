@@ -14,7 +14,7 @@ export const AuthDemo = observer(() => {
 		try {
 			await authStore.login('demo@example.com', 'DemoPassword123');
 
-			navigate('/');
+			navigate('/dashboard');
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}

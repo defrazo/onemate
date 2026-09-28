@@ -1,1 +1,0 @@
-export { DemoInfoPage } from './ui';

@@ -2,7 +2,7 @@ import { Link } from 'react-router-dom';
 
 import { ArticleSection } from '@/shared/ui';
 
-export const DemoInfoPage = () => (
+export const DemoPage = () => (
 	<div className="flex w-full flex-col gap-4">
 		<header className="flex flex-col items-center">
 			<h1 className="cursor-default text-center text-xl leading-tight font-bold md:text-3xl">О демо-режиме</h1>
@@ -73,7 +73,7 @@ export const DemoInfoPage = () => (
 					<li>
 						Подробнее об обработке данных в OneMate можно узнать в{' '}
 						<Link
-							className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
+							className="text-(--accent-default) hover:text-(--accent-hover) hover:underline"
 							to="/privacy-policy"
 						>
 							Политике конфиденциальности
@@ -83,7 +83,7 @@ export const DemoInfoPage = () => (
 				</ul>
 			</ArticleSection>
 			<ArticleSection id="faq" number={6} title="Частые вопросы">
-				<div className="flex flex-col gap-2">
+				<div className="flex flex-col">
 					<FaqItem
 						answer="В демо-режиме отключены возможности, которым требуется персональный аккаунт или передача введённых данных сторонним сервисам."
 						question="Почему некоторые функции недоступны?"
@@ -115,7 +115,7 @@ export const DemoInfoPage = () => (
 );
 
 const FaqItem = ({ question, answer }: { question: string; answer: string }) => (
-	<details className="group border-b border-(--border-color) py-3">
+	<details className="group border-(--border-color) py-3 not-last:border-b">
 		<summary className="cursor-pointer list-none font-bold transition-colors group-open:text-(--color-primary) hover:text-(--color-primary)">
 			{question}
 		</summary>

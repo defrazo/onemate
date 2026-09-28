@@ -1,19 +1,33 @@
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { IconArrowRight } from '@tabler/icons-react';
+import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { Workspace } from './components';
 
-export const HomePage = () => {
+export const HomePage = observer(() => {
 	usePageTitle('Главная');
 
 	const navigate = useNavigate();
 
+	const { authStore, notifyStore } = useStore();
+
+	const handleDemo = async () => {
+		try {
+			await authStore.login('demo@example.com', 'DemoPassword123');
+
+			navigate('/dashboard');
+		} catch {
+			notifyStore.setNotice('Что-то пошло не так', 'error');
+		}
+	};
+
 	return (
 		<div className="relative flex min-h-0 flex-1 pb-54 select-none md:pb-84 xl:pb-64 2xl:pb-84">
-			<div className="m-auto flex max-w-6xl flex-col items-center text-center">
+			<div className="mx-auto mt-auto mb-20 flex max-w-6xl flex-col items-center text-center">
 				<span className="trim mb-2 font-mono text-xs tracking-wide text-(--color-disabled)/80">
 					PERSONAL WORKSPACE
 				</span>
@@ -25,15 +39,22 @@ export const HomePage = () => {
 				</p>
 				<Button
 					className="mt-8 h-9 gap-2 rounded-md px-5"
+					loading={authStore.isLoading}
+					loadingText="Открываем..."
 					rightIcon={<IconArrowRight className="size-4" />}
 					variant="accent"
-					onClick={() => navigate('/demo')}
+					onClick={handleDemo}
 				>
 					Открыть демо
 				</Button>
-				<span className="mt-2 font-mono text-xs text-(--color-disabled)/80">без регистрации</span>
+				<Link
+					className="mt-2 font-mono text-xs text-(--color-secondary) transition-colors hover:text-(--accent-hover)"
+					to="/demo"
+				>
+					О демо-режиме
+				</Link>
 			</div>
 			<Workspace />
 		</div>
 	);
-};
+});

@@ -7,7 +7,7 @@ import { DeletedAccountPage } from '@/pages/account-deleted';
 import { AccountProfilePage } from '@/pages/account-profile';
 import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
 import { DashboardPage } from '@/pages/dashboard';
-import { DemoInfoPage } from '@/pages/demo-info';
+import { DemoPage } from '@/pages/demo';
 import { Background, HomePage } from '@/pages/home';
 import { KanbanPage } from '@/pages/kanban';
 import { NotFoundPage } from '@/pages/not-found';
@@ -64,7 +64,7 @@ export const routes: RouteObject[] = [
 	},
 	{
 		element: <StaticPageLayout title="О демо-режиме OneMate" />,
-		children: [{ path: '/demo-info', element: <DemoInfoPage /> }],
+		children: [{ path: '/demo', element: <DemoPage /> }],
 	},
 	{
 		element: <Layout title="О проекте" />,
