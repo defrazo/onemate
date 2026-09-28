@@ -12,7 +12,7 @@ export const AvatarSection = observer(() => {
 
 	const { modalStore, userProfileStore } = useStore();
 
-	const handleOpen = (): void => {
+	const handleOpen = () => {
 		modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined, {
 			back: () => modalStore.setModal(<PersonalTab />, 'sheet'),
 		});

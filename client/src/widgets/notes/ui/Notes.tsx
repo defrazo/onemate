@@ -1,4 +1,4 @@
-import { IconPlus } from '@tabler/icons-react';
+import { IconLoader2, IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -29,8 +29,15 @@ export const Notes = observer(() => {
 					<span>{pluralize(notesStore.notes.length, 'заметка', 'заметки', 'заметок')}</span>
 				</div>
 				<Button
-					centerIcon={<IconPlus className="size-4" />}
+					centerIcon={
+						!notesStore.isLoading ? (
+							<IconPlus className="size-4" />
+						) : (
+							<IconLoader2 className="size-4 animate-spin" />
+						)
+					}
 					className="h-6 min-w-22.5 rounded-lg text-sm"
+					disabled={notesStore.isLoading}
 					size="custom"
 					title="Добавить заметку"
 					variant="accent"

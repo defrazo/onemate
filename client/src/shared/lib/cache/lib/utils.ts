@@ -2,7 +2,7 @@ import { LS_PREFIX } from '@/shared/config';
 
 import type { Cache, CacheSection } from '../model';
 
-export const cacheKey = (id: string): string => `${LS_PREFIX}cache_${id}`;
+export const cacheKey = (id: string) => `${LS_PREFIX}cache_${id}`;
 
 const cleanupSection = (section?: CacheSection): CacheSection | undefined => {
 	if (!section) return undefined;

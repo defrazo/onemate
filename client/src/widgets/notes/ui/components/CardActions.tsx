@@ -62,7 +62,7 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 						notifyStore.setNotice('Заметка пуста', 'info');
 						return;
 					}
-					copy(text, 'Заметка скопирована!');
+					copy(text, 'Заметка скопирована');
 				}}
 			/>
 			<Button

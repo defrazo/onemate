@@ -7,7 +7,7 @@ export const emailCooldown = {
 		sessionStorage.setItem(RESEND_EMAIL_COOLDOWN_KEY, String(until));
 	},
 
-	getRemaining(): number {
+	getRemaining() {
 		const until = Number(sessionStorage.getItem(RESEND_EMAIL_COOLDOWN_KEY));
 		if (!until) return 0;
 

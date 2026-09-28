@@ -2,7 +2,7 @@ import { useRef, useState } from 'react';
 import { useDrag } from '@use-gesture/react';
 
 export const useDragger = (onClose: () => void) => {
-	const [positionY, setPositionY] = useState<number>(0);
+	const [positionY, setPositionY] = useState(0);
 	const [dragDirection, setDragDirection] = useState<'none' | 'up' | 'down'>('none');
 	const isDraggingRef = useRef<boolean>(false);
 

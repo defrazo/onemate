@@ -10,16 +10,16 @@ export const Calendar = () => (
 			<div className="h-1.5 w-8 rounded-full bg-white/10" />
 		</div>
 		<div className="mb-2 grid grid-cols-7 gap-2">
-			{Array.from({ length: 7 }).map((_, index) => (
-				<span key={index} className="mx-auto size-1 rounded-full bg-(--accent-default)/30" />
+			{Array.from({ length: 7 }).map((_, idx) => (
+				<span key={idx} className="mx-auto size-1 rounded-full bg-(--accent-default)/30" />
 			))}
 		</div>
 		<div className="grid grid-cols-7 gap-x-2 gap-y-2.5">
-			{Array.from({ length: 28 }).map((_, index) => (
+			{Array.from({ length: 28 }).map((_, idx) => (
 				<span
-					key={index}
+					key={idx}
 					className={
-						index === 19
+						idx === 19
 							? 'mx-auto size-2 rounded-full bg-(--accent-default)/65'
 							: 'mx-auto size-1 rounded-full bg-white/15'
 					}

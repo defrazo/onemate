@@ -2,8 +2,8 @@ type DragType = 'task' | 'column' | null;
 
 export const setupDnD = (
 	board: HTMLElement,
-	onTaskDrop: (taskId: string, targetColumnId: string, newIndex: number) => void,
-	onColumnDrop: (columnId: string, newIndex: number) => void
+	onTaskDrop: (taskId: string, targetColumnId: string, newIdx: number) => void,
+	onColumnDrop: (columnId: string, newIdx: number) => void
 ) => {
 	let currentDragType: DragType = null;
 	let draggingElement: HTMLElement | null = null;
@@ -128,7 +128,7 @@ export const setupDnD = (
 			const container = placeholder.closest<HTMLElement>('[data-tasks-container]');
 			if (!container) return restore();
 
-			const newIndex = Array.from(container.children).indexOf(placeholder);
+			const newIdx = Array.from(container.children).indexOf(placeholder);
 			draggingElement.style.display = '';
 			placeholder.replaceWith(draggingElement);
 
@@ -136,7 +136,7 @@ export const setupDnD = (
 			const targetColumnId = container.dataset.tasksContainer!;
 
 			cleanup();
-			onTaskDrop(taskId, targetColumnId, newIndex);
+			onTaskDrop(taskId, targetColumnId, newIdx);
 		}
 
 		if (currentDragType === 'column') {
@@ -144,11 +144,11 @@ export const setupDnD = (
 			placeholder.replaceWith(draggingElement);
 
 			const columns = Array.from(board.querySelectorAll<HTMLElement>('[data-column-id]'));
-			const newIndex = columns.indexOf(draggingElement);
+			const newIdx = columns.indexOf(draggingElement);
 			const columnId = draggingElement.dataset.columnId!;
 
 			cleanup();
-			onColumnDrop(columnId, newIndex);
+			onColumnDrop(columnId, newIdx);
 		}
 	};
 

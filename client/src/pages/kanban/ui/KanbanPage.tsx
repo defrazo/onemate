@@ -7,9 +7,9 @@ import { LoadingError } from '@/shared/ui';
 import { initKanban } from '.';
 
 export const KanbanPage = () => {
-	const { userStore } = useStore();
-
 	usePageTitle('Kanban');
+
+	const { userStore } = useStore();
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);

@@ -23,7 +23,7 @@ export const ViewHeader = ({ icon: Icon, title, onBack }: ViewHeaderProps) => {
 			</Button>
 			<div className="flex items-center gap-1.5 rounded-lg bg-(--accent-default)/10 px-2 py-1 text-(--accent-default)">
 				<Icon className="size-4" />
-				<span className="trim text-sm font-medium text-(--accent-default)">{title}</span>
+				<span className="trim text-sm text-(--accent-default)">{title}</span>
 			</div>
 		</div>
 	);

@@ -3,8 +3,8 @@ import { useEffect, useRef, useState } from 'react';
 import type { Direction } from '.';
 
 export const useSelect = (direction: Direction = 'auto') => {
-	const [isOpen, setIsOpen] = useState<boolean>(false);
-	const [openUpwards, setOpenUpwards] = useState<boolean>(false);
+	const [isOpen, setIsOpen] = useState(false);
+	const [openUpwards, setOpenUpwards] = useState(false);
 	const wrapperRef = useRef<HTMLDivElement>(null);
 	const buttonRef = useRef<HTMLButtonElement>(null);
 

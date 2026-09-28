@@ -41,10 +41,10 @@ export class NotesStore extends AsyncStore {
 	}
 
 	updateNote<K extends keyof Note>(id: string, key: K, value: Note[K]): void {
-		const index = this.draft.findIndex((note) => note.id === id);
-		if (index === -1) return;
+		const idx = this.draft.findIndex((note) => note.id === id);
+		if (idx === -1) return;
 
-		this.draft[index] = { ...this.draft[index], [key]: value, updated_at: new Date().toISOString() };
+		this.draft[idx] = { ...this.draft[idx], [key]: value, updated_at: new Date().toISOString() };
 		this.persistDraft();
 	}
 

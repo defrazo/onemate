@@ -41,7 +41,7 @@ export const ACL: Record<Role, Capabilities> = {
 } satisfies Record<Role, Capabilities>;
 
 export class PermissionService {
-	static canPerform<F extends Feature>(role: Role, feature: F, operation: Operation<F>): boolean {
+	static canPerform<F extends Feature>(role: Role, feature: F, operation: Operation<F>) {
 		return ACL[role]?.[feature]?.[operation] === true;
 	}
 

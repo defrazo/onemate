@@ -40,12 +40,12 @@ export class KanbanRepoDemo implements IKanbanRepo {
 	}
 
 	async editColumn(id: string, column: EditColumnInput): Promise<Column> {
-		const index = this.columns.findIndex((item) => item.id === id);
-		if (index === -1) throw new Error(MESSAGES.columns.updateError);
+		const idx = this.columns.findIndex((item) => item.id === id);
+		if (idx === -1) throw new Error(MESSAGES.columns.updateError);
 
-		this.columns[index] = { ...this.columns[index], ...column };
+		this.columns[idx] = { ...this.columns[idx], ...column };
 
-		return { ...this.columns[index] };
+		return { ...this.columns[idx] };
 	}
 
 	async deleteColumn(id: string): Promise<void> {
@@ -74,12 +74,12 @@ export class KanbanRepoDemo implements IKanbanRepo {
 	}
 
 	async editTask(id: string, task: EditTaskInput): Promise<Task> {
-		const index = this.tasks.findIndex((item) => item.id === id);
-		if (index === -1) throw new Error(MESSAGES.tasks.updateError);
+		const idx = this.tasks.findIndex((item) => item.id === id);
+		if (idx === -1) throw new Error(MESSAGES.tasks.updateError);
 
-		this.tasks[index] = { ...this.tasks[index], ...task };
+		this.tasks[idx] = { ...this.tasks[idx], ...task };
 
-		return { ...this.tasks[index] };
+		return { ...this.tasks[idx] };
 	}
 
 	async deleteTask(id: string): Promise<void> {

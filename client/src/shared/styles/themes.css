@@ -3,6 +3,7 @@
 	--color-primary: #d7d7d7;
 	--color-secondary: #a0a0a0;
 	--color-disabled: #666666;
+	--color-accent: #7d6fe4;
 
 	/* Акцентные цвета */
 	--accent-default: #e18127;
@@ -35,14 +36,14 @@
 	--priority-high: #ff4039;
 
 	/* Дополнительные цвета  */
-	--color-slate: #64748b;
-	--color-rose: #f43f5e;
-	--color-amber: #fff741;
-	--color-emerald: #10b981;
-	--color-violet: #8b5cf6;
+	--color-slate: #94a3b8;
+	--color-rose: #fb7185;
+	--color-amber: #fbbf24;
+	--color-emerald: #34d399;
+	--color-violet: #a78bfa;
 	--color-lime: #84cc16;
-	--color-fuchsia: #d946ef;
-	--color-sky: #0ea5e9;
+	--color-fuchsia: #e879f9;
+	--color-sky: #38bdf8;
 
 	/* Разделители и бордеры */
 	--border-color: #39393a;

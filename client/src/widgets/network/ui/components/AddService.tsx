@@ -229,16 +229,16 @@ const tip = (
 		<p>Какой порт указать?</p>
 		<ul className="list-disc pl-4">
 			<li>
-				<span className="font-medium">22</span> – SSH, доступность сервера
+				<span>22</span> – SSH, доступность сервера
 			</li>
 			<li>
-				<span className="font-medium">80</span> – HTTP
+				<span>80</span> – HTTP
 			</li>
 			<li>
-				<span className="font-medium">443</span> – HTTPS
+				<span>443</span> – HTTPS
 			</li>
 			<li>
-				<span className="font-medium">3000, 8000, 8080</span> – часто используются в вебе
+				<span>3000, 8000, 8080</span> – часто используются в вебе
 			</li>
 		</ul>
 	</div>

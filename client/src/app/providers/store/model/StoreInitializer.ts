@@ -28,7 +28,7 @@ export class StoreInitializer {
 		await stores.authStore.init();
 	}
 
-	static destroyStores(stores: AllStores): void {
+	static destroyStores(stores: AllStores) {
 		stores.authStore.destroy?.();
 
 		for (const name of [...this.REACTIVE_STORES].reverse()) {

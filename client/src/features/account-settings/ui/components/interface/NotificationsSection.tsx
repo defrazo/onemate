@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { IconLayoutKanban, IconNetwork } from '@tabler/icons-react';
+import { IconActivityHeartbeat, IconLayoutKanban } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -45,7 +45,7 @@ export const NotificationsSection = observer(() => {
 				<p className="text-xs text-(--color-secondary)">Источники</p>
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<IconNetwork className="size-5 text-(--accent-default)" />
+						<IconActivityHeartbeat className="size-5 text-(--accent-default)" />
 						<div className="flex flex-col">
 							<span className="text-sm text-(--color-primary)">Сеть</span>
 							<span className="text-xs text-(--color-secondary) opacity-70">

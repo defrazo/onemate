@@ -137,7 +137,7 @@ export const createTaskProperties = ({
 		};
 	}
 
-	function areDatesValid(): boolean {
+	function areDatesValid() {
 		const start = startDate.getValue();
 		const end = endDate.getValue();
 		if (!start || !end) return true;

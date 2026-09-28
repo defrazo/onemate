@@ -36,15 +36,15 @@ const hasOuterParens = (value: string) => {
 
 	let depth = 0;
 
-	for (let index = 0; index < value.length; index++) {
-		const char = value[index];
+	for (let idx = 0; idx < value.length; idx++) {
+		const char = value[idx];
 
 		if (char === '(') depth++;
 		if (char === ')') depth--;
 
 		if (depth < 0) return false;
 
-		if (depth === 0 && index < value.length - 1) return false;
+		if (depth === 0 && idx < value.length - 1) return false;
 	}
 
 	return depth === 0;

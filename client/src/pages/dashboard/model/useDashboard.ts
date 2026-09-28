@@ -30,12 +30,12 @@ export const useDashboard = () => {
 		return widgetMap.get(slot)?.content ?? null;
 	};
 
-	const setSlot = (index: number, widgetId: WidgetId) => {
+	const setSlot = (idx: number, widgetId: WidgetId) => {
 		const newSlots = [...slots];
-		const conflictIndex = newSlots.indexOf(widgetId);
+		const conflictIdx = newSlots.indexOf(widgetId);
 
-		if (conflictIndex !== -1 && conflictIndex !== index) newSlots[conflictIndex] = EMPTY_WIDGET_SLOT;
-		newSlots[index] = widgetId;
+		if (conflictIdx !== -1 && conflictIdx !== idx) newSlots[conflictIdx] = EMPTY_WIDGET_SLOT;
+		newSlots[idx] = widgetId;
 
 		void store.updateWidgetSlots(newSlots);
 	};
@@ -47,12 +47,12 @@ export const useDashboard = () => {
 		const activeId = active.id.toString() as WidgetId;
 		const overId = over.id.toString() as WidgetId;
 
-		const oldIndex = rowIds.indexOf(activeId);
-		const newIndex = rowIds.indexOf(overId);
+		const oldIdx = rowIds.indexOf(activeId);
+		const newIdx = rowIds.indexOf(overId);
 
-		if (oldIndex === -1 || newIndex === -1) return;
+		if (oldIdx === -1 || newIdx === -1) return;
 
-		void store.updateWidgetSequence(arrayMove(rowIds, oldIndex, newIndex));
+		void store.updateWidgetSequence(arrayMove(rowIds, oldIdx, newIdx));
 	};
 
 	return { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd };

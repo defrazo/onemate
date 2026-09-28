@@ -7,7 +7,7 @@ export const readCache = (id: string): Cache | null => {
 	return storage.get(cacheKey(id)) as Cache | null;
 };
 
-export const writeCache = (id: string, patch: CachePatch): void => {
+export const writeCache = (id: string, patch: CachePatch) => {
 	const prev = readCache(id) ?? { ts: 0 };
 
 	const merged = cleanupCache({
@@ -19,6 +19,6 @@ export const writeCache = (id: string, patch: CachePatch): void => {
 	storage.set(cacheKey(id), merged);
 };
 
-export const clearCache = (id: string): void => {
+export const clearCache = (id: string) => {
 	storage.remove(cacheKey(id));
 };

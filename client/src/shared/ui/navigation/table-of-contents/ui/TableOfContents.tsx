@@ -47,7 +47,7 @@ export const TableOfContents = () => {
 	}, []);
 
 	return (
-		<nav className="group sticky top-1/2 z-10 hidden -translate-y-1/2 select-none xl:block print:hidden">
+		<nav className="group fixed top-1/2 z-10 hidden -translate-y-1/2 select-none xl:block print:hidden">
 			<div className="relative">
 				<Button
 					centerIcon={<IconListNumbers className="size-4.5" />}

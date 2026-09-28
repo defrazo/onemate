@@ -6,10 +6,10 @@ import { accountSettingsTabs, isAccountSettingsTab, type TabId } from '@/feature
 import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
 
 export const AccountProfilePage = () => {
+	usePageTitle('Профиль');
+
 	const device = useDeviceType();
 	const [searchParams, setSearchParams] = useSearchParams();
-
-	usePageTitle('Профиль');
 
 	const { modalStore } = useStore();
 

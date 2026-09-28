@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { IconArrowBadgeUpFilled } from '@tabler/icons-react';
 
 import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui/inputs';
+import { Button } from '@/shared/ui';
 
 const BASE_BOTTOM = 16;
 
 export const ScrollToTop = ({ footerSelector = 'footer' }) => {
-	const [visible, setVisible] = useState<boolean>(false);
-	const [extraBottom, setExtraBottom] = useState<number>(0);
 	const device = useDeviceType();
+
+	const [visible, setVisible] = useState(false);
+	const [extraBottom, setExtraBottom] = useState(0);
 
 	useEffect(() => {
 		const onScroll = () => setVisible(window.scrollY > 300);
@@ -46,7 +47,7 @@ export const ScrollToTop = ({ footerSelector = 'footer' }) => {
 
 	return (
 		<Button
-			centerIcon={<ArrowUp className="size-6" />}
+			centerIcon={<IconArrowBadgeUpFilled className="size-6" />}
 			className={cn(
 				'right-4 z-50 rounded-full p-3 shadow transition-all',
 				device === 'mobile' ? 'hidden' : 'fixed',

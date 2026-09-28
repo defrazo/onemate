@@ -138,10 +138,10 @@ export const AboutPage = () => {
 					<Labels titles={['PRACTICALITY', 'CONSISTENCY', 'EVOLUTION']} />
 				</div>
 				<div className="grid gap-8 md:grid-cols-[minmax(0,30rem)_minmax(0,30rem)] md:justify-evenly">
-					{principles.map(([title, description], index) => (
+					{principles.map(([title, description], idx) => (
 						<div key={title} className="group flex flex-col gap-3">
 							<div className="flex items-center gap-3">
-								<span className="font-mono text-[10px] text-(--accent-default)">0{index + 1}</span>
+								<span className="font-mono text-[10px] text-(--accent-default)">0{idx + 1}</span>
 								<h3 className="font-bold">{title}</h3>
 							</div>
 							<div className="flex items-stretch gap-3">

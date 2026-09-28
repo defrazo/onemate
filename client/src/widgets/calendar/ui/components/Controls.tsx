@@ -45,7 +45,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 							size="custom"
 							title="Скопировать период"
 							variant="mobile"
-							onClick={() => copy(rangeInfo.copyText, 'Период скопирован!')}
+							onClick={() => copy(rangeInfo.copyText, 'Период скопирован')}
 						/>
 					</>
 				) : (
@@ -79,7 +79,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 					variant="mobile"
 					onClick={() => {
 						if (!rangeInfo) return;
-						copy(rangeInfo.copyText, 'Период скопирован!');
+						copy(rangeInfo.copyText, 'Период скопирован');
 					}}
 				/>
 				<Button

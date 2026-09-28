@@ -291,7 +291,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileProfileP
 	}
 
 	private arraysEqual(a?: string[] | null, b?: string[] | null): boolean {
-		return a === b || (!!a && !!b && a.length === b.length && a.every((value, index) => value === b[index]));
+		return a === b || (!!a && !!b && a.length === b.length && a.every((value, idx) => value === b[idx]));
 	}
 
 	private cancelPendingUpdates(): void {

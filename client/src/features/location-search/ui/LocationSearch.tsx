@@ -19,9 +19,11 @@ interface LocationSearchProps {
 
 export const LocationSearch = observer(
 	({ value, showGeolocation, onRemove, validate, onSelect }: LocationSearchProps) => {
-		const { notifyStore } = useStore();
+		const { notifyStore, userProfileStore } = useStore();
 
 		const [store] = useState(() => new LocationSearchStore());
+
+		const isLoading = !userProfileStore.isReady || store.isLoading;
 
 		const handleSelect = async (city: City) => {
 			try {
@@ -65,12 +67,13 @@ export const LocationSearch = observer(
 				<Input
 					autoComplete="off"
 					className="bg-(--bg-secondary)"
+					disabled={isLoading}
 					id="location"
 					leftIcon={<InputLabel htmlFor="location" icon={IconMapPinFilled} />}
 					name="fake-location"
-					placeholder="Введите город"
+					placeholder={isLoading ? 'Загрузка города...' : 'Введите город'}
 					rightIcon={
-						store.isLoading ? (
+						isLoading ? (
 							<LoadingState className="mr-1" size="sm" />
 						) : onRemove && value ? (
 							<IconTrashFilled
@@ -79,7 +82,7 @@ export const LocationSearch = observer(
 							/>
 						) : showGeolocation ? (
 							<IconLocation
-								className="size-7 cursor-pointer hover:text-(--accent-hover)"
+								className="size-7 cursor-pointer transition-colors hover:text-(--accent-hover)"
 								onClick={() => void handleGeolocation()}
 							/>
 						) : null
@@ -100,10 +103,10 @@ export const LocationSearch = observer(
 							onPointerUp={() => store.finishSelecting()}
 						>
 							<div className="flex flex-col">
-								<span className="font-medium">{city.name}</span>
+								<span className="font-bold">{city.name}</span>
 								<div className="flex items-center gap-2 text-sm text-(--color-secondary) opacity-60">
 									<span className="truncate">{city.region || 'Регион не указан'}</span>
-									<div className="flex h-5 items-center rounded-md bg-(--accent-default)/12 px-1.5 text-[11px] font-medium text-(--accent-default)">
+									<div className="flex h-5 items-center rounded-md bg-(--accent-default)/12 px-1.5 text-[10px] font-bold text-(--accent-default)">
 										<span className="trim">{city.country}</span>
 									</div>
 								</div>

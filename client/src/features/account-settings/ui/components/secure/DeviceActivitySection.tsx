@@ -16,7 +16,7 @@ export const DeviceActivitySection = observer(() => {
 
 		try {
 			await store.deleteLogAuth();
-			notifyStore.setNotice('История активности очищена!', 'success');
+			notifyStore.setNotice('История активности очищена', 'success');
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}

@@ -8,10 +8,10 @@ import { Button } from '@/shared/ui';
 const title = 'Восстановить пароль';
 
 export const ResetPasswordPage = () => {
+	usePageTitle(title);
+
 	const navigate = useNavigate();
 	const [searchParams] = useSearchParams();
-
-	usePageTitle(title);
 
 	const { authFormStore, modalStore } = useStore();
 

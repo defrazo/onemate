@@ -11,9 +11,9 @@ export const MobileTabBar = observer(() => {
 
 	const { userStore } = useStore();
 
-	const hideOnScrollPaths = ['/', '/terms-of-service', '/privacy-policy', '/about'];
+	const hideOnScrollPaths = ['/', '/terms', '/privacy', '/about'];
 
-	const [hidden, setHidden] = useState<boolean>(false);
+	const [hidden, setHidden] = useState(false);
 	const lastScroll = useRef(0);
 	const scrollTimeout = useRef<number | null>(null);
 

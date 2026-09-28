@@ -1,5 +1,5 @@
-export const getWindDirection = (deg: number): string => {
-	const index = Math.floor(((deg + 22.5) % 360) / 45);
+export const getWindDirection = (deg: number) => {
+	const idx = Math.floor(((deg + 22.5) % 360) / 45);
 	const directions = [
 		'Северный',
 		'Северо-восточный',
@@ -11,5 +11,5 @@ export const getWindDirection = (deg: number): string => {
 		'Северо-западный',
 	];
 
-	return directions[index];
+	return directions[idx];
 };

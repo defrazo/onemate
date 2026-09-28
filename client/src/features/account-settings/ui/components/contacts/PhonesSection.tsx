@@ -13,10 +13,10 @@ const MAX_PHONES = 3;
 export const PhonesSection = observer(() => {
 	const { notifyStore, userProfileStore } = useStore();
 
-	const [phones, setPhones] = useState<string[]>(() => withEmptySlot(userProfileStore.phones ?? [], MAX_PHONES));
+	const [phones, setPhones] = useState(() => withEmptySlot(userProfileStore.phones ?? [], MAX_PHONES));
 	const [isLoading, setIsLoading] = useState(false);
 
-	const isEmpty = (value: string): boolean => !value.trim() || value === '+7';
+	const isEmpty = (value: string) => !value.trim() || value === '+7';
 
 	const normalizePhones = (values: string[]): string[] => normalizeArray(values).filter((value) => !isEmpty(value));
 
@@ -25,10 +25,10 @@ export const PhonesSection = observer(() => {
 
 	const isChanged = JSON.stringify(currentPhones) !== JSON.stringify(savedPhones);
 
-	const handleChange = (index: number, value: string) => {
+	const handleChange = (idx: number, value: string) => {
 		setPhones((prev) => {
 			const next = [...prev];
-			next[index] = value;
+			next[idx] = value;
 
 			if (next.length > 1 && isEmpty(next[next.length - 2]) && isEmpty(next[next.length - 1])) next.pop();
 			if (next.length < MAX_PHONES && !isEmpty(next[next.length - 1])) next.push('');
@@ -37,10 +37,10 @@ export const PhonesSection = observer(() => {
 		});
 	};
 
-	const handleRemove = (index: number) => {
+	const handleRemove = (idx: number) => {
 		setPhones((prev) =>
 			withEmptySlot(
-				prev.filter((_, i) => i !== index),
+				prev.filter((_, i) => i !== idx),
 				MAX_PHONES
 			)
 		);
@@ -72,21 +72,21 @@ export const PhonesSection = observer(() => {
 	return (
 		<div className="flex flex-col gap-1">
 			<div className="flex flex-col gap-2">
-				{phones.map((phone, index) => {
-					const isLast = index === phones.length - 1;
+				{phones.map((phone, idx) => {
+					const isLast = idx === phones.length - 1;
 					const isEmptyField = isEmpty(phone);
 					const canRemove = !(isLast && isEmptyField);
 
 					return (
 						<PhoneInput
-							key={index}
-							id={`phone-${index}`}
-							leftIcon={<InputLabel htmlFor={`phone-${index}`} icon={IconPhoneFilled} />}
-							name={`phone-${index}`}
-							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(index)} />}
+							key={idx}
+							id={`phone-${idx}`}
+							leftIcon={<InputLabel htmlFor={`phone-${idx}`} icon={IconPhoneFilled} />}
+							name={`phone-${idx}`}
+							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(idx)} />}
 							value={phone}
 							variant="ghost"
-							onChange={(value) => handleChange(index, value)}
+							onChange={(value) => handleChange(idx, value)}
 						/>
 					);
 				})}

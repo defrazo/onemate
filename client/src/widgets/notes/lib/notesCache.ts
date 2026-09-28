@@ -20,7 +20,7 @@ export const notesCache = {
 		return { notes: data.notes, dirty: data.dirty === true, updatedAt: data.updatedAt ?? 0 };
 	},
 
-	write(userId: string, notes: Note[], dirty: boolean): void {
+	write(userId: string, notes: Note[], dirty: boolean) {
 		writeCache(userId, { ui: { notes: { notes, dirty, updatedAt: Date.now() } } });
 	},
 };

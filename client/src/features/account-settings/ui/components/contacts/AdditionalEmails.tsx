@@ -17,32 +17,32 @@ export const AdditionalEmails = observer(() => {
 	const { notifyStore, userProfileStore } = useStore();
 
 	const [isLoading, setIsLoading] = useState(false);
-	const [emails, setEmails] = useState<string[]>(() => withEmptySlot(userProfileStore.emails ?? [], MAX_EMAILS));
+	const [emails, setEmails] = useState(() => withEmptySlot(userProfileStore.emails ?? [], MAX_EMAILS));
 
 	const savedEmails = normalizeArray(userProfileStore.emails ?? []);
 	const currentEmails = normalizeArray(emails);
 
 	const isChanged = JSON.stringify(currentEmails) !== JSON.stringify(savedEmails);
 
-	const handleChange = (index: number, value: string): void => {
+	const handleChange = (idx: number, value: string) => {
 		setEmails((prev) => {
 			const next = [...prev];
-			next[index] = value;
+			next[idx] = value;
 
 			return withEmptySlot(next, MAX_EMAILS);
 		});
 	};
 
-	const handleRemove = (index: number): void => {
+	const handleRemove = (idx: number) => {
 		setEmails((prev) =>
 			withEmptySlot(
-				prev.filter((_, i) => i !== index),
+				prev.filter((_, i) => i !== idx),
 				MAX_EMAILS
 			)
 		);
 	};
 
-	const handleCancel = (): void => {
+	const handleCancel = () => {
 		setEmails(withEmptySlot(userProfileStore.emails ?? [], MAX_EMAILS));
 	};
 
@@ -73,24 +73,24 @@ export const AdditionalEmails = observer(() => {
 		<div className="flex flex-col gap-1">
 			<span className="text-(--color-secondary) opacity-70">Резервная почта</span>
 			<div className="flex flex-col gap-2">
-				{emails.map((email, index) => {
-					const isLast = index === emails.length - 1;
+				{emails.map((email, idx) => {
+					const isLast = idx === emails.length - 1;
 					const isEmpty = email.trim() === '';
 					const canRemove = !(isLast && isEmpty);
 
 					return (
 						<Input
-							key={index}
+							key={idx}
 							autoComplete="off"
-							id={`email-${index}`}
-							leftIcon={<InputLabel htmlFor={`email-${index}`} icon={IconMailOpenedFilled} />}
-							name={`email-${index}`}
+							id={`email-${idx}`}
+							leftIcon={<InputLabel htmlFor={`email-${idx}`} icon={IconMailOpenedFilled} />}
+							name={`email-${idx}`}
 							placeholder="Введите e-mail"
-							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(index)} />}
+							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(idx)} />}
 							type="email"
 							value={email}
 							variant="ghost"
-							onChange={(e) => handleChange(index, e.target.value)}
+							onChange={(e) => handleChange(idx, e.target.value)}
 						/>
 					);
 				})}

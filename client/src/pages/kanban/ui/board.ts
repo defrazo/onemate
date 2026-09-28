@@ -134,8 +134,8 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	// === DND ===
 	const destroyDnD = setupDnD(
 		board,
-		(taskId, targetColumn, newIndex) => state.moveTask(taskId, targetColumn, newIndex),
-		(columnId, newIndex) => state.moveColumn(columnId, newIndex)
+		(taskId, targetColumn, newIdx) => state.moveTask(taskId, targetColumn, newIdx),
+		(columnId, newIdx) => state.moveColumn(columnId, newIdx)
 	);
 
 	const destroyMouseScroll = enableMouseScroll(board);

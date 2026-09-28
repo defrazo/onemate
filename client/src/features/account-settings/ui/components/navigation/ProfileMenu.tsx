@@ -31,7 +31,7 @@ export const ProfileMenu = () => {
 				</div>
 			</div>
 			<Divider className="w-full bg-(--border-color)" />
-			<div className="flex flex-col gap-2">
+			<div className="mt-1 flex flex-col gap-2">
 				{buttons.map(({ id, title, icon: Icon }) => (
 					<Button
 						key={id}

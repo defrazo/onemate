@@ -13,7 +13,7 @@ import { useEffect, useState } from 'react';
 import { MS_IN_DAY, MS_IN_HOUR, MS_IN_MINUTE, MS_IN_SECOND } from '../utils/time';
 
 export const useRemainingTime = (startAt: string | null, ttlMs: number) => {
-	const [timeLeft, setTimeLeft] = useState<number>(ttlMs);
+	const [timeLeft, setTimeLeft] = useState(ttlMs);
 
 	useEffect(() => {
 		if (!startAt) return;

@@ -30,7 +30,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const handleCopy = () => {
 		if (!result) return;
-		copy(sslResultToCopy(result), 'Результат скопирован!');
+		copy(sslResultToCopy(result), 'Результат скопирован');
 	};
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {

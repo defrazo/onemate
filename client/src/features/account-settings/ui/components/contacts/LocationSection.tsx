@@ -19,7 +19,7 @@ export const LocationSection = observer(() => {
 	const isChanged =
 		location === null ? savedLocation !== null : savedLocation === null || !isSameCity(location, savedLocation);
 
-	const handleCancel = (): void => setLocation(userProfileStore.location);
+	const handleCancel = () => setLocation(userProfileStore.location);
 
 	const handleSave = async (): Promise<void> => {
 		if (isLoading || !isChanged) return;

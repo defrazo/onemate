@@ -11,8 +11,8 @@ import {
 	TRANSLATOR_MAX_LENGTH,
 } from '.';
 
-const SOURCE_INDEX = 0;
-const TARGET_INDEX = 1;
+const SOURCE_IDX = 0;
+const TARGET_IDX = 1;
 
 export class TranslatorStore extends AsyncStore {
 	private abort: AbortController | null = null;
@@ -30,19 +30,19 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	get sourceLang(): string {
-		return this.textboxes[SOURCE_INDEX].language;
+		return this.textboxes[SOURCE_IDX].language;
 	}
 
 	get targetLang(): string {
-		return this.textboxes[TARGET_INDEX].language;
+		return this.textboxes[TARGET_IDX].language;
 	}
 
 	get sourceText(): string {
-		return this.textboxes[SOURCE_INDEX].text;
+		return this.textboxes[SOURCE_IDX].text;
 	}
 
 	get targetText(): string {
-		return this.textboxes[TARGET_INDEX].text;
+		return this.textboxes[TARGET_IDX].text;
 	}
 
 	get languages(): Language[] {
@@ -52,26 +52,26 @@ export class TranslatorStore extends AsyncStore {
 	setSourceText(value: string): void {
 		const text = value.slice(0, TRANSLATOR_MAX_LENGTH);
 
-		this.updateTextbox(SOURCE_INDEX, 'text', text);
+		this.updateTextbox(SOURCE_IDX, 'text', text);
 
 		if (!text.trim()) {
 			this.cancelRequest();
-			this.updateTextbox(TARGET_INDEX, 'text', '');
+			this.updateTextbox(TARGET_IDX, 'text', '');
 		}
 	}
 
 	setSourceLanguage(language: string): void {
-		this.updateTextbox(SOURCE_INDEX, 'language', language);
+		this.updateTextbox(SOURCE_IDX, 'language', language);
 	}
 
 	setTargetLanguage(language: string): void {
-		this.updateTextbox(TARGET_INDEX, 'language', language);
+		this.updateTextbox(TARGET_IDX, 'language', language);
 	}
 
 	clear(): void {
 		this.cancelRequest();
-		this.updateTextbox(SOURCE_INDEX, 'text', '');
-		this.updateTextbox(TARGET_INDEX, 'text', '');
+		this.updateTextbox(SOURCE_IDX, 'text', '');
+		this.updateTextbox(TARGET_IDX, 'text', '');
 	}
 
 	swap(): void {
@@ -88,7 +88,7 @@ export class TranslatorStore extends AsyncStore {
 	async translate(): Promise<void> {
 		if (!this.sourceText.trim() || this.sourceLang === this.targetLang) {
 			this.cancelRequest();
-			this.updateTextbox(TARGET_INDEX, 'text', '');
+			this.updateTextbox(TARGET_IDX, 'text', '');
 			return;
 		}
 
@@ -108,7 +108,7 @@ export class TranslatorStore extends AsyncStore {
 
 				if (controller.signal.aborted) return;
 
-				if (result != null) this.updateTextbox(TARGET_INDEX, 'text', result);
+				if (result != null) this.updateTextbox(TARGET_IDX, 'text', result);
 			});
 		} catch (error) {
 			if (error instanceof DOMException && error.name === 'AbortError') return;
@@ -118,9 +118,9 @@ export class TranslatorStore extends AsyncStore {
 		}
 	}
 
-	private updateTextbox<K extends keyof Textbox>(index: number, key: K, value: Textbox[K]): void {
+	private updateTextbox<K extends keyof Textbox>(idx: number, key: K, value: Textbox[K]): void {
 		const updated = [...this.textboxes];
-		updated[index] = { ...updated[index], [key]: value };
+		updated[idx] = { ...updated[idx], [key]: value };
 		this.textboxes = updated;
 	}
 

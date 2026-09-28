@@ -5,10 +5,8 @@ export type UserCacheData = {
 	deleted_at?: string;
 };
 
-const patch = (userId: string, data: UserCacheData): void => {
-	writeCache(userId, {
-		auth: data,
-	});
+const patch = (userId: string, data: UserCacheData) => {
+	writeCache(userId, { auth: data });
 };
 
 export const userCache = {
@@ -22,15 +20,11 @@ export const userCache = {
 		};
 	},
 
-	setUserId(userId: string): void {
-		patch(userId, {
-			user_id: userId,
-		});
+	setUserId(userId: string) {
+		patch(userId, { user_id: userId });
 	},
 
-	setDeletedAt(userId: string, deletedAt: string | null): void {
-		patch(userId, {
-			deleted_at: deletedAt ?? undefined,
-		});
+	setDeletedAt(userId: string, deletedAt: string | null) {
+		patch(userId, { deleted_at: deletedAt ?? undefined });
 	},
 };

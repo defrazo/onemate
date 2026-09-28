@@ -8,10 +8,10 @@ export const storage = {
 		}
 	},
 
-	set: (key: string, value: any): void => {
+	set: (key: string, value: any) => {
 		if (value === undefined || value === null) localStorage.removeItem(key);
 		else localStorage.setItem(key, typeof value === 'string' ? value : JSON.stringify(value));
 	},
 
-	remove: (key: string): void => localStorage.removeItem(key),
+	remove: (key: string) => localStorage.removeItem(key),
 };

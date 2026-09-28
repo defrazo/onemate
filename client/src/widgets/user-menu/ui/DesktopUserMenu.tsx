@@ -32,7 +32,7 @@ export const DesktopUserMenu = observer(() => {
 				{desktopUserLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
-						className="h-8 justify-start rounded-lg px-2.5 font-medium hover:bg-white/6 hover:text-(--accent-default)"
+						className="h-8 justify-start rounded-lg px-2.5 hover:bg-white/6 hover:text-(--accent-default)"
 						leftIcon={<Icon className="size-4.5" />}
 						variant="mobile"
 						onClick={() => handleNavigate(to)}
@@ -43,7 +43,7 @@ export const DesktopUserMenu = observer(() => {
 			</div>
 			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
 			<Button
-				className="mt-1 h-8 justify-start rounded-lg px-2.5 font-medium hover:bg-white/6 hover:text-(--accent-default)"
+				className="mt-1 h-8 justify-start rounded-lg px-2.5 hover:bg-white/6 hover:text-(--accent-default)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
 				variant="mobile"
 				onClick={handleLogout}

@@ -10,6 +10,7 @@ import { Slot, Widget } from './components';
 
 export const DashboardPage = observer(() => {
 	usePageTitle('Dashboard');
+
 	const device = useDeviceType();
 	const orientation = useOrientation();
 

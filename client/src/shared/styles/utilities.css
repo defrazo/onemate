@@ -7,20 +7,28 @@
 		@apply bg-(--bg-secondary) text-(--color-primary);
 	}
 
+	.core-gap {
+		@apply gap-2 lg:gap-3 2xl:gap-4;
+	}
+
 	.core-elements {
-		@apply border border-solid border-(--border-light) bg-(--bg-tertiary);
+		@apply border border-(--border-light) bg-(--bg-tertiary);
 	}
 
 	.core-border {
-		@apply rounded-xl border border-solid border-(--border-color);
+		@apply rounded-xl border border-(--border-color);
 	}
 
 	.core-semiborder {
-		@apply rounded-xl border border-solid border-(--border-color-op);
+		@apply rounded-xl border border-(--border-color-op);
 	}
 
 	.core-header {
 		@apply text-center text-xl leading-tight font-bold select-none md:mr-auto md:ml-0 md:text-2xl md:leading-normal;
+	}
+
+	.trim {
+		text-box: trim-both cap alphabetic;
 	}
 
 	/* Отключение touch эффекта на элементе */

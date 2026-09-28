@@ -1,10 +1,10 @@
 // Приводит нижнерегистровую строку к виду с заглавной первой буквой
-export const capitalizeFirstLetter = (str: string): string => {
+export const capitalizeFirstLetter = (str: string) => {
 	return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
 };
 
 // Форматирует мобильный номер телефона по 	маске
-export const formatPhone = (raw: string, isErase?: boolean): string => {
+export const formatPhone = (raw: string, isErase?: boolean) => {
 	const digits = raw.replace(/\D/g, '');
 	const clean = digits.startsWith('7') || digits.startsWith('8') ? digits.slice(1) : digits;
 
@@ -27,7 +27,7 @@ export const formatPhone = (raw: string, isErase?: boolean): string => {
 };
 
 // Форматирует число с обрезкой нулей после запятой.
-export const formatFixed = (number: number, digits = 2, locale: string = 'ru-RU'): string => {
+export const formatFixed = (number: number, digits = 2, locale: string = 'ru-RU') => {
 	const rounded = Number(number.toFixed(digits));
 	const noFraction = Math.abs(rounded - Math.trunc(rounded)) < 1e-9;
 

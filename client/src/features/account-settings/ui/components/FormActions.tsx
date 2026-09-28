@@ -11,9 +11,9 @@ interface FormActionsProps {
 
 export const FormActions = ({ isLoading = false, onSave, onCancel, saveDisabled = false }: FormActionsProps) => (
 	<div className="mt-2 flex flex-1 flex-wrap items-center justify-between gap-4">
-		<div className="flex items-center gap-2 text-sm text-(--color-secondary) opacity-60">
+		<div className="flex items-center gap-2 text-sm text-(--color-secondary) opacity-60 select-none">
 			<IconCircleFilled className="size-2 animate-pulse text-(--color-accent)" />
-			<span>Изменения не сохранены</span>
+			<span className="trim">Изменения не сохранены</span>
 		</div>
 		<div className="flex h-8 flex-1 gap-3">
 			<Button
@@ -26,7 +26,7 @@ export const FormActions = ({ isLoading = false, onSave, onCancel, saveDisabled 
 			>
 				Сохранить
 			</Button>
-			<Button className="flex-1" loading={true} variant="warning" onClick={onCancel}>
+			<Button className="flex-1" disabled={isLoading} variant="warning" onClick={onCancel}>
 				Отменить
 			</Button>
 		</div>

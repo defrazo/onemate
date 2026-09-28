@@ -52,7 +52,7 @@ export const Menu = observer(() => {
 						<div className="mb-1 flex size-10 items-center justify-center rounded-xl bg-white/3">
 							<IconInbox className="size-5 text-(--color-disabled)" />
 						</div>
-						<span className="text-sm font-medium text-(--color-secondary)">Уведомлений пока нет</span>
+						<span className="text-sm text-(--color-secondary)">Уведомлений пока нет</span>
 						<span className="text-xs leading-relaxed text-(--color-disabled)">
 							Здесь появятся новые уведомления
 						</span>

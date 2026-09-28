@@ -81,9 +81,9 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 
 	const points = responseSegments.flat();
 
-	const timelineSegments: TimelineSegment[] = checks.map((check, index) => {
+	const timelineSegments: TimelineSegment[] = checks.map((check, idx) => {
 		const startedAt = new Date(check.checkedAt).getTime();
-		const nextCheck = checks[index + 1];
+		const nextCheck = checks[idx + 1];
 		const nextCheckedAt = nextCheck ? new Date(nextCheck.checkedAt).getTime() : now;
 		const endedAt = Math.min(nextCheckedAt, startedAt + CHECK_INTERVAL_MS, now);
 
@@ -91,7 +91,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 	});
 
 	const createLinePath = (points: ChartPoint[]) => {
-		return points.map((point, index) => `${index === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
+		return points.map((point, idx) => `${idx === 0 ? 'M' : 'L'} ${point.x} ${point.y}`).join(' ');
 	};
 
 	const createAreaPath = (points: ChartPoint[]) => {
@@ -161,12 +161,12 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 						);
 					})}
 
-					{responseSegments.map((segment, index) => {
+					{responseSegments.map((segment, idx) => {
 						const linePath = createLinePath(segment);
 						const areaPath = createAreaPath(segment);
 
 						return (
-							<g key={index}>
+							<g key={idx}>
 								{areaPath && <path d={areaPath} fill={`url(#${gradientId})`} />}
 								<path
 									d={linePath}
@@ -181,9 +181,9 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 						);
 					})}
 
-					{timelineSegments.map((segment, index) => (
+					{timelineSegments.map((segment, idx) => (
 						<line
-							key={index}
+							key={idx}
 							stroke={segment.status === 'up' ? 'var(--status-success)' : 'var(--status-error)'}
 							strokeLinecap="butt"
 							strokeOpacity={segment.status === 'up' ? 0.55 : 0.95}

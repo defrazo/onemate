@@ -325,7 +325,7 @@ describe('state', () => {
 					expect(state.isMovingColumn).toBe(false);
 				});
 
-				it('should do nothing when oldIndex equals newIndex', async () => {
+				it('should do nothing when oldIdx equals newIdx', async () => {
 					// ACT
 					await state.moveColumn('c1', 0);
 
@@ -591,7 +591,7 @@ describe('state', () => {
 					expect(moved?.columnId).toBe('c2');
 				});
 
-				it('should move task to end when index exceeds length', async () => {
+				it('should move task to end when idx exceeds length', async () => {
 					// ARRANGE
 					(repo.moveTask as Mock).mockResolvedValue(undefined);
 

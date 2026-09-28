@@ -17,14 +17,14 @@ export const UserInfo = observer(({ className }: { className?: string }) => {
 				<div className="flex flex-col">
 					<div
 						className="cursor-copy truncate font-semibold"
-						onClick={() => copy(userStore.username, 'Имя пользователя скопировано!')}
+						onClick={() => copy(userStore.username, 'Имя пользователя скопировано')}
 					>
 						{userStore.username}
 					</div>
 					<div
 						className="cursor-copy truncate text-sm text-(--color-secondary) opacity-60"
 						title={userStore.email}
-						onClick={() => copy(userStore.email, 'E-mail пользователя скопирован!')}
+						onClick={() => copy(userStore.email, 'E-mail пользователя скопирован')}
 					>
 						{userStore.email}
 					</div>

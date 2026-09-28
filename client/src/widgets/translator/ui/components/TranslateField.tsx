@@ -46,7 +46,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					)}
 					{!isSource && translatorStore.isLoading && <LoadingState size="xs" />}
 				</div>
-				<div className="pointer-events-auto flex items-center gap-1.5 opacity-0 group-hover:opacity-100">
+				<div className="pointer-events-auto flex items-center gap-1.5 group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
 							centerIcon={<IconX className="size-4" stroke={3} />}
@@ -65,7 +65,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 						size="custom"
 						title={isSource ? 'Скопировать оригинал' : 'Скопировать перевод'}
 						variant="mobile"
-						onClick={() => copy(text, isSource ? 'Оригинал скопирован!' : 'Перевод скопирован!')}
+						onClick={() => copy(text, isSource ? 'Оригинал скопирован' : 'Перевод скопирован')}
 					/>
 				</div>
 			</div>

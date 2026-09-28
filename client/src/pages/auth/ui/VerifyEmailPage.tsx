@@ -10,11 +10,11 @@ import { Button } from '@/shared/ui';
 type Status = 'loading' | 'success' | 'error';
 
 export const VerifyEmailPage = () => {
+	usePageTitle('Подтверждение аккаунта');
+
 	const navigate = useNavigate();
 	const { id, hash } = useParams();
 	const [searchParams] = useSearchParams();
-
-	usePageTitle('Подтверждение аккаунта');
 
 	const { authFormStore, authStore, modalStore, userStore } = useStore();
 

@@ -123,7 +123,7 @@ export const createState = (repo: IKanbanRepo) => {
 		}
 	};
 
-	const moveColumn = async (id: string, newIndex: number) => {
+	const moveColumn = async (id: string, newIdx: number) => {
 		if (isMovingColumn) return;
 		isMovingColumn = true;
 
@@ -135,25 +135,25 @@ export const createState = (repo: IKanbanRepo) => {
 			const column = sortedColumns.find((column) => column.id === id);
 			if (!column) return;
 
-			const oldIndex = sortedColumns.findIndex((column) => column.id === id);
-			if (oldIndex === -1) return;
+			const oldIdx = sortedColumns.findIndex((column) => column.id === id);
+			if (oldIdx === -1) return;
 
 			const withoutMoved = sortedColumns.filter((column) => column.id !== id);
-			const clampedIndex = Math.max(0, Math.min(newIndex, withoutMoved.length));
+			const clampedIdx = Math.max(0, Math.min(newIdx, withoutMoved.length));
 
 			let newPosition: number;
 
 			if (withoutMoved.length === 0) newPosition = 1000;
-			else if (clampedIndex === 0) newPosition = withoutMoved[0].position - 1000;
-			else if (clampedIndex >= withoutMoved.length)
+			else if (clampedIdx === 0) newPosition = withoutMoved[0].position - 1000;
+			else if (clampedIdx >= withoutMoved.length)
 				newPosition = withoutMoved[withoutMoved.length - 1].position + 1000;
-			else newPosition = (withoutMoved[clampedIndex - 1].position + withoutMoved[clampedIndex].position) / 2;
+			else newPosition = (withoutMoved[clampedIdx - 1].position + withoutMoved[clampedIdx].position) / 2;
 
 			if (column.position === newPosition) return;
 
 			const movedColumn = { ...column, position: newPosition };
 			const updated = [...withoutMoved];
-			updated.splice(clampedIndex, 0, movedColumn);
+			updated.splice(clampedIdx, 0, movedColumn);
 
 			columns = updated;
 			notifyColumns();
@@ -185,7 +185,7 @@ export const createState = (repo: IKanbanRepo) => {
 		const sorted = columns
 			.slice()
 			.sort((a, b) => a.position - b.position)
-			.map((column, index) => ({ ...column, position: (index + 1) * 1000 }));
+			.map((column, idx) => ({ ...column, position: (idx + 1) * 1000 }));
 
 		columns = sorted;
 
@@ -344,7 +344,7 @@ export const createState = (repo: IKanbanRepo) => {
 		}
 	};
 
-	const moveTask = async (id: string, newColumnId: string, newIndex: number) => {
+	const moveTask = async (id: string, newColumnId: string, newIdx: number) => {
 		if (isMovingTask) return;
 		isMovingTask = true;
 
@@ -360,9 +360,9 @@ export const createState = (repo: IKanbanRepo) => {
 				.filter((task) => task.columnId === newColumnId)
 				.sort((a, b) => a.position - b.position);
 
-			const oldIndexInNewColumn = tasksInNewColumn.findIndex((task) => task.id === id);
+			const oldIdxInNewColumn = tasksInNewColumn.findIndex((task) => task.id === id);
 
-			const isSamePosition = oldIndexInNewColumn === newIndex;
+			const isSamePosition = oldIdxInNewColumn === newIdx;
 
 			if (isSameColumn && isSamePosition) return;
 
@@ -381,15 +381,15 @@ export const createState = (repo: IKanbanRepo) => {
 				.filter((task) => task.columnId === newColumnId)
 				.sort((a, b) => a.position - b.position);
 
-			const clampedIndex = Math.max(0, Math.min(newIndex, columnTasks.length));
+			const clampedIdx = Math.max(0, Math.min(newIdx, columnTasks.length));
 
 			let newPosition: number;
 
 			if (columnTasks.length === 0) newPosition = 1000;
-			else if (clampedIndex === 0) newPosition = columnTasks[0].position - 1000;
-			else if (clampedIndex >= columnTasks.length)
+			else if (clampedIdx === 0) newPosition = columnTasks[0].position - 1000;
+			else if (clampedIdx >= columnTasks.length)
 				newPosition = columnTasks[columnTasks.length - 1].position + 1000;
-			else newPosition = (columnTasks[clampedIndex - 1].position + columnTasks[clampedIndex].position) / 2;
+			else newPosition = (columnTasks[clampedIdx - 1].position + columnTasks[clampedIdx].position) / 2;
 
 			if (isSameColumn && task.position === newPosition) return;
 
@@ -432,7 +432,7 @@ export const createState = (repo: IKanbanRepo) => {
 			.filter((task) => task.columnId === columnId)
 			.slice()
 			.sort((a, b) => a.position - b.position)
-			.map((task, index) => ({ ...task, position: (index + 1) * 1000, updatedAt }));
+			.map((task, idx) => ({ ...task, position: (idx + 1) * 1000, updatedAt }));
 
 		const otherTasks = tasks.filter((task) => task.columnId !== columnId);
 		tasks = [...otherTasks, ...sortedColumnTasks];

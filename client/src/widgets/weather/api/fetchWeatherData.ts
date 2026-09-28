@@ -37,8 +37,8 @@ export const fetchWeatherData = async (lat: number, lon: number): Promise<Weathe
 			.map(([date, entries]) => {
 				const temps = entries.map((item) => item.main.temp);
 
-				const middleIndex = Math.floor(entries.length / 2);
-				const representative = entries[middleIndex];
+				const middleIdx = Math.floor(entries.length / 2);
+				const representative = entries[middleIdx];
 
 				return {
 					date: convertDate(date, 'short'),

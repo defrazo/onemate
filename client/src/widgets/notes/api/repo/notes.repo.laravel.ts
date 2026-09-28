@@ -15,11 +15,11 @@ export class NotesRepoLaravel implements INotesRepo {
 
 		const now = new Date().toISOString();
 
-		const notes: Note[] = createDefaultNotes().map((note, index) => ({
+		const notes: Note[] = createDefaultNotes().map((note, idx) => ({
 			id: generateUUID(),
 			user_id: id,
 			text: note.text,
-			order_idx: index,
+			order_idx: idx,
 			created_at: now,
 			updated_at: now,
 		}));
@@ -31,7 +31,7 @@ export class NotesRepoLaravel implements INotesRepo {
 
 	async replaceAll(_id: string, notes: Note[]): Promise<void> {
 		await api.put('/user/notes', {
-			notes: notes.map((note, index) => ({ id: note.id, text: note.text, order_idx: index })),
+			notes: notes.map((note, idx) => ({ id: note.id, text: note.text, order_idx: idx })),
 		});
 	}
 }

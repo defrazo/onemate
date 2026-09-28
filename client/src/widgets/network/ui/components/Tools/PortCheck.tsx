@@ -40,7 +40,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const handleCopy = () => {
 		if (!result) return;
-		copy(portResultToCopy(result), 'Результат скопирован!');
+		copy(portResultToCopy(result), 'Результат скопирован');
 	};
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {

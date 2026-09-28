@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { IconClock, IconLogout, IconRestore } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
@@ -6,15 +7,30 @@ import { usePageTitle, useRemainingTime } from '@/shared/lib/hooks';
 import { msFromDays } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { useDeletedAccount } from '../model';
-
 export const DeletedAccountPage = observer(() => {
 	usePageTitle('Аккаунт удалён');
 
-	const { userStore } = useStore();
-	const { handleRestore, handleExit } = useDeletedAccount();
+	const navigate = useNavigate();
+
+	const { authStore, notifyStore, userStore } = useStore();
 
 	const { days } = useRemainingTime(userStore.deletedAt, msFromDays(30));
+
+	const handleRestore = async () => {
+		try {
+			await userStore.restoreAccount();
+
+			notifyStore.setNotice('Аккаунт успешно восстановлен', 'success');
+			navigate('/dashboard');
+		} catch {
+			notifyStore.setNotice('Не удалось восстановить аккаунт', 'error');
+		}
+	};
+
+	const handleExit = async () => {
+		await authStore.logout();
+		navigate('/');
+	};
 
 	return (
 		<div className="flex min-h-screen items-center justify-center px-4 select-none">

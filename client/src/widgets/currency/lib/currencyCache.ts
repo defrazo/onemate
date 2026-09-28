@@ -19,15 +19,15 @@ export const currencyCache = {
 		return cached as CurrencyCacheData;
 	},
 
-	write(rates: RatesResponse): void {
+	write(rates: RatesResponse) {
 		storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
 	},
 
-	isFresh(cache: CurrencyCacheData): boolean {
+	isFresh(cache: CurrencyCacheData) {
 		return Date.now() - cache.cachedAt < TTL;
 	},
 
-	clear(): void {
+	clear() {
 		storage.remove(CACHE_KEY);
 	},
 };

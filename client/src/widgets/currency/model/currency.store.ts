@@ -83,10 +83,10 @@ export class CurrencyStore extends AsyncStore {
 
 		return (
 			this.currencies.length === defaults.length &&
-			this.currencies.every((currency, index) => {
-				const def = defaults[index];
+			this.currencies.every((currency, idx) => {
+				const def = defaults[idx];
 
-				if (index === 0)
+				if (idx === 0)
 					return currency.type === def.type && currency.code === def.code && currency.value === def.value;
 
 				return currency.type === def.type && currency.code === def.code;
@@ -94,7 +94,7 @@ export class CurrencyStore extends AsyncStore {
 		);
 	}
 
-	selectCurrency(selectedCode: string, type: 'base' | 'target'): void {
+	selectCurrency(selectedCode: string, type: 'base' | 'target') {
 		const base = this.currencies[0];
 		const target = this.currencies[1];
 
@@ -103,27 +103,27 @@ export class CurrencyStore extends AsyncStore {
 			return;
 		}
 
-		const index = type === 'base' ? 0 : 1;
+		const idx = type === 'base' ? 0 : 1;
 
-		this.updateCurrency(index, 'code', selectedCode);
+		this.updateCurrency(idx, 'code', selectedCode);
 		this.recalcTarget();
 	}
 
-	setCurrencyValue(index: 0 | 1, amount: number): void {
-		const targetIndex = index === 0 ? 1 : 0;
+	setCurrencyValue(idx: 0 | 1, amount: number): void {
+		const targetIdx = idx === 0 ? 1 : 0;
 
 		if (!this.isReady) {
-			this.updateCurrency(index, 'value', amount);
+			this.updateCurrency(idx, 'value', amount);
 			return;
 		}
 
-		const fromCode = this.currencies[index].code;
-		const toCode = this.currencies[targetIndex].code;
+		const fromCode = this.currencies[idx].code;
+		const toCode = this.currencies[targetIdx].code;
 
 		const toValue = this.convertCurrency(amount, fromCode, toCode);
 
-		this.updateCurrency(index, 'value', amount);
-		this.updateCurrency(targetIndex, 'value', toValue);
+		this.updateCurrency(idx, 'value', amount);
+		this.updateCurrency(targetIdx, 'value', toValue);
 	}
 
 	swapCurrencies(): void {
@@ -161,9 +161,9 @@ export class CurrencyStore extends AsyncStore {
 		});
 	}
 
-	private updateCurrency<K extends keyof Currency>(index: number, key: K, value: Currency[K]): void {
+	private updateCurrency<K extends keyof Currency>(idx: number, key: K, value: Currency[K]): void {
 		const updated = [...this.currencies];
-		updated[index] = { ...updated[index], [key]: value };
+		updated[idx] = { ...updated[idx], [key]: value };
 		this.currencies = updated;
 	}
 

@@ -95,8 +95,8 @@ export class NetworkStore extends AsyncStore {
 	}
 
 	private replaceService(service: MonitoredService): void {
-		const index = this.services.findIndex((currentService) => currentService.id === service.id);
-		if (index !== -1) this.services[index] = service;
+		const idx = this.services.findIndex((currentService) => currentService.id === service.id);
+		if (idx !== -1) this.services[idx] = service;
 	}
 
 	private removeService(id: number): void {

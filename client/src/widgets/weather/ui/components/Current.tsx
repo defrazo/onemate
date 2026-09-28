@@ -32,22 +32,20 @@ export const Current = observer(() => {
 
 	return (
 		<div className="grid flex-1 grid-cols-[1fr_auto] grid-rows-3 items-center gap-x-4 py-1 xl:py-3">
-			<div className="flex justify-start">
-				<div className="flex items-center gap-2.5">
-					<div className="h-9 w-0.5 bg-(--accent-default)" />
-					<div className="flex flex-col">
-						<span className="text-sm xl:text-base">{capitalizeFirstLetter(condition.description)}</span>
-						<span className="text-xs text-(--color-secondary) xl:text-sm">
-							Ощущается как <span className="text-(--accent-default)">{Math.round(feels_like)}°C</span>
-						</span>
-					</div>
+			<div className="mt-2 flex justify-center">
+				<div className="flex flex-col items-center gap-0.5">
+					<span className="text-sm xl:text-base">{capitalizeFirstLetter(condition.description)}</span>
+					<span className="h-0.5 w-5 rounded-full bg-(--accent-default)/70" />
+					<span className="text-xs text-(--color-secondary) xl:text-sm">
+						Ощущается как <span className="text-(--accent-default)">{Math.round(feels_like)}°C</span>
+					</span>
 				</div>
 			</div>
 			<div className="flex grid-cols-2 flex-col gap-2 xl:grid">
 				<Metric icon={IconTemperatureSun} label="Максимум" value={`${Math.round(temp_max)}°`} />
 				<Metric icon={IconTemperatureSnow} label="Минимум" value={`${Math.round(temp_min)}°`} />
 			</div>
-			<div className="flex justify-center">
+			<div className="mt-2 flex justify-center">
 				<ConditionIcon
 					className="-my-4 size-26 transition-transform duration-200 hover:scale-105"
 					condition={condition.icon}

@@ -5,7 +5,7 @@ import type { Placement } from '.';
 const MARGIN = 8;
 
 export const useTooltip = (preferredPlacements: Placement[], offset: number, content?: ReactNode) => {
-	const [show, setShow] = useState<boolean>(false);
+	const [show, setShow] = useState(false);
 	const [coords, setCoords] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 	const [placement, setPlacement] = useState<Placement>('top');
 

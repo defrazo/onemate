@@ -65,11 +65,11 @@ export class NetworkRepoDemo implements INetworkRepo {
 
 	async checkMonitoredService(id: number): Promise<MonitoredService> {
 		const services = this.readServices();
-		const index = services.findIndex((service) => service.id === id);
+		const idx = services.findIndex((service) => service.id === id);
 
-		if (index === -1) throw new Error('Сервис не найден');
+		if (idx === -1) throw new Error('Сервис не найден');
 
-		const currentService = services[index];
+		const currentService = services[idx];
 		const now = new Date().toISOString();
 
 		let service: MonitoredService;
@@ -113,7 +113,7 @@ export class NetworkRepoDemo implements INetworkRepo {
 			};
 		}
 
-		services[index] = service;
+		services[idx] = service;
 
 		this.writeServices(services);
 		this.appendHistory(id, check);
@@ -123,11 +123,11 @@ export class NetworkRepoDemo implements INetworkRepo {
 
 	async updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService> {
 		const services = this.readServices();
-		const index = services.findIndex((service) => service.id === id);
+		const idx = services.findIndex((service) => service.id === id);
 
-		if (index === -1) throw new Error('Сервис не найден');
+		if (idx === -1) throw new Error('Сервис не найден');
 
-		const currentService = services[index];
+		const currentService = services[idx];
 
 		if (currentService.type !== data.type) throw new Error('Тип мониторинга нельзя изменить');
 
@@ -171,7 +171,7 @@ export class NetworkRepoDemo implements INetworkRepo {
 			throw new Error('Тип мониторинга нельзя изменить');
 		}
 
-		services[index] = service;
+		services[idx] = service;
 		this.writeServices(services);
 
 		if (targetChanged) this.removeHistory(id);
@@ -251,7 +251,7 @@ export class NetworkRepoDemo implements INetworkRepo {
 		return (successful / history.length) * 100;
 	}
 
-	private getNextId(services: MonitoredService[]): number {
+	private getNextId(services: MonitoredService[]) {
 		return Math.max(0, ...services.map((service) => service.id)) + 1;
 	}
 }

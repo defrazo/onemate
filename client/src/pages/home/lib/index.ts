@@ -1,1 +1,0 @@
-export { slides } from './slides';

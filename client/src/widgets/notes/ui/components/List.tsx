@@ -16,12 +16,12 @@ export const List = observer(({ children }: { children: (note: Note) => ReactEle
 	const handleDragEnd = ({ active, over }: DragEndEvent) => {
 		if (!over || active.id === over.id) return;
 
-		const oldIndex = notesStore.draft.findIndex((note) => note.id === active.id);
-		const newIndex = notesStore.draft.findIndex((note) => note.id === over.id);
+		const oldIdx = notesStore.draft.findIndex((note) => note.id === active.id);
+		const newIdx = notesStore.draft.findIndex((note) => note.id === over.id);
 
-		if (oldIndex === -1 || newIndex === -1) return;
+		if (oldIdx === -1 || newIdx === -1) return;
 
-		notesStore.updateOrder(arrayMove(notesStore.draft, oldIndex, newIndex));
+		notesStore.updateOrder(arrayMove(notesStore.draft, oldIdx, newIdx));
 	};
 
 	return (

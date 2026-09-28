@@ -23,9 +23,9 @@ export const PrimaryEmail = observer(() => {
 	const mainEmailChanged = mainEmail.trim().toLowerCase() !== userStore.email.trim().toLowerCase();
 	const showEmailChange = mainEmailChanged && !userStore.isEmailPending;
 
-	const handlePendingEmail = (): void => modalStore.setModal(<PendingEmailDialog />);
+	const handlePendingEmail = () => modalStore.setModal(<PendingEmailDialog />);
 
-	const handleCancel = (): void => {
+	const handleCancel = () => {
 		setMainEmail(userStore.email);
 		setPassword('');
 	};
@@ -84,7 +84,7 @@ export const PrimaryEmail = observer(() => {
 				/>
 
 				{isEmailPending && (
-					<p className="text-xs text-(--color-secondary)">Новый e-mail ожидает подтверждения</p>
+					<p className="text-xs text-(--color-secondary) select-none">Новый e-mail ожидает подтверждения</p>
 				)}
 
 				<Collapse open={showEmailChange}>

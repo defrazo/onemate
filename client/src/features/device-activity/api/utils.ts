@@ -22,7 +22,7 @@ export const fakeLog = (opts: { createdAtMs: number; id: string }): ActivityLog 
 	};
 };
 
-export const fakeIP = (): string => {
+export const fakeIP = () => {
 	return `${randPubA()}.${randomNumber(0, 255)}.${randomNumber(0, 255)}.${randomNumber(1, 254)}`;
 };
 
@@ -30,7 +30,7 @@ export const fakeLocation = (): { city: string; region: string } => {
 	return CITIES[Math.floor(Math.random() * CITIES.length)];
 };
 
-const randPubA = (): number => {
+const randPubA = () => {
 	const [min, max] = PUBLIC_BLOCKS[Math.floor(Math.random() * PUBLIC_BLOCKS.length)];
 	return randomNumber(min, max);
 };

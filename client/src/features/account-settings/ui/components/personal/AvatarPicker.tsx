@@ -30,7 +30,7 @@ export const AvatarPicker = () => {
 			await userProfileStore.updateAvatar(avatarUrl);
 
 			device === 'mobile' ? modalStore.setModal(<PersonalTab />, 'sheet') : modalStore.closeModal();
-			notifyStore.setNotice('Аватар обновлен!', 'success');
+			notifyStore.setNotice('Аватар обновлен', 'success');
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		} finally {

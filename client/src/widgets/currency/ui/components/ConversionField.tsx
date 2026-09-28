@@ -9,8 +9,8 @@ import { MAX_VALUE } from '../../model';
 export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) => {
 	const { currencyStore, notifyStore } = useStore();
 
-	const index = side === 'base' ? 0 : 1;
-	const currency = currencyStore.currencies[index];
+	const idx = side === 'base' ? 0 : 1;
+	const currency = currencyStore.currencies[idx];
 
 	const [input, setInput] = useState(String(currency.value));
 	const [isEditing, setIsEditing] = useState(false);
@@ -37,7 +37,7 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 
 						if (input.trim() === '' || Number(input) <= 0) {
 							setInput('1');
-							currencyStore.setCurrencyValue(index, 1);
+							currencyStore.setCurrencyValue(idx, 1);
 						}
 					}}
 					onChange={(e) => {
@@ -50,12 +50,12 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 
 						if (number > MAX_VALUE) {
 							setInput(String(MAX_VALUE));
-							currencyStore.setCurrencyValue(index, MAX_VALUE);
+							currencyStore.setCurrencyValue(idx, MAX_VALUE);
 							notifyStore.setNotice('9 999 999 – максимум', 'info');
 							return;
 						}
 
-						currencyStore.setCurrencyValue(index, number);
+						currencyStore.setCurrencyValue(idx, number);
 					}}
 					onFocus={(e) => {
 						setIsEditing(true);

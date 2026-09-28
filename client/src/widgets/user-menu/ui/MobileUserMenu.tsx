@@ -38,7 +38,7 @@ export const MobileUserMenu = observer(() => {
 				{profileTabs.map(({ id, icon: Icon, label }) => (
 					<Button
 						key={id}
-						className="h-10 justify-start rounded-lg px-2.5 font-medium active:bg-white/6 active:text-(--accent-default)"
+						className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-default)"
 						leftIcon={<Icon className="size-4.5" />}
 						rightIcon={<IconChevronRight className="size-3.5 text-(--color-secondary)" />}
 						variant="mobile"
@@ -62,7 +62,7 @@ export const MobileUserMenu = observer(() => {
 			</div>
 			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
 			<Button
-				className="h-10 justify-start rounded-lg px-2.5 font-medium active:bg-white/6 active:text-(--accent-default)"
+				className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-default)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
 				variant="mobile"
 				onClick={handleLogout}

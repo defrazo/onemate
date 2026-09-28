@@ -10,9 +10,9 @@ export const StaticPageLayout = ({ title, showToc = true }: { title: string; sho
 
 	return (
 		<AppShell hideLeftOnMobile hideRightOnMobile>
-			<div className="relative mx-auto flex w-full max-w-4xl print:block print:max-w-none">
+			<div className="relative mx-auto w-full max-w-4xl print:max-w-none">
 				{showToc && (
-					<div className="absolute top-0 -left-14 h-full">
+					<div className="absolute top-0 -left-14">
 						<TableOfContents />
 					</div>
 				)}

@@ -19,6 +19,6 @@ export const useCopy = () => {
 
 	return (data: string, message?: string) => {
 		copy(data);
-		notifyStore.setNotice(message ?? 'Данные скопированы!', 'success');
+		notifyStore.setNotice(message ?? 'Данные скопированы', 'success');
 	};
 };

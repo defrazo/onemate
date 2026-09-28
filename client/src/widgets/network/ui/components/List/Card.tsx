@@ -64,7 +64,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 					</div>
 					{lastCheckedAt && (
 						<div
-							className="flex shrink-0 items-center gap-1 tabular-nums opacity-0 transition-opacity group-hover:opacity-100"
+							className="flex shrink-0 items-center gap-1 tabular-nums transition-opacity group-hover:opacity-100 xl:opacity-0"
 							title="Последняя проверка"
 						>
 							<IconClock className="size-3" />

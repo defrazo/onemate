@@ -23,7 +23,7 @@ export const PasswordSection = observer(() => {
 	const canSave = passOld !== '' && passNew !== '' && passConfirm !== '';
 	const hasDraft = passOld !== '' || passNew !== '' || passConfirm !== '';
 
-	const clearPasswords = (): void => {
+	const clearPasswords = () => {
 		setPassOld('');
 		setPassNew('');
 		setPassConfirm('');
@@ -45,7 +45,7 @@ export const PasswordSection = observer(() => {
 			await userStore.updatePassword(passOld, passNew, passConfirm);
 
 			clearPasswords();
-			notifyStore.setNotice('Пароль успешно изменен!', 'success');
+			notifyStore.setNotice('Пароль успешно изменен', 'success');
 		} catch {
 			notifyStore.setNotice('Проверьте введенные данные', 'error');
 		} finally {

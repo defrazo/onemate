@@ -45,7 +45,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				{onBack && (
 					<Button
 						className="absolute top-2 right-2 rounded-lg bg-white/5 px-2 py-1 text-xs text-(--color-secondary) active:bg-white/10"
-						leftIcon={<IconChevronLeft className="size-3" />}
+						leftIcon={<IconChevronLeft className="size-3.5" />}
 						size="custom"
 						type="button"
 						variant="mobile"

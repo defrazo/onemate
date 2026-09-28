@@ -16,7 +16,7 @@ export const weatherCache = {
 		return weather as WeatherCacheData;
 	},
 
-	write(userId: string, current: CurrentType, forecast: ForecastType[]): void {
+	write(userId: string, current: CurrentType, forecast: ForecastType[]) {
 		writeCache(userId, { ui: { weather: { current, forecast, ts: Date.now() } } });
 	},
 };

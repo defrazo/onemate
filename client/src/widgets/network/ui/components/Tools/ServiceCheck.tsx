@@ -30,7 +30,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const handleCopy = () => {
 		if (!result) return;
-		copy(serviceResultToCopy(result), 'Результат скопирован!');
+		copy(serviceResultToCopy(result), 'Результат скопирован');
 	};
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {

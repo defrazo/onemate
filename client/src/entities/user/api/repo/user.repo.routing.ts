@@ -18,7 +18,7 @@ export class UserRepoRouting implements IUserRepo {
 		return this.userStore.userRole;
 	}
 
-	protected checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string): void {
+	protected checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string) {
 		if (!PermissionService.canPerform(this.role, feature, operation)) {
 			const defaultMsg = this.role === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав';
 			throw new PermissionError(message ?? defaultMsg);
