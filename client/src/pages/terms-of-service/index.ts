@@ -1,1 +1,0 @@
-export { TermsOfServicePage } from './ui';

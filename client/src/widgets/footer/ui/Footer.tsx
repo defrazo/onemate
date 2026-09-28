@@ -2,8 +2,8 @@ import { Link } from 'react-router-dom';
 
 const links = [
 	{ to: '/about', title: 'О проекте' },
-	{ to: '/terms-of-service', title: 'Пользовательское соглашение' },
-	{ to: '/privacy-policy', title: 'Политика конфиденциальности' },
+	{ to: '/terms', title: 'Условия использования' },
+	{ to: '/privacy', title: 'Политика конфиденциальности' },
 ];
 
 export const Footer = () => (

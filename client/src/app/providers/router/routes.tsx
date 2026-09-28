@@ -11,8 +11,8 @@ import { DemoPage } from '@/pages/demo';
 import { Background, HomePage } from '@/pages/home';
 import { KanbanPage } from '@/pages/kanban';
 import { NotFoundPage } from '@/pages/not-found';
-import { PrivacyPolicyPage } from '@/pages/privacy-policy';
-import { TermsOfServicePage } from '@/pages/terms-of-service';
+import { PrivacyPage } from '@/pages/privacy';
+import { TermsPage } from '@/pages/terms';
 import { TodoPage } from '@/pages/to-do';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
@@ -71,12 +71,12 @@ export const routes: RouteObject[] = [
 		children: [{ path: '/about', element: <AboutPage /> }],
 	},
 	{
-		element: <StaticPageLayout title="Пользовательское соглашение" />,
-		children: [{ path: '/terms-of-service', element: <TermsOfServicePage /> }],
+		element: <StaticPageLayout title="Условия использования" />,
+		children: [{ path: '/terms', element: <TermsPage /> }],
 	},
 	{
 		element: <StaticPageLayout title="Политика конфиденциальности" />,
-		children: [{ path: '/privacy-policy', element: <PrivacyPolicyPage /> }],
+		children: [{ path: '/privacy', element: <PrivacyPage /> }],
 	},
 	{
 		element: <Layout />,

@@ -18,8 +18,8 @@ export const profileTabs = [
 ];
 
 export const mobileUserMenuLinks = [
-	{ to: '/terms-of-service', icon: IconFileDescription, label: 'Пользовательское соглашение' },
-	{ to: '/privacy-policy', icon: IconShieldLock, label: 'Политика конфиденциальности' },
+	{ to: '/terms', icon: IconFileDescription, label: 'Условия использования' },
+	{ to: '/privacy', icon: IconShieldLock, label: 'Политика конфиденциальности' },
 	{ to: '/about', icon: IconInfoCircle, label: 'О проекте' },
 ];
 
