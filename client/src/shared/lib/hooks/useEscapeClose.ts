@@ -11,8 +11,8 @@ import { useEffect } from 'react';
 
 export const useEscapeClose = (callback?: () => void) => {
 	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'Escape') callback?.();
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') callback?.();
 		};
 
 		window.addEventListener('keydown', handleKeyDown);

@@ -1,102 +1,99 @@
-@layer utilities {
+/* Печать */
+@page {
+	size: A4;
+	margin: 18mm 20mm;
+}
 
-	/* Печать */
-	@page {
-		size: A4;
-		margin: 18mm 20mm;
-	}
-
-	@media print {
-		.print-container {
-			width: 100%;
-			max-width: none;
-			margin: 0;
-			padding: 0;
-			font-family: serif;
-			color: #000;
-			text-align: left;
-		}
-
-		.print-header {
-			gap: 0;
-			font-size: 18pt;
-			line-height: 1.15;
-			color: #000;
-		}
-
-		.print-content {
-			gap: 6pt;
-			font-size: 11pt;
-			line-height: 1.45;
-			color: #000;
-		}
-
-		.print-content h2 {
-			font-size: 12pt;
-			line-height: 1.3;
-			color: #000;
-		}
-	}
-
-	/* Маркер точка */
-	.list-default {
-		@apply list-none;
-	}
-
-	.list-default li {
-		@apply relative pl-4;
-	}
-
-	.list-default li::before {
-		content: '•';
-		@apply absolute left-0;
-	}
-
-	/* Маркер тире */
-	.list-dash {
-		@apply list-none;
-	}
-
-	.list-dash li {
-		@apply relative pl-4 md:pl-6;
-	}
-
-	.list-dash li::before {
-		content: '—';
-		@apply absolute left-0;
-	}
-
-	/* Стили для числовых инпутов */
-	input[type='number']::-webkit-inner-spin-button,
-	input[type='number']::-webkit-outer-spin-button {
-		-webkit-appearance: none;
+@media print {
+	.print-container {
+		width: 100%;
+		max-width: none;
 		margin: 0;
+		padding: 0;
+		font-family: serif;
+		color: #000;
+		text-align: left;
 	}
 
-	input[type='number'] {
-		-moz-appearance: textfield;
+	.print-header {
+		gap: 0;
+		font-size: 18pt;
+		line-height: 1.15;
+		color: #000;
 	}
 
-	input:-webkit-autofill,
-	input:-webkit-autofill:hover,
-	input:-webkit-autofill:focus {
-		-webkit-text-fill-color: var(--color-primary);
-		-webkit-box-shadow: 0 0 0px 40rem var(--bg-primary) inset;
-		background-color: #080807 !important;
-		transition: background-color 5000s ease-in-out 0s;
+	.print-content {
+		gap: 6pt;
+		font-size: 11pt;
+		line-height: 1.45;
+		color: #000;
 	}
 
-	/* Стили для радио инпутов */
-	label.group:hover input[type='radio']:not(:checked) {
-		border-color: var(--accent-default);
+	.print-content h2 {
+		font-size: 12pt;
+		line-height: 1.3;
+		color: #000;
 	}
+}
 
-	label.group:hover input[type='radio']:checked {
-		border-color: transparent;
-	}
+/* Маркер точка */
+.list-default {
+	@apply list-none;
+}
 
-	input[type='radio']:checked {
-		background-color: var(--accent-default);
-		border-color: transparent;
-	}
+.list-default li {
+	@apply relative pl-4;
+}
+
+.list-default li::before {
+	content: '•';
+	@apply absolute left-0;
+}
+
+/* Маркер тире */
+.list-dash {
+	@apply list-none;
+}
+
+.list-dash li {
+	@apply relative pl-4 md:pl-6;
+}
+
+.list-dash li::before {
+	content: '—';
+	@apply absolute left-0;
+}
+
+/* Стили для числовых инпутов */
+input[type='number']::-webkit-inner-spin-button,
+input[type='number']::-webkit-outer-spin-button {
+	-webkit-appearance: none;
+	margin: 0;
+}
+
+input[type='number'] {
+	-moz-appearance: textfield;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus {
+	-webkit-text-fill-color: var(--color-primary);
+	-webkit-box-shadow: 0 0 0px 40rem var(--bg-primary) inset;
+	background-color: #080807 !important;
+	transition: background-color 5000s ease-in-out 0s;
+}
+
+/* Стили для радио инпутов */
+label.group:hover input[type='radio']:not(:checked) {
+	border-color: var(--accent-default);
+}
+
+label.group:hover input[type='radio']:checked {
+	border-color: transparent;
+}
+
+input[type='radio']:checked {
+	background-color: var(--accent-default);
+	border-color: transparent;
 }

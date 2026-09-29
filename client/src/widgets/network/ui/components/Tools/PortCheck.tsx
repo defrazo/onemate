@@ -82,7 +82,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						type="text"
 						value={host}
 						variant="ghost"
-						onChange={(event) => handleHostChange(event.target.value)}
+						onChange={(e) => handleHostChange(e.target.value)}
 					/>
 					<Input
 						autoComplete="off"
@@ -102,7 +102,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						type="number"
 						value={port}
 						variant="ghost"
-						onChange={(event) => handlePortChange(event.target.value)}
+						onChange={(e) => handlePortChange(e.target.value)}
 					/>
 				</div>
 				<div className="flex flex-wrap items-center justify-end gap-3">

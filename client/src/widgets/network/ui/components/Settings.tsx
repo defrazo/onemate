@@ -137,7 +137,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						type="text"
 						value={name}
 						variant="ghost"
-						onChange={(event) => setName(event.target.value)}
+						onChange={(e) => setName(e.target.value)}
 					/>
 				</div>
 				{service.type === 'http' ? (
@@ -162,7 +162,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 							type="text"
 							value={url}
 							variant="ghost"
-							onChange={(event) => setUrl(event.target.value)}
+							onChange={(e) => setUrl(e.target.value)}
 						/>
 					</div>
 				) : (
@@ -187,7 +187,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 								type="text"
 								value={host}
 								variant="ghost"
-								onChange={(event) => setHost(event.target.value)}
+								onChange={(e) => setHost(e.target.value)}
 							/>
 							<Input
 								autoComplete="off"
@@ -199,7 +199,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 								type="number"
 								value={port}
 								variant="ghost"
-								onChange={(event) => setPort(event.target.value)}
+								onChange={(e) => setPort(e.target.value)}
 							/>
 						</div>
 					</div>

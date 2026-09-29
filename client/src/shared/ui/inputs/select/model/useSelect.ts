@@ -45,12 +45,12 @@ export const useSelect = (direction: Direction = 'auto') => {
 	useEffect(() => {
 		if (!isOpen) return;
 
-		const handlePointerDown = (event: PointerEvent) => {
-			if (!wrapperRef.current?.contains(event.target as Node)) close();
+		const handlePointerDown = (e: PointerEvent) => {
+			if (!wrapperRef.current?.contains(e.target as Node)) close();
 		};
 
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (event.key === 'Escape') {
+		const handleKeyDown = (e: KeyboardEvent) => {
+			if (e.key === 'Escape') {
 				close();
 				buttonRef.current?.focus();
 			}

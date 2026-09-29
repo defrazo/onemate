@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { IconMailFilled } from '@tabler/icons-react';
+import { IconAlertCircle, IconMailFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { IconWarning } from '@/shared/assets/icons';
 import { useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
@@ -69,12 +68,14 @@ export const PrimaryEmail = observer(() => {
 					placeholder="Введите e-mail"
 					rightIcon={
 						userStore.isEmailPending ? (
-							<IconWarning
+							<IconAlertCircle
 								className="mr-1.5 size-5 animate-pulse cursor-pointer text-(--status-warning)"
 								onClick={handlePendingEmail}
 							/>
 						) : (
-							!mainEmail && <IconWarning className="mr-1.5 size-5 animate-pulse text-(--status-error)" />
+							!mainEmail && (
+								<IconAlertCircle className="mr-1.5 size-5 animate-pulse text-(--status-error)" />
+							)
 						)
 					}
 					type="email"

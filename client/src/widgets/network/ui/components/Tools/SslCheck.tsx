@@ -73,7 +73,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 					type="text"
 					value={host}
 					variant="ghost"
-					onChange={(event) => handleHostChange(event.target.value)}
+					onChange={(e) => handleHostChange(e.target.value)}
 				/>
 				<div className="flex flex-wrap items-center justify-end gap-3">
 					{result && <CopyButton onClick={handleCopy} />}

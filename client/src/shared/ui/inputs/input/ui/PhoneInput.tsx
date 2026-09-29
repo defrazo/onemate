@@ -14,9 +14,9 @@ interface PhoneInputProps extends Omit<ComponentProps<typeof Input>, 'value' | '
 }
 
 export const PhoneInput = ({ value, onChange, ...props }: PhoneInputProps) => {
-	const handleChange = (event: InputChangeEvent) => {
-		const isErase = event.nativeEvent.inputType === 'deleteContentBackward';
-		const formattedValue = formatPhone(event.target.value, isErase);
+	const handleChange = (e: InputChangeEvent) => {
+		const isErase = e.nativeEvent.inputType === 'deleteContentBackward';
+		const formattedValue = formatPhone(e.target.value, isErase);
 
 		onChange(formattedValue);
 	};

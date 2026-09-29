@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
 import { App } from '@/app/App';
-import { IconWarning } from '@/shared/assets/icons';
 import { SplashScreen } from '@/shared/ui';
 
 import { getRootStore, StoreProvider } from '../store';
@@ -39,7 +39,7 @@ const AppInitializer = () => {
 			<div className="flex h-full flex-1 cursor-default items-center justify-center px-4 select-none">
 				<div className="flex w-full max-w-md flex-col items-center gap-2 rounded-2xl border border-[#fafafa12] bg-[#fafafa0d]/50 p-6 text-center shadow-(--shadow)">
 					<div className="flex size-12 items-center justify-center rounded-xl bg-(--warning-default)/10">
-						<IconWarning className="size-6 text-(--warning-default)" />
+						<IconAlertCircle className="size-6 text-(--warning-default)" />
 					</div>
 					<h2 className="text-xl font-semibold">Не удалось загрузить OneMate</h2>
 					{error?.message && (

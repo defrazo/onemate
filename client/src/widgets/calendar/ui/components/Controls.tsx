@@ -1,6 +1,5 @@
-import { IconCopy, IconTrash } from '@tabler/icons-react';
+import { IconCopy, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
 
-import { IconChecked, IconUnchecked } from '@/shared/assets/icons';
 import { useCopy, useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn, pluralize } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
@@ -63,7 +62,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 					)}
 					disabled={!rangeInfo?.hasWeekends}
 					leftIcon={
-						includeWeekends ? <IconChecked className="size-3.5" /> : <IconUnchecked className="size-3.5" />
+						includeWeekends ? <IconSquareCheck className="size-4.5" /> : <IconSquare className="size-4.5" />
 					}
 					variant="mobile"
 					onClick={onToggleWeekends}

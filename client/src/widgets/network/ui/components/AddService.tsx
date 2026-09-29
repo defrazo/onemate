@@ -91,7 +91,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						type="text"
 						value={name}
 						variant="ghost"
-						onChange={(event) => setName(event.target.value)}
+						onChange={(e) => setName(e.target.value)}
 					/>
 				</div>
 				<div className="flex flex-wrap items-center justify-between">
@@ -143,8 +143,8 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 							type="text"
 							value={url}
 							variant="ghost"
-							onChange={(event) => {
-								setUrl(event.target.value);
+							onChange={(e) => {
+								setUrl(e.target.value);
 								setError(null);
 							}}
 						/>
@@ -178,8 +178,8 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 								type="text"
 								value={host}
 								variant="ghost"
-								onChange={(event) => {
-									setHost(event.target.value);
+								onChange={(e) => {
+									setHost(e.target.value);
 									setError(null);
 								}}
 							/>
@@ -193,8 +193,8 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 								type="number"
 								value={port}
 								variant="ghost"
-								onChange={(event) => {
-									setPort(event.target.value);
+								onChange={(e) => {
+									setPort(e.target.value);
 									setError(null);
 								}}
 							/>

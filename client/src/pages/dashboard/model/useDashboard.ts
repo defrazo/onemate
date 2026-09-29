@@ -40,8 +40,8 @@ export const useDashboard = () => {
 		void store.updateWidgetSlots(newSlots);
 	};
 
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
+	const handleDragEnd = (e: DragEndEvent) => {
+		const { active, over } = e;
 		if (!over || active.id === over.id) return;
 
 		const activeId = active.id.toString() as WidgetId;

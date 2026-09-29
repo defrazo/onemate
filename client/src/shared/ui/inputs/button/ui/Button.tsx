@@ -43,9 +43,9 @@ export const Button = ({
 
 	const styles = getComponentStyles({ variant, size, active, error, disabled: isDisabled, component: 'button' });
 
-	const handleClick = (event: MouseEvent<HTMLButtonElement>) => {
+	const handleClick = (e: MouseEvent<HTMLButtonElement>) => {
 		if (isDisabled) return;
-		onClick?.(event);
+		onClick?.(e);
 	};
 
 	return (

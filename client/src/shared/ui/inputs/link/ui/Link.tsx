@@ -46,13 +46,13 @@ export const Link = ({
 			className={cn(styles, 'group', className)}
 			tabIndex={disabled ? -1 : undefined}
 			to={to}
-			onClick={(event) => {
+			onClick={(e) => {
 				if (disabled) {
-					event.preventDefault();
+					e.preventDefault();
 					return;
 				}
 
-				onClick?.(event);
+				onClick?.(e);
 			}}
 		>
 			{leftIcon && <span className="mr-2">{leftIcon}</span>}

@@ -35,7 +35,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 				size="custom"
 				value={text}
 				variant="custom"
-				onChange={isSource ? (event) => translatorStore.setSourceText(event.target.value) : undefined}
+				onChange={isSource ? (e) => translatorStore.setSourceText(e.target.value) : undefined}
 			/>
 			<div className={cn('flex items-center justify-between', isSource ? 'pr-2' : 'pl-2')}>
 				<div className="flex items-center gap-2">

@@ -72,7 +72,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 					type="text"
 					value={url}
 					variant="ghost"
-					onChange={(event) => handleUrlChange(event.target.value)}
+					onChange={(e) => handleUrlChange(e.target.value)}
 				/>
 				<div className="flex flex-wrap items-center justify-end gap-3">
 					{result && <CopyButton onClick={handleCopy} />}

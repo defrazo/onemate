@@ -105,11 +105,11 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 		return [linePath, `L ${lastPoint.x} ${bottom}`, `L ${firstPoint.x} ${bottom}`, 'Z'].join(' ');
 	};
 
-	const handleMouseMove = (event: React.MouseEvent<SVGSVGElement>) => {
+	const handleMouseMove = (e: React.MouseEvent<SVGSVGElement>) => {
 		if (points.length === 0) return;
 
-		const rect = event.currentTarget.getBoundingClientRect();
-		const mouseX = ((event.clientX - rect.left) / rect.width) * WIDTH;
+		const rect = e.currentTarget.getBoundingClientRect();
+		const mouseX = ((e.clientX - rect.left) / rect.width) * WIDTH;
 
 		let closestPoint = points[0];
 		let closestDistance = Math.abs(points[0].x - mouseX);
