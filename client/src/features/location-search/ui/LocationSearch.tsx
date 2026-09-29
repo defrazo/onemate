@@ -5,9 +5,10 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
-import { Input, InputLabel, LoadingState, SuggestionList } from '@/shared/ui';
+import { Input, InputLabel, LoadingState } from '@/shared/ui';
 
 import { LocationSearchStore } from '../model';
+import { Suggestions } from './components';
 
 interface LocationSearchProps {
 	value: City | null;
@@ -26,14 +27,17 @@ export const LocationSearch = observer(
 		const isLoading = !userProfileStore.isReady || store.isLoading;
 
 		const handleSelect = async (city: City) => {
+			const previousCity = value;
+
+			store.selectCity(city);
+
 			try {
 				if (validate) await validate(city);
 
 				await onSelect(city);
-
-				store.selectCity(city);
 				notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
 			} catch {
+				store.setValue(previousCity);
 				notifyStore.setNotice('Что-то пошло не так', 'error');
 			}
 		};
@@ -42,12 +46,8 @@ export const LocationSearch = observer(
 			try {
 				const city = await store.detectCityByGeolocation();
 
-				if (validate) await validate(city);
-
-				await onSelect(city);
-
-				store.selectCity(city);
-				notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
+				await handleSelect(city);
+				notifyStore.setNotice(`Определен город: ${city.name}`, 'success');
 			} catch {
 				notifyStore.setNotice('Что-то пошло не так', 'error');
 			}
@@ -67,7 +67,7 @@ export const LocationSearch = observer(
 				<Input
 					autoComplete="off"
 					className="bg-(--bg-secondary)"
-					disabled={isLoading}
+					disabled={!userProfileStore.isReady}
 					id="location"
 					leftIcon={<InputLabel htmlFor="location" icon={IconMapPinFilled} />}
 					name="fake-location"
@@ -94,26 +94,7 @@ export const LocationSearch = observer(
 					onChange={(e) => store.setQuery(e.target.value)}
 					onFocus={() => store.setFocused(true)}
 				/>
-				<SuggestionList
-					items={store.searchResults}
-					renderItem={(city) => (
-						<div
-							onClick={() => void handleSelect(city)}
-							onPointerDown={() => store.startSelecting()}
-							onPointerUp={() => store.finishSelecting()}
-						>
-							<div className="flex flex-col">
-								<span className="font-bold">{city.name}</span>
-								<div className="flex items-center gap-2 text-sm text-(--color-secondary) opacity-60">
-									<span className="truncate">{city.region || 'Регион не указан'}</span>
-									<div className="flex h-5 items-center rounded-md bg-(--accent-default)/12 px-1.5 text-[10px] font-bold text-(--accent-default)">
-										<span className="trim">{city.country}</span>
-									</div>
-								</div>
-							</div>
-						</div>
-					)}
-				/>
+				<Suggestions cities={store.searchResults} onSelect={handleSelect} />
 			</div>
 		);
 	}

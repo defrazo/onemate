@@ -10,6 +10,7 @@ export class LocationSearchStore extends AsyncStore {
 	private readonly searchDebouncer = new Debouncer();
 
 	private abortController: AbortController | null = null;
+	private selecting = false;
 	private focused = false;
 	private query = '';
 	private committedValue = '';
@@ -20,7 +21,17 @@ export class LocationSearchStore extends AsyncStore {
 		return this.query;
 	}
 
+	startSelecting(): void {
+		this.selecting = true;
+	}
+
+	finishSelecting(): void {
+		this.selecting = false;
+	}
+
 	setFocused(value: boolean): void {
+		if (!value && this.selecting) return;
+
 		this.focused = value;
 
 		if (value) {
@@ -79,6 +90,25 @@ export class LocationSearchStore extends AsyncStore {
 		this.searchDebouncer.schedule(() => void this.fetchCities(query), 1000);
 	}
 
+	// private async fetchCities(query: string): Promise<void> {
+	// 	this.cancelRequest();
+
+	// 	const controller = new AbortController();
+	// 	this.abortController = controller;
+
+	// 	await this.withLoading(async () => {
+	// 		const cities = await fetchCitiesByName(query, controller.signal);
+
+	// 		if (controller.signal.aborted) return;
+
+	// 		const results = cities
+	// 			.map((city) => ({ ...city, region: this.translateRegion(city.region) }))
+	// 			.sort((a, b) => this.getCountryPriority(a.country) - this.getCountryPriority(b.country));
+
+	// 		this.applySearchResults(results);
+	// 	});
+	// }
+
 	private async fetchCities(query: string): Promise<void> {
 		this.cancelRequest();
 
@@ -99,9 +129,12 @@ export class LocationSearchStore extends AsyncStore {
 			});
 		} catch (error) {
 			if (controller.signal.aborted) return;
+
 			throw error;
 		} finally {
-			if (this.abortController === controller) this.abortController = null;
+			if (this.abortController === controller) {
+				this.abortController = null;
+			}
 		}
 	}
 
@@ -142,22 +175,28 @@ export class LocationSearchStore extends AsyncStore {
 	constructor() {
 		super();
 
-		makeObservable<this, 'focused' | 'query' | 'committedValue' | 'applySearchResults' | 'reset'>(this, {
-			focused: observable,
-			query: observable,
-			committedValue: observable,
+		makeObservable<this, 'selecting' | 'focused' | 'query' | 'committedValue' | 'applySearchResults' | 'reset'>(
+			this,
+			{
+				selecting: observable,
+				focused: observable,
+				query: observable,
+				committedValue: observable,
 
-			searchResults: observable,
+				searchResults: observable,
 
-			inputValue: computed,
+				inputValue: computed,
 
-			setFocused: action,
-			setQuery: action,
-			setValue: action,
-			selectCity: action,
-			applySearchResults: action,
-			reset: action,
-		});
+				startSelecting: action,
+				finishSelecting: action,
+				setFocused: action,
+				setQuery: action,
+				setValue: action,
+				selectCity: action,
+				applySearchResults: action,
+				reset: action,
+			}
+		);
 	}
 
 	init(): void {
@@ -180,6 +219,7 @@ export class LocationSearchStore extends AsyncStore {
 	protected reset(): void {
 		this.cancelSearch();
 
+		this.selecting = false;
 		this.focused = false;
 		this.query = '';
 		this.committedValue = '';
