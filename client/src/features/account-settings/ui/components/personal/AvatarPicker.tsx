@@ -47,7 +47,7 @@ export const AvatarPicker = () => {
 						key={id}
 						alt={`Аватар ${idx}`}
 						className={cn(
-							'aspect-square size-20 cursor-pointer rounded-full object-cover transition hover:scale-[1.15] xl:size-28',
+							'aspect-square size-20 cursor-pointer rounded-full object-cover transition-transform hover:scale-[1.15] xl:size-28',
 							selectedAvatar === id && 'ring-3 ring-(--color-accent)'
 						)}
 						src={src}

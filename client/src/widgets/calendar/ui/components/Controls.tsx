@@ -1,4 +1,4 @@
-import { IconCopy, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
+import { IconCancel, IconCopy, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
 
 import { useCopy, useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { cn, pluralize } from '@/shared/lib/utils';
@@ -82,7 +82,10 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 					}}
 				/>
 				<Button
-					centerIcon={isMobile && <IconTrash className="size-4.5" />}
+					centerIcon={
+						isMobile &&
+						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
+					}
 					className={cn(
 						'h-8 px-3 text-xs hover:border-transparent hover:enabled:bg-(--warning-default)/80 xl:text-sm',
 						!isMobile && 'core-border w-32'

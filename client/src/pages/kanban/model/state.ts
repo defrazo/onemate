@@ -76,7 +76,6 @@ export const createState = (repo: IKanbanRepo) => {
 
 			columns.push(newColumn);
 			notifyColumns();
-			// notifier.setNotice(MESSAGES.columns.added, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.columns.addError, 'error');
 			rollback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
@@ -96,7 +95,6 @@ export const createState = (repo: IKanbanRepo) => {
 			notifyColumns();
 
 			await repo.editColumn(id, { title, color, taskLimit });
-			// notifier.setNotice(MESSAGES.columns.updated, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.columns.updateError, 'error');
 			rollback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
@@ -160,7 +158,6 @@ export const createState = (repo: IKanbanRepo) => {
 
 			await repo.moveColumn(id, newPosition);
 			if (shouldNormalizeColumns()) await normalizeColumnPositions();
-			// notifier.setNotice(MESSAGES.columns.moved, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.columns.moveError, 'error');
 			rollback(snapshot, (snapshot) => (columns = snapshot), notifyColumns);
@@ -287,7 +284,6 @@ export const createState = (repo: IKanbanRepo) => {
 			tasks.push(newTask);
 
 			notifyTasks();
-			// notifier.setNotice(MESSAGES.tasks.added, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.tasks.addError, 'error');
 			rollback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
@@ -322,7 +318,6 @@ export const createState = (repo: IKanbanRepo) => {
 			notifyTasks();
 
 			await repo.editTask(id, { title, description, status, priority, startDate, endDate, completed, updatedAt });
-			// notifier.setNotice(MESSAGES.tasks.updated, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.tasks.updateError, 'error');
 			rollback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
@@ -401,8 +396,6 @@ export const createState = (repo: IKanbanRepo) => {
 
 			await repo.moveTask(id, newColumnId, newPosition, updatedAt);
 			if (shouldNormalizeTasksInColumn(newColumnId)) await normalizeTaskPositionsInColumn(newColumnId);
-
-			// notifier.setNotice(MESSAGES.tasks.moved, 'success');
 		} catch {
 			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
 			rollback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
@@ -451,7 +444,6 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	// === LOAD ===
-
 	const loadData = async () => {
 		const [fetchedColumns, fetchedTasks] = await Promise.all([repo.fetchColumns(), repo.fetchTasks()]);
 

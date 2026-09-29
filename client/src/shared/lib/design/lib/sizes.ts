@@ -25,12 +25,6 @@ export const sizes: Record<Component, Record<string, string>> = {
 		lg: 'size-6',
 		custom: '',
 	},
-	checkboxBool: {
-		sm: 'size-4',
-		md: 'size-5',
-		lg: 'size-6',
-		custom: '',
-	},
 	radio: {
 		sm: 'size-4',
 		md: 'size-5',

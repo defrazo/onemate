@@ -54,10 +54,14 @@ export const Checkbox = ({
 				type="checkbox"
 				onChange={(event) => onChange(event.target.checked)}
 			/>
-			<Icon className={cn(styles, !disabled && 'group-hover:text-(--accent-hover)')} />
+			<Icon className={cn(styles, !disabled && 'transition-colors group-hover:text-(--accent-hover)')} />
 			{label && (
 				<span
-					className={cn(styles, 'flex w-fit items-center', !disabled && 'group-hover:text-(--accent-hover)')}
+					className={cn(
+						styles,
+						'flex w-fit items-center',
+						!disabled && 'transition-colors group-hover:text-(--accent-hover)'
+					)}
 				>
 					{label}
 				</span>

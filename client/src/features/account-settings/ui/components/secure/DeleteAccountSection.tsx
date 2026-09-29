@@ -44,7 +44,7 @@ export const DeleteAccountSection = () => {
 				</p>
 			</div>
 			<Button
-				className="mx-auto h-10 rounded-xl bg-(--warning-default) text-(--accent-text) opacity-50 transition-all duration-300 hover:bg-(--warning-hover) hover:opacity-100"
+				className="mx-auto h-10 rounded-xl bg-(--warning-default) text-(--accent-text) opacity-50 transition-[background-color,opacity] duration-300 hover:bg-(--warning-hover) hover:opacity-100"
 				variant="custom"
 				onClick={handleDelete}
 			>

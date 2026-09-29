@@ -5,7 +5,8 @@ interface DragHandleProps {
 }
 
 export const DragHandle = ({ getLineClass }: DragHandleProps) => {
-	const lineStyle = 'absolute block h-1 origin-center rounded-xl bg-(--color-secondary) transition-all duration-300';
+	const lineStyle =
+		'absolute block h-1 origin-center rounded-xl bg-(--color-secondary) transition-transform duration-300';
 
 	return (
 		<div className="drag-handle relative flex h-10 cursor-grab items-center justify-center bg-transparent select-none">

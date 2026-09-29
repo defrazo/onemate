@@ -23,7 +23,7 @@ export const Menu = observer(() => {
 				<div className="flex items-center">
 					{store.unreadCount > 0 && (
 						<Button
-							className="rounded-lg px-2 py-1 text-xs text-(--color-secondary) transition hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
+							className="rounded-lg px-2 py-1 text-xs text-(--color-secondary) transition-colors hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
 							type="button"
 							variant="mobile"
 							onClick={() => void store.markAllAsRead()}
@@ -33,7 +33,7 @@ export const Menu = observer(() => {
 					)}
 					<Button
 						centerIcon={<IconTrash className="size-4" />}
-						className="size-6 text-(--color-secondary)/70 transition hover:text-(--status-error)"
+						className="size-6 text-(--color-secondary)/70 transition-colors hover:text-(--status-error)"
 						size="custom"
 						title="Удалить все"
 						type="button"

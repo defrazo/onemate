@@ -36,7 +36,7 @@ export const ProfileMenu = () => {
 					<Button
 						key={id}
 						className={cn(
-							'justify-start',
+							'justify-start transition-colors',
 							currentTab === id
 								? 'bg-(--accent-default) text-(--accent-text)'
 								: 'bg-transparent hover:bg-white/10'

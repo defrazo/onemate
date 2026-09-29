@@ -53,7 +53,7 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 			/>
 			<Button
 				centerIcon={<IconCopy className="size-4" />}
-				className="cursor-pointer transition-opacity hover:text-(--status-success) xl:opacity-0 xl:group-hover/note:opacity-100"
+				className="cursor-pointer transition-[color,opacity] hover:text-(--status-success) xl:opacity-0 xl:group-hover/note:opacity-100"
 				size="sm"
 				title="Скопировать"
 				variant="mobile"
@@ -67,7 +67,7 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-4" />}
-				className="cursor-pointer transition-opacity hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
+				className="cursor-pointer transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
 				size="sm"
 				title="Удалить заметку"
 				variant="mobile"

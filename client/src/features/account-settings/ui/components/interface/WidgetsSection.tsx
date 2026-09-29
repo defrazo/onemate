@@ -63,7 +63,7 @@ export const WidgetsSection = observer(() => {
 						{availableWidgets.map(({ id, title, icon: Icon }) => (
 							<Button
 								key={id}
-								className="h-10 rounded-xl bg-(--bg-tertiary) px-3 text-sm hover:border-(--accent-default)/30 hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
+								className="h-10 rounded-xl bg-(--bg-tertiary) px-3 text-sm transition-colors hover:border-(--accent-default)/30 hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
 								leftIcon={<Icon className="size-4 text-(--accent-default)" />}
 								rightIcon={<IconPlus className="size-4" />}
 								size="custom"

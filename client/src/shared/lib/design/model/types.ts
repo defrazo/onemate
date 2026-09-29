@@ -1,6 +1,6 @@
 import { sizes, variants } from '../lib';
 
-export type Component = 'button' | 'input' | 'textarea' | 'checkbox' | 'checkboxBool' | 'radio' | 'select';
+export type Component = 'button' | 'input' | 'textarea' | 'checkbox' | 'radio' | 'select';
 
 export type VariantMap = {
 	button: keyof typeof variants.button;

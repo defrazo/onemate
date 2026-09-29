@@ -25,7 +25,7 @@ export const AppearanceSection = observer(() => {
 						<button
 							key={value}
 							className={cn(
-								'flex h-8 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm transition',
+								'flex h-8 cursor-pointer items-center gap-2 rounded-lg px-3 text-sm transition-colors',
 								isActive
 									? 'bg-(--accent-default) text-(--color-primary)'
 									: 'hover:text-(--accent-default)'

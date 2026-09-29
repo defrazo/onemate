@@ -49,7 +49,7 @@ export const ScrollToTop = ({ footerSelector = 'footer' }) => {
 		<Button
 			centerIcon={<IconArrowBadgeUpFilled className="size-6" />}
 			className={cn(
-				'right-4 z-50 rounded-full p-3 shadow transition-all',
+				'right-4 z-50 rounded-full p-3 shadow transition-opacity',
 				device === 'mobile' ? 'hidden' : 'fixed',
 				visible ? 'opacity-100' : 'pointer-events-none opacity-0'
 			)}

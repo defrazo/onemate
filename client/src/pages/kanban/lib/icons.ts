@@ -5,13 +5,11 @@ export { default as checkIcon } from '@/shared/assets/icons/kanban/check.svg?raw
 export { default as chevronDownIcon } from '@/shared/assets/icons/kanban/chevron-down.svg?raw';
 export { default as closeIcon } from '@/shared/assets/icons/kanban/close.svg?raw';
 export { default as dateIcon } from '@/shared/assets/icons/kanban/date.svg?raw';
-export { default as createdIcon } from '@/shared/assets/icons/kanban/edit.svg?raw';
 export { default as editIcon } from '@/shared/assets/icons/kanban/edit.svg?raw';
 export { default as errorIcon } from '@/shared/assets/icons/kanban/error.svg?raw';
 export { default as viewIcon } from '@/shared/assets/icons/kanban/eye.svg?raw';
 export { default as priorityIcon } from '@/shared/assets/icons/kanban/flag.svg?raw';
 export { default as limitIcon } from '@/shared/assets/icons/kanban/hash.svg?raw';
-export { default as updatedIcon } from '@/shared/assets/icons/kanban/history.svg?raw';
 export { default as infoIcon } from '@/shared/assets/icons/kanban/info.svg?raw';
 export { default as optionsIcon } from '@/shared/assets/icons/kanban/options.svg?raw';
 export { default as paletteIcon } from '@/shared/assets/icons/kanban/palette.svg?raw';

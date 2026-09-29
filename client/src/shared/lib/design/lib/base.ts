@@ -7,7 +7,6 @@ export const base: Record<Component, string> = {
 	input: cn('w-full rounded-xl', 'transition-colors outline-none'),
 	textarea: cn('w-full rounded-xl', 'transition-colors outline-none'),
 	checkbox: '',
-	checkboxBool: '',
 	radio: 'cursor-pointer appearance-none transition-colors outline-none',
 	select: cn('flex w-full items-center rounded-xl', 'cursor-pointer text-nowrap transition-colors outline-none'),
 };

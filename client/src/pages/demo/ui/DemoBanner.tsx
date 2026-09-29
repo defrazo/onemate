@@ -32,7 +32,10 @@ export const DemoBanner = observer(() => {
 					<span className="hidden sm:inline">
 						Изменения сохраняются только в этом браузере, некоторые функции недоступны.{' '}
 					</span>
-					<Link className="text-(--accent-default) hover:text-(--accent-hover) hover:underline" to="/demo">
+					<Link
+						className="text-(--accent-default) transition-colors hover:text-(--accent-hover) hover:underline"
+						to="/demo"
+					>
 						Подробнее
 					</Link>
 				</p>

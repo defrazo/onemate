@@ -4,9 +4,9 @@ import { clearCache } from '@/shared/lib/cache';
 import { BaseStore } from '@/shared/lib/store';
 
 import { userCache } from '../lib';
-import type { IBaseUserPort, IUserAuthPort, IUserProfilePort, IUserRepo, IUserRoutingPort, Role, User } from '.';
+import type { IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort, Role, User } from '.';
 
-export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort, IUserProfilePort, IUserRoutingPort {
+export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort, IUserRoutingPort {
 	private repo: IUserRepo | null = null;
 
 	user: User | null = null;

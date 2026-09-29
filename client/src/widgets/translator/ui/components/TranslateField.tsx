@@ -46,11 +46,11 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					)}
 					{!isSource && translatorStore.isLoading && <LoadingState size="xs" />}
 				</div>
-				<div className="pointer-events-auto flex items-center gap-1.5 group-hover:opacity-100 xl:opacity-0">
+				<div className="pointer-events-auto flex items-center gap-1.5 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
 							centerIcon={<IconX className="size-4" stroke={3} />}
-							className="size-6 text-(--color-secondary)/70 transition hover:text-(--status-error)"
+							className="size-6 text-(--color-secondary)/70 transition-colors hover:text-(--status-error)"
 							disabled={!text}
 							size="custom"
 							title="Очистить"
@@ -60,7 +60,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					)}
 					<Button
 						centerIcon={<IconCopy className="size-4" />}
-						className="size-6 text-(--color-secondary)/70 transition hover:text-(--accent-default)"
+						className="size-6 text-(--color-secondary)/70 transition-colors hover:text-(--accent-default)"
 						disabled={!text}
 						size="custom"
 						title={isSource ? 'Скопировать оригинал' : 'Скопировать перевод'}

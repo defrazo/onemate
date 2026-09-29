@@ -14,11 +14,10 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 	const isPrimaryMobile = isMobile && item.primaryMobile;
 
 	const className = cn(
-		'flex flex-col items-center gap-1.5 rounded-lg px-2 py-1 transition-[color,background-color] duration-200 ease-out lg:min-w-24 lg:flex-row lg:gap-2 lg:px-3 lg:py-2 lg:font-bold',
+		'flex flex-col items-center gap-1.5 rounded-lg px-2 py-1 transition-colors duration-200 ease-out lg:min-w-24 lg:flex-row lg:gap-2 lg:px-3 lg:py-2 lg:font-bold',
 		active
 			? 'text-(--accent-default) lg:bg-(--accent-default)/12'
 			: 'text-(--color-primary)/80 hover:text-(--accent-default) lg:bg-transparent lg:hover:bg-white/10',
-
 		isPrimaryMobile && '-translate-y-2.5',
 		isMobile && { 1: 'order-1', 2: 'order-2', 3: 'order-3', 4: 'order-4' }[item.order]
 	);

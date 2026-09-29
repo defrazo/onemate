@@ -45,9 +45,7 @@ export class NotificationStore extends AsyncStore {
 		const permission = await Notification.requestPermission();
 		const isEnabled = permission === 'granted';
 
-		runInAction(() => {
-			this.browserNotificationsEnabled = isEnabled;
-		});
+		runInAction(() => (this.browserNotificationsEnabled = isEnabled));
 
 		storage.set(BROWSER_NOTIFICATIONS_KEY, isEnabled);
 	}

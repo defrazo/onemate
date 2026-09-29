@@ -51,7 +51,6 @@ export const variants: Record<Component, Record<string, string>> = {
 		custom: '',
 	},
 	checkbox: { default: '' },
-	checkboxBool: { default: '' },
 	radio: { default: 'border-(--border-color)', custom: '' },
 	select: {
 		default: cn('ring-inset', 'bg-(--bg-tertiary) ring-(--accent-default)', 'hover:ring-1 focus:ring-1'),

@@ -77,7 +77,7 @@ export const LocationSearch = observer(
 							<LoadingState className="mr-1" size="sm" />
 						) : onRemove && value ? (
 							<IconTrashFilled
-								className="mr-1 ml-1.5 size-5.5 cursor-pointer opacity-50 transition-all hover:text-(--status-error) hover:opacity-100"
+								className="mr-1 ml-1.5 size-5.5 cursor-pointer opacity-50 transition-[color,opacity] hover:text-(--status-error) hover:opacity-100"
 								onClick={onRemove}
 							/>
 						) : showGeolocation ? (

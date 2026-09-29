@@ -1,25 +1,9 @@
 import type { Theme } from '@/shared/config';
 
-import type { Gender, UserProfile, UserProfilePatch } from '.';
+import type { UserProfile, UserProfilePatch } from '.';
 
-export interface IBaseUserProfilePort {
+export interface IUserProfileThemePort {
 	readonly isReady: boolean;
-}
-
-export interface IUserProfileProfilePort extends IBaseUserProfilePort {
-	readonly firstName: string;
-	readonly lastName: string;
-	readonly birthYear: string;
-	readonly birthMonth: string;
-	readonly birthDay: string;
-	readonly gender: Gender;
-	readonly phones: string[];
-	readonly emails: string[];
-
-	updateProfile(profile: UserProfile): Promise<void>;
-}
-
-export interface IUserProfileThemePort extends IBaseUserProfilePort {
 	readonly theme: Theme;
 
 	updateTheme(theme: Theme): Promise<void>;

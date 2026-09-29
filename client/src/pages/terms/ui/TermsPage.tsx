@@ -66,10 +66,7 @@ export const TermsPage = () => {
 						</li>
 						<li>
 							Подробнее об обрабатываемых данных, целях и сроках их хранения указано в{' '}
-							<a
-								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
-								href="/privacy"
-							>
+							<a className="text-(--accent-default) hover:underline print:text-black" href="/privacy">
 								Политике конфиденциальности
 							</a>
 							.
@@ -113,7 +110,7 @@ export const TermsPage = () => {
 						<li>
 							По вопросам, связанным с Приложением, можно написать на{' '}
 							<a
-								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
+								className="text-(--accent-default) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru

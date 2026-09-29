@@ -3,10 +3,10 @@ import {
 	IconActivityHeartbeat,
 	IconCalculator,
 	IconCalendarWeek,
-	IconCloudStorm,
+	IconCash,
+	IconCloudPin,
 	IconLanguage,
 	IconNote,
-	IconWorldDollar,
 } from '@tabler/icons-react';
 
 interface WidgetConfig {
@@ -18,9 +18,9 @@ interface WidgetConfig {
 export const WIDGETS = [
 	{ id: 'calculator', title: 'Калькулятор', icon: IconCalculator },
 	{ id: 'calendar', title: 'Календарь', icon: IconCalendarWeek },
-	{ id: 'weather', title: 'Погода', icon: IconCloudStorm },
+	{ id: 'weather', title: 'Погода', icon: IconCloudPin },
 	{ id: 'notes', title: 'Заметки', icon: IconNote },
-	{ id: 'currency', title: 'Конвертер валют', icon: IconWorldDollar },
+	{ id: 'currency', title: 'Конвертер валют', icon: IconCash },
 	{ id: 'translator', title: 'Переводчик', icon: IconLanguage },
 	{ id: 'network', title: 'Сеть', icon: IconActivityHeartbeat },
 ] as const satisfies readonly WidgetConfig[];

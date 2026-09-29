@@ -18,8 +18,8 @@ export const Currency = observer(() => {
 			) : (
 				<>
 					<div
-						className="m-auto cursor-copy text-2xl hover:text-(--accent-default) xl:text-3xl 2xl:text-4xl"
-						title="Скопировать курс обмена"
+						className="m-auto cursor-copy text-2xl transition-colors hover:text-(--accent-default) xl:text-3xl 2xl:text-4xl"
+						title="Скопировать результат обмена"
 						onClick={() => copy(currencyStore.conversionResult, 'Результат обмена скопирован')}
 					>
 						{currencyStore.conversionResult}

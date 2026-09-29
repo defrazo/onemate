@@ -118,7 +118,7 @@ export const PrivacyPage = () => {
 						<li>
 							По вопросам, связанным с обработкой данных и работой Приложения, можно написать на{' '}
 							<a
-								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
+								className="text-(--accent-default) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru
@@ -128,7 +128,7 @@ export const PrivacyPage = () => {
 						<li>
 							Настоящая Политика применяется совместно с{' '}
 							<a
-								className="text-(--accent-default) hover:text-(--accent-hover) hover:underline print:text-black"
+								className="text-(--accent-default) hover:underline print:text-black"
 								href="/terms-of-service"
 							>
 								Условиями использования

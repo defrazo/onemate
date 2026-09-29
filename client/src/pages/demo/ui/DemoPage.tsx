@@ -71,7 +71,7 @@ export const DemoPage = () => (
 					<li>
 						Подробнее об обработке данных в OneMate можно узнать в{' '}
 						<a
-							className="text-(--accent-default) hover:text-(--accent-hover) hover:underline"
+							className="text-(--accent-default) hover:underline"
 							href="/privacy"
 							rel="noopener noreferrer"
 							target="_blank"
@@ -80,7 +80,7 @@ export const DemoPage = () => (
 						</a>
 						, а правила использования приложения описаны в{' '}
 						<a
-							className="text-(--accent-default) hover:text-(--accent-hover) hover:underline"
+							className="text-(--accent-default) hover:underline"
 							href="/terms"
 							rel="noopener noreferrer"
 							target="_blank"

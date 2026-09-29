@@ -56,7 +56,7 @@ export const Grid = ({ month, range, selectDay }: GridProps) => {
 							)}
 							<button
 								className={cn(
-									'relative z-10 flex size-8 cursor-pointer items-center justify-center rounded-full font-mono tabular-nums transition-[background-color,color] duration-150',
+									'relative z-10 flex size-8 cursor-pointer items-center justify-center rounded-full font-mono tabular-nums transition-colors duration-150',
 									!inRange && 'hover:bg-(--accent-default)/10 hover:text-(--accent-default)',
 									(isStart || isEnd) && 'bg-(--accent-default) text-(--color-primary)'
 								)}

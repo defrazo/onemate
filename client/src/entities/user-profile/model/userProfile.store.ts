@@ -9,17 +9,10 @@ import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
 import { userProfileCache, type UserProfileCacheData } from '../lib';
-import type {
-	Gender,
-	IUserProfileProfilePort,
-	IUserProfileRepo,
-	IUserProfileThemePort,
-	UserProfile,
-	UserProfilePatch,
-} from '.';
+import type { Gender, IUserProfileRepo, IUserProfileThemePort, UserProfile, UserProfilePatch } from '.';
 import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from '.';
 
-export class UserProfileStore extends AsyncStore implements IUserProfileProfilePort, IUserProfileThemePort {
+export class UserProfileStore extends AsyncStore implements IUserProfileThemePort {
 	private readonly avatarUpdate = new Debouncer();
 	private readonly themeUpdate = new Debouncer();
 	private readonly widgetSequenceUpdate = new Debouncer();

@@ -5,17 +5,7 @@ export interface IBaseUserPort {
 	readonly lastId: string | null;
 }
 
-export interface IUserProfilePort extends IBaseUserPort {
-	readonly username: string;
-	readonly email: string;
-
-	updateUsername(username: string): Promise<void>;
-	updateEmail(email: string, currentPassword: string): Promise<void>;
-}
-
 export interface IUserAuthPort extends IBaseUserPort {
-	readonly email: string;
-
 	setUser(user: User | null): void;
 	clearSession(): void;
 }

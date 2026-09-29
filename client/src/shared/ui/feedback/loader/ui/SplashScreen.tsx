@@ -2,7 +2,7 @@ import './SplashScreen.css';
 
 export const SplashScreen = () => {
 	return (
-		<div className="flex h-full flex-1 flex-col items-center justify-center gap-2 select-none">
+		<div className="flex h-full flex-1 flex-col items-center justify-center gap-5 select-none">
 			<div className="relative flex size-14 items-center justify-center">
 				<div className="splash-glow absolute size-10 rounded-2xl bg-(--accent-default)/20 blur-lg" />
 				<div className="splash-halo absolute size-5 rounded-lg border border-(--accent-default)/30" />
