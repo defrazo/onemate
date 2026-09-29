@@ -55,15 +55,6 @@ export const variants: Record<Component, Record<string, string>> = {
 	radio: { default: 'border-(--border-color)', custom: '' },
 	select: {
 		default: cn('ring-inset', 'bg-(--bg-tertiary) ring-(--accent-default)', 'hover:ring-1 focus:ring-1'),
-		ghost: cn(
-			'border',
-			'border-(--border-color) bg-transparent',
-			'hover:border-(--accent-hover) focus:border-(--accent-default)'
-		),
-		custom: '',
-	},
-	selectExt: {
-		default: cn('ring-inset', 'bg-(--bg-tertiary) ring-(--accent-default)', 'hover:ring-1 focus:ring-1'),
 		embedded: cn(
 			'border',
 			'border-(--border-color) bg-transparent',

@@ -1,66 +1,127 @@
-import type { SelectHTMLAttributes } from 'react';
+import { IconChevronDown } from '@tabler/icons-react';
 
-import { IconDown } from '@/shared/assets/icons';
 import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
-interface SelectOption {
-	value: string;
-	label: string;
-	disabled?: boolean;
-}
+import { type Direction, type Justify, type SelectOption, useSelect } from '../model';
+import { List } from '.';
 
-interface SelectProps extends Omit<SelectHTMLAttributes<HTMLSelectElement>, 'size'> {
+interface SelectProps {
 	options: SelectOption[];
-	placeholder: string;
+	value: string;
+	onChange: (value: string) => void;
+
+	placeholder?: string;
 	variant?: keyof typeof variants.select;
 	size?: keyof typeof sizes.select;
+	direction?: Direction;
+	align?: Justify;
+
+	hideChevron?: boolean;
+	clearable?: boolean;
+	disabled?: boolean;
 	error?: boolean;
-	fullWidth?: boolean;
-	align?: 'left' | 'center' | 'right';
+
+	className?: string;
+	listClassName?: string;
 }
 
 export const Select = ({
 	options,
-	placeholder,
+	value,
+	onChange,
+	placeholder = 'Выберите значение',
 	variant = 'default',
 	size = 'md',
+	direction = 'auto',
+	align = 'center',
+	hideChevron = false,
+	clearable = false,
+	disabled = false,
 	error = false,
-	fullWidth = false,
-	align = 'left',
 	className,
-	...props
+	listClassName,
 }: SelectProps) => {
-	const styles = getComponentStyles({ variant, size, error, disabled: props.disabled, component: 'select' });
+	const { isOpen, openUpwards, wrapperRef, buttonRef, close, toggle } = useSelect(direction);
 
-	const alignment = {
-		left: 'text-start',
-		center: 'text-center',
-		right: 'text-end',
+	const selectedOption = options.find((option) => option.value === value);
+	const isEmbedded = variant === 'embedded';
+
+	const alignments = {
+		start: 'justify-start text-left',
+		center: 'justify-center text-center',
+		end: 'justify-end text-right',
+	};
+
+	const handleSelect = (value: string) => {
+		onChange(value);
+		close();
 	};
 
 	return (
-		<div className="relative w-full">
-			<select className={cn(styles, align && alignment[align], fullWidth && 'w-full', className)} {...props}>
-				{placeholder && (
-					<option className="core-base text-center" disabled value="">
-						{placeholder}
-					</option>
+		<div ref={wrapperRef} className="relative w-full">
+			<button
+				ref={buttonRef}
+				aria-expanded={isOpen}
+				aria-haspopup="listbox"
+				className={cn(
+					getComponentStyles({
+						variant,
+						size,
+						error,
+						disabled,
+						component: 'select',
+					}),
+					'group relative flex w-full items-center gap-2',
+					alignments[align],
+					isOpen && isEmbedded && 'border-(--accent-default-op)',
+					isOpen && isEmbedded && (openUpwards ? 'rounded-t-none' : 'rounded-b-none'),
+					className
 				)}
-				{options.map((option) => (
-					<option
-						key={option.value}
-						className="core-base cursor-pointer text-center"
-						disabled={option.disabled}
-						value={option.value}
-					>
-						{option.label}
-					</option>
-				))}
-			</select>
-			<div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-2">
-				<IconDown className="size-4" />
-			</div>
+				disabled={disabled}
+				type="button"
+				onClick={toggle}
+			>
+				{selectedOption?.icon && (
+					<img
+						alt=""
+						className="size-5 shrink-0 rounded-md"
+						decoding="async"
+						loading="lazy"
+						src={selectedOption.icon}
+					/>
+				)}
+				<span
+					className={cn(
+						'mt-0.5 min-w-0 truncate',
+						!selectedOption &&
+							'text-(--color-secondary) transition-colors group-hover:text-(--color-primary)',
+						isOpen && 'text-(--accent-default)'
+					)}
+				>
+					{selectedOption?.label ?? placeholder}
+				</span>
+				{!hideChevron && (
+					<IconChevronDown
+						className={cn(
+							'absolute right-2 size-4 shrink-0 text-(--color-secondary) transition-[rotate,color] duration-200 ease-in-out',
+							isOpen ? 'rotate-180 text-(--accent-default)' : 'rotate-0'
+						)}
+					/>
+				)}
+			</button>
+			{isOpen && !disabled && (
+				<List
+					align={align}
+					className={listClassName}
+					clearable={clearable}
+					openUpwards={openUpwards}
+					options={options}
+					value={value}
+					variant={variant}
+					onSelect={handleSelect}
+				/>
+			)}
 		</div>
 	);
 };

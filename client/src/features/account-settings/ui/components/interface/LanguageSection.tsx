@@ -1,4 +1,4 @@
-import { SelectExt } from '@/shared/ui';
+import { Select } from '@/shared/ui';
 
 const languages = [
 	{ key: 'ru', label: 'Русский', value: 'ru' },
@@ -16,10 +16,10 @@ export const LanguageSection = () => {
 					Скоро
 				</span>
 			</div>
-			<SelectExt
-				addStyle="my-1 -mr-1 max-w-52"
+			<Select
 				className="ml-auto max-w-36 xl:max-w-52"
 				disabled
+				listClassName="my-1 -mr-1 max-w-52"
 				options={languages}
 				value="ru"
 				onChange={() => {}}

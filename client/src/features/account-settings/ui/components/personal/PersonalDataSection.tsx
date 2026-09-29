@@ -4,15 +4,18 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { Gender } from '@/entities/user-profile';
+import { useDeviceType } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
-import { Collapse, Input, InputLabel, Radio, SelectExt } from '@/shared/ui';
+import { Collapse, Input, InputLabel, Radio, Select } from '@/shared/ui';
 
 import { genderOptions, getAvailableDays } from '../../../lib';
 import type { PersonalDraft } from '../../../model';
 import { FormActions, RemoveButton } from '..';
 
 export const PersonalDataSection = observer(() => {
+	const device = useDeviceType();
+
 	const { notifyStore, userProfileStore, userStore } = useStore();
 
 	const createDraft = (): PersonalDraft => ({
@@ -159,29 +162,28 @@ export const PersonalDataSection = observer(() => {
 			<div className="flex flex-col gap-1">
 				<span className="text-(--color-secondary) opacity-70">Дата рождения</span>
 				<div className="flex flex-col gap-2 md:flex-row">
-					<SelectExt
-						justify="center"
-						nullable
+					<Select
+						clearable
+						direction={device === 'mobile' ? 'up' : 'down'}
 						options={generateYears()}
 						placeholder="Год"
 						value={draft.birthYear}
 						variant="embedded"
 						onChange={(value) => setDraft((prev) => ({ ...prev, birthYear: value, birthDay: '' }))}
 					/>
-					<SelectExt
-						direction="up"
-						justify="center"
-						nullable
+					<Select
+						clearable
+						direction={device === 'mobile' ? 'up' : 'down'}
 						options={generateMonth()}
 						placeholder="Месяц"
 						value={draft.birthMonth}
 						variant="embedded"
 						onChange={(value) => setDraft((prev) => ({ ...prev, birthMonth: value, birthDay: '' }))}
 					/>
-					<SelectExt
+					<Select
+						clearable
+						direction={device === 'mobile' ? 'up' : 'down'}
 						disabled={!draft.birthYear || !draft.birthMonth}
-						justify="center"
-						nullable
 						options={days.map((day) => ({ value: day, label: day }))}
 						placeholder="День"
 						value={draft.birthDay}

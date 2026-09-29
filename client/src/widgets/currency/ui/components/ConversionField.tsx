@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Input, SelectExt } from '@/shared/ui';
+import { Input, Select } from '@/shared/ui';
 
 import { MAX_VALUE } from '../../model';
 
@@ -65,10 +65,11 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 			</div>
 			<div className="h-8 w-px bg-(--border-color)" />
 			<div className="shrink-0">
-				<SelectExt
-					addStyle="-mr-2 my-2"
+				<Select
+					align="start"
 					className="w-30"
 					direction="up"
+					listClassName="-right-1 mb-2 left-auto w-60"
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
 					value={currency.code}

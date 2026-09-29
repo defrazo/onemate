@@ -9,6 +9,5 @@ export const base: Record<Component, string> = {
 	checkbox: '',
 	checkboxBool: '',
 	radio: 'cursor-pointer appearance-none transition-colors outline-none',
-	select: cn('w-full rounded-xl', 'cursor-pointer appearance-none transition-colors outline-none'),
-	selectExt: cn('flex w-full items-center rounded-xl', 'cursor-pointer text-nowrap transition-colors outline-none'),
+	select: cn('flex w-full items-center rounded-xl', 'cursor-pointer text-nowrap transition-colors outline-none'),
 };

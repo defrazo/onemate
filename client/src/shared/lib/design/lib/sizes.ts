@@ -38,12 +38,6 @@ export const sizes: Record<Component, Record<string, string>> = {
 		custom: '',
 	},
 	select: {
-		sm: 'text-sm py-1 pl-2 pr-8',
-		md: 'text-base py-2 pl-3 pr-8',
-		lg: 'text-lg py-3 pl-4 pr-10',
-		custom: '',
-	},
-	selectExt: {
 		sm: 'text-sm py-1 px-3',
 		md: 'text-base py-2 px-4',
 		lg: 'text-lg py-3 px-6',
