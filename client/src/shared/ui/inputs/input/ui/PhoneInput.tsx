@@ -1,4 +1,4 @@
-import type { ChangeEvent, ReactNode } from 'react';
+import type { ChangeEvent, ComponentProps } from 'react';
 
 import { formatPhone } from '@/shared/lib/utils';
 
@@ -8,37 +8,32 @@ type InputChangeEvent = ChangeEvent<HTMLInputElement> & {
 	nativeEvent: InputEvent;
 };
 
-interface PhoneInputProps {
-	id: string;
+interface PhoneInputProps extends Omit<ComponentProps<typeof Input>, 'value' | 'onChange'> {
 	value: string;
 	onChange: (value: string) => void;
-	className?: string;
-	name: string;
-	variant: string;
-	leftIcon?: ReactNode;
-	rightIcon?: ReactNode;
 }
 
-export const PhoneInput = ({ id, value, onChange, className, name, variant, leftIcon, rightIcon }: PhoneInputProps) => {
-	const handleChange = (e: InputChangeEvent) => {
-		const isErase = e.nativeEvent.inputType === 'deleteContentBackward';
-		const formatted = formatPhone(e.target.value, isErase);
-		onChange(formatted);
+export const PhoneInput = ({ value, onChange, ...props }: PhoneInputProps) => {
+	const handleChange = (event: InputChangeEvent) => {
+		const isErase = event.nativeEvent.inputType === 'deleteContentBackward';
+		const formattedValue = formatPhone(event.target.value, isErase);
+
+		onChange(formattedValue);
 	};
 
-	const handleFocus = () => !value && onChange('+7');
-	const handleBlur = () => value === '+7' && onChange('');
+	const handleFocus = () => {
+		if (!value) onChange('+7');
+	};
+
+	const handleBlur = () => {
+		if (value === '+7') onChange('');
+	};
 
 	return (
 		<Input
-			className={className}
-			id={id}
-			leftIcon={leftIcon}
-			name={name}
+			{...props}
 			placeholder="+7 (999) 999-99-99"
-			rightIcon={rightIcon}
 			value={value}
-			variant={variant}
 			onBlur={handleBlur}
 			onChange={handleChange}
 			onFocus={handleFocus}

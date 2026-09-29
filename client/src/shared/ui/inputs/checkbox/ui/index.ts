@@ -1,2 +1,2 @@
 export { Checkbox } from './Checkbox';
-export { CheckboxBool } from './CheckboxBool';
+export { CheckboxGroup } from './CheckboxGroup';

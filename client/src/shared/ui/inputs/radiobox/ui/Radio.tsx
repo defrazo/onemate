@@ -12,72 +12,78 @@ interface RadioOption {
 interface RadioProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'value'> {
 	value?: string | null;
 	options: RadioOption[];
+
+	labelSide?: 'left' | 'right';
 	error?: boolean;
+
 	variant?: keyof typeof variants.radio;
 	size?: keyof typeof sizes.radio;
-	labelSide?: 'left' | 'right';
 }
 
 export const Radio = ({
 	value,
 	options,
-	onChange,
-	variant = 'default',
-	size = 'md',
+
 	labelSide = 'right',
 	error = false,
+
+	variant = 'default',
+	size = 'md',
+
+	disabled = false,
 	className,
+	onChange,
 	...props
 }: RadioProps) => {
 	return (
 		<div className={cn('flex gap-2', className)}>
 			{options.map((option) => {
-				const isDisabled = props.disabled || option.disabled;
-				const isChecked = value === option.value;
+				const checked = value === option.value;
+				const isDisabled = disabled || option.disabled;
 
-				const styles = getComponentStyles({
-					variant,
-					size,
-					error: error && !option.disabled,
-					disabled: isDisabled,
-					component: 'radio',
-				});
+				const styles = getComponentStyles({ variant, size, error, disabled: isDisabled, component: 'radio' });
 
 				return (
 					<label
-						key={option.label}
+						key={option.value ?? 'null'}
 						className={cn(
 							'group/radio flex items-center gap-2 select-none',
 							labelSide === 'left' && 'flex-row-reverse',
-							isDisabled ? 'pointer-events-none' : 'cursor-pointer'
+							isDisabled ? 'cursor-not-allowed' : 'cursor-pointer'
 						)}
 					>
 						<input
-							checked={isChecked}
+							{...props}
+							checked={checked}
 							className="sr-only"
 							disabled={isDisabled}
 							type="radio"
 							value={option.value ?? ''}
 							onChange={onChange}
-							{...props}
 						/>
-
 						<span
 							className={cn(
 								styles,
 								'flex shrink-0 items-center justify-center rounded-full border',
-								isChecked ? 'border-(--accent-default)' : 'group-hover/radio:border-(--accent-default)'
+								checked
+									? 'border-(--accent-default)'
+									: !isDisabled && 'group-hover/radio:border-(--accent-default)'
 							)}
 						>
 							<span
 								className={cn(
 									'size-2 rounded-full bg-(--accent-default) transition-opacity',
-									isChecked ? 'opacity-100' : 'opacity-0'
+									checked ? 'opacity-100' : 'opacity-0'
 								)}
 							/>
 						</span>
-
-						<span className="flex w-fit items-center group-hover/radio:text-(--accent-default)">
+						<span
+							className={cn(
+								styles,
+								'flex w-fit items-center',
+								!isDisabled && 'group-hover/radio:text-(--accent-default)'
+							)}
+						>
 							{option.label}
 						</span>
 					</label>

@@ -4,7 +4,7 @@ import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 import { type Direction, type Justify, type SelectOption, useSelect } from '../model';
-import { List } from '.';
+import { List } from './components';
 
 interface SelectProps {
 	options: SelectOption[];

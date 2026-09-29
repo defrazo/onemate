@@ -9,7 +9,6 @@ interface SwitchProps {
 export const Switch = ({ checked, disabled = false, onCheckedChange }: SwitchProps) => {
 	const handleClick = () => {
 		if (disabled) return;
-
 		onCheckedChange?.(!checked);
 	};
 

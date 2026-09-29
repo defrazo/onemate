@@ -7,7 +7,6 @@ export type VariantMap = {
 	input: keyof typeof variants.input;
 	textarea: keyof typeof variants.textarea;
 	checkbox: keyof typeof variants.checkbox;
-	checkboxBool: keyof typeof variants.checkboxBool;
 	radio: keyof typeof variants.radio;
 	select: keyof typeof variants.select;
 };
@@ -17,7 +16,6 @@ export type SizeMap = {
 	input: keyof typeof sizes.input;
 	textarea: keyof typeof sizes.textarea;
 	checkbox: keyof typeof sizes.checkbox;
-	checkboxBool: keyof typeof sizes.checkboxBool;
 	radio: keyof typeof sizes.radio;
 	select: keyof typeof sizes.select;
 };

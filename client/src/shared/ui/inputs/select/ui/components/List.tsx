@@ -2,7 +2,7 @@ import { IconCheck } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 
-import type { Justify, SelectOption } from '../model';
+import type { Justify, SelectOption } from '../../model';
 
 interface ListProps {
 	options: SelectOption[];
