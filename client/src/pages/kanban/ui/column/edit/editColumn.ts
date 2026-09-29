@@ -63,18 +63,18 @@ export const editColumn = (options: EditColumnProps) => {
 	}
 
 	// === EVENTS ===
-	const onSubmit = (event: SubmitEvent) => {
-		event.preventDefault();
+	const onSubmit = (e: SubmitEvent) => {
+		e.preventDefault();
 		handleSubmit();
 	};
 
-	const onKeyDown = (event: KeyboardEvent) => {
-		if (event.key !== 'Enter') return;
-		if (event.isComposing) return;
-		if (event.defaultPrevented) return;
+	const onKeyDown = (e: KeyboardEvent) => {
+		if (e.key !== 'Enter') return;
+		if (e.isComposing) return;
+		if (e.defaultPrevented) return;
 		if (submitButton.disabled) return;
 
-		event.preventDefault();
+		e.preventDefault();
 		form.requestSubmit();
 	};
 

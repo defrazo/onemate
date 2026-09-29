@@ -22,18 +22,20 @@ export const notifier = {
 		// === TOAST ===
 		const toast = document.createElement('div');
 		toast.className = cn(
-			`border-l-(${config.color}) border border-(--border-color) rounded-xl bg-(--bg-tertiary)/50 shadow-(--shadow) backdrop-blur-sm absolute z-40 mb-0.5 flex items-center justify-center gap-2 rounded-xl border-l-4 p-3 shadow-lg select-none md:p-2`,
-			device === 'desktop' ? 'right-6 bottom-4 min-w-52 2xl:min-w-60' : 'top-4 left-4 w-[calc(100dvw-32px)]'
+			'absolute z-40 flex items-center gap-2.5 rounded-xl border border-(--border-color) bg-(--bg-secondary)/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl select-none',
+			device === 'desktop' ? 'right-6 bottom-4 min-w-64' : 'top-4 left-4 w-[calc(100dvw-32px)]'
 		);
 
 		// === ICON ===
 		const icon = document.createElement('div');
-		insertSvg(icon, config.icon, `size-8 py-1 text-(${config.color})`);
+		icon.className = `flex size-7 shrink-0 items-center justify-center rounded-lg bg-(${config.color})/10 text-(${config.color})`;
+
+		insertSvg(icon, config.icon, 'size-4');
 
 		// === MESSAGE ===
 		const message = document.createElement('span');
 		message.textContent = text;
-		message.className = 'flex-1 pr-2 text-center text-sm';
+		message.className = 'min-w-0 flex-1 text-sm text-(--color-primary)';
 
 		// === LIFECYCLE ===
 		let timeout: number | null = null;
@@ -65,6 +67,7 @@ export const notifier = {
 
 		// === EVENTS ===
 		toast.addEventListener('click', removeToast);
+
 		removeCurrentToast = removeToast;
 		timeout = window.setTimeout(removeToast, 3000);
 	},

@@ -121,8 +121,8 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	}
 
 	// === EVENTS ===
-	function onSelectedClick(event: MouseEvent) {
-		event.stopPropagation();
+	function onSelectedClick(e: MouseEvent) {
+		e.stopPropagation();
 
 		const isOpen = !optionsContainer.classList.contains('hidden');
 
@@ -134,8 +134,8 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 		open();
 	}
 
-	function onDocumentClick(event: MouseEvent) {
-		const target = event.target as Node | null;
+	function onDocumentClick(e: MouseEvent) {
+		const target = e.target as Node | null;
 		if (target && !container.contains(target)) close();
 	}
 

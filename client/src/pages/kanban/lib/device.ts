@@ -32,8 +32,8 @@ function init() {
 
 	const portraitQuery = window.matchMedia('(orientation: portrait)');
 
-	const onOrientationChange = (event: MediaQueryListEvent) => {
-		const nextOrientation: DeviceOrientation = event.matches ? 'portrait' : 'landscape';
+	const onOrientationChange = (e: MediaQueryListEvent) => {
+		const nextOrientation: DeviceOrientation = e.matches ? 'portrait' : 'landscape';
 		if (nextOrientation === currentOrientation) return;
 
 		currentOrientation = nextOrientation;

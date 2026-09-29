@@ -50,8 +50,8 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 
 	options.forEach(({ button }) => element.append(button));
 
-	const onTriggerClick = (event: MouseEvent) => {
-		event.stopPropagation();
+	const onTriggerClick = (e: MouseEvent) => {
+		e.stopPropagation();
 
 		document.querySelectorAll('[data-task-options]').forEach((menu) => {
 			if (menu !== element) menu.classList.add('hidden');
@@ -60,8 +60,8 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 		element.classList.toggle('hidden');
 	};
 
-	const onDocumentClick = (event: MouseEvent) => {
-		const target = event.target as Node | null;
+	const onDocumentClick = (e: MouseEvent) => {
+		const target = e.target as Node | null;
 		if (!target) return;
 
 		if (!element.contains(target) && !trigger.contains(target)) element.classList.add('hidden');

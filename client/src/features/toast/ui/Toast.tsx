@@ -1,16 +1,22 @@
+import { IconAlertTriangle, IconCircleCheck, IconCircleX, IconInfoCircle } from '@tabler/icons-react';
 import { toast } from 'sonner';
 
-import { IconError, IconInfo, IconSuccess, IconWarning } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
 
-import { iconColor, leftBorder } from '../lib';
 import type { NotifyType, ToastOptions } from '../model';
 
+export const toastStyles: Record<NotifyType, string> = {
+	success: 'bg-(--status-success)/10 text-(--status-success)',
+	error: 'bg-(--status-error)/10 text-(--status-error)',
+	warning: 'bg-(--status-warning)/10 text-(--status-warning)',
+	info: 'bg-(--status-info)/10 text-(--status-info)',
+};
+
 const iconMap = {
-	success: <IconSuccess />,
-	error: <IconError />,
-	warning: <IconWarning />,
-	info: <IconInfo />,
+	success: IconCircleCheck,
+	error: IconCircleX,
+	warning: IconAlertTriangle,
+	info: IconInfoCircle,
 };
 
 interface ToastProps {
@@ -25,18 +31,17 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 
 	return (
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
-			<div
-				className={cn(
-					'flex min-w-60 items-center justify-center gap-2 rounded-xl border border-l-4 border-(--border-color) bg-[rgba(255,255,255,0.3)] p-3 shadow-lg backdrop-blur-md select-none md:p-2',
-					leftBorder(type)
-				)}
-			>
-				<div className={cn('size-8 py-1', iconColor(type))}>{Icon}</div>
-				<div className="flex-1 pr-2 text-center text-sm">
-					{message}
-					{options?.description && <p className="opacity-75">{options.description}</p>}
+			<div className="flex min-w-64 items-center gap-2.5 rounded-xl border border-(--border-color) bg-(--bg-secondary)/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl select-none">
+				<div className={cn('flex size-7 shrink-0 items-center justify-center rounded-lg', toastStyles[type])}>
+					<Icon className="size-4.5" />
 				</div>
-				{options?.button && <div>{options.button}</div>}
+				<div className="min-w-0 flex-1">
+					<p className="text-sm text-(--color-primary)">{message}</p>
+					{options?.description && (
+						<p className="mt-0.5 text-xs leading-relaxed text-(--color-secondary)">{options.description}</p>
+					)}
+				</div>
+				{options?.button && <div className="shrink-0">{options.button}</div>}
 			</div>
 		</div>
 	);
