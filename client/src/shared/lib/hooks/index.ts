@@ -1,6 +1,5 @@
 export { useBodyScrollLock } from './useBodyScrollLock';
 export { useCopy } from './useCopy';
-export { useDebouncedEffect } from './useDebouncedEffect';
 export { useDeviceType } from './useDeviceType';
 export { useEscapeClose } from './useEscapeClose';
 export { useModalBack } from './useModalBack';

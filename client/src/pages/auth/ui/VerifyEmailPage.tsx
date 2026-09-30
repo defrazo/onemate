@@ -20,33 +20,42 @@ export const VerifyEmailPage = () => {
 
 	const [status, setStatus] = useState<Status>('loading');
 
+	const expires = searchParams.get('expires');
+	const signature = searchParams.get('signature');
 	const type = searchParams.get('type') ?? 'register';
 	const isPending = type === 'pending';
 
-	useEffect(() => {
-		const expires = searchParams.get('expires');
-		const signature = searchParams.get('signature');
+	const query = searchParams.toString();
 
+	useEffect(() => {
 		if (!id || !hash || !expires || !signature) {
 			setStatus('error');
 			return;
 		}
 
-		const params = Object.fromEntries(searchParams.entries());
+		let active = true;
+
+		const params = Object.fromEntries(new URLSearchParams(query));
 
 		const verify = async () => {
+			setStatus('loading');
+
 			try {
 				if (isPending) await userStore.verifyPendingEmail(id, hash, params);
 				else await authStore.verifyEmail(id, hash, params);
 
-				setStatus('success');
+				if (active) setStatus('success');
 			} catch {
-				setStatus('error');
+				if (active) setStatus('error');
 			}
 		};
 
 		void verify();
-	}, [id, hash, isPending]);
+
+		return () => {
+			active = false;
+		};
+	}, [id, hash, expires, signature, isPending, query, authStore, userStore]);
 
 	return (
 		<AuthWrapper isPage>

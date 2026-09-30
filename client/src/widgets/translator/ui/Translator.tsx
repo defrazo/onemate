@@ -10,15 +10,15 @@ import { Controls, TranslateField } from './components';
 export const Translator = observer(() => {
 	const location = useLocation();
 
-	const { notifyStore, translatorStore } = useStore();
+	const { notifyStore, translatorStore: store } = useStore();
 
 	useEffect(() => {
-		if (!translatorStore.sourceText.trim()) return;
+		if (!store.sourceText.trim()) return;
 
 		let active = true;
 
 		const timeout = setTimeout(() => {
-			translatorStore.translate().catch(() => {
+			store.translate().catch(() => {
 				if (!active) return;
 
 				notifyStore.setNotice('Что-то пошло не так', 'error');
@@ -29,15 +29,15 @@ export const Translator = observer(() => {
 			active = false;
 			clearTimeout(timeout);
 		};
-	}, [translatorStore.sourceText, translatorStore.sourceLang, translatorStore.targetLang]);
+	}, [store.sourceText, store.sourceLang, store.targetLang, store, notifyStore]);
 
 	useEffect(() => {
-		return () => translatorStore.reset();
-	}, [location.pathname]);
+		return () => store.reset();
+	}, [location.pathname, store]);
 
 	useEffect(() => {
-		return () => translatorStore.destroy();
-	}, [translatorStore]);
+		return () => store.destroy();
+	}, [store]);
 
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">

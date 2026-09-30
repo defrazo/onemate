@@ -1,4 +1,4 @@
-import { type RefObject, useEffect } from 'react';
+import { type RefObject, useCallback, useEffect } from 'react';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
@@ -16,9 +16,12 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 
 	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 
-	const isUserMenuOpen = () => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown';
+	const isUserMenuOpen = useCallback(
+		() => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown',
+		[modalStore]
+	);
 
-	const handleUserMenuClick = () => {
+	const handleUserMenuClick = useCallback(() => {
 		const rect = headerRef.current?.getBoundingClientRect();
 
 		if (!rect) return;
@@ -33,14 +36,14 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 		isMobile
 			? modalStore.setModal(<MobileUserMenu />, 'sheet')
 			: modalStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
-	};
+	}, [headerRef, isMobile, isUserMenuOpen, modalStore]);
 
 	useEffect(() => {
 		if (modalStore.modal && isUserMenuOpen()) {
 			modalStore.closeModal();
 			handleUserMenuClick();
 		}
-	}, [device]);
+	}, [device, orientation, modalStore, isUserMenuOpen, handleUserMenuClick]);
 
 	return (
 		<Button

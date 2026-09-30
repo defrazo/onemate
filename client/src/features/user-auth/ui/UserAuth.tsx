@@ -10,7 +10,7 @@ export const UserAuth = observer(() => {
 
 	useEffect(() => {
 		if (userStore.id) modalStore.closeModal();
-	}, [userStore.id]);
+	}, [userStore.id, modalStore]);
 
 	switch (authFormStore.authType) {
 		case 'register':

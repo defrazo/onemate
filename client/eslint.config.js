@@ -1,8 +1,9 @@
-import eslintPluginPrettier from 'eslint-plugin-prettier';
-import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
-import eslintPluginReact from 'eslint-plugin-react';
 import typescriptParser from '@typescript-eslint/parser';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
+import eslintPluginReact from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
 	{
@@ -12,7 +13,6 @@ export default [
 			parserOptions: {
 				ecmaVersion: 'latest',
 				sourceType: 'module',
-				project: './tsconfig.json',
 			},
 			globals: {
 				window: 'readonly',
@@ -23,8 +23,9 @@ export default [
 		plugins: {
 			'@typescript-eslint': typescriptEslintPlugin,
 			prettier: eslintPluginPrettier,
-			'simple-import-sort': eslintPluginSimpleImportSort,
 			react: eslintPluginReact,
+			'react-hooks': reactHooks,
+			'simple-import-sort': eslintPluginSimpleImportSort,
 		},
 		settings: {
 			react: {
@@ -32,15 +33,21 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': ["warn", {
-				"argsIgnorePattern": "^_",
-				"varsIgnorePattern": "^_",
-				"caughtErrorsIgnorePattern": "^_"
-			}],
+			'@typescript-eslint/no-unused-vars': [
+				'warn',
+				{
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_',
+				},
+			],
+
 			'no-console': 'off',
-			'array-bracket-newline': ['off'],
-			'array-element-newline': ['off'],
+			'array-bracket-newline': 'off',
+			'array-element-newline': 'off',
+
 			'prettier/prettier': 'error',
+
 			'simple-import-sort/imports': [
 				'warn',
 				{
@@ -48,6 +55,7 @@ export default [
 				},
 			],
 			'simple-import-sort/exports': 'warn',
+
 			'react/jsx-sort-props': [
 				'warn',
 				{
@@ -57,16 +65,12 @@ export default [
 					reservedFirst: true,
 				},
 			],
+
+			'react-hooks/rules-of-hooks': 'error',
+			'react-hooks/exhaustive-deps': 'warn',
 		},
 	},
 	{
-		files: ['**/*.css'],
-		plugins: { prettier: eslintPluginPrettier },
-		rules: {
-			'prettier/prettier': 'error',
-		},
-	},
-	{
-		ignores: ['dist', 'node_modules','env.d.ts', 'vite.config.ts', 'tailwind.config.js'],
+		ignores: ['dist', 'node_modules', 'env.d.ts', 'vite.config.ts', 'tailwind.config.js'],
 	},
 ];

@@ -67,6 +67,7 @@ export type MonitoringHistory = {
 	incidents: number;
 };
 
+/* prettier-ignore*/
 export type CreateMonitoredService =
 	| { type: 'http'; name: string; url: string }
 	| { type: 'tcp'; name: string; host: string; port: number };

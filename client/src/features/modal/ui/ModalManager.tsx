@@ -13,22 +13,26 @@ export const ModalManager = observer(() => {
 	const modal = modalStore.modal;
 	if (!modal || modal.type === 'none') return null;
 
-	const componentMap = {
-		modal: Modal,
-		sheet: BottomSheet,
-		dropdown: Dropdown,
-		auto: device === 'mobile' ? BottomSheet : Modal,
+	const onClose = () => {
+		modal.onClose?.();
+		modalStore.closeModal();
 	};
 
-	const Wrapper = componentMap[modal.type] ?? Modal;
+	if (modal.type === 'dropdown') {
+		return (
+			<Dropdown position={modal.position} onClose={onClose}>
+				{modal.content}
+			</Dropdown>
+		);
+	}
 
-	return (
-		<Wrapper
-			onBack={modal.back}
-			onClose={modalStore.closeModal}
-			{...(modal.position && { position: modal.position })}
-		>
-			{modal.content}
-		</Wrapper>
-	);
+	if (modal.type === 'sheet' || (modal.type === 'auto' && device === 'mobile')) {
+		return (
+			<BottomSheet onBack={modal.back} onClose={onClose}>
+				{modal.content}
+			</BottomSheet>
+		);
+	}
+
+	return <Modal onClose={onClose}>{modal.content}</Modal>;
 });

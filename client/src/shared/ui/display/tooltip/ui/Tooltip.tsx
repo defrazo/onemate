@@ -14,16 +14,20 @@ interface TooltipProps {
 	portalContainer?: Element;
 }
 
-export const Tooltip = ({
+const DEFAULT_PLACEMENTS: Placement[] = ['top', 'bottom', 'right', 'left'];
+
+interface TooltipContentProps extends Omit<TooltipProps, 'content'> {
+	content: ReactNode;
+}
+
+const TooltipContent = ({
 	content,
 	className,
 	children,
-	preferredPlacements = ['top', 'bottom', 'right', 'left'],
+	preferredPlacements = DEFAULT_PLACEMENTS,
 	offset = 8,
 	portalContainer,
-}: TooltipProps) => {
-	if (!content) return <>{children}</>;
-
+}: TooltipContentProps) => {
 	const { show, coords, placement, triggerRef, tipRef, setShow } = useTooltip(preferredPlacements, offset, content);
 
 	const tip = (
@@ -65,5 +69,15 @@ export const Tooltip = ({
 
 			{show && createPortal(tip, portalContainer ?? document.body)}
 		</>
+	);
+};
+
+export const Tooltip = ({ content, children, ...props }: TooltipProps) => {
+	if (!content) return <>{children}</>;
+
+	return (
+		<TooltipContent {...props} content={content}>
+			{children}
+		</TooltipContent>
 	);
 };

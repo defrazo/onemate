@@ -66,9 +66,29 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 	};
 
 	useEffect(() => {
+		let active = true;
+
 		setIsHistoryLoading(true);
-		void fetchHistory().finally(() => setIsHistoryLoading(false));
-	}, [service.id]);
+
+		networkStore
+			.loadHistory(service.id)
+			.then((history) => {
+				if (!active) return;
+
+				setHistory(history);
+				setIsHistoryError(false);
+			})
+			.catch(() => {
+				if (active) setIsHistoryError(true);
+			})
+			.finally(() => {
+				if (active) setIsHistoryLoading(false);
+			});
+
+		return () => {
+			active = false;
+		};
+	}, [service.id, networkStore]);
 
 	return (
 		<div className="flex h-full min-h-0 flex-col gap-3">

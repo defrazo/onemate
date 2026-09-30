@@ -19,19 +19,26 @@ export const AccountProfilePage = () => {
 	const Tab = accountSettingsTabs[currentTab];
 
 	useEffect(() => {
-		if (!isAccountSettingsTab(tab)) {
-			const params = new URLSearchParams(searchParams);
-			params.set('tab', 'overview');
+		if (isAccountSettingsTab(tab)) return;
 
-			setSearchParams(params, { replace: true });
-		}
-	}, [tab]);
-
-	const content = <Tab />;
+		setSearchParams(
+			(prev) => {
+				const params = new URLSearchParams(prev);
+				params.set('tab', 'overview');
+				return params;
+			},
+			{ replace: true }
+		);
+	}, [tab, setSearchParams]);
 
 	useEffect(() => {
-		device === 'mobile' ? modalStore.setModal(content, 'sheet') : modalStore.closeModal();
-	}, [device, currentTab]);
+		if (device === 'mobile') modalStore.setModal(<Tab />, 'sheet');
+		else modalStore.closeModal();
+	}, [device, Tab, modalStore]);
 
-	return device !== 'mobile' ? <div className="w-full max-w-2xl">{content}</div> : null;
+	return device !== 'mobile' ? (
+		<div className="w-full max-w-2xl">
+			<Tab />
+		</div>
+	) : null;
 };

@@ -39,13 +39,13 @@ export const ResendEmailForm = observer(() => {
 
 	useEffect(() => {
 		const nextEmail = userStore.pendingEmail || authFormStore.email || '';
-		if (nextEmail && nextEmail !== email) setEmail(nextEmail);
+		if (nextEmail) setEmail((prev) => (prev === nextEmail ? prev : nextEmail));
 	}, [userStore.pendingEmail, authFormStore.email]);
 
 	useEffect(() => {
 		const timerId = window.setInterval(() => setCooldown(emailCooldown.getRemaining()), 1000);
 		return () => window.clearInterval(timerId);
-	}, [cooldown]);
+	}, []);
 
 	return (
 		<form className="flex w-full max-w-md flex-col gap-4" onSubmit={handleSubmit}>

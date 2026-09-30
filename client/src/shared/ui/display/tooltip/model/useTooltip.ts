@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
 import type { Placement } from '.';
 
@@ -12,7 +12,7 @@ export const useTooltip = (preferredPlacements: Placement[], offset: number, con
 	const triggerRef = useRef<HTMLDivElement>(null);
 	const tipRef = useRef<HTMLDivElement>(null);
 
-	const updatePosition = () => {
+	const updatePosition = useCallback(() => {
 		if (!triggerRef.current || !tipRef.current) return;
 
 		const tRect = triggerRef.current.getBoundingClientRect();
@@ -72,11 +72,11 @@ export const useTooltip = (preferredPlacements: Placement[], offset: number, con
 
 		setPlacement(preferredPlacements[0] ?? 'top');
 		setCoords(fallback);
-	};
+	}, [preferredPlacements, offset]);
 
 	useLayoutEffect(() => {
 		if (show) updatePosition();
-	}, [show, content]);
+	}, [show, content, updatePosition]);
 
 	useEffect(() => {
 		if (!show) return;
@@ -96,7 +96,7 @@ export const useTooltip = (preferredPlacements: Placement[], offset: number, con
 			window.removeEventListener('resize', onResize);
 			observer.disconnect();
 		};
-	}, [show]);
+	}, [show, updatePosition]);
 
 	return { show, coords, placement, triggerRef, tipRef, setShow };
 };

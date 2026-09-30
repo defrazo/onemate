@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
@@ -18,7 +18,7 @@ export const KanbanPage = () => {
 	const cleanupRef = useRef<(() => void) | undefined>(undefined);
 	const requestIdRef = useRef(0);
 
-	const init = async () => {
+	const init = useCallback(async () => {
 		const root = kanbanRef.current;
 		if (!root) return;
 
@@ -45,7 +45,7 @@ export const KanbanPage = () => {
 		} finally {
 			if (requestId === requestIdRef.current) setLoading(false);
 		}
-	};
+	}, [userStore]);
 
 	useEffect(() => {
 		let disposed = false;
@@ -60,7 +60,7 @@ export const KanbanPage = () => {
 			cleanupRef.current?.();
 			cleanupRef.current = undefined;
 		};
-	}, []);
+	}, [init]);
 
 	return (
 		<div className="relative size-full">

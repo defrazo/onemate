@@ -10,15 +10,17 @@
  *   <Button onClick={() => copy("Текст", "Скопировано!")} />
  */
 
-import copy from 'copy-to-clipboard';
-
 import { useStore } from '@/app/providers';
 
 export const useCopy = () => {
 	const { notifyStore } = useStore();
 
-	return (data: string, message?: string) => {
-		copy(data);
-		notifyStore.setNotice(message ?? 'Данные скопированы', 'success');
+	return async (data: string, message?: string): Promise<void> => {
+		try {
+			await navigator.clipboard.writeText(data);
+			notifyStore.setNotice(message ?? 'Данные скопированы', 'success');
+		} catch {
+			notifyStore.setNotice('Не удалось скопировать данные', 'error');
+		}
 	};
 };
