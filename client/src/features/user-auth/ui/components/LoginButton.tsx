@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react';
 import { IconLogin2 } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
@@ -6,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
-const UserAuth = lazy(() => import('../UserAuth').then(({ UserAuth }) => ({ default: UserAuth })));
+import { UserAuth } from '..';
 
 export const LoginButton = observer(() => {
 	const device = useDeviceType();
@@ -19,11 +18,7 @@ export const LoginButton = observer(() => {
 	const openAuth = () => {
 		authFormStore.reset();
 		authFormStore.switchToLogin();
-		modalStore.setModal(
-			<Suspense fallback={null}>
-				<UserAuth />
-			</Suspense>
-		);
+		modalStore.setModal(<UserAuth />);
 	};
 
 	return (

@@ -26,7 +26,6 @@ export const ViewSwitch = observer(() => {
 			>
 				Сейчас
 			</Button>
-
 			<Button
 				className={buttonStyle(!weatherStore.isOpenCurrent)}
 				size="custom"

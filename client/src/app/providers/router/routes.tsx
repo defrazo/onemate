@@ -2,7 +2,8 @@ import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 
 import { Layout, StaticPageLayout } from '@/app/layouts';
-import { ProfileNav } from '@/features/account-settings/ui/ProfileNav';
+import { ProfileNav } from '@/features/account-settings';
+import { DemoPage } from '@/pages/demo';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
 
@@ -18,7 +19,7 @@ const DeletedAccountPage = lazy(() =>
 const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
 const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
 const DashboardPage = lazy(() => import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })));
-const DemoPage = lazy(() => import('@/pages/demo/ui/DemoPage').then((m) => ({ default: m.DemoPage })));
+
 const Background = lazy(() => import('@/pages/home').then((m) => ({ default: m.Background })));
 const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
 const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));

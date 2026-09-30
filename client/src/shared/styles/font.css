@@ -1,66 +1,8 @@
 /* Nunito */
 @font-face {
 	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-Light.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-Light.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-Light.ttf') format('truetype');
-	font-weight: 300;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-Regular.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-Regular.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-Regular.ttf') format('truetype');
-	font-weight: 400;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-RegularItalic.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-RegularItalic.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-RegularItalic.ttf') format('truetype');
-	font-weight: 400;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-Bold.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-Bold.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-Bold.ttf') format('truetype');
-	font-weight: 700;
-	font-style: normal;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-BoldItalic.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-BoldItalic.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-BoldItalic.ttf') format('truetype');
-	font-weight: 700;
-	font-style: italic;
-	font-display: swap;
-}
-
-@font-face {
-	font-family: 'Nunito';
-	src:
-		url('../assets/fonts/Nunito/Nunito-Black.woff2') format('woff2'),
-		url('../assets/fonts/Nunito/Nunito-Black.woff') format('woff'),
-		url('../assets/fonts/Nunito/Nunito-Black.ttf') format('truetype');
-	font-weight: 900;
+	src: url('../assets/fonts/Nunito/Nunito-Variable.woff2') format('woff2');
+	font-weight: 200 1000;
 	font-style: normal;
 	font-display: swap;
 }

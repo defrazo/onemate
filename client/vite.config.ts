@@ -1,18 +1,12 @@
 import tailwindcss from '@tailwindcss/vite';
 import react from '@vitejs/plugin-react';
 import path from 'path';
-import { visualizer } from 'rollup-plugin-visualizer';
 import { defineConfig } from 'vite';
 import svgr from 'vite-plugin-svgr';
 
 export default defineConfig({
 	base: '/',
-	plugins: [
-		react(),
-		svgr(),
-		tailwindcss(),
-		visualizer({ filename: 'stats.html', template: 'treemap', gzipSize: true, open: false }),
-	],
+	plugins: [react(), svgr(), tailwindcss()],
 	resolve: { alias: { '@': path.resolve(import.meta.dirname, 'src') } },
 	build: { outDir: 'dist' },
 	server: {
