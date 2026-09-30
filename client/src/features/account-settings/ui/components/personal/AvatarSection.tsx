@@ -4,7 +4,7 @@ import { useStore } from '@/app/providers';
 import { useDeviceType } from '@/shared/lib/hooks';
 import { Button, Thumbnail } from '@/shared/ui';
 
-import { PersonalTab } from '../..';
+import { PersonalTab } from '../../PersonalTab';
 import { AvatarPicker } from '.';
 
 export const AvatarSection = observer(() => {

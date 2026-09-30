@@ -1,21 +1,31 @@
+import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 
 import { Layout, StaticPageLayout } from '@/app/layouts';
-import { ProfileNav } from '@/features/account-settings';
-import { AboutPage } from '@/pages/about';
-import { DeletedAccountPage } from '@/pages/account-deleted';
-import { AccountProfilePage } from '@/pages/account-profile';
-import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
-import { DashboardPage } from '@/pages/dashboard';
-import { DemoPage } from '@/pages/demo';
-import { Background, HomePage } from '@/pages/home';
-import { KanbanPage } from '@/pages/kanban';
-import { NotFoundPage } from '@/pages/not-found';
-import { PrivacyPage } from '@/pages/privacy';
-import { TermsPage } from '@/pages/terms';
-import { TodoPage } from '@/pages/to-do';
+import { ProfileNav } from '@/features/account-settings/ui/ProfileNav';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
+
+const AccountProfilePage = lazy(() =>
+	import('@/pages/account-profile').then((m) => ({ default: m.AccountProfilePage }))
+);
+
+const AboutPage = lazy(() => import('@/pages/about').then((m) => ({ default: m.AboutPage })));
+const DeletedAccountPage = lazy(() =>
+	import('@/pages/account-deleted').then((m) => ({ default: m.DeletedAccountPage }))
+);
+
+const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
+const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
+const DashboardPage = lazy(() => import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })));
+const DemoPage = lazy(() => import('@/pages/demo/ui/DemoPage').then((m) => ({ default: m.DemoPage })));
+const Background = lazy(() => import('@/pages/home').then((m) => ({ default: m.Background })));
+const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
+const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));
+const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
+const PrivacyPage = lazy(() => import('@/pages/privacy').then((m) => ({ default: m.PrivacyPage })));
+const TermsPage = lazy(() => import('@/pages/terms').then((m) => ({ default: m.TermsPage })));
+const TodoPage = lazy(() => import('@/pages/to-do').then((m) => ({ default: m.TodoPage })));
 
 export const routes: RouteObject[] = [
 	{

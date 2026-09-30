@@ -1,5 +1,6 @@
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
 import typescriptParser from '@typescript-eslint/parser';
+import eslintPluginImport from 'eslint-plugin-import';
 import eslintPluginPrettier from 'eslint-plugin-prettier';
 import eslintPluginReact from 'eslint-plugin-react';
 import reactHooks from 'eslint-plugin-react-hooks';
@@ -24,6 +25,7 @@ export default [
 			'@typescript-eslint': typescriptEslintPlugin,
 			prettier: eslintPluginPrettier,
 			react: eslintPluginReact,
+			import: eslintPluginImport,
 			'react-hooks': reactHooks,
 			'simple-import-sort': eslintPluginSimpleImportSort,
 		},
@@ -33,44 +35,67 @@ export default [
 			},
 		},
 		rules: {
+			// TypeScript
+			'no-unused-vars': 'off',
 			'@typescript-eslint/no-unused-vars': [
 				'warn',
 				{
-					argsIgnorePattern: '^_',
-					varsIgnorePattern: '^_',
-					caughtErrorsIgnorePattern: '^_',
+				argsIgnorePattern: '^_',
+				varsIgnorePattern: '^_',
+				caughtErrorsIgnorePattern: '^_',
 				},
 			],
-
-			'no-console': 'off',
-			'array-bracket-newline': 'off',
-			'array-element-newline': 'off',
-
-			'prettier/prettier': 'error',
-
-			'simple-import-sort/imports': [
+			'@typescript-eslint/consistent-type-imports': [
 				'warn',
 				{
-					groups: [['^react', '^@?\\w'], ['^@/'], ['^\\.'], ['\\.s?css$']],
+				prefer: 'type-imports',
+				fixStyle: 'separate-type-imports',
 				},
 			],
-			'simple-import-sort/exports': 'warn',
 
+			// Imports / exports
+			'simple-import-sort/imports': [
+				'error',
+				{
+				groups: [
+					['^\\u0000'],
+					['^react$', '^react-dom', '^@?\\w'],
+					['^@/'],
+					['^\\.\\.(?!/?$)', '^\\.\\./?$'],
+					['^\\./(?=.*/)(?!/?$)', '^\\.(?!/?$)', '^\\./?$'],
+					['^.+\\.s?css$'],
+				],
+				},
+			],
+			'simple-import-sort/exports': 'error',
+			'import/first': 'error',
+
+			// React
 			'react/jsx-sort-props': [
 				'warn',
 				{
-					callbacksLast: true,
-					shorthandFirst: false,
-					noSortAlphabetically: false,
-					reservedFirst: true,
+				callbacksLast: true,
+				shorthandFirst: true,
+				reservedFirst: true,
+				noSortAlphabetically: false,
 				},
 			],
 
+			// React Hooks
 			'react-hooks/rules-of-hooks': 'error',
 			'react-hooks/exhaustive-deps': 'warn',
-		},
+
+			// General
+			'no-console': 'off',
+			'no-duplicate-imports': 'error',
+			'object-shorthand': ['warn', 'always'],
+			'prefer-const': 'error',
+
+			// Formatting
+			'prettier/prettier': 'error',
+			},
 	},
 	{
-		ignores: ['dist', 'node_modules', 'env.d.ts', 'vite.config.ts', 'tailwind.config.js'],
+		ignores: ['dist', 'node_modules', 'env.d.ts', 'tailwind.config.js'],
 	},
 ];

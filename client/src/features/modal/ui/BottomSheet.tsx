@@ -6,7 +6,6 @@ import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { useDragger } from '../model';
-import { DragHandle } from '.';
 
 interface BottomSheetProps {
 	onBack?: () => void;
@@ -18,6 +17,9 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 	useBodyScrollLock(true);
 
 	const { positionY, isDragging, bind, getLineClass } = useDragger(onClose);
+
+	const lineStyle =
+		'absolute block h-1 origin-center rounded-xl bg-(--color-secondary) transition-transform duration-300';
 
 	return (
 		<>
@@ -40,7 +42,10 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				}}
 			>
 				<div {...bind()} style={{ touchAction: 'none' }}>
-					<DragHandle getLineClass={getLineClass} />
+					<div className="drag-handle relative flex h-10 cursor-grab items-center justify-center bg-transparent select-none">
+						<span className={cn(lineStyle, getLineClass('top'))} />
+						<span className={cn(lineStyle, getLineClass('bottom'))} />
+					</div>
 				</div>
 				{onBack && (
 					<Button

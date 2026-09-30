@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
@@ -32,13 +32,21 @@ export const AccountProfilePage = () => {
 	}, [tab, setSearchParams]);
 
 	useEffect(() => {
-		if (device === 'mobile') modalStore.setModal(<Tab />, 'sheet');
+		if (device === 'mobile')
+			modalStore.setModal(
+				<Suspense fallback={null}>
+					<Tab />
+				</Suspense>,
+				'sheet'
+			);
 		else modalStore.closeModal();
 	}, [device, Tab, modalStore]);
 
 	return device !== 'mobile' ? (
 		<div className="w-full max-w-2xl">
-			<Tab />
+			<Suspense fallback={null}>
+				<Tab />
+			</Suspense>
 		</div>
 	) : null;
 };

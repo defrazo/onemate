@@ -6,7 +6,7 @@ import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { PersonalTab } from '../..';
+import { PersonalTab } from '../../PersonalTab';
 
 export const AvatarPicker = () => {
 	const device = useDeviceType();
