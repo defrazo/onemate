@@ -1,4 +1,4 @@
-import { sizes, variants } from '../lib';
+import type { sizes, variants } from '../lib';
 
 export type Component = 'button' | 'input' | 'textarea' | 'checkbox' | 'radio' | 'select';
 

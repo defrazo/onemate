@@ -3,8 +3,8 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
-import { AVATAR_ENTRIES, AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import { DEFAULT_THEME, type Theme, type WidgetId, WidgetSlot } from '@/shared/config';
+import { AVATAR_ENTRIES, type AvatarId, AVATARS } from '@/shared/assets/images/avatars';
+import { DEFAULT_THEME, type Theme, type WidgetId, type WidgetSlot } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 

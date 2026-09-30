@@ -1,8 +1,8 @@
-import type { ReactElement } from 'react';
 import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
+import type { ReactElement } from 'react';
 
 import { useStore } from '@/app/providers';
 

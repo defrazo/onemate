@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { IconArrowLeft, IconHome } from '@tabler/icons-react';
+import { useNavigate } from 'react-router-dom';
 
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button, Link } from '@/shared/ui';

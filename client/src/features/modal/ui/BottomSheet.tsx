@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { IconChevronLeft } from '@tabler/icons-react';
+import type { ReactNode } from 'react';
 
 import { useBodyScrollLock } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';

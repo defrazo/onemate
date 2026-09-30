@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import { makeAutoObservable } from 'mobx';
+import type { ReactNode } from 'react';
 
 import type { ModalConfig, ModalType } from '.';
 

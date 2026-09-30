@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
 import { IconX } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
+import { Link } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { Button } from '@/shared/ui';

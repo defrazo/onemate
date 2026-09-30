@@ -1,7 +1,7 @@
-import { HTMLAttributes } from 'react';
-import { DraggableSyntheticListeners } from '@dnd-kit/core';
+import type { DraggableSyntheticListeners } from '@dnd-kit/core';
 import { IconCopy, IconGripHorizontal, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
+import type { HTMLAttributes } from 'react';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';

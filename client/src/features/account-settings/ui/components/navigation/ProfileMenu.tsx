@@ -1,5 +1,5 @@
-import { useNavigate, useSearchParams } from 'react-router-dom';
 import { IconBook, IconHome, IconShieldLock, IconStack2, IconUser } from '@tabler/icons-react';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';

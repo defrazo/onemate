@@ -9,9 +9,9 @@ export const Calculator = () => {
 	return (
 		<>
 			<Input
+				readOnly
 				className="pointer-events-none px-2 py-0.5 text-right text-xl font-bold tabular-nums lg:py-2 lg:text-2xl"
 				name="calc-output"
-				readOnly
 				size="custom"
 				tabIndex={-1}
 				type="text"

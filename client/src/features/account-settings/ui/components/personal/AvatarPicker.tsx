@@ -1,7 +1,7 @@
 import { useState } from 'react';
 
 import { useStore } from '@/app/providers';
-import { AVATAR_ENTRIES, AvatarId } from '@/shared/assets/images/avatars';
+import { AVATAR_ENTRIES, type AvatarId } from '@/shared/assets/images/avatars';
 import { useDeviceType } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';

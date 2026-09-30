@@ -1,4 +1,4 @@
-import { validateEmail, validateUsername, ValidationResult } from '.';
+import { validateEmail, validateUsername, type ValidationResult } from '.';
 
 export const validateLogin = (login: string): ValidationResult => {
 	const normalized = login.trim();

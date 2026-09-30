@@ -1,6 +1,6 @@
 import { IconChevronDown } from '@tabler/icons-react';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
+import { getComponentStyles, type sizes, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 import { type Direction, type Justify, type SelectOption, useSelect } from '../model';

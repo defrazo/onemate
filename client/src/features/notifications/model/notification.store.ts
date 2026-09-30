@@ -1,6 +1,6 @@
 import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
-import { IBaseUserPort } from '@/entities/user';
+import type { IBaseUserPort } from '@/entities/user';
 import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 

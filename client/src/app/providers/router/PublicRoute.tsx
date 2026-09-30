@@ -1,5 +1,5 @@
-import { Navigate, Outlet } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { Navigate, Outlet } from 'react-router-dom';
 
 import { SplashScreen } from '@/shared/ui';
 

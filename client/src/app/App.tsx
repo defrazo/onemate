@@ -1,5 +1,5 @@
-import { BrowserRouter } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
 import { ModalManager } from '@/features/modal';

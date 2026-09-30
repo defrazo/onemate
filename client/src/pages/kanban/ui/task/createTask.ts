@@ -1,7 +1,7 @@
 import { cn, fullDate } from '@/shared/lib/utils';
 
 import { createSvg, deleteIcon, deviceUtils } from '../../lib';
-import { createState, type Task } from '../../model';
+import type { createState, Task } from '../../model';
 import { createConfirmDialog } from '../components';
 import { createTaskHeader, createTaskMeta, editTask, viewTask } from '.';
 

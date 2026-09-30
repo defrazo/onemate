@@ -17,9 +17,9 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 	if (isLoading) {
 		return (
 			<HistoryState
+				loading
 				desc="Получаем данные последних проверок"
 				icon={IconLoader2}
-				loading
 				title="Загружаем историю"
 			/>
 		);

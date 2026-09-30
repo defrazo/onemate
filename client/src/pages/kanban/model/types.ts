@@ -1,4 +1,4 @@
-import { COLUMN_COLORS, TASK_PRIORITY, TASK_STATUS } from '.';
+import type { COLUMN_COLORS, TASK_PRIORITY, TASK_STATUS } from '.';
 
 export type Task = {
 	id: string;

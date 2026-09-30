@@ -1,5 +1,5 @@
-import type { ReactNode } from 'react';
 import type { Icon } from '@tabler/icons-react';
+import type { ReactNode } from 'react';
 
 interface OverviewSectionProps {
 	title: string;

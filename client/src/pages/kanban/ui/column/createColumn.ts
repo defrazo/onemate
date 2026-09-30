@@ -1,5 +1,5 @@
 import { deviceUtils } from '../../lib';
-import { type Column, type ColumnColor, createState } from '../../model';
+import type { Column, ColumnColor, createState } from '../../model';
 import { editTask } from '..';
 import { createColumnHeader, editColumn } from '.';
 

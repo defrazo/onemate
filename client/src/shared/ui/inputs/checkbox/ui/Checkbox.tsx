@@ -1,7 +1,7 @@
-import type { InputHTMLAttributes } from 'react';
 import { IconSquare, IconSquareCheck } from '@tabler/icons-react';
+import type { InputHTMLAttributes } from 'react';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
+import { getComponentStyles, type sizes, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size' | 'checked' | 'onChange'> {

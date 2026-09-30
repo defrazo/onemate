@@ -10,9 +10,9 @@ export const Controls = observer(() => {
 	return (
 		<div className="grid grid-cols-[1fr_auto_1fr] border-b border-(--border-color) pb-2">
 			<Select
+				hideChevron
 				align="start"
 				className="justify-center text-sm transition-colors hover:text-(--accent-default)"
-				hideChevron
 				listClassName="-left-2 right-auto mt-2 w-50"
 				options={translatorStore.languages}
 				size="custom"
@@ -28,9 +28,9 @@ export const Controls = observer(() => {
 				onClick={translatorStore.swap}
 			/>
 			<Select
+				hideChevron
 				align="start"
 				className="justify-center text-sm transition-colors hover:text-(--accent-default)"
-				hideChevron
 				listClassName="-right-2 left-auto mt-2 w-50"
 				options={translatorStore.languages}
 				size="custom"

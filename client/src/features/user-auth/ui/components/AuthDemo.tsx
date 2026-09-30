@@ -1,5 +1,5 @@
-import { useNavigate } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { IconMask } from '@/shared/assets/icons';

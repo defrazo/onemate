@@ -13,7 +13,7 @@ import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { WeatherStore } from '@/widgets/weather';
 
-import { AllStores, CoreStores } from '.';
+import type { AllStores, CoreStores } from '.';
 
 export class StoreFactory {
 	static createCore(): CoreStores {

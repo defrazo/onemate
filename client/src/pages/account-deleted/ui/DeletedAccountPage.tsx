@@ -1,6 +1,6 @@
-import { useNavigate } from 'react-router-dom';
 import { IconClock, IconLogout, IconRestore } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle, useRemainingTime } from '@/shared/lib/hooks';

@@ -1,5 +1,5 @@
 import { addIcon, insertSvg } from '../lib';
-import { type Column, createState, enableMouseScroll, LIMITS, setupDnD, type Task } from '../model';
+import { type Column, type createState, enableMouseScroll, LIMITS, setupDnD, type Task } from '../model';
 import { createColumn, createTaskCard, editColumn } from '.';
 
 export const createBoard = (state: ReturnType<typeof createState>) => {

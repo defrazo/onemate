@@ -1,6 +1,6 @@
+import { IconArrowLeft, IconHome } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IconArrowLeft, IconHome } from '@tabler/icons-react';
 
 import { Button, Link } from '@/shared/ui';
 

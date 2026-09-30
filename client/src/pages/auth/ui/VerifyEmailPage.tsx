@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
-import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 import { IconAlertCircle, IconLoader2, IconMailCheck } from '@tabler/icons-react';
+import { useNavigate, useParams, useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { AuthWrapper, UserAuth } from '@/features/user-auth';

@@ -1,4 +1,4 @@
-import { Icon, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
+import { type Icon, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';

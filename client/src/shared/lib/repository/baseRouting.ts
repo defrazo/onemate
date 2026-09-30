@@ -1,5 +1,4 @@
-import type { Feature, Operation, Role, UserStore } from '@/entities/user';
-import { PermissionService } from '@/entities/user';
+import { type Feature, type Operation, PermissionService, type Role, type UserStore } from '@/entities/user';
 
 import { PermissionError } from '../errors';
 

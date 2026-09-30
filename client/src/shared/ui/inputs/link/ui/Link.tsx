@@ -1,7 +1,7 @@
 import type { ComponentProps, ReactNode } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
+import { getComponentStyles, type sizes, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 interface LinkProps extends Omit<ComponentProps<typeof RouterLink>, 'to'> {

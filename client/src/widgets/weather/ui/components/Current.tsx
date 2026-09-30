@@ -13,7 +13,6 @@ import { capitalizeFirstLetter, formatTime } from '@/shared/lib/utils';
 import { Tooltip } from '@/shared/ui';
 
 import { getWindDirection } from '../../lib';
-
 import { ConditionIcon, Metric } from '.';
 
 export const Current = observer(() => {

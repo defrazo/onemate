@@ -67,7 +67,7 @@ export const NotificationsSection = observer(() => {
 							<span className="text-xs text-(--color-secondary)">Уведомления о задачах и сроках</span>
 						</div>
 					</div>
-					<Switch checked={false} disabled />
+					<Switch disabled checked={false} />
 				</div>
 			</div>
 		</section>

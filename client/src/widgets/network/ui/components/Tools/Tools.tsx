@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Icon, IconCertificate, IconLink, IconNetwork, IconPlus } from '@tabler/icons-react';
+import { type Icon, IconCertificate, IconLink, IconNetwork, IconPlus } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 

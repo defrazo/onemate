@@ -1,6 +1,6 @@
 import type { Ref, TextareaHTMLAttributes } from 'react';
 
-import { getComponentStyles, sizes, variants } from '@/shared/lib/design';
+import { getComponentStyles, type sizes, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
 const resizeStyles = {

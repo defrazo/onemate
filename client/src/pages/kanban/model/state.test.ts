@@ -17,6 +17,7 @@ const createRepoMock = (): IKanbanRepo => ({
 });
 
 vi.mock('../lib', async () => {
+	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
 	const actual = await vi.importActual<typeof import('../lib')>('../lib');
 
 	return {

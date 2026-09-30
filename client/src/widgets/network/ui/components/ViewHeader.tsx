@@ -1,4 +1,4 @@
-import { Icon, IconArrowLeft } from '@tabler/icons-react';
+import { type Icon, IconArrowLeft } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 

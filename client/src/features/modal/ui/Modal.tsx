@@ -1,7 +1,7 @@
-import type { ReactNode } from 'react';
 import ReactDOM from 'react-dom';
 import { IconX } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
+import type { ReactNode } from 'react';
 
 import { useEscapeClose } from '@/shared/lib/hooks';
 

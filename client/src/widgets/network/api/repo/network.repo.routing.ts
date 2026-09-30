@@ -1,4 +1,4 @@
-import { Feature, type IUserRoutingPort, Operation, PermissionService } from '@/entities/user';
+import { type Feature, type IUserRoutingPort, type Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
 import type {
