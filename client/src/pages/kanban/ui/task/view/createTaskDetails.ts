@@ -10,12 +10,12 @@ export const createTaskDetails = ({ title, description }: { title: string; descr
 
 	const titleLabel = document.createElement('span');
 	titleLabel.textContent = 'Название задачи';
-	titleLabel.className = 'text-sm text-(--color-secondary) opacity-70 select-none';
+	titleLabel.className = 'text-sm text-(--text-secondary) opacity-70 select-none';
 
 	const titleValue = document.createElement('div');
 	titleValue.textContent = title;
 	titleValue.className =
-		'rounded-lg border border-(--border-color) bg-white/3 px-3 py-2.5 text-sm text-(--color-secondary) 2xl:text-base';
+		'rounded-lg border border-(--border-primary) bg-white/3 px-3 py-2.5 text-sm text-(--text-secondary) 2xl:text-base';
 
 	titleField.append(titleLabel, titleValue);
 
@@ -25,13 +25,13 @@ export const createTaskDetails = ({ title, description }: { title: string; descr
 
 	const descriptionLabel = document.createElement('span');
 	descriptionLabel.textContent = 'Комментарий';
-	descriptionLabel.className = 'text-sm text-(--color-secondary) opacity-70 select-none';
+	descriptionLabel.className = 'text-sm text-(--text-secondary) opacity-70 select-none';
 
 	const descriptionValue = document.createElement('p');
 	descriptionValue.textContent = description || 'Комментарий не добавлен';
 	descriptionValue.className = cn(
-		'min-h-24 rounded-lg border border-(--border-color) bg-white/3 px-3 py-2.5 text-sm leading-5 whitespace-pre-wrap 2xl:text-base',
-		description ? 'text-(--color-secondary)' : 'text-(--color-disabled)'
+		'min-h-24 rounded-lg border border-(--border-primary) bg-white/3 px-3 py-2.5 text-sm leading-5 whitespace-pre-wrap 2xl:text-base',
+		description ? 'text-(--text-secondary)' : 'text-(--text-disabled)'
 	);
 
 	descriptionField.append(descriptionLabel, descriptionValue);

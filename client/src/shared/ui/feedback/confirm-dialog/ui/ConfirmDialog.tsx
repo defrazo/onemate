@@ -26,20 +26,20 @@ export const ConfirmDialog = ({
 		<div className="flex gap-2">
 			<div
 				className={cn(
-					'flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-default)/12',
+					'flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12',
 					variant === 'danger'
 						? 'bg-(--status-error)/10 text-(--status-error)'
-						: 'bg-(--warning-default)/10 text-(--warning-default)'
+						: 'bg-(--special-danger)/10 text-(--special-danger)'
 				)}
 			>
 				<IconAlertTriangle className="size-5.5" />
 			</div>
 			<div className="flex h-full flex-col justify-between gap-0.5 select-none">
 				<h2 className="text-xl font-semibold">{title}</h2>
-				<p className="trim text-sm text-(--color-secondary) opacity-60">Подтвердите действие</p>
+				<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 			</div>
 		</div>
-		<p className="trim text-sm text-(--color-secondary) opacity-80">{description}</p>
+		<p className="trim text-sm text-(--text-secondary) opacity-80">{description}</p>
 		<div className="flex h-8 justify-end gap-3">
 			<Button variant="accent" onClick={onConfirm}>
 				{confirmLabel}

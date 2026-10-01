@@ -2,29 +2,29 @@ import { arrowIcon, calendarIcon, insertSvg } from '../../../lib';
 
 export const createTaskViewProperties = ({ startDate, endDate }: { startDate: string; endDate: string | null }) => {
 	const element = document.createElement('div');
-	element.className = 'flex flex-col overflow-hidden rounded-xl border border-(--border-color) bg-white/3';
+	element.className = 'flex flex-col overflow-hidden rounded-xl border border-(--border-primary) bg-white/3';
 
 	// === PERIOD ROW ===
 	const periodRow = document.createElement('div');
 	periodRow.className = 'flex min-h-11 items-center gap-2 px-3 py-2';
 
 	const icon = document.createElement('span');
-	icon.className = 'flex size-5 shrink-0 items-center justify-center text-(--color-disabled)';
+	icon.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
 	insertSvg(icon, calendarIcon, 'size-5');
 
 	const label = document.createElement('span');
 	label.textContent = 'Период';
-	label.className = 'trim min-w-0 flex-1 text-(--color-secondary) opacity-70 select-none';
+	label.className = 'trim min-w-0 flex-1 text-(--text-secondary) opacity-70 select-none';
 
 	const value = document.createElement('div');
-	value.className = 'ml-auto flex shrink-0 items-center gap-2 text-sm text-(--color-secondary)';
+	value.className = 'ml-auto flex shrink-0 items-center gap-2 text-sm text-(--text-secondary)';
 
 	const start = document.createElement('span');
 	start.textContent = formatDate(startDate);
 	start.className = 'trim';
 
 	const arrow = document.createElement('div');
-	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--color-disabled)';
+	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
 	insertSvg(arrow, arrowIcon, 'size-5');
 
 	const end = document.createElement('span');

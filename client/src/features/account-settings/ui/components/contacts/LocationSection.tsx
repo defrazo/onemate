@@ -45,7 +45,7 @@ export const LocationSection = observer(() => {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<label className="text-(--color-secondary) opacity-70" htmlFor="location">
+			<label className="text-(--text-secondary) opacity-70" htmlFor="location">
 				Город
 			</label>
 			<LocationSearch value={location} onRemove={() => setLocation(null)} onSelect={setLocation} />

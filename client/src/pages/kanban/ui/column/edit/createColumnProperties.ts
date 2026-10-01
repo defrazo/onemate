@@ -20,7 +20,7 @@ export const createColumnProperties = ({
 
 	// === CONTAINER ===
 	const element = document.createElement('div');
-	element.className = 'flex flex-col rounded-xl border border-(--border-color) bg-white/2';
+	element.className = 'flex flex-col rounded-xl border border-(--border-primary) bg-white/2';
 
 	// === LIMIT ===
 	const limitRow = createPropertyRow(limitIcon, 'Лимит задач');

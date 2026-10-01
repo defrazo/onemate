@@ -42,7 +42,7 @@ export const Header = observer(() => {
 				)}
 				{!isMobile && (
 					<>
-						<div className="h-7 w-px bg-(--border-alt)" />
+						<div className="h-7 w-px bg-(--border-secondary)" />
 						<DateTime />
 					</>
 				)}

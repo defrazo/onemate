@@ -42,8 +42,8 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 					key={id}
 					className="min-h-0 rounded-xl bg-white/5 px-3 py-2 hover:bg-white/10 xl:min-h-16"
 					leftIcon={
-						<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-default)/10">
-							<Icon className="size-4 text-(--accent-default)" />
+						<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/10">
+							<Icon className="size-4 text-(--accent-primary)" />
 						</div>
 					}
 					size="custom"
@@ -52,16 +52,16 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 					onClick={() => setActiveTool(id)}
 				>
 					<div className="flex min-w-0 flex-1 flex-col items-start">
-						<span className="text-sm text-(--color-primary)">{title}</span>
-						<span className="truncate text-xs text-(--color-secondary)">{description}</span>
+						<span className="text-sm text-(--text-primary)">{title}</span>
+						<span className="truncate text-xs text-(--text-secondary)">{description}</span>
 					</div>
 				</Button>
 			))}
 			<Button
-				className="mt-auto min-h-0 rounded-xl bg-(--accent-default)/5 px-3 py-2 transition-colors hover:bg-(--accent-default)/10 xl:min-h-16"
+				className="mt-auto min-h-0 rounded-xl bg-(--accent-primary)/5 px-3 py-2 transition-colors hover:bg-(--accent-primary)/10 xl:min-h-16"
 				leftIcon={
-					<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-default)/10">
-						<IconPlus className="size-4 text-(--accent-default)" />
+					<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/10">
+						<IconPlus className="size-4 text-(--accent-primary)" />
 					</div>
 				}
 				size="custom"
@@ -70,8 +70,8 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 				onClick={onAddService}
 			>
 				<div className="flex min-w-0 flex-1 flex-col items-start">
-					<span className="text-sm text-(--color-primary)">Добавить сервис</span>
-					<span className="truncate text-xs text-(--color-secondary)">Добавить в постоянный мониторинг</span>
+					<span className="text-sm text-(--text-primary)">Добавить сервис</span>
+					<span className="truncate text-xs text-(--text-secondary)">Добавить в постоянный мониторинг</span>
 				</div>
 			</Button>
 		</div>

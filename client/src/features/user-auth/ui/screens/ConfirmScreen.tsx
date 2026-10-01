@@ -15,7 +15,7 @@ export const ConfirmScreen = observer(() => {
 				Мы отправили письмо с подтверждением на адрес электронной почты. Пожалуйста, проверьте свою почту,
 				включая папку «Спам».
 			</p>
-			<p className="text-justify text-(--color-disabled)">
+			<p className="text-justify text-(--text-disabled)">
 				Если письмо не пришло, убедитесь, что адрес указан правильно и попробуйте запросить письмо повторно.
 			</p>
 			<ResendEmailForm />

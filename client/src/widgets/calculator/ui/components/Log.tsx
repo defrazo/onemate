@@ -14,7 +14,7 @@ export const Log = ({ result }: { result: ResultItem[] }) => {
 		<div className={cn('min-h-0 min-w-0 overflow-hidden', isMobile ? 'basis-28' : 'basis-1/2')}>
 			<div
 				className={cn(
-					'flex h-full min-h-0 flex-col border-(--border-color)',
+					'flex h-full min-h-0 flex-col border-(--border-primary)',
 					isMobile ? 'mt-2 border-t pt-2' : 'ml-2 border-l pl-3'
 				)}
 			>
@@ -31,7 +31,7 @@ export const Log = ({ result }: { result: ResultItem[] }) => {
 										key={idx}
 										className="flex items-center justify-between gap-3 text-sm tabular-nums"
 									>
-										<span className="truncate text-(--color-secondary)">{expression}</span>
+										<span className="truncate text-(--text-secondary)">{expression}</span>
 										<span className="shrink-0">{result}</span>
 									</div>
 								))}

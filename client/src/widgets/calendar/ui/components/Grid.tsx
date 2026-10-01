@@ -21,7 +21,7 @@ export const Grid = ({ month, range, selectDay }: GridProps) => {
 
 	return (
 		<>
-			<div className="grid h-8 grid-cols-7 rounded-lg bg-(--accent-default)/10 text-sm text-(--accent-default)">
+			<div className="grid h-8 grid-cols-7 rounded-lg bg-(--accent-primary)/10 text-sm text-(--accent-primary)">
 				{WEEKDAYS_RU_SHORT.map((day) => (
 					<div key={day} className="flex items-center justify-center">
 						{day}
@@ -46,7 +46,7 @@ export const Grid = ({ month, range, selectDay }: GridProps) => {
 							{inRange && (
 								<div
 									className={cn(
-										'absolute top-1/2 h-7 -translate-y-1/2 bg-(--accent-default)/10 transition-opacity duration-150',
+										'absolute top-1/2 h-7 -translate-y-1/2 bg-(--accent-primary)/10 transition-opacity duration-150',
 										!isStart && !isEnd && 'inset-x-0',
 										isStart && !isEnd && 'right-0 left-1/2',
 										isEnd && !isStart && 'right-1/2 left-0',
@@ -57,15 +57,15 @@ export const Grid = ({ month, range, selectDay }: GridProps) => {
 							<button
 								className={cn(
 									'relative z-10 flex size-8 cursor-pointer items-center justify-center rounded-full font-mono tabular-nums transition-colors duration-150',
-									!inRange && 'hover:bg-(--accent-default)/10 hover:text-(--accent-default)',
-									(isStart || isEnd) && 'bg-(--accent-default) text-(--color-primary)'
+									!inRange && 'hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)',
+									(isStart || isEnd) && 'bg-(--accent-primary) text-(--text-primary)'
 								)}
 								type="button"
 								onClick={() => selectDay(day)}
 							>
 								{day}
 								{today && !inRange && (
-									<span className="absolute bottom-0.5 size-1 rounded-full bg-(--accent-default)" />
+									<span className="absolute bottom-0.5 size-1 rounded-full bg-(--accent-primary)" />
 								)}
 							</button>
 						</div>

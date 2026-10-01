@@ -19,14 +19,14 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 	return (
 		<div
 			className={cn(
-				'flex min-w-0 flex-1 flex-col border-(--border-color)',
+				'flex min-w-0 flex-1 flex-col border-(--border-primary)',
 				isSource ? 'xl:border-r' : 'border-t xl:border-t-0'
 			)}
 		>
 			<Textarea
 				className={cn(
 					'h-full min-h-0 flex-1 resize-none overflow-auto px-2 py-3',
-					!isSource && 'text-(--color-primary)'
+					!isSource && 'text-(--text-primary)'
 				)}
 				maxLength={isSource ? TRANSLATOR_MAX_LENGTH : undefined}
 				name={`${side}-textbox`}
@@ -40,7 +40,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 			<div className={cn('flex items-center justify-between', isSource ? 'pr-2' : 'pl-2')}>
 				<div className="flex items-center gap-2">
 					{isSource && (
-						<div className="flex h-6 items-center justify-center gap-1 rounded-lg bg-(--accent-default)/10 px-2 text-xs text-(--accent-default) tabular-nums">
+						<div className="flex h-6 items-center justify-center gap-1 rounded-lg bg-(--accent-primary)/10 px-2 text-xs text-(--accent-primary) tabular-nums">
 							{translatorStore.sourceText.length} / {TRANSLATOR_MAX_LENGTH} зн.
 						</div>
 					)}
@@ -50,7 +50,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					{isSource && (
 						<Button
 							centerIcon={<IconX className="size-4" stroke={3} />}
-							className="size-6 text-(--color-secondary)/70 transition-colors hover:text-(--status-error)"
+							className="size-6 text-(--text-secondary)/70 transition-colors hover:text-(--status-error)"
 							disabled={!text}
 							size="custom"
 							title="Очистить"
@@ -60,7 +60,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					)}
 					<Button
 						centerIcon={<IconCopy className="size-4" />}
-						className="size-6 text-(--color-secondary)/70 transition-colors hover:text-(--accent-default)"
+						className="size-6 text-(--text-secondary)/70 transition-colors hover:text-(--accent-primary)"
 						disabled={!text}
 						size="custom"
 						title={isSource ? 'Скопировать оригинал' : 'Скопировать перевод'}

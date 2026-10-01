@@ -2,12 +2,12 @@ import { Checkbox } from '@/shared/ui';
 
 export const PrivacyConsent = ({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) => {
 	return (
-		<label className="mx-auto mt-1 flex w-full items-start justify-center gap-3 text-xs text-(--color-secondary) select-none md:mt-0 md:text-sm">
+		<label className="mx-auto mt-1 flex w-full items-start justify-center gap-3 text-xs text-(--text-secondary) select-none md:mt-0 md:text-sm">
 			<Checkbox checked={checked} className="mt-0.5" onChange={onChange} />
 			<span>
 				Я принимаю{' '}
 				<a
-					className="text-(--accent-default) hover:underline"
+					className="text-(--accent-primary) hover:underline"
 					href="/terms"
 					rel="noopener noreferrer"
 					target="_blank"
@@ -16,7 +16,7 @@ export const PrivacyConsent = ({ checked, onChange }: { checked: boolean; onChan
 				</a>{' '}
 				и ознакомлен с{' '}
 				<a
-					className="text-(--accent-default) hover:underline"
+					className="text-(--accent-primary) hover:underline"
 					href="/privacy"
 					rel="noopener noreferrer"
 					target="_blank"

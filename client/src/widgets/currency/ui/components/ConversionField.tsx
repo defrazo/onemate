@@ -63,7 +63,7 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 					}}
 				/>
 			</div>
-			<div className="h-8 w-px bg-(--border-color)" />
+			<div className="h-8 w-px bg-(--border-primary)" />
 			<div className="shrink-0">
 				<Select
 					align="start"

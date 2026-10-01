@@ -67,7 +67,7 @@ export const Switcher = ({ options, value, onChange, className }: SwitcherProps)
 			>
 				<div
 					ref={switcherRef}
-					className="absolute top-0 left-0 z-0 rounded-xl bg-(--accent-default)/10 transition-[transform,width,opacity] duration-300 ease-out"
+					className="absolute top-0 left-0 z-0 rounded-xl bg-(--accent-primary)/10 transition-[transform,width,opacity] duration-300 ease-out"
 					style={{ opacity: 0 }}
 				/>
 				{options.map((option) => {
@@ -81,7 +81,7 @@ export const Switcher = ({ options, value, onChange, className }: SwitcherProps)
 							}}
 							className={cn(
 								'group relative z-10 rounded-lg px-1.5 py-0.5 transition-colors',
-								isActive ? 'text-(--accent-default)' : 'text-(--color-secondary)'
+								isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)'
 							)}
 							role="tab"
 							type="button"

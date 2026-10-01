@@ -29,9 +29,9 @@ export const Editor = observer(() => {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="flex shrink-0 items-center justify-between border-b border-(--border-color) pb-2">
+			<div className="flex shrink-0 items-center justify-between border-b border-(--border-primary) pb-2">
 				<Button
-					className="rounded-lg bg-white/5 px-2 py-1 text-xs text-(--color-secondary) hover:bg-white/6"
+					className="rounded-lg bg-white/5 px-2 py-1 text-xs text-(--text-secondary) hover:bg-white/6"
 					leftIcon={<IconArrowLeft className="size-4" />}
 					size="sm"
 					title="Вернуться к заметкам"
@@ -51,7 +51,7 @@ export const Editor = observer(() => {
 						title="Повторить"
 						onClick={redo}
 					/>
-					<div className="mx-1 h-4 w-px bg-(--border-color)" />
+					<div className="mx-1 h-4 w-px bg-(--border-primary)" />
 					<EditorAction icon={feedback === 'cut' ? IconCheck : IconCut} title="Вырезать" onClick={cut} />
 					<EditorAction
 						icon={feedback === 'paste' ? IconCheck : IconClipboard}
@@ -59,7 +59,7 @@ export const Editor = observer(() => {
 						onClick={paste}
 					/>
 					<EditorAction icon={feedback === 'copy' ? IconCheck : IconCopy} title="Копировать" onClick={copy} />
-					<div className="mx-1 h-4 w-px bg-(--border-color)" />
+					<div className="mx-1 h-4 w-px bg-(--border-primary)" />
 					<EditorAction
 						icon={feedback === 'select' ? IconCheck : IconSelectAll}
 						title="Выделить всё"
@@ -84,7 +84,7 @@ export const Editor = observer(() => {
 				variant="custom"
 				onChange={(e) => notesStore.updateNote(note.id, 'text', e.target.value)}
 			/>
-			<div className="flex shrink-0 gap-3 pt-2 text-sm text-(--color-disabled) xl:-mb-1">
+			<div className="flex shrink-0 gap-3 pt-2 text-sm text-(--text-disabled) xl:-mb-1">
 				<div className="hidden items-center gap-1 xl:flex" title="Дата создания">
 					<IconCalendarPlus className="size-3.5" />
 					{fullDate(note.created_at)}
@@ -93,7 +93,7 @@ export const Editor = observer(() => {
 					<IconClockEdit className="size-3.5" />
 					{fullDate(note.updated_at)}
 				</div>
-				<div className="ml-auto flex items-center justify-center gap-1 rounded-lg bg-(--accent-default)/10 px-2 text-xs text-(--accent-default) tabular-nums">
+				<div className="ml-auto flex items-center justify-center gap-1 rounded-lg bg-(--accent-primary)/10 px-2 text-xs text-(--accent-primary) tabular-nums">
 					{note.text.length} / {NOTE_MAX_LENGTH} зн.
 				</div>
 			</div>

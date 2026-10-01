@@ -19,7 +19,7 @@ export const Navbar = ({ variant = 'desktop' }: { variant?: 'desktop' | 'mobile'
 				<NavLink key={item.to} active={isActiveRoute(pathname, item.to)} item={item} variant={variant} />
 			))}
 
-			{!isMobile && externalItems.length > 0 && <div className="h-5 w-px bg-(--border-alt)" />}
+			{!isMobile && externalItems.length > 0 && <div className="h-5 w-px bg-(--border-secondary)" />}
 
 			{externalItems.map((item) => (
 				<NavLink key={item.to} active={false} item={item} variant={variant} />

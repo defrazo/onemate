@@ -71,7 +71,7 @@ export const AdditionalEmails = observer(() => {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<span className="text-(--color-secondary) opacity-70">Резервная почта</span>
+			<span className="text-(--text-secondary) opacity-70">Резервная почта</span>
 			<div className="flex flex-col gap-2">
 				{emails.map((email, idx) => {
 					const isLast = idx === emails.length - 1;

@@ -47,13 +47,13 @@ export const Buttons = ({ onClick }: { onClick: (value: ButtonValue) => void }) 
 				<Button
 					key={value}
 					className={cn(
-						'h-7 rounded-lg border border-(--border-light) text-sm lg:text-base',
+						'h-7 rounded-lg border border-(--border-contrast) text-sm lg:text-base',
 						colSpan === 2 ? 'col-span-2' : 'col-span-1',
 						type === 'digit'
 							? 'bg-(--bg-tertiary)'
 							: type === 'operator'
-								? 'bg-(--bg-tertiary-op)'
-								: 'bg-(--accent-default) text-(--accent-text)'
+								? 'bg-(--bg-tertiary)/50'
+								: 'bg-(--accent-primary) text-(--text-on-accent)'
 					)}
 					size="custom"
 					onClick={() => onClick(value)}

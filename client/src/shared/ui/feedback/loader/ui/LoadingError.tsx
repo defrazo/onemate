@@ -23,12 +23,12 @@ export const LoadingError = ({ message, size, onRetry }: LoadingErrorProps) => {
 
 	return (
 		<div className="flex flex-col items-center justify-center gap-0.5 text-center">
-			<div className="mb-1 flex size-16 items-center justify-center rounded-2xl bg-(--accent-default)/10">
-				<IconCloudOff className="size-8 text-(--accent-default)" stroke={1.8} />
+			<div className="mb-1 flex size-16 items-center justify-center rounded-2xl bg-(--accent-primary)/10">
+				<IconCloudOff className="size-8 text-(--accent-primary)" stroke={1.8} />
 			</div>
 			<div className="flex flex-col">
-				<span className="text-(--color-secondary)">{message || 'Не удалось загрузить данные'}</span>
-				<span className="trim text-sm text-(--color-disabled)">Проверьте соединение и попробуйте снова</span>
+				<span className="text-(--text-secondary)">{message || 'Не удалось загрузить данные'}</span>
+				<span className="trim text-sm text-(--text-disabled)">Проверьте соединение и попробуйте снова</span>
 			</div>
 			<Button className="mt-3 h-7 rounded-lg px-3" onClick={onRetry}>
 				Повторить

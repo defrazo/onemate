@@ -22,7 +22,7 @@ export const ConditionIcon = observer(({ condition, description, title, classNam
 	return (
 		<img
 			alt={description}
-			className={cn('no-touch-callout size-full text-(--color-primary)', className)}
+			className={cn('no-touch-callout size-full text-(--text-primary)', className)}
 			decoding="async"
 			height="100%"
 			loading="lazy"

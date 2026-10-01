@@ -39,18 +39,18 @@ export const WidgetsSection = observer(() => {
 
 	return (
 		<section className="flex flex-col gap-3 select-none">
-			<p className="text-sm text-(--color-secondary) opacity-70 xl:text-base">
+			<p className="text-sm text-(--text-secondary) opacity-70 xl:text-base">
 				Выберите, какие виджеты отображать в Dashboard
 			</p>
 			<div className="flex flex-col gap-1">
-				<p className="text-xs text-(--color-secondary)">Текущие</p>
+				<p className="text-xs text-(--text-secondary)">Текущие</p>
 				<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 					{activeWidgets.map(({ id, title, icon: Icon }) => (
 						<div
 							key={id}
 							className="flex h-10 items-center gap-2 rounded-xl bg-(--bg-tertiary) px-3 text-sm"
 						>
-							<Icon className="size-5 text-(--accent-default)" />
+							<Icon className="size-5 text-(--accent-primary)" />
 							<span className="trim">{title}</span>
 						</div>
 					))}
@@ -58,13 +58,13 @@ export const WidgetsSection = observer(() => {
 			</div>
 			{availableWidgets.length > 0 && (
 				<div className="flex flex-col gap-1">
-					<p className="text-xs text-(--color-secondary)">Доступные</p>
+					<p className="text-xs text-(--text-secondary)">Доступные</p>
 					<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 						{availableWidgets.map(({ id, title, icon: Icon }) => (
 							<Button
 								key={id}
-								className="h-10 rounded-xl bg-(--bg-tertiary) px-3 text-sm transition-colors hover:border-(--accent-default)/30 hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
-								leftIcon={<Icon className="size-4 text-(--accent-default)" />}
+								className="h-10 rounded-xl bg-(--bg-tertiary) px-3 text-sm transition-colors hover:border-(--accent-primary)/30 hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)"
+								leftIcon={<Icon className="size-4 text-(--accent-primary)" />}
 								rightIcon={<IconPlus className="size-4" />}
 								size="custom"
 								title={title}

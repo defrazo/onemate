@@ -34,17 +34,17 @@ export const DeleteAccountSection = () => {
 	return (
 		<section className="flex flex-col gap-2 select-none">
 			<div className="flex flex-col gap-2 text-sm">
-				<p className="text-(--color-primary)">
+				<p className="text-(--text-primary)">
 					После удаления аккаунт можно восстановить в течение{' '}
 					<span className="font-semibold text-(--status-warning)">30 дней</span>.
 				</p>
-				<p className="text-(--color-secondary) opacity-70">
+				<p className="text-(--text-secondary) opacity-70">
 					Затем аккаунт и связанные с ним данные будут удалены без возможности восстановления. После этого вы
 					сможете зарегистрироваться снова с тем же адресом электронной почты.
 				</p>
 			</div>
 			<Button
-				className="mx-auto h-10 rounded-xl bg-(--warning-default) text-(--accent-text) opacity-50 transition-[background-color,opacity] duration-300 hover:bg-(--warning-hover) hover:opacity-100"
+				className="mx-auto h-10 rounded-xl bg-(--special-danger) text-(--text-on-accent) opacity-50 transition-[background-color,opacity] duration-300 hover:bg-(--special-danger-hover) hover:opacity-100"
 				variant="custom"
 				onClick={handleDelete}
 			>

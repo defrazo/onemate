@@ -25,38 +25,38 @@ export const DeviceActivitySection = observer(() => {
 	return (
 		<section className="flex min-h-40 flex-col gap-4 text-sm lg:flex-row">
 			<div className="flex flex-1 flex-col">
-				<h3 className="text-(--color-secondary) opacity-70 select-none">Текущее устройство:</h3>
+				<h3 className="text-(--text-secondary) opacity-70 select-none">Текущее устройство:</h3>
 				{!store.isReady ? (
 					<LoadingState />
 				) : (
 					<div className="flex gap-2">
 						{store.isMobile ? (
-							<IconPhone className="size-30 text-(--color-disabled)" />
+							<IconPhone className="size-30 text-(--text-disabled)" />
 						) : (
-							<IconDesktop className="size-30 text-(--color-disabled)" />
+							<IconDesktop className="size-30 text-(--text-disabled)" />
 						)}
 						<div className="flex flex-1 flex-col justify-evenly">
-							<span className="font-semibold text-(--accent-default)">{store.browser}</span>
+							<span className="font-semibold text-(--accent-primary)">{store.browser}</span>
 							<div className="flex flex-col">
 								Местоположение:
 								<Tooltip content={store.region}>
-									<span className="text-(--accent-default)">{store.city}</span>
+									<span className="text-(--accent-primary)">{store.city}</span>
 								</Tooltip>
 							</div>
 							<div className="flex gap-2">
 								IP-адрес:
-								<span className="text-(--accent-default)">{store.ip}</span>
+								<span className="text-(--accent-primary)">{store.ip}</span>
 							</div>
 						</div>
 					</div>
 				)}
 			</div>
-			<div className="h-px w-full bg-(--border-color) md:h-auto md:w-px md:self-stretch" />
+			<div className="h-px w-full bg-(--border-primary) md:h-auto md:w-px md:self-stretch" />
 			<div className="flex max-h-40 flex-1 flex-col">
 				<div className="flex items-center justify-between">
-					<h3 className="text-(--color-secondary) opacity-70 select-none">История активности:</h3>
+					<h3 className="text-(--text-secondary) opacity-70 select-none">История активности:</h3>
 					<Button
-						className="py-0.5 text-sm text-(--color-secondary) opacity-70 hover:text-(--status-error)"
+						className="py-0.5 text-sm text-(--text-secondary) opacity-70 hover:text-(--status-error)"
 						size="custom"
 						variant="custom"
 						onClick={handleClearActivity}
@@ -73,26 +73,24 @@ export const DeviceActivitySection = observer(() => {
 							({ id, city, region, browser, is_mobile, ip_address, created_at }, idx) => (
 								<div key={id} className="snap-start">
 									<div className="flex gap-2">
-										<div className="flex size-5 items-center justify-center rounded-full bg-(--accent-default)/12 text-center text-xs text-(--accent-default)">
+										<div className="flex size-5 items-center justify-center rounded-full bg-(--accent-primary)/12 text-center text-xs text-(--accent-primary)">
 											{idx + 1}
 										</div>
 										{is_mobile ? (
-											<IconPhone className="size-15 py-1 text-(--color-disabled)" />
+											<IconPhone className="size-15 py-1 text-(--text-disabled)" />
 										) : (
-											<IconDesktop className="size-15 text-(--color-disabled)" />
+											<IconDesktop className="size-15 text-(--text-disabled)" />
 										)}
 										<div className="flex flex-1 flex-col">
 											<div className="flex gap-2">
-												<span className="font-semibold text-(--accent-default)">{browser}</span>
-												<span className="text-(--color-disabled)">
-													({fullDate(created_at)})
-												</span>
+												<span className="font-semibold text-(--accent-primary)">{browser}</span>
+												<span className="text-(--text-disabled)">({fullDate(created_at)})</span>
 											</div>
 											<div className="flex gap-2">
-												IP-адрес:<span className="text-(--accent-default)"> {ip_address}</span>
+												IP-адрес:<span className="text-(--accent-primary)"> {ip_address}</span>
 											</div>
 											<Tooltip content={region}>
-												<span className="text-(--accent-default)">{city}</span>
+												<span className="text-(--accent-primary)">{city}</span>
 											</Tooltip>
 										</div>
 									</div>

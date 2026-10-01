@@ -11,7 +11,7 @@ export const InterfaceTab = observer(() => {
 	const { userProfileStore } = useStore();
 
 	return (
-		<div className="flex flex-col gap-4 divide-y divide-(--border-color) xl:divide-y-0">
+		<div className="flex flex-col gap-4 divide-y divide-(--border-primary) xl:divide-y-0">
 			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:rounded-xl">
 				<SectionHeader icon={IconCategory} title="Виджеты" />
 				<WidgetsSection />

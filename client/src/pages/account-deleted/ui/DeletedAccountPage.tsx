@@ -36,21 +36,21 @@ export const DeletedAccountPage = observer(() => {
 		<div className="flex min-h-screen items-center justify-center px-4 select-none">
 			<div className="core-card core-base flex max-w-md flex-col items-center gap-2 px-8 py-9 shadow-(--shadow)">
 				<div className="relative flex size-24 items-center justify-center">
-					<div className="absolute inset-0 rounded-full border border-(--border-color)" />
+					<div className="absolute inset-0 rounded-full border border-(--border-primary)" />
 					<div className="absolute inset-2 rounded-full bg-(--bg-tertiary)" />
 					<div className="relative flex flex-col items-center gap-1">
 						<span className="trim text-3xl font-bold">{days}</span>
-						<span className="trim text-xs text-(--color-secondary)">дней</span>
+						<span className="trim text-xs text-(--text-secondary)">дней</span>
 					</div>
-					<div className="absolute right-0 bottom-1 flex size-7 items-center justify-center rounded-full bg-(--accent-default)">
-						<IconClock className="size-4 text-(--accent-text)" />
+					<div className="absolute right-0 bottom-1 flex size-7 items-center justify-center rounded-full bg-(--accent-primary)">
+						<IconClock className="size-4 text-(--text-on-accent)" />
 					</div>
 				</div>
 				<h1 className="text-xl font-bold xl:text-2xl">Аккаунт ожидает удаления</h1>
-				<div className="rounded-lg bg-(--accent-default)/10 px-2.5 py-1 text-sm text-(--accent-default)">
+				<div className="rounded-lg bg-(--accent-primary)/10 px-2.5 py-1 text-sm text-(--accent-primary)">
 					{userStore.email}
 				</div>
-				<p className="max-w-sm text-center text-sm text-(--color-secondary)">
+				<p className="max-w-sm text-center text-sm text-(--text-secondary)">
 					Данные аккаунта пока сохранены. Восстановить доступ можно в течение оставшегося времени.
 				</p>
 				<div className="mt-3 flex flex-col items-center gap-2">

@@ -22,7 +22,7 @@ export const notifier = {
 		// === TOAST ===
 		const toast = document.createElement('div');
 		toast.className = cn(
-			'absolute z-40 flex items-center gap-2.5 rounded-xl border border-(--border-color) bg-(--bg-secondary)/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl select-none',
+			'absolute z-40 flex items-center gap-2.5 rounded-xl border border-(--border-primary) bg-(--bg-secondary)/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl select-none',
 			device === 'desktop' ? 'right-6 bottom-4 min-w-64' : 'top-4 left-4 w-[calc(100dvw-32px)]'
 		);
 
@@ -35,7 +35,7 @@ export const notifier = {
 		// === MESSAGE ===
 		const message = document.createElement('span');
 		message.textContent = text;
-		message.className = 'min-w-0 flex-1 text-sm text-(--color-primary)';
+		message.className = 'min-w-0 flex-1 text-sm text-(--text-primary)';
 
 		// === LIFECYCLE ===
 		let timeout: number | null = null;

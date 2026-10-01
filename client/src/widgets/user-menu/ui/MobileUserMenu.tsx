@@ -33,14 +33,14 @@ export const MobileUserMenu = observer(() => {
 	return (
 		<div className="flex h-full w-full flex-col overflow-auto overscroll-contain pb-2">
 			<UserInfo className="px-2.5 py-2" />
-			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
+			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<div className="flex flex-col">
 				{profileTabs.map(({ id, icon: Icon, label }) => (
 					<Button
 						key={id}
-						className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-default)"
+						className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-primary)"
 						leftIcon={<Icon className="size-4.5" />}
-						rightIcon={<IconChevronRight className="size-3.5 text-(--color-secondary)" />}
+						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
 						variant="mobile"
 						onClick={() => openProfileTab(id)}
 					>
@@ -50,9 +50,9 @@ export const MobileUserMenu = observer(() => {
 				{mobileUserMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
-						className="h-10 justify-start rounded-lg px-2.5 text-(--color-secondary) active:bg-white/6 active:text-(--color-primary)"
+						className="h-10 justify-start rounded-lg px-2.5 text-(--text-secondary) active:bg-white/6 active:text-(--text-primary)"
 						leftIcon={<Icon className="size-4.5" />}
-						rightIcon={<IconChevronRight className="size-3.5 text-(--color-secondary)" />}
+						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
 						variant="mobile"
 						onClick={() => handleNavigate(to)}
 					>
@@ -60,9 +60,9 @@ export const MobileUserMenu = observer(() => {
 					</Button>
 				))}
 			</div>
-			<Divider className="mx-2 bg-(--border-color)" margY="xs" />
+			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<Button
-				className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-default)"
+				className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-primary)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
 				variant="mobile"
 				onClick={handleLogout}

@@ -35,9 +35,9 @@ export const Current = observer(() => {
 			<div className="mt-2 flex justify-center">
 				<div className="flex flex-col items-center gap-0.5">
 					<span className="text-sm xl:text-base">{capitalizeFirstLetter(condition.description)}</span>
-					<span className="h-0.5 w-5 rounded-full bg-(--accent-default)/70" />
-					<span className="text-xs text-(--color-secondary) xl:text-sm">
-						Ощущается как <span className="text-(--accent-default)">{Math.round(feels_like)}°C</span>
+					<span className="h-0.5 w-5 rounded-full bg-(--accent-primary)/70" />
+					<span className="text-xs text-(--text-secondary) xl:text-sm">
+						Ощущается как <span className="text-(--accent-primary)">{Math.round(feels_like)}°C</span>
 					</span>
 				</div>
 			</div>

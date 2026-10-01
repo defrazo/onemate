@@ -25,10 +25,10 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 		const button = document.createElement('button');
 		button.type = 'button';
 		button.className = cn(
-			'flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--color-secondary) transition-colors',
+			'flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors',
 			danger
-				? 'hover:bg-(--warning-default)/10 hover:text-(--status-error)/80'
-				: 'hover:bg-white/5 hover:text-(--color-primary)'
+				? 'hover:bg-(--special-danger)/10 hover:text-(--status-error)/80'
+				: 'hover:bg-white/5 hover:text-(--text-primary)'
 		);
 		insertSvg(button, icon, 'size-4');
 

@@ -30,7 +30,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	addButton.type = 'button';
 	addButton.title = 'Добавить задачу';
 	addButton.className =
-		'mr-auto size-4.5 cursor-pointer text-(--color-secondary) transition-[color,opacity] hover:text-(--accent-hover) xl:opacity-0 xl:group-hover:opacity-100';
+		'mr-auto size-4.5 cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover:opacity-100';
 	insertSvg(addButton, addIcon, 'size-4.5');
 
 	// === SETTINGS BUTTON ===
@@ -38,12 +38,12 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
 	settingsButton.className =
-		'size-4.5 cursor-pointer text-(--color-secondary) transition-[color,opacity] hover:text-(--accent-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
+		'size-4.5 cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
 	insertSvg(settingsButton, settingsIcon, 'size-4.5');
 
 	// === COUNTER ===
 	const counter = document.createElement('span');
-	counter.className = 'shrink-0 text-xs text-(--color-secondary)';
+	counter.className = 'shrink-0 text-xs text-(--text-secondary)';
 
 	// === UPDATE ===
 	function update(nextColumn: Column, nextTasksCount: number) {

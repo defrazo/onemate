@@ -17,7 +17,7 @@ export const Switch = ({ checked, disabled = false, onCheckedChange }: SwitchPro
 			aria-checked={checked}
 			className={cn(
 				'relative h-6 w-11 shrink-0 cursor-pointer rounded-full transition-colors',
-				checked ? 'bg-(--accent-default)' : 'bg-(--bg-tertiary)',
+				checked ? 'bg-(--accent-primary)' : 'bg-(--bg-tertiary)',
 				disabled && 'cursor-not-allowed opacity-40'
 			)}
 			disabled={disabled}

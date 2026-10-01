@@ -100,9 +100,9 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 						<span className="trim text-lg font-bold">{service.name}</span>
 						<Button
 							centerIcon={
-								<IconSettings className="size-4 text-(--color-secondary) hover:text-(--accent-default)" />
+								<IconSettings className="size-4 text-(--text-secondary) hover:text-(--accent-primary)" />
 							}
-							className="size-5 rounded-lg hover:bg-(--accent-default)/10"
+							className="size-5 rounded-lg hover:bg-(--accent-primary)/10"
 							size="custom"
 							title="Настройки мониторинга"
 							variant="mobile"
@@ -111,7 +111,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					</div>
 					{service.type === 'http' ? (
 						<a
-							className="block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--color-secondary) hover:text-(--accent-default) lg:text-sm xl:max-w-64"
+							className="block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--text-secondary) hover:text-(--accent-primary) lg:text-sm xl:max-w-64"
 							href={service.url}
 							rel="noopener noreferrer"
 							target="_blank"
@@ -119,12 +119,12 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 							{service.url}
 						</a>
 					) : (
-						<span className="max-w-44 truncate text-xs text-(--color-secondary) lg:text-sm xl:max-w-64">
+						<span className="max-w-44 truncate text-xs text-(--text-secondary) lg:text-sm xl:max-w-64">
 							{address}
 						</span>
 					)}
 				</div>
-				<div className="flex flex-col gap-0.5 text-(--color-secondary)">
+				<div className="flex flex-col gap-0.5 text-(--text-secondary)">
 					<span className="text-xs">Последняя проверка:</span>
 					<div className="mx-auto flex items-center gap-1">
 						<span className="trim text-xs tabular-nums xl:text-sm">{lastChecked}</span>
@@ -132,12 +132,12 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 							centerIcon={
 								<IconReload
 									className={cn(
-										'size-3.5 text-(--color-secondary) hover:text-(--accent-default)',
+										'size-3.5 text-(--text-secondary) hover:text-(--accent-primary)',
 										isChecking && 'animate-spin'
 									)}
 								/>
 							}
-							className="size-5 rounded-lg hover:bg-(--accent-default)/10"
+							className="size-5 rounded-lg hover:bg-(--accent-primary)/10"
 							disabled={isChecking}
 							size="sm"
 							title="Проверить сейчас"

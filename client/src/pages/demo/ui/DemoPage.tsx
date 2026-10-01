@@ -4,7 +4,7 @@ export const DemoPage = () => (
 	<div className="flex w-full flex-col gap-4">
 		<header className="flex flex-col items-center">
 			<h1 className="cursor-default text-center text-xl leading-tight font-bold md:text-3xl">О демо-режиме</h1>
-			<p className="text-center text-(--color-disabled)">
+			<p className="text-center text-(--text-disabled)">
 				Как устроена демонстрационная версия OneMate и какие ограничения в ней действуют.
 			</p>
 		</header>
@@ -71,7 +71,7 @@ export const DemoPage = () => (
 					<li>
 						Подробнее об обработке данных в OneMate можно узнать в{' '}
 						<a
-							className="text-(--accent-default) hover:underline"
+							className="text-(--accent-primary) hover:underline"
 							href="/privacy"
 							rel="noopener noreferrer"
 							target="_blank"
@@ -80,7 +80,7 @@ export const DemoPage = () => (
 						</a>
 						, а правила использования приложения описаны в{' '}
 						<a
-							className="text-(--accent-default) hover:underline"
+							className="text-(--accent-primary) hover:underline"
 							href="/terms"
 							rel="noopener noreferrer"
 							target="_blank"
@@ -124,10 +124,10 @@ export const DemoPage = () => (
 );
 
 const FaqItem = ({ question, answer }: { question: string; answer: string }) => (
-	<details className="group border-(--border-color) py-3 not-last:border-b">
-		<summary className="cursor-pointer list-none font-bold transition-colors group-open:text-(--color-primary) hover:text-(--color-primary)">
+	<details className="group border-(--border-primary) py-3 not-last:border-b">
+		<summary className="cursor-pointer list-none font-bold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary)">
 			{question}
 		</summary>
-		<p className="mt-2 pr-6 text-sm leading-relaxed text-(--color-secondary)">{answer}</p>
+		<p className="mt-2 pr-6 text-sm leading-relaxed text-(--text-secondary)">{answer}</p>
 	</details>
 );

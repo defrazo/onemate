@@ -55,7 +55,7 @@ export const PasswordSection = observer(() => {
 
 	return (
 		<section className="flex flex-col gap-2">
-			<p className="text-xs text-(--color-secondary) opacity-70 select-none md:text-sm">
+			<p className="text-xs text-(--text-secondary) opacity-70 select-none md:text-sm">
 				Пароль был изменён <span className="font-semibold">{formattedDate}</span>
 			</p>
 			<PasswordInput

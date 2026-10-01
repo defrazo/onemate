@@ -25,12 +25,12 @@ export const ResetPasswordPage = () => {
 			<AuthFormHeader title={title} />
 			{isValidResetLink ? (
 				<>
-					<p className="text-(--color-secondary)">Придумайте новый пароль для своего аккаунта</p>
+					<p className="text-(--text-secondary)">Придумайте новый пароль для своего аккаунта</p>
 					<ResetForm email={email} token={token} />
 				</>
 			) : (
 				<div className="flex flex-col gap-4">
-					<p className="text-center text-(--color-secondary)">
+					<p className="text-center text-(--text-secondary)">
 						Ссылка для восстановления пароля устарела или повреждена.
 					</p>
 					<Button

@@ -9,7 +9,7 @@ export const createColumnFields = ({ title: initialTitle, onChange }: { title: s
 	const label = document.createElement('label');
 	label.htmlFor = 'column-title';
 	label.textContent = 'Название колонки';
-	label.className = 'text-sm text-(--color-secondary) opacity-70';
+	label.className = 'text-sm text-(--text-secondary) opacity-70';
 
 	// === INPUT ===
 	const input = document.createElement('input');
@@ -20,11 +20,11 @@ export const createColumnFields = ({ title: initialTitle, onChange }: { title: s
 	input.autocomplete = 'off';
 	input.placeholder = 'Введите название колонки';
 	input.className =
-		'w-full rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-hover) focus:border-(--accent-hover)';
+		'w-full rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover)';
 
 	// === HINT ===
 	const hint = document.createElement('span');
-	hint.className = 'ml-auto text-xs text-(--color-secondary) opacity-70';
+	hint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
 
 	// === EVENTS ===
 	const onInput = () => {

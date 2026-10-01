@@ -18,7 +18,7 @@ export const PasswordInput = (props: React.ComponentProps<typeof Input>) => {
 			leftIcon={<InputLabel htmlFor={props.id} icon={IconLockFilled} />}
 			rightIcon={
 				<Icon
-					className="mr-1 ml-2 size-6 cursor-pointer transition-colors hover:text-(--accent-hover)"
+					className="mr-1 ml-2 size-6 cursor-pointer transition-colors hover:text-(--accent-primary-hover)"
 					onClick={() => setShowPassword((prev) => !prev)}
 				/>
 			}

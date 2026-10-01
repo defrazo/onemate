@@ -27,7 +27,7 @@ export const createTaskHeader = ({ task, onView, onEdit, onDelete }: CreateTaskH
 	optionsButton.type = 'button';
 	optionsButton.title = 'Действия с задачей';
 	optionsButton.className =
-		'size-5 shrink-0 cursor-pointer text-(--color-secondary) transition-[color,opacity] hover:text-(--accent-hover) xl:opacity-0 xl:group-hover/task:opacity-100';
+		'size-5 shrink-0 cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/task:opacity-100';
 	insertSvg(optionsButton, optionsIcon, 'size-4');
 
 	const menu = createTaskMenu({ trigger: optionsButton, onView, onEdit, onDelete });

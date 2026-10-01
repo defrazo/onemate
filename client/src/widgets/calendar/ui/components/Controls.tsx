@@ -28,18 +28,18 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 				{rangeInfo ? (
 					<>
 						<div className="flex w-full justify-center gap-1 text-sm lg:-mr-10">
-							<span className="trim text-(--color-secondary)">{rangeInfo.label} </span>
-							<span className="trim text-(--color-disabled)">·</span>
+							<span className="trim text-(--text-secondary)">{rangeInfo.label} </span>
+							<span className="trim text-(--text-disabled)">·</span>
 							<span className="trim font-bold">
 								{rangeInfo.days} {pluralize(rangeInfo.days, 'день', 'дня', 'дней')}
 							</span>
 							{rangeInfo.weekendLabel && (
-								<span className="trim text-(--color-secondary)">({rangeInfo.weekendLabel})</span>
+								<span className="trim text-(--text-secondary)">({rangeInfo.weekendLabel})</span>
 							)}
 						</div>
 						<Button
 							centerIcon={<IconCopy className="size-4" />}
-							className="hidden px-3 text-sm hover:text-(--accent-default) lg:block"
+							className="hidden px-3 text-sm hover:text-(--accent-primary) lg:block"
 							disabled={rangeInfo === null}
 							size="custom"
 							title="Скопировать период"
@@ -48,7 +48,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						/>
 					</>
 				) : (
-					<span className="flex-1 text-center text-sm text-(--color-secondary)">
+					<span className="flex-1 text-center text-sm text-(--text-secondary)">
 						Выберите дату {hasStart ? 'конца' : 'начала'} периода
 					</span>
 				)}
@@ -56,9 +56,9 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 			<div className="flex w-full items-center justify-between gap-2">
 				<Button
 					className={cn(
-						'core-border h-8 w-full bg-transparent text-xs text-(--color-secondary) enabled:border-transparent enabled:bg-(--accent-default)/10 enabled:text-(--accent-default) xl:text-sm',
+						'core-border h-8 w-full bg-transparent text-xs text-(--text-secondary) enabled:border-transparent enabled:bg-(--accent-primary)/10 enabled:text-(--accent-primary) xl:text-sm',
 						includeWeekends &&
-							'border-transparent bg-(--accent-default)/10 text-(--accent-default) hover:bg-(--accent-default)/20'
+							'border-transparent bg-(--accent-primary)/10 text-(--accent-primary) hover:bg-(--accent-primary)/20'
 					)}
 					disabled={!rangeInfo?.hasWeekends}
 					leftIcon={
@@ -87,7 +87,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
 					}
 					className={cn(
-						'h-8 px-3 text-xs hover:border-transparent hover:enabled:bg-(--warning-default)/80 xl:text-sm',
+						'h-8 px-3 text-xs hover:border-transparent hover:enabled:bg-(--special-danger)/80 xl:text-sm',
 						!isMobile && 'core-border w-32'
 					)}
 					leftIcon={!isMobile && hasStart && <IconTrash className="size-4.5" />}

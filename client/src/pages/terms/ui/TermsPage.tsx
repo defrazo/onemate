@@ -7,7 +7,7 @@ export const TermsPage = () => {
 				<h1 className="print-header cursor-default text-lg font-bold md:text-3xl">Условия использования</h1>
 				<PrintButton />
 			</div>
-			<p className="print-content text-(--color-secondary)">
+			<p className="print-content text-(--text-secondary)">
 				Настоящие Условия использования регулируют использование веб-приложения OneMate (далее – «Приложение»).
 				Используя Приложение, Пользователь принимает настоящие Условия. Если вы не согласны с ними, прекратите
 				использование Приложения.
@@ -66,7 +66,7 @@ export const TermsPage = () => {
 						</li>
 						<li>
 							Подробнее об обрабатываемых данных, целях и сроках их хранения указано в{' '}
-							<a className="text-(--accent-default) hover:underline print:text-black" href="/privacy">
+							<a className="text-(--accent-primary) hover:underline print:text-black" href="/privacy">
 								Политике конфиденциальности
 							</a>
 							.
@@ -110,7 +110,7 @@ export const TermsPage = () => {
 						<li>
 							По вопросам, связанным с Приложением, можно написать на{' '}
 							<a
-								className="text-(--accent-default) hover:underline print:text-black"
+								className="text-(--accent-primary) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru
@@ -119,7 +119,7 @@ export const TermsPage = () => {
 						</li>
 					</ul>
 				</ArticleSection>
-				<p className="text-center text-xs text-(--color-disabled) md:text-sm" data-version="2.0">
+				<p className="text-center text-xs text-(--text-disabled) md:text-sm" data-version="2.0">
 					Версия 2.0 · Обновлено 26 сентября 2026 года
 				</p>
 			</article>

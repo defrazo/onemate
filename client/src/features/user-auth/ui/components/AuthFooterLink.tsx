@@ -11,7 +11,7 @@ export const AuthFooterLink = ({ text, linkText, action }: AuthFooterLinkProps) 
 		<div className="flex items-center justify-center gap-1 font-semibold opacity-70 transition-opacity select-none hover:opacity-100">
 			{text}
 			<Button
-				className="block cursor-pointer text-(--accent-default) transition-colors hover:text-(--accent-hover)"
+				className="block cursor-pointer text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover)"
 				size="custom"
 				variant="custom"
 				onClick={action}

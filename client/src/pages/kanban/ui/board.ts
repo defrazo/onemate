@@ -25,7 +25,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	addColumnButton.type = 'button';
 	addColumnButton.title = 'Добавить колонку';
 	addColumnButton.className =
-		'flex h-[39px] w-5.5 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-(--border-color) p-0 px-2 py-1 transition-colors hover:border-transparent hover:bg-(--accent-hover) hover:text-(--accent-text) xl:h-[43px]';
+		'flex h-[39px] w-5.5 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-(--border-primary) p-0 px-2 py-1 transition-colors hover:border-transparent hover:bg-(--accent-primary-hover) hover:text-(--text-on-accent) xl:h-[43px]';
 	insertSvg(addColumnButton, addIcon, 'size-4 shrink-0');
 
 	// === RENDER COLUMNS ===

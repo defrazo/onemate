@@ -24,7 +24,7 @@ export const Notes = observer(() => {
 		<div className="flex min-h-0 flex-col gap-2 overflow-hidden xl:h-full">
 			<List>{(note) => <Card key={note.id} id={note.id} />}</List>
 			<div className="flex shrink-0 items-center justify-between">
-				<div className="flex h-6 min-w-22.5 items-center justify-center gap-1 rounded-lg bg-(--accent-default)/10 px-2 text-sm text-(--accent-default)">
+				<div className="flex h-6 min-w-22.5 items-center justify-center gap-1 rounded-lg bg-(--accent-primary)/10 px-2 text-sm text-(--accent-primary)">
 					<span>{notesStore.notes.length}</span>
 					<span>{pluralize(notesStore.notes.length, 'заметка', 'заметки', 'заметок')}</span>
 				</div>

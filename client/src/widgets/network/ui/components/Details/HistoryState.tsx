@@ -14,10 +14,10 @@ export const HistoryState = ({ icon: Icon, title, desc, loading }: HistoryStateP
 		<div className="flex min-h-0 flex-1 items-center justify-center">
 			<div className="flex flex-col items-center gap-0.5">
 				<div className="mb-1 flex size-10 items-center justify-center rounded-xl bg-white/3">
-					<Icon className={cn('size-5 text-(--accent-default)', loading && 'animate-spin')} />
+					<Icon className={cn('size-5 text-(--accent-primary)', loading && 'animate-spin')} />
 				</div>
-				<span className="text-sm text-(--color-secondary)">{title}</span>
-				{desc && <span className="trim text-xs text-(--color-disabled)">{desc}</span>}
+				<span className="text-sm text-(--text-secondary)">{title}</span>
+				{desc && <span className="trim text-xs text-(--text-disabled)">{desc}</span>}
 			</div>
 		</div>
 	);

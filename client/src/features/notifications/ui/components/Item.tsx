@@ -20,18 +20,18 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 	const handleDelete = () => void store.remove(notification.id);
 
 	return (
-		<div className="group relative border-b border-(--border-color) transition-colors last:border-b-0 hover:bg-white/3">
+		<div className="group relative border-b border-(--border-primary) transition-colors last:border-b-0 hover:bg-white/3">
 			<button className="w-full min-w-0 py-2 pr-3 pl-2 text-left" type="button" onClick={handleClick}>
 				<div className="relative flex min-w-0 flex-1 flex-col gap-1 pl-3">
-					<span className={cn('text-sm text-(--color-primary)', isUnread && 'font-bold')}>
+					<span className={cn('text-sm text-(--text-primary)', isUnread && 'font-bold')}>
 						{notification.title}
 					</span>
 					{isUnread && (
-						<IconPointFilled className="absolute top-0.75 -left-0.5 size-3 text-(--accent-default)" />
+						<IconPointFilled className="absolute top-0.75 -left-0.5 size-3 text-(--accent-primary)" />
 					)}
-					<span className="line-clamp-2 text-xs text-(--color-secondary)">{notification.message}</span>
-					<div className="mt-1 ml-auto flex items-center gap-1 text-(--color-disabled)">
-						<span className="trim text-[11px] text-(--accent-default)/70">
+					<span className="line-clamp-2 text-xs text-(--text-secondary)">{notification.message}</span>
+					<div className="mt-1 ml-auto flex items-center gap-1 text-(--text-disabled)">
+						<span className="trim text-[11px] text-(--accent-primary)/70">
 							{config?.source ?? 'OneMate'}
 						</span>
 						<span className="mx-0.5 size-0.75 rounded-full bg-current opacity-60" />
@@ -48,7 +48,7 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 			</button>
 			<Button
 				centerIcon={<IconX className="size-4" />}
-				className="absolute top-1.5 right-2 size-5 text-(--color-secondary)/70 opacity-0 transition-[color,opacity] group-hover:opacity-100 hover:text-(--accent-default)"
+				className="absolute top-1.5 right-2 size-5 text-(--text-secondary)/70 opacity-0 transition-[color,opacity] group-hover:opacity-100 hover:text-(--accent-primary)"
 				size="custom"
 				title="Удалить уведомление"
 				type="button"

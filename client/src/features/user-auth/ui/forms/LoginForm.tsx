@@ -63,7 +63,7 @@ export const LoginForm = observer(() => {
 				onChange={(e) => authFormStore.update('password', e.target.value)}
 			/>
 			<Button
-				className="ml-auto text-sm hover:text-(--accent-hover)"
+				className="ml-auto text-sm hover:text-(--accent-primary-hover)"
 				size="custom"
 				type="button"
 				variant="mobile"

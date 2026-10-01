@@ -32,7 +32,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
 	taskDescription.className =
-		'line-clamp-3 overflow-hidden text-sm leading-4.5 text-ellipsis text-(--color-secondary)';
+		'line-clamp-3 overflow-hidden text-sm leading-4.5 text-ellipsis text-(--text-secondary)';
 
 	taskContent.append(taskMeta.element, taskDescription);
 
@@ -40,7 +40,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const timestamp = document.createElement('span');
 	timestamp.title = 'Дата создания';
 	timestamp.textContent = fullDate(task.createdAt);
-	timestamp.className = 'trim mt-auto px-3 pb-3 text-xs text-(--color-secondary) opacity-70';
+	timestamp.className = 'trim mt-auto px-3 pb-3 text-xs text-(--text-secondary) opacity-70';
 
 	// === ACTION FUNCTIONS ===
 	function onViewTask() {
@@ -107,7 +107,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 		const taskTitle = document.createElement('strong');
 		taskTitle.textContent = task.title;
-		taskTitle.className = 'text-(--accent-default)';
+		taskTitle.className = 'text-(--accent-primary)';
 
 		content.append(taskTitle, '?');
 

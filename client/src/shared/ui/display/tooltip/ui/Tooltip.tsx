@@ -34,13 +34,13 @@ const TooltipContent = ({
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-color) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--color-primary) shadow-lg xl:block"
+			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block"
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>
 			<span
 				className={cn(
-					'pointer-events-none absolute size-2 rotate-45 border-(--border-color) bg-(--bg-secondary)',
+					'pointer-events-none absolute size-2 rotate-45 border-(--border-primary) bg-(--bg-secondary)',
 					(placement === 'top' || placement === 'bottom') && 'left-1/2 -translate-x-1/2',
 					placement === 'top' && '-bottom-1 border-r border-b',
 					placement === 'bottom' && '-top-1 border-t border-l',

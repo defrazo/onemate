@@ -21,8 +21,8 @@ export const PasswordRules = ({ password, showHint }: { password: string; showHi
 	if (!showHint || !password || allRulesPassed) return null;
 
 	return (
-		<div className="absolute top-full z-40 mt-2 w-full rounded-xl border border-(--border-color) bg-(--bg-secondary) p-3 shadow-(--shadow) select-none">
-			<p className="mb-2 text-xs font-bold text-(--color-secondary)">Требования к паролю</p>
+		<div className="absolute top-full z-40 mt-2 w-full rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-(--shadow) select-none">
+			<p className="mb-2 text-xs font-bold text-(--text-secondary)">Требования к паролю</p>
 			<ul className="grid grid-cols-2 gap-x-4 gap-y-1.5">
 				{rules.map((rule) => {
 					const passed = rule.test(password);
@@ -33,7 +33,7 @@ export const PasswordRules = ({ password, showHint }: { password: string; showHi
 							key={rule.label}
 							className={cn(
 								'flex items-center gap-1.5 text-xs transition-colors',
-								passed ? 'text-(--color-disabled)' : 'text-(--color-secondary)'
+								passed ? 'text-(--text-disabled)' : 'text-(--text-secondary)'
 							)}
 						>
 							<Icon

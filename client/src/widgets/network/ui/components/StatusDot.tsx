@@ -7,9 +7,9 @@ export const StatusDot = ({ status, disabled = false }: { status: 'up' | 'down' 
 		<IconPointFilled
 			className={cn(
 				'size-3',
-				(disabled || status === null) && 'text-(--color-disabled)',
+				(disabled || status === null) && 'text-(--text-disabled)',
 				!disabled && status === 'up' && 'animate-pulse text-(--status-success)',
-				!disabled && status === 'down' && 'text-(--warning-default)/80'
+				!disabled && status === 'down' && 'text-(--special-danger)/80'
 			)}
 		/>
 	);

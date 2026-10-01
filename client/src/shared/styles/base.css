@@ -14,8 +14,8 @@ html {
 
 body {
 	font-family: 'Nunito', sans-serif;
-	color: var(--color-primary);
-	background: var(--bg-primary);
+	color: var(--text-primary);
+	background: var(--bg-base);
 }
 
 @media (hover: hover) and (pointer: fine) {
@@ -26,7 +26,7 @@ body {
 	html,
 	body {
 		scrollbar-width: thin;
-		scrollbar-color: var(--bg-primary) var(--bg-tertiary);
+		scrollbar-color: var(--bg-base) var(--bg-tertiary);
 	}
 
 	html::-webkit-scrollbar,
@@ -37,7 +37,7 @@ body {
 	html::-webkit-scrollbar-thumb,
 	body::-webkit-scrollbar-thumb {
 		border-radius: 6px;
-		background-color: var(--bg-primary);
+		background-color: var(--bg-base);
 	}
 
 	html::-webkit-scrollbar-track,

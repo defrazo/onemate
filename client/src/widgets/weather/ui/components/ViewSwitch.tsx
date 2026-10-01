@@ -11,12 +11,12 @@ export const ViewSwitch = observer(() => {
 		cn(
 			'flex-1 rounded-md px-3 text-sm',
 			active
-				? 'bg-(--accent-default) text-(--color-primary)'
-				: 'text-(--accent-default)/80 hover:text-(--accent-default)'
+				? 'bg-(--accent-primary) text-(--text-primary)'
+				: 'text-(--accent-primary)/80 hover:text-(--accent-primary)'
 		);
 
 	return (
-		<div className="mx-auto flex h-7 w-60 shrink-0 gap-0.5 rounded-lg bg-(--accent-default)/10 p-0.5">
+		<div className="mx-auto flex h-7 w-60 shrink-0 gap-0.5 rounded-lg bg-(--accent-primary)/10 p-0.5">
 			<Button
 				className={buttonStyle(weatherStore.isOpenCurrent)}
 				size="custom"

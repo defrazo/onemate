@@ -51,14 +51,14 @@ export const TableOfContents = () => {
 			<div className="relative">
 				<Button
 					centerIcon={<IconListNumbers className="size-4.5" />}
-					className="flex size-9 items-center justify-center rounded-lg border border-(--border-color) bg-(--bg-secondary) text-(--color-secondary) transition-colors hover:bg-(--bg-tertiary) hover:text-(--color-primary)"
+					className="flex size-9 items-center justify-center rounded-lg border border-(--border-primary) bg-(--bg-secondary) text-(--text-secondary) transition-colors hover:bg-(--bg-tertiary) hover:text-(--text-primary)"
 					size="custom"
 					title="Оглавление"
 					variant="custom"
 				/>
-				<div className="invisible absolute top-1/2 left-11 w-72 -translate-y-1/2 rounded-xl border border-(--border-color) bg-(--bg-secondary) px-2 py-1 opacity-0 shadow-(--shadow) transition-[opacity,visibility] group-hover:visible group-hover:opacity-100">
+				<div className="invisible absolute top-1/2 left-11 w-72 -translate-y-1/2 rounded-xl border border-(--border-primary) bg-(--bg-secondary) px-2 py-1 opacity-0 shadow-(--shadow) transition-[opacity,visibility] group-hover:visible group-hover:opacity-100">
 					<div className="px-2.5 pt-1.5 pb-2">
-						<span className="text-xs font-bold tracking-wide text-(--color-disabled)">Оглавление</span>
+						<span className="text-xs font-bold tracking-wide text-(--text-disabled)">Оглавление</span>
 					</div>
 					<div className="flex flex-col gap-0.5">
 						{sections.map(({ id, title }) => {
@@ -70,13 +70,13 @@ export const TableOfContents = () => {
 									className={cn(
 										'relative rounded-lg px-3 py-2 text-sm transition-colors',
 										active
-											? 'bg-(--bg-tertiary) font-bold text-(--color-primary)'
-											: 'text-(--color-secondary) hover:bg-(--bg-tertiary)/50 hover:text-(--color-primary)'
+											? 'bg-(--bg-tertiary) font-bold text-(--text-primary)'
+											: 'text-(--text-secondary) hover:bg-(--bg-tertiary)/50 hover:text-(--text-primary)'
 									)}
 									href={`#${id}`}
 								>
 									{active && (
-										<span className="absolute top-1/2 left-0 h-4 w-0.5 -translate-y-1/2 rounded-full bg-(--accent-default)" />
+										<span className="absolute top-1/2 left-0 h-4 w-0.5 -translate-y-1/2 rounded-full bg-(--accent-primary)" />
 									)}
 									<span className="block truncate">{title}</span>
 								</a>

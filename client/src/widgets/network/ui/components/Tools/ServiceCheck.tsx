@@ -64,7 +64,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 					rightIcon={
 						url && (
 							<IconX
-								className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+								className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 								onClick={() => handleUrlChange('')}
 							/>
 						)
@@ -99,14 +99,14 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 			{result && (
 				<div className="flex flex-col">
 					<div className="mb-3 flex items-center gap-2">
-						<span className="text-xs text-(--color-secondary)">Результат</span>
-						<div className="h-px flex-1 bg-(--border-color)" />
+						<span className="text-xs text-(--text-secondary)">Результат</span>
+						<div className="h-px flex-1 bg-(--border-primary)" />
 					</div>
 					<div className="flex flex-col">
 						<div className="flex min-w-0 items-center gap-1">
 							<StatusDot status={result.status} />
 							<a
-								className="block max-w-64 min-w-0 cursor-pointer truncate hover:text-(--accent-default)"
+								className="block max-w-64 min-w-0 cursor-pointer truncate hover:text-(--accent-primary)"
 								href={result.url}
 								rel="noopener noreferrer"
 								target="_blank"
@@ -115,7 +115,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 							</a>
 						</div>
 						{result.ip && (
-							<span className="flex items-center gap-1 text-(--color-secondary)">
+							<span className="flex items-center gap-1 text-(--text-secondary)">
 								<IconWorld className="size-3 shrink-0" />
 								<span className="text-xs tabular-nums">{result.ip}</span>
 							</span>

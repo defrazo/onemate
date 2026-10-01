@@ -25,13 +25,13 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 		>
 			<header className="flex items-center justify-between">
 				<Tooltip className="flex items-center gap-2" content={tip}>
-					<div className="flex size-7 items-center justify-center rounded-lg bg-(--accent-default)/10">
-						<Icon className="size-4 text-(--accent-default)" stroke={2.5} />
+					<div className="flex size-7 items-center justify-center rounded-lg bg-(--accent-primary)/10">
+						<Icon className="size-4 text-(--accent-primary)" stroke={2.5} />
 					</div>
 					<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
 				</Tooltip>
 				<Button
-					centerIcon={<IconGripHorizontal className="size-4 text-(--color-secondary)" />}
+					centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
 					className="cursor-grab touch-none pl-4 opacity-0 transition-opacity group-hover:opacity-100"
 					size="custom"
 					title="Переместить"

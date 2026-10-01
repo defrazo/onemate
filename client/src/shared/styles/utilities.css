@@ -4,7 +4,7 @@
 	}
 
 	.core-base {
-		@apply bg-(--bg-secondary) text-(--color-primary);
+		@apply bg-(--bg-secondary) text-(--text-primary);
 	}
 
 	.core-gap {
@@ -12,15 +12,15 @@
 	}
 
 	.core-elements {
-		@apply border border-(--border-light) bg-(--bg-tertiary);
+		@apply border border-(--border-contrast) bg-(--bg-tertiary);
 	}
 
 	.core-border {
-		@apply rounded-xl border border-(--border-color);
+		@apply rounded-xl border border-(--border-primary);
 	}
 
 	.core-semiborder {
-		@apply rounded-xl border border-(--border-color-op);
+		@apply rounded-xl border border-(--border-primary-op);
 	}
 
 	.core-header {
@@ -39,7 +39,7 @@
 	}
 
 	.loader {
-		@apply aspect-square w-16 animate-spin rounded-full bg-(--accent-default);
+		@apply aspect-square w-16 animate-spin rounded-full bg-(--accent-primary);
 		mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
 		transform-origin: 50% 40%;

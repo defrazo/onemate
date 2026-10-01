@@ -72,7 +72,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 			<ViewHeader icon={IconServer} title="Добавить сервис" onBack={onBack} />
 			<form className="flex flex-col gap-3" onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-1">
-					<label className="text-(--color-secondary) opacity-70" htmlFor="name">
+					<label className="text-(--text-secondary) opacity-70" htmlFor="name">
 						Название
 					</label>
 					<Input
@@ -83,7 +83,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						rightIcon={
 							name && (
 								<IconX
-									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => setName('')}
 								/>
 							)
@@ -95,7 +95,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					/>
 				</div>
 				<div className="flex flex-wrap items-center justify-between">
-					<span className="text-(--color-secondary) opacity-70">Тип проверки</span>
+					<span className="text-(--text-secondary) opacity-70">Тип проверки</span>
 					<div className="grid w-64 grid-cols-2 rounded-lg bg-(--bg-tertiary) p-0.5">
 						{checkTypes.map(({ value, label }) => {
 							const isActive = type === value;
@@ -106,8 +106,8 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 									className={cn(
 										'h-6 min-w-30 cursor-pointer rounded-md px-4 text-sm transition-colors',
 										isActive
-											? 'bg-(--accent-default) text-(--color-primary)'
-											: 'text-(--color-secondary) hover:text-(--accent-default)'
+											? 'bg-(--accent-primary) text-(--text-primary)'
+											: 'text-(--text-secondary) hover:text-(--accent-primary)'
 									)}
 									type="button"
 									onClick={() => handleTypeChange(value)}
@@ -120,7 +120,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 				</div>
 				{type === 'http' ? (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--color-secondary) opacity-70" htmlFor="url">
+						<label className="text-(--text-secondary) opacity-70" htmlFor="url">
 							Адрес
 						</label>
 						<Input
@@ -132,7 +132,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 							rightIcon={
 								url && (
 									<IconX
-										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 										onClick={() => {
 											setUrl('');
 											setError(null);
@@ -151,7 +151,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					</div>
 				) : (
 					<div className="flex flex-col gap-1">
-						<div className="flex items-center gap-1.5 text-(--color-secondary) opacity-70">
+						<div className="flex items-center gap-1.5 text-(--text-secondary) opacity-70">
 							<label htmlFor="host">Хост и порт</label>
 							<Tooltip content={tip}>
 								<IconLifebuoy className="size-4" />
@@ -167,7 +167,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 								rightIcon={
 									host && (
 										<IconX
-											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 											onClick={() => {
 												setHost('');
 												setError(null);

@@ -66,13 +66,13 @@ export const Radio = ({
 								styles,
 								'flex shrink-0 items-center justify-center rounded-full border',
 								checked
-									? 'border-(--accent-default)'
-									: !isDisabled && 'group-hover/radio:border-(--accent-default)'
+									? 'border-(--accent-primary)'
+									: !isDisabled && 'group-hover/radio:border-(--accent-primary)'
 							)}
 						>
 							<span
 								className={cn(
-									'size-2 rounded-full bg-(--accent-default) transition-opacity',
+									'size-2 rounded-full bg-(--accent-primary) transition-opacity',
 									checked ? 'opacity-100' : 'opacity-0'
 								)}
 							/>
@@ -81,7 +81,7 @@ export const Radio = ({
 							className={cn(
 								styles,
 								'flex w-fit items-center',
-								!isDisabled && 'group-hover/radio:text-(--accent-default)'
+								!isDisabled && 'group-hover/radio:text-(--accent-primary)'
 							)}
 						>
 							{option.label}

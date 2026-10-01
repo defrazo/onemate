@@ -14,7 +14,7 @@ export const Workspace = () => (
 			<div className="pointer-events-none absolute inset-0 bg-violet-500/2" />
 			<div className="relative flex h-10 items-center border-b border-white/8">
 				<div className="mx-auto flex items-center gap-5 text-[10px] text-white/20">
-					<span className="font-bold text-(--accent-default)/70">Dashboard</span>
+					<span className="font-bold text-(--accent-primary)/70">Dashboard</span>
 					<span>ToDo</span>
 					<span>Kanban</span>
 					<span>ToolBox</span>

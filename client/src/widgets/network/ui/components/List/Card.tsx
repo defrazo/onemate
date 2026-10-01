@@ -18,8 +18,8 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 		: null;
 
 	const renderStatus = () => {
-		if (!service.isActive) return <span className="text-sm text-(--color-disabled)">Отключено</span>;
-		if (service.lastStatus === null) return <span className="text-sm text-(--color-disabled)">Ожидает</span>;
+		if (!service.isActive) return <span className="text-sm text-(--text-disabled)">Отключено</span>;
+		if (service.lastStatus === null) return <span className="text-sm text-(--text-disabled)">Ожидает</span>;
 		if (service.lastStatus === 'down') return <span className="text-sm text-(--status-error)">Недоступен</span>;
 
 		if (service.lastResponseTime !== null) {
@@ -35,7 +35,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 			);
 		}
 
-		return <span className="text-(--color-disabled)">–</span>;
+		return <span className="text-(--text-disabled)">–</span>;
 	};
 
 	const address = service.type === 'http' ? service.url : `${service.host}:${service.port}`;
@@ -53,11 +53,11 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 				<div className="flex items-center justify-between">
 					<div className="flex min-w-0 items-center gap-1">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
-						<span className="truncate text-(--color-primary)">{service.name}</span>
+						<span className="truncate text-(--text-primary)">{service.name}</span>
 					</div>
 					{renderStatus()}
 				</div>
-				<div className="flex items-center justify-between text-sm text-(--color-secondary)">
+				<div className="flex items-center justify-between text-sm text-(--text-secondary)">
 					<div className="flex min-w-0 items-center gap-1">
 						<AddressIcon className="size-3.5 shrink-0" />
 						<span className="truncate">{address}</span>

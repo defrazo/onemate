@@ -17,17 +17,17 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 	return (
 		<div className="-mt-4 flex flex-col gap-4 pb-4 select-none xl:w-md xl:pb-0">
 			<div className="flex gap-2">
-				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-default)/12">
-					<IconLayersSelected className="size-5.5 text-(--accent-default)" />
+				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12">
+					<IconLayersSelected className="size-5.5 text-(--accent-primary)" />
 				</div>
 				<div className="flex h-full flex-col justify-between gap-0.5 select-none">
 					<h2 className="text-xl font-semibold">Заменить виджет</h2>
-					<p className="trim text-sm text-(--color-secondary) opacity-60">Подтвердите действие</p>
+					<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 				</div>
 			</div>
-			<p className="trim text-sm text-(--color-secondary) opacity-80">
+			<p className="trim text-sm text-(--text-secondary) opacity-80">
 				Выберите виджет, который будет заменён на{' '}
-				<span className="text-(--accent-default)">«{targetWidget.title}»</span>
+				<span className="text-(--accent-primary)">«{targetWidget.title}»</span>
 			</p>
 			<div className="grid grid-cols-2 gap-2">
 				{selected.map((id) => {
@@ -39,11 +39,11 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					return (
 						<button
 							key={id}
-							className="flex h-10 cursor-pointer items-center gap-2 rounded-xl bg-(--bg-tertiary) px-3 text-sm text-(--color-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-default)/10 hover:text-(--accent-default)"
+							className="flex h-10 cursor-pointer items-center gap-2 rounded-xl bg-(--bg-tertiary) px-3 text-sm text-(--text-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)"
 							type="button"
 							onClick={() => onReplace(id)}
 						>
-							<Icon className="size-4 text-(--accent-default)" />
+							<Icon className="size-4 text-(--accent-primary)" />
 							<span className="trim">{title}</span>
 						</button>
 					);

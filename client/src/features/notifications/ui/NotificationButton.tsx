@@ -22,13 +22,13 @@ export const NotificationButton = observer(() => {
 			<Button
 				active={isOpen}
 				centerIcon={<IconBell className="size-5" />}
-				className="flex size-9 rounded-xl text-(--color-secondary) transition-colors hover:bg-white/8 hover:text-(--accent-default)"
+				className="flex size-9 rounded-xl text-(--text-secondary) transition-colors hover:bg-white/8 hover:text-(--accent-primary)"
 				type="button"
 				variant="mobile"
 				onClick={() => setIsOpen((value) => !value)}
 			/>
 			{notificationStore.unreadCount > 0 && (
-				<span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-(--accent-default)" />
+				<span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-(--accent-primary)" />
 			)}
 			{isOpen && <Menu />}
 		</div>

@@ -25,7 +25,7 @@ export const createConfirmDialog = ({
 	// === MESSAGE ===
 	const message = document.createElement('div');
 	message.className =
-		'text-sm leading-5 wrap-break-word whitespace-normal text-(--color-secondary) select-none 2xl:text-base';
+		'text-sm leading-5 wrap-break-word whitespace-normal text-(--text-secondary) select-none 2xl:text-base';
 
 	if (typeof content === 'string') message.textContent = content;
 	else message.append(content);

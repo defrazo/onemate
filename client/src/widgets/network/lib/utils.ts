@@ -1,7 +1,7 @@
 import type { PortCheckResult, ServiceCheckResult, SslCheckResult } from '../model';
 
 export const getResponseTimeClass = (responseTime: number | null) => {
-	if (responseTime === null) return 'text-(--color-disabled)';
+	if (responseTime === null) return 'text-(--text-disabled)';
 	if (responseTime < 300) return 'text-(--status-success)';
 	if (responseTime < 800) return 'text-(--status-warning)';
 
@@ -9,7 +9,7 @@ export const getResponseTimeClass = (responseTime: number | null) => {
 };
 
 export const getStatusCodeClass = (statusCode: number | null) => {
-	if (statusCode === null) return 'text-(--color-disabled)';
+	if (statusCode === null) return 'text-(--text-disabled)';
 	if (statusCode >= 200 && statusCode < 300) return 'text-(--status-success)';
 	if (statusCode >= 300 && statusCode < 400) return 'text-(--status-warning)';
 
@@ -17,7 +17,7 @@ export const getStatusCodeClass = (statusCode: number | null) => {
 };
 
 export const getDaysRemaining = (days: number | null) => {
-	if (days === null) return 'text-(--color-disabled)';
+	if (days === null) return 'text-(--text-disabled)';
 	if (days <= 7) return 'text-(--status-error)';
 	if (days <= 30) return 'text-(--status-warning)';
 
@@ -25,7 +25,7 @@ export const getDaysRemaining = (days: number | null) => {
 };
 
 export const getUptimeClass = (uptime: number | null) => {
-	if (uptime === null) return 'text-(--color-disabled)';
+	if (uptime === null) return 'text-(--text-disabled)';
 	if (uptime >= 99) return 'text-(--status-success)';
 	if (uptime >= 95) return 'text-(--status-warning)';
 

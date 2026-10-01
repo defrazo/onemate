@@ -9,7 +9,7 @@ export const PrivacyPage = () => {
 				</h1>
 				<PrintButton />
 			</div>
-			<p className="print-content text-(--color-secondary)">
+			<p className="print-content text-(--text-secondary)">
 				Настоящая Политика конфиденциальности описывает, какие данные обрабатываются при использовании
 				веб-приложения OneMate (далее – «Приложение»), для чего они используются и как хранятся. Объём обработки
 				зависит от режима использования: обычного аккаунта или демо-режима.
@@ -118,7 +118,7 @@ export const PrivacyPage = () => {
 						<li>
 							По вопросам, связанным с обработкой данных и работой Приложения, можно написать на{' '}
 							<a
-								className="text-(--accent-default) hover:underline print:text-black"
+								className="text-(--accent-primary) hover:underline print:text-black"
 								href="mailto:defrazo@inbox.ru"
 							>
 								defrazo@inbox.ru
@@ -128,7 +128,7 @@ export const PrivacyPage = () => {
 						<li>
 							Настоящая Политика применяется совместно с{' '}
 							<a
-								className="text-(--accent-default) hover:underline print:text-black"
+								className="text-(--accent-primary) hover:underline print:text-black"
 								href="/terms-of-service"
 							>
 								Условиями использования
@@ -137,7 +137,7 @@ export const PrivacyPage = () => {
 						</li>
 					</ul>
 				</ArticleSection>
-				<p className="text-center text-xs text-(--color-disabled) md:text-sm" data-version="2.0">
+				<p className="text-center text-xs text-(--text-disabled) md:text-sm" data-version="2.0">
 					Версия 2.0 · Обновлено 26 сентября 2026 года
 				</p>
 			</article>

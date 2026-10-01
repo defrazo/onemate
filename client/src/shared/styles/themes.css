@@ -1,112 +1,131 @@
 .dark-theme {
 	/* Текст */
-	--color-primary: #d7d7d7;
-	--color-secondary: #a0a0a0;
-	--color-disabled: #666666;
-	--color-accent: #7d6fe4;
+	--text-primary: #d7d7d7;
+	--text-secondary: #a0a0a0;
+	--text-tertiary: #687286;
+	--text-disabled: #666666;
+	--text-on-accent: #ffffff;
 
-	/* Акцентные цвета */
-	--accent-default: #e18127;
-	--accent-default-op: #e1812780;
-	--accent-hover: #e15300;
-	--accent-hover-op: #e1530080;
-	--accent-active: #7d6fe4;
-	--accent-disabled: #e0b9a3;
-	--accent-text: #ffffff;
-	--accent-text-disabled: #8b5c49;
-	--warning-default: #b51111;
-	--warning-hover: #8d0404;
-
-	/* Фоны */
+	/* Фон */
+	--bg-base: #19191a;
 	--bg-primary: #19191a;
 	--bg-secondary: #222224;
 	--bg-tertiary: #39393a;
-	--bg-tertiary-op: #39393a80;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
-	/* Статусные цвета */
-	--status-success: #2a8d30;
-	--status-error: #ff2828;
-	--status-warning: #ffa515;
-	--status-info: #2c90c7;
+	/* Акцент */
+	--accent-primary: #e18127;
+	--accent-primary-hover: #e15300;
+	--accent-primary-active: #5b8cff;
+	--accent-primary-muted: rgba(124, 92, 255, 0.16);
+	--accent-primary-disabled: #4a426b;
 
-	/* Цвета приоритета kanban */
+	--accent-secondary: #7d6fe4;
+	--accent-secondary-hover: #58b6ff;
+	--accent-secondary-active: #2c90c7;
+	--accent-secondary-muted: rgba(59, 167, 255, 0.14);
+	--accent-secondary-disabled: #31485f;
+
+	/* Специальные */
+	--special-danger: #b51111;
+	--special-danger-hover: #8d0404;
+
+	/* Статусы */
+	--status-success: #18a121;
+	--status-success-muted: rgba(0, 201, 81, 0.1);
+	--status-error: #ff2828;
+	--status-error-muted: rgba(255, 40, 40, 0.1);
+	--status-warning: #ffa515;
+	--status-warning-muted: rgba(255, 165, 21, 0.1);
+	--status-info: #2c90c7;
+	--status-info-muted: rgba(44, 144, 199, 0.1);
+
+	/* Границы */
+	--border-primary: #39393a;
+	--border-secondary: #a0a0a0;
+	--border-contrast: transparent;
+
+	/* Тени */
+	--shadow-contrast: none;
+
+	/* Приоритет (Kanban) */
 	--priority-low: #76a9ff;
 	--priority-medium: #64c371;
 	--priority-high: #ff4039;
 
-	/* Дополнительные цвета  */
-	--color-slate: #94a3b8;
-	--color-rose: #fb7185;
-	--color-amber: #fbbf24;
-	--color-emerald: #34d399;
-	--color-violet: #a78bfa;
-	--color-lime: #84cc16;
-	--color-fuchsia: #e879f9;
-	--color-sky: #38bdf8;
-
-	/* Разделители и бордеры */
-	--border-color: #39393a;
-	--border-color-op: #39393a80;
-	--border-alt: #a0a0a0;
-	--border-light: transparent;
-
-	/* Тени */
-	--shadow: none;
+	/* Палитра (Kanban) */
+	--palette-slate: #94a3b8;
+	--palette-rose: #fb7185;
+	--palette-amber: #fbbf24;
+	--palette-emerald: #34d399;
+	--palette-violet: #a78bfa;
+	--palette-lime: #84cc16;
+	--palette-fuchsia: #e879f9;
+	--palette-sky: #38bdf8;
 }
 
 .light-theme {
 	/* Текст */
-	--color-primary: #2f3441;
-	--color-secondary: #1d1c1c;
-	--color-disabled: #666666;
+	--text-primary: #2f3441;
+	--text-secondary: #1d1c1c;
+	--text-tertiary: #8a93a5;
+	--text-disabled: #666666;
+	--text-on-accent: #ffffff;
 
-	/* Акцентные цвета */
-	--accent-default: #7d6fe4;
-	--accent-default-op: #7d6fe480;
-	--accent-hover: #6457c5;
-	--accent-hover-op: #6457c580;
-	--accent-active: #f77e0d;
-	--accent-disabled: #e0b9a3;
-	--accent-text: #ffffff;
-	--accent-text-disabled: #8b5c49;
-	--warning-default: #b51111;
-	--warning-hover: #8d0404;
-
-	/* Фоны */
+	/* Фон */
+	--bg-base: #e7e7e7;
 	--bg-primary: #e7e7e7;
 	--bg-secondary: #f1f1f1;
 	--bg-tertiary: #f8f7f7;
-	--bg-tertiary-op: #efefef;
 	--bg-overlay: rgba(0, 0, 0, 0.7);
 
-	/* Статусные цвета */
-	--status-success: #31ad3f;
-	--status-error: #ff2f2f;
-	--status-warning: #ffa509;
-	--status-info: #31b7ff;
+	/* Акцент */
+	--accent-primary: #7d6fe4;
+	--accent-primary-hover: #8f72ff;
+	--accent-primary-active: #5b8cff;
+	--accent-primary-muted: rgba(124, 92, 255, 0.16);
+	--accent-primary-disabled: #4a426b;
 
-	/* Цвета приоритета */
+	--accent-secondary: #3ba7ff;
+	--accent-secondary-hover: #58b6ff;
+	--accent-secondary-active: #2c90c7;
+	--accent-secondary-muted: rgba(59, 167, 255, 0.14);
+	--accent-secondary-disabled: #31485f;
+
+	/* Специальные */
+	--special-danger: #b51111;
+	--special-danger-hover: #8d0404;
+
+	/* Статусы */
+	--status-success: #0b8d4c;
+	--status-success-muted: rgba(0, 201, 81, 0.3);
+	--status-error: #ff2f2f;
+	--status-error-muted: rgba(255, 47, 47, 0.1);
+	--status-warning: #dd8c00;
+	--status-warning-muted: rgba(255, 165, 21, 0.3);
+	--status-info: #31b7ff;
+	--status-info-muted: rgba(49, 183, 255, 0.1);
+
+	/* Границы */
+	--border-primary: #d4d7df;
+	--border-secondary: #e3e3e3;
+	--border-contrast: #d4d7df;
+
+	/* Тени */
+	--shadow-contrast: 0 1px 2px 0px rgb(40 66 75 / 22%);
+
+	/* Приоритет (Kanban) */
 	--priority-low: #76a9ff;
 	--priority-medium: #64c371;
 	--priority-high: #ff4039;
 
-	/* Дополнительные цвета  */
-	--color-slate: #94a3b8;
-	--color-rose: #fb7185;
-	--color-amber: #f59e0b;
-	--color-emerald: #34d399;
-	--color-violet: #a78bfa;
-	--color-lime: #8ecf23;
-	--color-fuchsia: #e879f9;
-	--color-sky: #38bdf8;
-
-	/* Разделители и бордеры */
-	--border-color: #d4d7df;
-	--border-color-op: #d4d7df80;
-	--border-alt: #e3e3e3;
-	--border-light: #d4d7df;
-
-	/* Тени */
-	--shadow: 0 1px 2px 0px rgb(40 66 75 / 22%);
+	/* Палитра (Kanban) */
+	--palette-slate: #94a3b8;
+	--palette-rose: #fb7185;
+	--palette-amber: #f59e0b;
+	--palette-emerald: #34d399;
+	--palette-violet: #a78bfa;
+	--palette-lime: #8ecf23;
+	--palette-fuchsia: #e879f9;
+	--palette-sky: #38bdf8;
 }

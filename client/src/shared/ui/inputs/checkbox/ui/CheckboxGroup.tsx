@@ -73,13 +73,16 @@ export const CheckboxGroup = ({
 							onChange={onChange}
 						/>
 						<Icon
-							className={cn(styles, !isDisabled && 'transition-colors group-hover:text-(--accent-hover)')}
+							className={cn(
+								styles,
+								!isDisabled && 'transition-colors group-hover:text-(--accent-primary-hover)'
+							)}
 						/>
 						<span
 							className={cn(
 								styles,
 								'flex w-fit items-center',
-								!isDisabled && 'transition-colors group-hover:text-(--accent-hover)'
+								!isDisabled && 'transition-colors group-hover:text-(--accent-primary-hover)'
 							)}
 						>
 							{option.label}

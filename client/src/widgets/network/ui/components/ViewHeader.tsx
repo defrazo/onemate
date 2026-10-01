@@ -12,7 +12,7 @@ export const ViewHeader = ({ icon: Icon, title, onBack }: ViewHeaderProps) => {
 	return (
 		<div className="flex justify-between">
 			<Button
-				className="rounded-lg bg-white/5 px-2 py-1 text-xs text-(--color-secondary) hover:bg-white/8"
+				className="rounded-lg bg-white/5 px-2 py-1 text-xs text-(--text-secondary) hover:bg-white/8"
 				leftIcon={<IconArrowLeft className="size-4" />}
 				size="sm"
 				title="Назад"
@@ -21,9 +21,9 @@ export const ViewHeader = ({ icon: Icon, title, onBack }: ViewHeaderProps) => {
 			>
 				Назад
 			</Button>
-			<div className="flex items-center gap-1.5 rounded-lg bg-(--accent-default)/10 px-2 py-1 text-(--accent-default)">
+			<div className="flex items-center gap-1.5 rounded-lg bg-(--accent-primary)/10 px-2 py-1 text-(--accent-primary)">
 				<Icon className="size-4" />
-				<span className="trim text-sm text-(--accent-default)">{title}</span>
+				<span className="trim text-sm text-(--accent-primary)">{title}</span>
 			</div>
 		</div>
 	);

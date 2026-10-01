@@ -82,7 +82,7 @@ export const LocationSearch = observer(
 							/>
 						) : showGeolocation ? (
 							<IconLocation
-								className="size-7 cursor-pointer transition-colors hover:text-(--accent-hover)"
+								className="size-7 cursor-pointer transition-colors hover:text-(--accent-primary-hover)"
 								onClick={() => void handleGeolocation()}
 							/>
 						) : null

@@ -28,7 +28,7 @@ export const Card = observer(({ id }: { id: string }) => {
 				onClick={() => notesStore.openNote(id)}
 			>
 				<p className="line-clamp-3 text-sm">{note.text || 'Пустая заметка'}</p>
-				<div className="mt-auto flex items-center gap-1 text-(--color-disabled)" title="Дата изменения">
+				<div className="mt-auto flex items-center gap-1 text-(--text-disabled)" title="Дата изменения">
 					<IconClockEdit className="size-3" />
 					<span className="trim text-xs">{fullDate(note.updated_at)}</span>
 				</div>

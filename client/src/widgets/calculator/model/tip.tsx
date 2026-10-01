@@ -6,6 +6,6 @@ export const CALCULATOR_TIP = (
 			<li>Просматривать историю вычислений</li>
 			<li>Очищать журнал вычислений</li>
 		</ul>
-		<p className="text-(--color-disabled)">Выполненные вычисления сохраняются в журнале справа.</p>
+		<p className="text-(--text-disabled)">Выполненные вычисления сохраняются в журнале справа.</p>
 	</div>
 );

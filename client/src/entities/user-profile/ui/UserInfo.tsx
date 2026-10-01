@@ -22,7 +22,7 @@ export const UserInfo = observer(({ className }: { className?: string }) => {
 						{userStore.username}
 					</div>
 					<div
-						className="cursor-copy truncate text-sm text-(--color-secondary) opacity-60"
+						className="cursor-copy truncate text-sm text-(--text-secondary) opacity-60"
 						title={userStore.email}
 						onClick={() => copy(userStore.email, 'E-mail пользователя скопирован')}
 					>

@@ -46,7 +46,7 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 	return (
 		<div className="flex min-h-0 flex-col">
 			<div className="relative flex justify-between">
-				<div className="flex flex-col gap-0.5 pl-2 text-(--color-secondary)">
+				<div className="flex flex-col gap-0.5 pl-2 text-(--text-secondary)">
 					<div className="flex items-center gap-1">
 						<IconHistory className="size-3" />
 						<span className="trim text-sm">История отклика</span>
@@ -54,22 +54,22 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 					<span className="text-[10px]">Последние 24 часа</span>
 				</div>
 				{!isActive && (
-					<div className="absolute -top-0.5 left-1/2 flex -translate-x-1/2 flex-col items-center text-[10px] text-(--color-secondary)">
-						<div className="flex size-5 items-center justify-center rounded-md bg-(--warning-default)/10">
-							<IconPower className="size-3 text-(--warning-default)" />
+					<div className="absolute -top-0.5 left-1/2 flex -translate-x-1/2 flex-col items-center text-[10px] text-(--text-secondary)">
+						<div className="flex size-5 items-center justify-center rounded-md bg-(--special-danger)/10">
+							<IconPower className="size-3 text-(--special-danger)" />
 						</div>
 						Мониторинг выключен
 					</div>
 				)}
 				<div className="flex gap-3 pr-2">
 					<div className="flex flex-col items-center">
-						<span className="text-[10px] text-(--color-secondary)">Доступность</span>
+						<span className="text-[10px] text-(--text-secondary)">Доступность</span>
 						<span className={cn('text-sm tabular-nums opacity-80', getUptimeClass(history.uptime))}>
 							{history.uptime !== null ? `${history.uptime}%` : '–'}
 						</span>
 					</div>
 					<div className="flex flex-col items-center">
-						<span className="text-[10px] text-(--color-secondary)">Сбои</span>
+						<span className="text-[10px] text-(--text-secondary)">Сбои</span>
 						<span
 							className={cn(
 								'text-sm tabular-nums opacity-80',

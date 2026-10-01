@@ -60,10 +60,10 @@ export const VerifyEmailPage = () => {
 	return (
 		<AuthWrapper isPage>
 			<div className="flex flex-col items-center gap-2 select-none">
-				<div className="rounded-full border-3 border-(--accent-default) p-2 lg:p-3">
-					{status === 'loading' && <IconLoader2 className="size-8 animate-spin text-(--accent-default)" />}
-					{status === 'success' && <IconMailCheck className="size-8 text-(--accent-default)" />}
-					{status === 'error' && <IconAlertCircle className="size-8 text-(--accent-default)" />}
+				<div className="rounded-full border-3 border-(--accent-primary) p-2 lg:p-3">
+					{status === 'loading' && <IconLoader2 className="size-8 animate-spin text-(--accent-primary)" />}
+					{status === 'success' && <IconMailCheck className="size-8 text-(--accent-primary)" />}
+					{status === 'error' && <IconAlertCircle className="size-8 text-(--accent-primary)" />}
 				</div>
 				<h2 className="text-center text-2xl font-semibold">Подтверждение e-mail</h2>
 

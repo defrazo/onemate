@@ -23,7 +23,7 @@ export const AuthDemo = observer(() => {
 	return (
 		<Tooltip className="w-full" content="Запустить демо-режим">
 			<Button
-				className="flex h-10 w-full text-sm hover:text-(--accent-text) hover:opacity-100 md:text-base"
+				className="flex h-10 w-full text-sm hover:text-(--text-on-accent) hover:opacity-100 md:text-base"
 				loading={authStore.isLoading}
 				loadingText="Выполняется вход..."
 				rightIcon={<IconMask className="size-5" />}

@@ -22,7 +22,7 @@ export const AvatarSection = observer(() => {
 		<div className="flex items-center gap-2 md:w-1/5 lg:flex-col">
 			<Thumbnail
 				alt="avatar"
-				className="size-28 cursor-pointer ring-(--accent-hover) hover:ring-2 md:size-fit"
+				className="size-28 cursor-pointer ring-(--accent-primary-hover) hover:ring-2 md:size-fit"
 				isLoading={!userProfileStore.isReady}
 				src={userProfileStore.avatar}
 				title="Сменить аватар"

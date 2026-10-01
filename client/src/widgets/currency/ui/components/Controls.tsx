@@ -18,7 +18,7 @@ export const Controls = observer(() => {
 			/>
 			<Button
 				centerIcon={<IconRefresh className="size-4" />}
-				className="w-13 rounded-l-none rounded-r-lg bg-(--accent-default)/10 text-(--accent-default) hover:bg-(--accent-default)/20"
+				className="w-13 rounded-l-none rounded-r-lg bg-(--accent-primary)/10 text-(--accent-primary) hover:bg-(--accent-primary)/20"
 				disabled={currencyStore.isDefault}
 				title="Сбросить"
 				variant="custom"

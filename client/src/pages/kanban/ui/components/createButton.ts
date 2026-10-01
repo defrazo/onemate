@@ -17,11 +17,11 @@ const base =
 	'inline-flex cursor-pointer items-center justify-center rounded-lg transition-colors select-none disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<ButtonVariant, string> = {
-	primary: 'bg-(--accent-default) text-(--accent-text) hover:bg-(--accent-hover)',
-	secondary: 'bg-white/5 text-(--color-primary) hover:bg-white/10',
-	ghost: 'text-(--color-secondary) hover:bg-white/5 hover:text-(--color-primary)',
+	primary: 'bg-(--accent-primary) text-(--text-on-accent) hover:bg-(--accent-primary-hover)',
+	secondary: 'bg-white/5 text-(--text-primary) hover:bg-white/10',
+	ghost: 'text-(--text-secondary) hover:bg-white/5 hover:text-(--text-primary)',
 	danger: 'text-(--status-error) hover:bg-red-500/10',
-	icon: 'text-(--color-secondary) hover:bg-white/5 hover:text-(--color-primary)',
+	icon: 'text-(--text-secondary) hover:bg-white/5 hover:text-(--text-primary)',
 };
 
 const sizes: Record<ButtonSize, string> = {

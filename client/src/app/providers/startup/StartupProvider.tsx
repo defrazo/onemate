@@ -38,20 +38,20 @@ const AppInitializer = () => {
 		return (
 			<div className="flex h-full flex-1 cursor-default items-center justify-center px-4 select-none">
 				<div className="flex w-full max-w-md flex-col items-center gap-2 rounded-2xl border border-[#fafafa12] bg-[#fafafa0d]/50 p-6 text-center shadow-(--shadow)">
-					<div className="flex size-12 items-center justify-center rounded-xl bg-(--warning-default)/10">
-						<IconAlertCircle className="size-6 text-(--warning-default)" />
+					<div className="flex size-12 items-center justify-center rounded-xl bg-(--special-danger)/10">
+						<IconAlertCircle className="size-6 text-(--special-danger)" />
 					</div>
 					<h2 className="text-xl font-semibold">Не удалось загрузить OneMate</h2>
 					{error?.message && (
 						<div className="w-full rounded-xl bg-white/3 px-3 py-2.5">
 							<p className="flex flex-col text-xs wrap-break-word">
 								<span>Произошла ошибка при инициализации приложения:</span>
-								<span className="text-(--color-secondary) opacity-50">{error.message}</span>
+								<span className="text-(--text-secondary) opacity-50">{error.message}</span>
 							</p>
 						</div>
 					)}
 					<button
-						className="mt-2 h-8 cursor-pointer rounded-xl bg-(--accent-default)/80 px-4 text-(--color-primary) transition-colors hover:bg-(--accent-hover)"
+						className="mt-2 h-8 cursor-pointer rounded-xl bg-(--accent-primary)/80 px-4 text-(--text-primary) transition-colors hover:bg-(--accent-primary-hover)"
 						type="button"
 						onClick={() => void initialize()}
 					>

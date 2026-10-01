@@ -34,7 +34,7 @@ export const createTaskProperties = ({
 
 	// === CONTAINER ===
 	const element = document.createElement('div');
-	element.className = 'flex flex-col rounded-xl border border-(--border-color) bg-white/3 select-none';
+	element.className = 'flex flex-col rounded-xl border border-(--border-primary) bg-white/3 select-none';
 
 	// === PERIOD ===
 	const periodRow = createPropertyRow(calendarIcon, 'Период');
@@ -45,7 +45,7 @@ export const createTaskProperties = ({
 	const startDate = createDatePicker({ value: initialStartDate, className: 'w-32' });
 
 	const arrow = document.createElement('div');
-	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--color-disabled)';
+	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
 	insertSvg(arrow, arrowIcon, 'size-5');
 
 	const endDate = createDatePicker({ value: initialEndDate, className: 'w-32' });
@@ -104,7 +104,7 @@ export const createTaskProperties = ({
 		completed = document.createElement('input');
 		completed.type = 'checkbox';
 		completed.checked = initialCompleted;
-		completed.className = 'size-4 shrink-0 cursor-pointer accent-(--accent-default)';
+		completed.className = 'size-4 shrink-0 cursor-pointer accent-(--accent-primary)';
 
 		completedRow.content.append(completed);
 	}

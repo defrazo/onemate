@@ -21,12 +21,12 @@ export const TASK_PRIORITY = {
 } satisfies Record<string, { label: string; color: string }>;
 
 export const COLUMN_COLORS = {
-	slate: 'var(--color-slate)',
-	rose: 'var(--color-rose)',
-	amber: 'var(--color-amber)',
-	emerald: 'var(--color-emerald)',
-	violet: 'var(--color-violet)',
-	lime: 'var(--color-lime)',
-	fuchsia: 'var(--color-fuchsia)',
-	sky: 'var(--color-sky)',
+	slate: 'var(--palette-slate)',
+	rose: 'var(--palette-rose)',
+	amber: 'var(--palette-amber)',
+	emerald: 'var(--palette-emerald)',
+	violet: 'var(--palette-violet)',
+	lime: 'var(--palette-lime)',
+	fuchsia: 'var(--palette-fuchsia)',
+	sky: 'var(--palette-sky)',
 } as const;

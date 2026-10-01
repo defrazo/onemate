@@ -103,7 +103,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 		const columnTitle = document.createElement('strong');
 		columnTitle.textContent = options.initial.columnTitle;
-		columnTitle.className = 'text-(--accent-default)';
+		columnTitle.className = 'text-(--accent-primary)';
 
 		content.append(columnTitle, '?');
 

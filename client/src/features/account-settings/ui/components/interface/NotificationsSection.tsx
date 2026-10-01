@@ -31,7 +31,7 @@ export const NotificationsSection = observer(() => {
 	return (
 		<section className="flex flex-col gap-3 select-none">
 			<div className="flex items-center justify-between">
-				<p className="text-sm text-(--color-secondary) opacity-70 xl:text-base">
+				<p className="text-sm text-(--text-secondary) opacity-70 xl:text-base">
 					Показывать новые уведомления в браузере
 				</p>
 				<Switch
@@ -40,15 +40,15 @@ export const NotificationsSection = observer(() => {
 					onCheckedChange={handleBrowserNotificationsChange}
 				/>
 			</div>
-			<div className="h-px bg-(--border-color)" />
+			<div className="h-px bg-(--border-primary)" />
 			<div className="flex flex-col gap-2">
-				<p className="text-xs text-(--color-secondary)">Источники</p>
+				<p className="text-xs text-(--text-secondary)">Источники</p>
 				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<IconActivityHeartbeat className="size-5 text-(--accent-default)" />
+						<IconActivityHeartbeat className="size-5 text-(--accent-primary)" />
 						<div className="flex flex-col">
-							<span className="text-sm text-(--color-primary)">Сеть</span>
-							<span className="text-xs text-(--color-secondary) opacity-70">
+							<span className="text-sm text-(--text-primary)">Сеть</span>
+							<span className="text-xs text-(--text-secondary) opacity-70">
 								Изменение доступности отслеживаемых сервисов
 							</span>
 						</div>
@@ -63,8 +63,8 @@ export const NotificationsSection = observer(() => {
 					<div className="flex items-center gap-2">
 						<IconLayoutKanban className="size-5" />
 						<div className="flex flex-col">
-							<span className="text-sm text-(--color-primary)">Канбан</span>
-							<span className="text-xs text-(--color-secondary)">Уведомления о задачах и сроках</span>
+							<span className="text-sm text-(--text-primary)">Канбан</span>
+							<span className="text-xs text-(--text-secondary)">Уведомления о задачах и сроках</span>
 						</div>
 					</div>
 					<Switch disabled checked={false} />

@@ -22,7 +22,7 @@ export const createTaskFields = ({
 	const titleLabel = document.createElement('label');
 	titleLabel.htmlFor = 'task-title';
 	titleLabel.textContent = 'Название задачи';
-	titleLabel.className = 'text-sm text-(--color-secondary) opacity-70';
+	titleLabel.className = 'text-sm text-(--text-secondary) opacity-70';
 
 	const title = document.createElement('input');
 	title.type = 'text';
@@ -32,10 +32,10 @@ export const createTaskFields = ({
 	title.autocomplete = 'off';
 	title.placeholder = 'Введите название задачи';
 	title.className =
-		'w-full rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-hover) focus:border-(--accent-hover)';
+		'w-full rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover)';
 
 	const titleHint = document.createElement('span');
-	titleHint.className = 'ml-auto text-xs text-(--color-secondary) opacity-70';
+	titleHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
 
 	const onTitleInput = () => {
 		updateTitleHint();
@@ -53,7 +53,7 @@ export const createTaskFields = ({
 	const descriptionLabel = document.createElement('label');
 	descriptionLabel.htmlFor = 'task-description';
 	descriptionLabel.textContent = 'Комментарий';
-	descriptionLabel.className = 'text-sm text-(--color-secondary) opacity-70';
+	descriptionLabel.className = 'text-sm text-(--text-secondary) opacity-70';
 
 	const description = document.createElement('textarea');
 	description.id = 'task-description';
@@ -62,10 +62,10 @@ export const createTaskFields = ({
 	description.autocomplete = 'off';
 	description.placeholder = 'Добавьте комментарий к задаче';
 	description.className =
-		'hide-scrollbar min-h-24 w-full resize-none rounded-xl border border-(--border-color) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-hover) focus:border-(--accent-hover) 2xl:min-h-28';
+		'hide-scrollbar min-h-24 w-full resize-none rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover) 2xl:min-h-28';
 
 	const descriptionHint = document.createElement('span');
-	descriptionHint.className = 'ml-auto text-xs text-(--color-secondary) opacity-70';
+	descriptionHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
 
 	const onDescriptionInput = () => {
 		updateDescriptionHint();

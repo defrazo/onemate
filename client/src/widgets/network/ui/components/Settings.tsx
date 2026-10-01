@@ -117,7 +117,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			<ViewHeader icon={IconWorldWww} title="Настройки мониторинга" onBack={onBack} />
 			<div className="flex flex-col gap-3">
 				<div className="flex flex-col gap-1">
-					<label className="text-(--color-secondary) opacity-70" htmlFor="name">
+					<label className="text-(--text-secondary) opacity-70" htmlFor="name">
 						Название
 					</label>
 					<Input
@@ -129,7 +129,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						rightIcon={
 							name && (
 								<IconX
-									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => setName('')}
 								/>
 							)
@@ -142,7 +142,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 				</div>
 				{service.type === 'http' ? (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--color-secondary) opacity-70" htmlFor="url">
+						<label className="text-(--text-secondary) opacity-70" htmlFor="url">
 							Адрес
 						</label>
 						<Input
@@ -154,7 +154,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 							rightIcon={
 								url && (
 									<IconX
-										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 										onClick={() => setUrl('')}
 									/>
 								)
@@ -167,7 +167,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 					</div>
 				) : (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--color-secondary) opacity-70" htmlFor="host">
+						<label className="text-(--text-secondary) opacity-70" htmlFor="host">
 							Хост и порт
 						</label>
 						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
@@ -179,7 +179,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 								rightIcon={
 									host && (
 										<IconX
-											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--color-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-default) hover:opacity-100"
+											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 											onClick={() => setHost('')}
 										/>
 									)
@@ -207,7 +207,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 				<div className="flex items-center justify-between">
 					<div className="flex min-w-0 flex-col">
 						<span className="text-sm xl:text-base">Мониторинг</span>
-						<span className="text-xs text-(--color-secondary) opacity-70">
+						<span className="text-xs text-(--text-secondary) opacity-70">
 							Автоматическая проверка каждые 15 минут
 						</span>
 					</div>

@@ -18,20 +18,20 @@ export const createDatePicker = ({
 	// === CONTAINER ===
 	const container = document.createElement('div');
 	container.className = cn(
-		'relative flex min-h-8.5 min-w-0 items-center rounded-lg border border-(--border-color) bg-white/3 px-2.5 py-2 text-center text-sm text-(--color-primary) transition-colors',
+		'relative flex min-h-8.5 min-w-0 items-center rounded-lg border border-(--border-primary) bg-white/3 px-2.5 py-2 text-center text-sm text-(--text-primary) transition-colors',
 		!readonly && 'cursor-pointer hover:border-white/15 hover:bg-white/5',
 		className
 	);
 
 	// === ICON ===
 	const icon = document.createElement('span');
-	icon.className = 'flex size-3.5 shrink-0 items-center justify-center text-(--color-disabled)';
+	icon.className = 'flex size-3.5 shrink-0 items-center justify-center text-(--text-disabled)';
 	insertSvg(icon, dateIcon, 'size-3.5');
 
 	// === DISPLAY ===
 	const display = document.createElement('span');
 	display.textContent = formatDate(value);
-	display.className = cn('trim min-w-0 flex-1', !value && 'text-(--color-disabled)');
+	display.className = cn('trim min-w-0 flex-1', !value && 'text-(--text-disabled)');
 
 	// === INPUT ===
 	const input = document.createElement('input');
@@ -50,7 +50,7 @@ export const createDatePicker = ({
 
 	function updateDisplay() {
 		display.textContent = formatDate(input.value);
-		display.classList.toggle('text-(--color-disabled)', !input.value);
+		display.classList.toggle('text-(--text-disabled)', !input.value);
 	}
 
 	// === EVENTS ===

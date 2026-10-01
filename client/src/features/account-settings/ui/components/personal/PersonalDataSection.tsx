@@ -106,7 +106,7 @@ export const PersonalDataSection = observer(() => {
 	return (
 		<div className="flex flex-1 flex-col gap-4">
 			<div className="flex flex-col gap-1">
-				<label className="text-(--color-secondary) opacity-70" htmlFor="username">
+				<label className="text-(--text-secondary) opacity-70" htmlFor="username">
 					Никнейм
 				</label>
 				<Input
@@ -124,7 +124,7 @@ export const PersonalDataSection = observer(() => {
 				/>
 			</div>
 			<div className="flex flex-col gap-1">
-				<label className="text-(--color-secondary) opacity-70" htmlFor="firstName">
+				<label className="text-(--text-secondary) opacity-70" htmlFor="firstName">
 					Имя
 				</label>
 				<Input
@@ -142,7 +142,7 @@ export const PersonalDataSection = observer(() => {
 				/>
 			</div>
 			<div className="flex flex-col gap-1">
-				<label className="text-(--color-secondary) opacity-70" htmlFor="lastName">
+				<label className="text-(--text-secondary) opacity-70" htmlFor="lastName">
 					Фамилия
 				</label>
 				<Input
@@ -160,7 +160,7 @@ export const PersonalDataSection = observer(() => {
 				/>
 			</div>
 			<div className="flex flex-col gap-1">
-				<span className="text-(--color-secondary) opacity-70">Дата рождения</span>
+				<span className="text-(--text-secondary) opacity-70">Дата рождения</span>
 				<div className="flex flex-col gap-2 md:flex-row">
 					<Select
 						clearable
@@ -193,7 +193,7 @@ export const PersonalDataSection = observer(() => {
 				</div>
 			</div>
 			<div className="flex flex-col gap-1">
-				<span className="text-(--color-secondary) opacity-70">Пол</span>
+				<span className="text-(--text-secondary) opacity-70">Пол</span>
 				<Radio
 					className="flex flex-wrap gap-4 md:flex-row"
 					name="gender"

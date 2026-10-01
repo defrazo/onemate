@@ -55,7 +55,7 @@ export const PrimaryEmail = observer(() => {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<label className="text-(--color-secondary) opacity-70" htmlFor="mainEmail">
+			<label className="text-(--text-secondary) opacity-70" htmlFor="mainEmail">
 				Основная почта
 			</label>
 			<div className="flex flex-col gap-2">
@@ -85,7 +85,7 @@ export const PrimaryEmail = observer(() => {
 				/>
 
 				{isEmailPending && (
-					<p className="text-xs text-(--color-secondary) select-none">Новый e-mail ожидает подтверждения</p>
+					<p className="text-xs text-(--text-secondary) select-none">Новый e-mail ожидает подтверждения</p>
 				)}
 
 				<Collapse open={showEmailChange}>

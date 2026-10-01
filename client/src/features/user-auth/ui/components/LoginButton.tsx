@@ -23,7 +23,7 @@ export const LoginButton = observer(() => {
 
 	return (
 		<Button
-			className="font-bold text-(--color-primary) transition-colors hover:bg-(--accent-default)/12 hover:text-(--accent-default) lg:rounded-xl lg:bg-white/7"
+			className="font-bold text-(--text-primary) transition-colors hover:bg-(--accent-primary)/12 hover:text-(--accent-primary) lg:rounded-xl lg:bg-white/7"
 			leftIcon={!isMobile && <IconLogin2 />}
 			size={isMobile ? 'custom' : 'md'}
 			variant="mobile"

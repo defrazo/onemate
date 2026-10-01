@@ -74,7 +74,7 @@ export const Select = ({
 					}),
 					'group relative flex w-full items-center gap-2',
 					alignments[align],
-					isOpen && isEmbedded && 'border-(--accent-default-op)',
+					isOpen && isEmbedded && 'border-(--accent-primary)/50',
 					isOpen && isEmbedded && (openUpwards ? 'rounded-t-none' : 'rounded-b-none'),
 					className
 				)}
@@ -95,8 +95,8 @@ export const Select = ({
 					className={cn(
 						'mt-0.5 min-w-0 truncate',
 						!selectedOption &&
-							'text-(--color-secondary) transition-colors group-hover:text-(--color-primary)',
-						isOpen && 'text-(--accent-default)'
+							'text-(--text-secondary) transition-colors group-hover:text-(--text-primary)',
+						isOpen && 'text-(--accent-primary)'
 					)}
 				>
 					{selectedOption?.label ?? placeholder}
@@ -104,8 +104,8 @@ export const Select = ({
 				{!hideChevron && (
 					<IconChevronDown
 						className={cn(
-							'absolute right-2 size-4 shrink-0 text-(--color-secondary) transition-[rotate,color] duration-200 ease-in-out',
-							isOpen ? 'rotate-180 text-(--accent-default)' : 'rotate-0'
+							'absolute right-2 size-4 shrink-0 text-(--text-secondary) transition-[rotate,color] duration-200 ease-in-out',
+							isOpen ? 'rotate-180 text-(--accent-primary)' : 'rotate-0'
 						)}
 					/>
 				)}

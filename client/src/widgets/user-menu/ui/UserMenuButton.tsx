@@ -50,7 +50,7 @@ export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElem
 			className="group xl:rounded-xl xl:bg-white/4 xl:px-2 xl:py-1 xl:transition-colors xl:hover:bg-white/8"
 			rightIcon={
 				!isMobile && (
-					<IconChevronDown className="size-4 text-(--color-secondary) transition-colors group-hover:text-(--accent-default)" />
+					<IconChevronDown className="size-4 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary)" />
 				)
 			}
 			size="custom"

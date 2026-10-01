@@ -25,15 +25,15 @@ export const DemoBanner = observer(() => {
 	};
 
 	return (
-		<div className="sticky top-0 z-100 border-b border-(--accent-default)/30 bg-(--accent-default)/10 backdrop-blur">
+		<div className="sticky top-0 z-100 border-b border-(--accent-primary)/30 bg-(--accent-primary)/10 backdrop-blur">
 			<div className="relative mx-auto flex min-h-10 max-w-400 items-center justify-center px-12 py-2">
-				<p className="text-center text-xs text-(--color-secondary) md:text-sm">
-					<span className="font-bold text-(--color-primary)">Вы в демо-режиме.</span>{' '}
+				<p className="text-center text-xs text-(--text-secondary) md:text-sm">
+					<span className="font-bold text-(--text-primary)">Вы в демо-режиме.</span>{' '}
 					<span className="hidden sm:inline">
 						Изменения сохраняются только в этом браузере, некоторые функции недоступны.{' '}
 					</span>
 					<Link
-						className="text-(--accent-default) transition-colors hover:text-(--accent-hover) hover:underline"
+						className="text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover) hover:underline"
 						to="/demo"
 					>
 						Подробнее
@@ -41,7 +41,7 @@ export const DemoBanner = observer(() => {
 				</p>
 				<Button
 					centerIcon={<IconX className="size-4" />}
-					className="absolute right-4 text-(--color-secondary) hover:text-(--color-primary)"
+					className="absolute right-4 text-(--text-secondary) hover:text-(--text-primary)"
 					size="custom"
 					title="Закрыть уведомление"
 					variant="mobile"

@@ -19,7 +19,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 	const { positionY, isDragging, bind, getLineClass } = useDragger(onClose);
 
 	const lineStyle =
-		'absolute block h-1 origin-center rounded-xl bg-(--color-secondary) transition-transform duration-300';
+		'absolute block h-1 origin-center rounded-xl bg-(--text-secondary) transition-transform duration-300';
 
 	return (
 		<>
@@ -49,7 +49,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				</div>
 				{onBack && (
 					<Button
-						className="absolute top-2 right-2 rounded-lg bg-white/5 px-2 py-1 text-xs text-(--color-secondary) active:bg-white/10"
+						className="absolute top-2 right-2 rounded-lg bg-white/5 px-2 py-1 text-xs text-(--text-secondary) active:bg-white/10"
 						leftIcon={<IconChevronLeft className="size-3.5" />}
 						size="custom"
 						type="button"

@@ -19,7 +19,7 @@ export const Modal = observer(({ children, onClose }: ModalProps) => {
 				<div className="top-4 flex h-4 w-full justify-between">
 					{onClose && (
 						<IconX
-							className="z-10 ml-auto size-4.5 cursor-pointer text-(--color-secondary) transition-colors hover:text-(--accent-hover)"
+							className="z-10 ml-auto size-4.5 cursor-pointer text-(--text-secondary) transition-colors hover:text-(--accent-primary-hover)"
 							onClick={onClose}
 						/>
 					)}

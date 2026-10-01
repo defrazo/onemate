@@ -6,6 +6,6 @@ export const TRANSLATOR_TIP = (
 			<li>Менять языки и текст местами</li>
 			<li>Копировать исходный текст и перевод</li>
 		</ul>
-		<p className="text-(--color-disabled)">Используйте кнопку копирования в нужном поле.</p>
+		<p className="text-(--text-disabled)">Используйте кнопку копирования в нужном поле.</p>
 	</div>
 );

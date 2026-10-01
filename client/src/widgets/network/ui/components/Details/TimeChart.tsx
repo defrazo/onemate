@@ -138,8 +138,8 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 				>
 					<defs>
 						<linearGradient id={gradientId} x1="0" x2="0" y1="0" y2="1">
-							<stop offset="0%" stopColor="var(--accent-default)" stopOpacity="0.12" />
-							<stop offset="100%" stopColor="var(--accent-default)" stopOpacity="0" />
+							<stop offset="0%" stopColor="var(--accent-primary)" stopOpacity="0.12" />
+							<stop offset="100%" stopColor="var(--accent-primary)" stopOpacity="0" />
 						</linearGradient>
 					</defs>
 
@@ -171,7 +171,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 								<path
 									d={linePath}
 									fill="none"
-									stroke="var(--accent-default)"
+									stroke="var(--accent-primary)"
 									strokeLinecap="round"
 									strokeLinejoin="round"
 									strokeWidth="1.75"
@@ -198,7 +198,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 				</svg>
 				{hoveredPoint && <ChartTooltip point={hoveredPoint} />}
 			</div>
-			<div className="flex items-center justify-between px-2 pt-1.5 text-[10px] text-(--color-disabled)">
+			<div className="flex items-center justify-between px-2 pt-1.5 text-[10px] text-(--text-disabled)">
 				<span>24 ч</span>
 				<span className="tabular-nums">{checks.length} проверок</span>
 				<span>Сейчас</span>
@@ -216,18 +216,18 @@ const ChartTooltip = ({ point }: { point: ChartPoint }) => {
 	return (
 		<>
 			<div
-				className="pointer-events-none absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-(--bg-secondary) bg-(--accent-default)"
+				className="pointer-events-none absolute size-2 -translate-x-1/2 -translate-y-1/2 rounded-full border-2 border-(--bg-secondary) bg-(--accent-primary)"
 				style={{ left: `${left}%`, top: `${top}%` }}
 			/>
 			<div
 				className="pointer-events-none absolute z-10 -translate-x-1/2 -translate-y-full pb-2"
 				style={{ left: `${left}%`, top: `${top}%` }}
 			>
-				<div className="rounded-lg border border-(--border-color) bg-(--bg-secondary) px-2.5 py-1.5 whitespace-nowrap shadow-lg">
-					<div className="text-xs font-semibold text-(--color-primary) tabular-nums">
+				<div className="rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 whitespace-nowrap shadow-lg">
+					<div className="text-xs font-semibold text-(--text-primary) tabular-nums">
 						{point.responseTime} мс
 					</div>
-					<div className="text-[10px] text-(--color-secondary) tabular-nums">{time}</div>
+					<div className="text-[10px] text-(--text-secondary) tabular-nums">{time}</div>
 				</div>
 			</div>
 		</>

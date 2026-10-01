@@ -22,7 +22,7 @@ export const ArticleSection = ({ id, title, children, number, first = false }: A
 			>
 				{number}. {title}
 			</h2>
-			<div className="print-content mt-3 leading-relaxed text-(--color-secondary)">{children}</div>
+			<div className="print-content mt-3 leading-relaxed text-(--text-secondary)">{children}</div>
 		</section>
 	);
 };

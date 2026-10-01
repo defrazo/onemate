@@ -37,7 +37,7 @@ export const Logo = ({ isLink, className, size = 'md' }: LogoProps) => {
 			/>
 			<h1 className={cn('trim font-semibold', currentSize.text)}>
 				<span className="text-(--accent-primary-text)">One</span>
-				<span className="text-(--color-accent)">Mate</span>
+				<span className="text-(--accent-primary)">Mate</span>
 			</h1>
 		</div>
 	);

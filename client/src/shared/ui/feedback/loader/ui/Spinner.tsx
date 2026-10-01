@@ -4,7 +4,7 @@ export const Spinner = ({ className }: { className?: string }) => {
 	return (
 		<div
 			className={cn(
-				'animate-spin rounded-full border-4 border-(--accent-default) border-t-(--border-color)',
+				'animate-spin rounded-full border-4 border-(--accent-primary) border-t-(--border-primary)',
 				className
 			)}
 		/>
