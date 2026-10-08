@@ -11,12 +11,12 @@ export const ContactsTab = observer(() => {
 	const { userProfileStore } = useStore();
 
 	return (
-		<div className="flex flex-col gap-4 divide-y divide-(--border-primary) xl:divide-y-0">
-			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-37.5 xl:rounded-xl">
+		<div className="core-gap flex flex-col divide-y divide-(--border-primary) xl:divide-y-0">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast) xl:min-h-37.5">
 				<SectionHeader icon={IconMapPin} title="Местоположение" />
 				{!userProfileStore.isLocationReady ? <LoadingState /> : <LocationSection />}
 			</div>
-			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-59 xl:rounded-xl">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast) xl:min-h-59">
 				<SectionHeader icon={IconMail} title="Почта" />
 				{!userProfileStore.isReady ? (
 					<LoadingState />
@@ -27,7 +27,7 @@ export const ContactsTab = observer(() => {
 					</>
 				)}
 			</div>
-			<div className="core-base flex flex-col gap-2 pb-4 md:p-4 md:shadow-(--shadow) xl:min-h-10.5 xl:rounded-xl">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast) xl:min-h-10.5">
 				<SectionHeader icon={IconPhone} title="Телефоны" />
 				{!userProfileStore.isReady ? <LoadingState /> : <PhonesSection />}
 			</div>

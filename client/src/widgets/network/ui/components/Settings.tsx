@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { IconLink, IconPlugConnected, IconServer, IconWorldWww, IconX } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import { Button, ConfirmDialog, Input, InputLabel, Switch } from '@/shared/ui';
+import { Button, ConfirmDialog, Input, InputLabel, LengthHint, Switch } from '@/shared/ui';
 
-import type { MonitoredService, UpdateMonitoredService } from '../../model';
+import { LIMITS, type MonitoredService, type UpdateMonitoredService } from '../../model';
 import { ViewHeader } from '.';
 
 interface SettingsProps {
@@ -33,12 +33,6 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			: host.trim() !== service.host || portNumber !== service.port;
 
 	const hasChanges = name.trim() !== service.name || targetChanged || isActive !== service.isActive;
-
-	const isValid =
-		name.trim() !== '' &&
-		(service.type === 'http'
-			? url.trim() !== ''
-			: host.trim() !== '' && Number.isInteger(portNumber) && portNumber >= 1 && portNumber <= 65535);
 
 	const update = async () => {
 		setIsSaving(true);
@@ -78,7 +72,43 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	};
 
 	const save = () => {
-		if (!hasChanges || !isValid || isSaving || isDeleting) return;
+		if (!hasChanges || isSaving || isDeleting) return;
+
+		const trimmedName = name.trim();
+		const trimmedUrl = url.trim();
+		const trimmedHost = host.trim();
+
+		if (!trimmedName) {
+			notifyStore.setNotice('Укажите название сервиса', 'error');
+			return;
+		}
+
+		if (trimmedName.length > LIMITS.SERVICE_NAME) {
+			notifyStore.setNotice(`Максимум ${LIMITS.SERVICE_NAME} символов`, 'error');
+			return;
+		}
+
+		if (service.type === 'http' && !trimmedUrl) {
+			notifyStore.setNotice('Укажите адрес сервиса', 'error');
+			return;
+		}
+
+		if (service.type === 'tcp') {
+			if (!trimmedHost) {
+				notifyStore.setNotice('Укажите хост', 'error');
+				return;
+			}
+
+			if (!port.trim()) {
+				notifyStore.setNotice('Укажите порт', 'error');
+				return;
+			}
+
+			if (!Number.isInteger(portNumber) || portNumber < LIMITS.MIN_PORT || portNumber > LIMITS.MAX_PORT) {
+				notifyStore.setNotice(`Порт — от ${LIMITS.MIN_PORT} до ${LIMITS.MAX_PORT}`, 'error');
+				return;
+			}
+		}
 
 		if (!targetChanged) {
 			void update();
@@ -124,7 +154,6 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						autoComplete="off"
 						id="name"
 						leftIcon={<InputLabel htmlFor="name" icon={IconWorldWww} />}
-						maxLength={100}
 						placeholder="Название сервиса"
 						rightIcon={
 							name && (
@@ -139,6 +168,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						variant="ghost"
 						onChange={(e) => setName(e.target.value)}
 					/>
+					<LengthHint max={LIMITS.SERVICE_NAME} value={name} />
 				</div>
 				{service.type === 'http' ? (
 					<div className="flex flex-col gap-1">
@@ -150,6 +180,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 							id="url"
 							inputMode="url"
 							leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
+							maxLength={LIMITS.URL}
 							placeholder="https://example.com"
 							rightIcon={
 								url && (
@@ -175,6 +206,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 								autoComplete="url"
 								id="host"
 								leftIcon={<InputLabel htmlFor="host" icon={IconServer} />}
+								maxLength={LIMITS.HOST}
 								placeholder="94.232.42.121"
 								rightIcon={
 									host && (
@@ -191,10 +223,11 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 							/>
 							<Input
 								autoComplete="off"
+								className="number-no-spinner"
 								id="port"
 								leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
-								max="65535"
-								min="1"
+								max={LIMITS.MAX_PORT}
+								min={LIMITS.MIN_PORT}
 								placeholder="22"
 								type="number"
 								value={port}
@@ -215,11 +248,10 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 				</div>
 				<div className="ml-auto flex h-7 gap-3">
 					<Button
-						className="w-40 rounded-lg text-sm"
-						disabled={!hasChanges || !isValid || isSaving || isDeleting}
+						className="w-40 text-sm"
+						disabled={!hasChanges || isSaving || isDeleting}
 						loading={isSaving}
 						loadingText="Сохраняем..."
-						size="custom"
 						title="Сохранить"
 						type="button"
 						variant="accent"
@@ -228,14 +260,13 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						<span className="trim">Сохранить</span>
 					</Button>
 					<Button
-						className="w-40 rounded-lg text-sm"
+						className="w-40 text-sm"
 						disabled={isSaving || isDeleting}
 						loading={isDeleting}
 						loadingText="Удаляем..."
-						size="custom"
 						title="Удалить"
 						type="button"
-						variant="warning"
+						variant="danger"
 						onClick={remove}
 					>
 						<span className="trim">Удалить</span>

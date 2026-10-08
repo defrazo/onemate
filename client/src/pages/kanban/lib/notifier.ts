@@ -28,7 +28,7 @@ export const notifier = {
 
 		// === ICON ===
 		const icon = document.createElement('div');
-		icon.className = `flex size-7 shrink-0 items-center justify-center rounded-lg bg-(${config.color})/10 text-(${config.color})`;
+		icon.className = `flex size-7 shrink-0 items-center justify-center rounded-md bg-(${config.color})/10 text-(${config.color})`;
 
 		insertSvg(icon, config.icon, 'size-4');
 

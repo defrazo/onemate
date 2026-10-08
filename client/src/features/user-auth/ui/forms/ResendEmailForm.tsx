@@ -48,10 +48,11 @@ export const ResendEmailForm = observer(() => {
 	}, []);
 
 	return (
-		<form className="flex w-full max-w-md flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="core-gap flex w-full max-w-md flex-col" onSubmit={handleSubmit}>
 			<Input
+				className="border-(--border-tone)"
 				id="email"
-				leftIcon={<InputLabel htmlFor="email" icon={IconMailFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}
 				name="email"
 				placeholder="Введите e-mail"
 				type="email"
@@ -60,7 +61,7 @@ export const ResendEmailForm = observer(() => {
 				onChange={(e) => setEmail(e.target.value)}
 			/>
 			<Button
-				className="core-elements mt-4 h-10 w-full"
+				className="mt-4 h-8 w-full"
 				disabled={isCooldown}
 				loading={authStore.isLoading}
 				loadingText="Выполняется отправка..."

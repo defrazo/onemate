@@ -22,9 +22,9 @@ export const NotificationButton = observer(() => {
 			<Button
 				active={isOpen}
 				centerIcon={<IconBell className="size-5" />}
-				className="flex size-9 rounded-xl text-(--text-secondary) transition-colors hover:bg-white/8 hover:text-(--accent-primary)"
+				className="size-9 aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
 				type="button"
-				variant="mobile"
+				variant="iconSurface"
 				onClick={() => setIsOpen((value) => !value)}
 			/>
 			{notificationStore.unreadCount > 0 && (

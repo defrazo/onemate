@@ -2,7 +2,7 @@ import { lazy, Suspense } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 
 import { Dropdown } from './Dropdown';
 import { Modal } from './Modal';
@@ -10,7 +10,8 @@ import { Modal } from './Modal';
 const BottomSheet = lazy(() => import('./BottomSheet').then(({ BottomSheet }) => ({ default: BottomSheet })));
 
 export const ModalManager = observer(() => {
-	const device = useDeviceType();
+	const { isMobile } = useResponsive();
+
 	const { modalStore } = useStore();
 
 	const modal = modalStore.modal;
@@ -29,7 +30,7 @@ export const ModalManager = observer(() => {
 		);
 	}
 
-	if (modal.type === 'sheet' || (modal.type === 'auto' && device === 'mobile')) {
+	if (modal.type === 'sheet' || (modal.type === 'auto' && isMobile)) {
 		return (
 			<Suspense fallback={null}>
 				<BottomSheet onBack={modal.back} onClose={onClose}>

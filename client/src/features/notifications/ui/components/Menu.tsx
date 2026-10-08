@@ -2,7 +2,7 @@ import { IconInbox, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Button } from '@/shared/ui';
+import { Button, NoContent } from '@/shared/ui';
 
 import { Item } from '.';
 
@@ -10,53 +10,52 @@ export const Menu = observer(() => {
 	const { notificationStore: store } = useStore();
 
 	return (
-		<div className="core-border absolute top-full -right-14 z-50 mt-1 min-h-88 w-[85svw] max-w-88 min-w-0 overflow-visible rounded-xl bg-(--bg-secondary) shadow-(--shadow) xl:right-0">
-			<div className="flex items-center justify-between px-4 py-2.5">
+		<div className="core-surface absolute top-full -right-14 z-50 mt-1 flex h-82 w-88 flex-col overflow-hidden rounded-lg bg-(--bg-secondary) shadow-(--shadow-contrast) xl:right-0">
+			<div className="flex h-9 items-center justify-between px-4 py-2.5">
 				<div className="flex items-center gap-2">
-					<span className="trim font-bold text-(--text-primary)">Уведомления</span>
+					<span className="trim text-sm font-semibold text-(--text-primary)">Уведомления</span>
 					{store.unreadCount > 0 && (
-						<span className="mt-1 rounded-full bg-(--accent-primary)/10 px-1.5 py-0.5 text-xs text-(--accent-primary)">
+						<span className="mt-0.5 rounded-md bg-(--accent-primary-muted) px-1.5 py-0.5 text-xs text-(--accent-primary)">
 							{store.unreadCount}
 						</span>
 					)}
 				</div>
-				<div className="flex items-center">
+				<div className="flex items-center gap-1">
 					{store.unreadCount > 0 && (
 						<Button
-							className="rounded-lg px-2 py-1 text-xs text-(--text-secondary) transition-colors hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)"
+							className="rounded-md text-xs text-(--text-secondary) hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
+							padding="sm"
 							type="button"
-							variant="mobile"
+							variant="custom"
 							onClick={() => void store.markAllAsRead()}
 						>
 							Прочитать все
 						</Button>
 					)}
-					<Button
-						centerIcon={<IconTrash className="size-4" />}
-						className="size-6 text-(--text-secondary)/70 transition-colors hover:text-(--status-error)"
-						size="custom"
-						title="Удалить все"
-						type="button"
-						variant="mobile"
-						onClick={() => void store.removeAll()}
-					/>
+					{store.notifications.length > 0 && (
+						<Button
+							centerIcon={<IconTrash className="size-4" />}
+							className="hover:text-(--status-error)"
+							padding="none"
+							title="Удалить все"
+							type="button"
+							variant="icon"
+							onClick={() => void store.removeAll()}
+						/>
+					)}
 				</div>
 			</div>
-			<div className="hide-scrollbar max-h-88 overflow-y-auto border-t border-(--border-primary)">
+			<div className="flex-1 scrollbar-none overflow-y-auto border-t border-(--border-primary)">
 				{store.notifications.length > 0 ? (
 					store.notifications.map((notification) => (
 						<Item key={notification.id} notification={notification} />
 					))
 				) : (
-					<div className="flex min-h-40 flex-col items-center justify-center px-4 py-8 text-center">
-						<div className="mb-1 flex size-10 items-center justify-center rounded-xl bg-white/3">
-							<IconInbox className="size-5 text-(--text-disabled)" />
-						</div>
-						<span className="text-sm text-(--text-secondary)">Уведомлений пока нет</span>
-						<span className="text-xs leading-relaxed text-(--text-disabled)">
-							Здесь появятся новые уведомления
-						</span>
-					</div>
+					<NoContent
+						description="Здесь появятся новые уведомления"
+						icon={IconInbox}
+						title="Уведомлений пока нет"
+					/>
 				)}
 			</div>
 		</div>

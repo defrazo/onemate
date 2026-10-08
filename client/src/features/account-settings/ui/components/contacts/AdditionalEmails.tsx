@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { IconMailOpenedFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useValidation } from '@/shared/lib/hooks';
-import { Collapse, Input, InputLabel } from '@/shared/ui';
+import { Collapse, Input } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
 import { FormActions, RemoveButton } from '..';
@@ -83,13 +82,12 @@ export const AdditionalEmails = observer(() => {
 							key={idx}
 							autoComplete="off"
 							id={`email-${idx}`}
-							leftIcon={<InputLabel htmlFor={`email-${idx}`} icon={IconMailOpenedFilled} />}
 							name={`email-${idx}`}
 							placeholder="Введите e-mail"
 							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(idx)} />}
 							type="email"
 							value={email}
-							variant="ghost"
+							variant="tone"
 							onChange={(e) => handleChange(idx, e.target.value)}
 						/>
 					);

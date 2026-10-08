@@ -14,12 +14,12 @@ export const Navbar = ({ variant = 'desktop' }: { variant?: 'desktop' | 'mobile'
 	const externalItems = items.filter((item) => item.external);
 
 	return (
-		<nav className="no-touch-callout flex h-12 w-full items-center justify-around gap-4 lg:h-10 lg:w-fit">
+		<nav className="no-touch-callout core-gap flex size-full items-center justify-around lg:w-fit">
 			{internalItems.map((item) => (
 				<NavLink key={item.to} active={isActiveRoute(pathname, item.to)} item={item} variant={variant} />
 			))}
 
-			{!isMobile && externalItems.length > 0 && <div className="h-5 w-px bg-(--border-secondary)" />}
+			{!isMobile && externalItems.length > 0 && <div className="h-5 w-px bg-(--border-tone)/70" />}
 
 			{externalItems.map((item) => (
 				<NavLink key={item.to} active={false} item={item} variant={variant} />

@@ -3,16 +3,26 @@ import { cn } from '@/shared/lib/utils';
 interface DividerProps {
 	className?: string;
 	variant?: 'default' | 'custom';
+	direction?: 'X' | 'Y';
 	margY?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
 	margX?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
-export const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
-	const base = 'h-px';
-
+export const Divider = ({
+	className,
+	variant = 'default',
+	direction = 'X',
+	margY = 'none',
+	margX = 'none',
+}: DividerProps) => {
 	const variants = {
 		default: 'bg-(--border-primary)',
 		custom: '',
+	};
+
+	const directions = {
+		X: 'h-px w-full',
+		Y: 'w-px self-stretch',
 	};
 
 	const marginsY = {
@@ -32,8 +42,16 @@ export const Divider = ({ className, variant = 'default', margY = 'none', margX 
 	};
 
 	return (
-		<div className={cn(marginsY[margY], marginsX[margX], 'w-full')}>
-			<hr className={cn('border-none', base, variants[variant], className)} />
-		</div>
+		<div
+			className={cn(
+				'shrink-0',
+				directions[direction],
+				variants[variant],
+				marginsY[margY],
+				marginsX[margX],
+				className
+			)}
+			role="separator"
+		/>
 	);
 };

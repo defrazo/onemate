@@ -7,14 +7,13 @@ interface MetricProps {
 }
 
 export const Metric = ({ icon: Icon, label, value }: MetricProps) => (
-	<div className="flex items-center gap-2">
-		<div className="flex size-6 items-center justify-center rounded-lg bg-(--accent-primary)/8 text-(--accent-primary)/80 xl:size-10">
-			<Icon className="size-4 xl:size-6" />
+	<div className="flex flex-row items-center gap-2 pl-5.5 xl:pl-0">
+		<div className="flex size-8 items-center justify-center rounded-lg bg-(--accent-primary)/8 text-(--accent-primary)/80 xl:size-10">
+			<Icon className="size-5 xl:size-6" />
 		</div>
-		<div className="flex flex-row items-center xl:flex-col xl:items-start xl:gap-0">
+		<div className="flex flex-col items-start xl:gap-0">
 			<span className="text-xs text-(--text-secondary)">{label}</span>
-			<span className="mr-1 text-xs text-(--text-secondary) xl:hidden">:</span>
-			<span className="text-sm font-bold">{value}</span>
+			<span className="text-sm font-semibold">{value}</span>
 		</div>
 	</div>
 );

@@ -2,7 +2,7 @@ import { ArticleSection, Divider, PrintButton } from '@/shared/ui';
 
 export const TermsPage = () => {
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="core-gap flex w-full flex-col">
 			<div className="mx-auto flex items-center gap-2">
 				<h1 className="print-header cursor-default text-lg font-bold md:text-3xl">Условия использования</h1>
 				<PrintButton />
@@ -12,9 +12,9 @@ export const TermsPage = () => {
 				Используя Приложение, Пользователь принимает настоящие Условия. Если вы не согласны с ними, прекратите
 				использование Приложения.
 			</p>
-			<article className="print-content flex flex-col gap-4">
+			<article className="print-content core-gap flex flex-col">
 				<ArticleSection first id="terms-general" number={1} title="Использование приложения">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							OneMate является некоммерческим веб-приложением и предоставляется для личного использования,
 							тестирования и ознакомления с его возможностями.
@@ -36,7 +36,7 @@ export const TermsPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="terms-accounts" number={2} title="Аккаунты и демо-режим">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Для приглашённых пользователей Приложение может сохранять данные аккаунта и используемых
 							функций на сервере в объёме, необходимом для работы соответствующего функционала.
@@ -54,7 +54,7 @@ export const TermsPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="terms-privacy" number={3} title="Данные и конфиденциальность">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Обработка данных зависит от режима использования Приложения. Данные зарегистрированных
 							пользователей могут обрабатываться и храниться на сервере, а данные демо-режима — локально в
@@ -75,7 +75,7 @@ export const TermsPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="terms-responsibility" number={4} title="Доступность и ответственность">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Приложение предоставляется «как есть». Администрация не гарантирует его постоянную
 							доступность, отсутствие ошибок, сохранность данных или соответствие конкретным целям
@@ -94,7 +94,7 @@ export const TermsPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="terms-final" number={5} title="Заключительные положения">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Администрация может изменять настоящие Условия. Актуальная версия и дата их обновления
 							публикуются на этой странице.

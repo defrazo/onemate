@@ -55,11 +55,12 @@ export const RegisterForm = observer(() => {
 	};
 
 	return (
-		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
 			<Input
 				autoComplete="username"
+				className="border-(--border-tone)"
 				id="username"
-				leftIcon={<InputLabel htmlFor="username" icon={IconUserFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="username" icon={IconUserFilled} />}
 				name="username"
 				placeholder="Имя пользователя"
 				type="text"
@@ -69,8 +70,9 @@ export const RegisterForm = observer(() => {
 			/>
 			<Input
 				autoComplete="email"
+				className="border-(--border-tone)"
 				id="email"
-				leftIcon={<InputLabel htmlFor="email" icon={IconMailFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}
 				name="email"
 				placeholder="E-mail"
 				type="email"
@@ -85,6 +87,7 @@ export const RegisterForm = observer(() => {
 					name="password"
 					placeholder="Пароль"
 					value={authFormStore.password}
+					variant="ghost"
 					onBlur={() => setShowHint(false)}
 					onChange={(e) => authFormStore.update('password', e.target.value)}
 					onFocus={() => setShowHint(true)}
@@ -96,6 +99,7 @@ export const RegisterForm = observer(() => {
 				name="password-confirm"
 				placeholder="Подтвердите пароль"
 				value={authFormStore.passwordConfirm}
+				variant="ghost"
 				onChange={(e) => authFormStore.update('passwordConfirm', e.target.value)}
 				onPaste={(e) => {
 					e.preventDefault();
@@ -104,8 +108,9 @@ export const RegisterForm = observer(() => {
 			/>
 			<Input
 				autoComplete="off"
+				className="border-(--border-tone)"
 				id="invite-code"
-				leftIcon={<InputLabel htmlFor="invite-code" icon={IconKeyFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="invite-code" icon={IconKeyFilled} />}
 				name="invite-code"
 				placeholder="Код приглашения"
 				type="text"
@@ -114,10 +119,11 @@ export const RegisterForm = observer(() => {
 				onChange={(e) => authFormStore.update('inviteCode', e.target.value)}
 			/>
 			<Button
-				className="core-elements mt-4 h-10 w-full"
+				className="mt-4 h-8 w-full"
 				loading={authStore.isLoading}
 				loadingText="Выполняется регистрация..."
 				type="submit"
+				variant="accent"
 			>
 				Зарегистрироваться
 			</Button>

@@ -10,11 +10,11 @@ interface EditorActionProps {
 
 export const EditorAction = ({ icon: Icon, title, onClick }: EditorActionProps) => (
 	<Button
-		centerIcon={<Icon className="size-4 text-(--text-secondary) transition-colors hover:text-(--accent-primary)" />}
-		className="size-6 rounded-lg hover:bg-(--accent-primary)/10 active:scale-90 active:bg-(--accent-primary)/20"
-		size="custom"
+		centerIcon={<Icon className="size-4.5" />}
+		className="size-6.5"
+		padding="none"
 		title={title}
-		variant="mobile"
+		variant="iconSurface"
 		onClick={onClick}
 	/>
 );

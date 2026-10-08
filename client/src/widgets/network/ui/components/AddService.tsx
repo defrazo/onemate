@@ -10,10 +10,9 @@ import {
 } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import { cn } from '@/shared/lib/utils';
-import { Button, Input, InputLabel, Tooltip } from '@/shared/ui';
+import { Button, Input, InputLabel, LengthHint, SegmentedControl, Tooltip } from '@/shared/ui';
 
-import type { MonitoringType } from '../../model';
+import { LIMITS, type MonitoringType } from '../../model';
 import { ViewHeader } from '.';
 
 export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreated: () => void }) => {
@@ -30,17 +29,6 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 
 	const portNumber = Number(port);
 
-	const isValid =
-		name.trim() !== '' &&
-		(type === 'http'
-			? url.trim() !== ''
-			: host.trim() !== '' && Number.isInteger(portNumber) && portNumber >= 1 && portNumber <= 65535);
-
-	const checkTypes = [
-		{ value: 'http', label: 'Сайт' },
-		{ value: 'tcp', label: 'Сервер / Порт' },
-	] satisfies { value: MonitoringType; label: string }[];
-
 	const handleTypeChange = (nextType: MonitoringType) => {
 		setType(nextType);
 		setError(null);
@@ -49,14 +37,50 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
 
-		if (!isValid || isLoading) return;
+		if (isLoading) return;
+
+		const trimmedName = name.trim();
+		const trimmedUrl = url.trim();
+		const trimmedHost = host.trim();
+
+		if (!trimmedName) {
+			notifyStore.setNotice('Укажите название сервиса', 'error');
+			return;
+		}
+
+		if (trimmedName.length > LIMITS.SERVICE_NAME) {
+			notifyStore.setNotice(`Максимум ${LIMITS.SERVICE_NAME} символов`, 'error');
+			return;
+		}
+
+		if (type === 'http' && !trimmedUrl) {
+			notifyStore.setNotice('Укажите адрес сервиса', 'error');
+			return;
+		}
+
+		if (type === 'tcp') {
+			if (!trimmedHost) {
+				notifyStore.setNotice('Укажите хост', 'error');
+				return;
+			}
+
+			if (!port.trim()) {
+				notifyStore.setNotice('Укажите порт', 'error');
+				return;
+			}
+
+			if (!Number.isInteger(portNumber) || portNumber < LIMITS.MIN_PORT || portNumber > LIMITS.MAX_PORT) {
+				notifyStore.setNotice(`Порт — от ${LIMITS.MIN_PORT} до ${LIMITS.MAX_PORT}`, 'error');
+				return;
+			}
+		}
 
 		setError(null);
 		setIsLoading(true);
 
 		try {
-			if (type === 'http') await networkStore.addService({ type: 'http', name: name.trim(), url: url.trim() });
-			else await networkStore.addService({ type: 'tcp', name: name.trim(), host: host.trim(), port: portNumber });
+			if (type === 'http') await networkStore.addService({ type: 'http', name: trimmedName, url: trimmedUrl });
+			else await networkStore.addService({ type: 'tcp', name: trimmedName, host: trimmedHost, port: portNumber });
 
 			onCreated();
 			notifyStore.setNotice('Сервис успешно добавлен', 'success');
@@ -93,30 +117,19 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						variant="ghost"
 						onChange={(e) => setName(e.target.value)}
 					/>
+					<LengthHint max={LIMITS.SERVICE_NAME} value={name} />
 				</div>
-				<div className="flex flex-wrap items-center justify-between">
+				<div className="flex flex-wrap items-center justify-between gap-2">
 					<span className="text-(--text-secondary) opacity-70">Тип проверки</span>
-					<div className="grid w-64 grid-cols-2 rounded-lg bg-(--bg-tertiary) p-0.5">
-						{checkTypes.map(({ value, label }) => {
-							const isActive = type === value;
-
-							return (
-								<button
-									key={value}
-									className={cn(
-										'h-6 min-w-30 cursor-pointer rounded-md px-4 text-sm transition-colors',
-										isActive
-											? 'bg-(--accent-primary) text-(--text-primary)'
-											: 'text-(--text-secondary) hover:text-(--accent-primary)'
-									)}
-									type="button"
-									onClick={() => handleTypeChange(value)}
-								>
-									<span className="trim">{label}</span>
-								</button>
-							);
-						})}
-					</div>
+					<SegmentedControl
+						className="w-64"
+						options={[
+							{ value: 'http', label: 'Сайт' },
+							{ value: 'tcp', label: 'Сервер / Порт' },
+						]}
+						value={type}
+						onChange={handleTypeChange}
+					/>
 				</div>
 				{type === 'http' ? (
 					<div className="flex flex-col gap-1">
@@ -128,6 +141,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 							id="url"
 							inputMode="url"
 							leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
+							maxLength={LIMITS.URL}
 							placeholder="https://example.com"
 							rightIcon={
 								url && (
@@ -157,12 +171,12 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 								<IconLifebuoy className="size-4" />
 							</Tooltip>
 						</div>
-
 						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
 							<Input
 								autoComplete="url"
 								id="host"
 								leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
+								maxLength={LIMITS.HOST}
 								placeholder="94.232.42.121"
 								rightIcon={
 									host && (
@@ -185,10 +199,11 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 							/>
 							<Input
 								autoComplete="off"
+								className="number-no-spinner"
 								id="port"
 								leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
-								max="65535"
-								min="1"
+								max={LIMITS.MAX_PORT}
+								min={LIMITS.MIN_PORT}
 								placeholder="22"
 								type="number"
 								value={port}
@@ -208,11 +223,10 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					</div>
 				)}
 				<Button
-					className="ml-auto h-7 rounded-lg px-3 text-sm"
-					disabled={!isValid || isLoading}
+					className="ml-auto h-7 text-sm"
+					disabled={isLoading}
 					loading={isLoading}
 					loadingText="Добавляем..."
-					size="custom"
 					title="Добавить"
 					type="submit"
 					variant="accent"

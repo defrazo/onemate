@@ -42,12 +42,12 @@ const getButtonContent = (value: ButtonValue, label?: string) => {
 
 export const Buttons = ({ onClick }: { onClick: (value: ButtonValue) => void }) => {
 	return (
-		<div className="my-auto grid grid-cols-4 gap-x-2 gap-y-2 lg:gap-y-2.5 xl:w-[70%]">
+		<div className="my-auto grid grid-cols-4 gap-x-2 gap-y-2 lg:gap-y-2.5 xl:w-[65%]">
 			{buttons.map(({ value, label, type, colSpan = 1 }) => (
 				<Button
 					key={value}
 					className={cn(
-						'h-7 rounded-lg border border-(--border-contrast) text-sm lg:text-base',
+						'h-7 border border-(--border-contrast) text-sm lg:text-base',
 						colSpan === 2 ? 'col-span-2' : 'col-span-1',
 						type === 'digit'
 							? 'bg-(--bg-tertiary)'
@@ -55,7 +55,6 @@ export const Buttons = ({ onClick }: { onClick: (value: ButtonValue) => void }) 
 								? 'bg-(--bg-tertiary)/50'
 								: 'bg-(--accent-primary) text-(--text-on-accent)'
 					)}
-					size="custom"
 					onClick={() => onClick(value)}
 				>
 					{getButtonContent(value, label)}

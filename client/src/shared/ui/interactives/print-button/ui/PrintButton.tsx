@@ -7,10 +7,10 @@ export const PrintButton = ({ className }: { className?: string }) => {
 	return (
 		<Button
 			centerIcon={<IconPrinter className="size-6" />}
-			className={cn('text-(--text-disabled) hover:text-(--accent-primary-hover) print:hidden', className)}
-			size="custom"
+			className={cn('print:hidden', className)}
+			padding="none"
 			title="Распечатать"
-			variant="mobile"
+			variant="icon"
 			onClick={() => window.print()}
 		>
 			Печать

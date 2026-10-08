@@ -20,18 +20,16 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 	}, [currency.value, isEditing]);
 
 	return (
-		<div className="core-border flex items-center p-1">
+		<div className="core-tone flex items-center rounded-lg p-1">
 			<div className="flex-1">
 				<Input
-					className="border-none px-4 text-right"
+					className="number-no-spinner border-none bg-transparent px-4 text-right focus-visible:ring-0"
 					inputMode="decimal"
 					max={MAX_VALUE}
 					min="0"
 					name={`currency-${currency.code}`}
-					size="md"
 					type="number"
 					value={input}
-					variant="custom"
 					onBlur={() => {
 						setIsEditing(false);
 
@@ -63,17 +61,16 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 					}}
 				/>
 			</div>
-			<div className="h-8 w-px bg-(--border-primary)" />
 			<div className="shrink-0">
 				<Select
 					align="start"
-					className="w-30"
+					className="w-30 hover:border-transparent focus:border-transparent"
 					direction="up"
 					listClassName="-right-1 mb-2 left-auto w-60"
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
 					value={currency.code}
-					variant="detached"
+					variant="tone"
 					onChange={(value) => currencyStore.selectCurrency(value, side)}
 				/>
 			</div>

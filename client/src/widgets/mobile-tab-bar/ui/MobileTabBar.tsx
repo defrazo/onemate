@@ -57,7 +57,7 @@ export const MobileTabBar = observer(() => {
 	return (
 		<div
 			className={cn(
-				'fixed inset-x-0 bottom-0 z-40 flex h-12 items-center justify-center bg-(--bg-tertiary) shadow',
+				'fixed inset-x-0 bottom-0 z-40 flex h-12 items-center justify-center bg-(--bg-tertiary) shadow-(--shadow-contrast)',
 				canHide && 'transition-transform duration-300'
 			)}
 			style={{ transform: isHidden ? 'translateY(140%)' : 'translateY(0)' }}

@@ -44,10 +44,11 @@ export const LoginForm = observer(() => {
 	};
 
 	return (
-		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
 			<Input
+				className="border-(--border-tone)"
 				id="login"
-				leftIcon={<InputLabel htmlFor="login" icon={IconUserFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="login" icon={IconUserFilled} />}
 				name="login"
 				placeholder="Имя пользователя или e-mail"
 				type="text"
@@ -60,22 +61,24 @@ export const LoginForm = observer(() => {
 				name="password"
 				placeholder="Пароль"
 				value={authFormStore.password}
+				variant="ghost"
 				onChange={(e) => authFormStore.update('password', e.target.value)}
 			/>
 			<Button
-				className="ml-auto text-sm hover:text-(--accent-primary-hover)"
-				size="custom"
+				className="-mt-2 ml-auto text-sm hover:text-(--accent-primary-hover)"
+				padding="none"
 				type="button"
-				variant="mobile"
+				variant="custom"
 				onClick={() => authFormStore.switchToForgot()}
 			>
 				Забыли пароль?
 			</Button>
 			<Button
-				className="core-elements mt-4 h-10 w-full"
+				className="mt-4 h-8 w-full"
 				loading={authStore.isLoading}
 				loadingText="Выполняется вход..."
 				type="submit"
+				variant="accent"
 			>
 				Войти
 			</Button>

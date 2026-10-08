@@ -34,20 +34,20 @@ export const DeletedAccountPage = observer(() => {
 
 	return (
 		<div className="flex min-h-screen items-center justify-center px-4 select-none">
-			<div className="core-card core-base flex max-w-md flex-col items-center gap-2 px-8 py-9 shadow-(--shadow)">
+			<div className="core-surface core-pad flex max-w-md flex-col items-center gap-2 bg-(--bg-secondary) px-8 py-9 shadow-(--shadow-contrast)">
 				<div className="relative flex size-24 items-center justify-center">
 					<div className="absolute inset-0 rounded-full border border-(--border-primary)" />
 					<div className="absolute inset-2 rounded-full bg-(--bg-tertiary)" />
 					<div className="relative flex flex-col items-center gap-1">
-						<span className="trim text-3xl font-bold">{days}</span>
+						<span className="trim text-3xl font-semibold">{days}</span>
 						<span className="trim text-xs text-(--text-secondary)">дней</span>
 					</div>
 					<div className="absolute right-0 bottom-1 flex size-7 items-center justify-center rounded-full bg-(--accent-primary)">
 						<IconClock className="size-4 text-(--text-on-accent)" />
 					</div>
 				</div>
-				<h1 className="text-xl font-bold xl:text-2xl">Аккаунт ожидает удаления</h1>
-				<div className="rounded-lg bg-(--accent-primary)/10 px-2.5 py-1 text-sm text-(--accent-primary)">
+				<h1 className="text-xl font-semibold xl:text-2xl">Аккаунт ожидает удаления</h1>
+				<div className="rounded-lg bg-(--accent-primary-muted) px-2.5 py-1 text-sm text-(--accent-primary)">
 					{userStore.email}
 				</div>
 				<p className="max-w-sm text-center text-sm text-(--text-secondary)">
@@ -55,7 +55,7 @@ export const DeletedAccountPage = observer(() => {
 				</p>
 				<div className="mt-3 flex flex-col items-center gap-2">
 					<Button
-						className="h-8 w-fit"
+						className="h-8 min-w-56"
 						leftIcon={<IconRestore className="size-4" />}
 						variant="accent"
 						onClick={handleRestore}
@@ -63,7 +63,7 @@ export const DeletedAccountPage = observer(() => {
 						<span className="trim">Восстановить аккаунт</span>
 					</Button>
 					<Button
-						className="h-8 w-fit"
+						className="h-8 min-w-56"
 						leftIcon={<IconLogout className="size-4" />}
 						variant="ghost"
 						onClick={handleExit}

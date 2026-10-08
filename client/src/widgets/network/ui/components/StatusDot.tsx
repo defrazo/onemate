@@ -9,7 +9,7 @@ export const StatusDot = ({ status, disabled = false }: { status: 'up' | 'down' 
 				'size-3',
 				(disabled || status === null) && 'text-(--text-disabled)',
 				!disabled && status === 'up' && 'animate-pulse text-(--status-success)',
-				!disabled && status === 'down' && 'text-(--special-danger)/80'
+				!disabled && status === 'down' && 'text-(--danger)/80'
 			)}
 		/>
 	);

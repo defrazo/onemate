@@ -1,5 +1,3 @@
-import { IconCalendarStats } from '@tabler/icons-react';
-
 import { useOutsideClick } from '@/shared/lib/hooks';
 import { Button, Collapse } from '@/shared/ui';
 
@@ -24,16 +22,11 @@ export const Calendar = () => {
 	const calendarRef = useOutsideClick<HTMLDivElement>(() => setIsControlsOpen(false));
 
 	return (
-		<div ref={calendarRef} className="flex flex-1 flex-col gap-2">
+		<div ref={calendarRef} className="-mt-2 flex flex-1 flex-col gap-2">
 			<Navigation month={currentMonth} onNext={nextMonth} onPrev={prevMonth} />
 			<Grid month={currentMonth} range={range} selectDay={selectDay} />
 			<Collapse open={!isControlsOpen}>
-				<Button
-					className="mx-auto h-6 w-60 rounded-lg text-sm text-(--text-primary)"
-					leftIcon={<IconCalendarStats className="size-4" />}
-					variant="accent"
-					onClick={() => setIsControlsOpen(true)}
-				>
+				<Button className="mx-auto h-7 w-fit text-sm" variant="accent" onClick={() => setIsControlsOpen(true)}>
 					Выбрать период
 				</Button>
 			</Collapse>

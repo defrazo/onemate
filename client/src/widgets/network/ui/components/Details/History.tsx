@@ -55,8 +55,8 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 				</div>
 				{!isActive && (
 					<div className="absolute -top-0.5 left-1/2 flex -translate-x-1/2 flex-col items-center text-[10px] text-(--text-secondary)">
-						<div className="flex size-5 items-center justify-center rounded-md bg-(--special-danger)/10">
-							<IconPower className="size-3 text-(--special-danger)" />
+						<div className="flex size-5 items-center justify-center rounded-md bg-(--danger)/10">
+							<IconPower className="size-3 text-(--danger)" />
 						</div>
 						Мониторинг выключен
 					</div>

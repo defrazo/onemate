@@ -12,9 +12,14 @@ interface HistoryStateProps {
 export const HistoryState = ({ icon: Icon, title, desc, loading }: HistoryStateProps) => {
 	return (
 		<div className="flex min-h-0 flex-1 items-center justify-center">
-			<div className="flex flex-col items-center gap-0.5">
-				<div className="mb-1 flex size-10 items-center justify-center rounded-xl bg-white/3">
-					<Icon className={cn('size-5 text-(--accent-primary)', loading && 'animate-spin')} />
+			<div className="flex flex-col items-center">
+				<div className="mb-1.5 flex size-8 items-center justify-center rounded-lg bg-(--tone) md:size-10">
+					<Icon
+						className={cn(
+							'size-4.5 shrink-0 text-(--text-disabled) md:size-5.5',
+							loading && 'animate-spin text-(--accent-primary)'
+						)}
+					/>
 				</div>
 				<span className="text-sm text-(--text-secondary)">{title}</span>
 				{desc && <span className="trim text-xs text-(--text-disabled)">{desc}</span>}

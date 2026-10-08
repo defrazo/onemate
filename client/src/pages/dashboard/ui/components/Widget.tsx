@@ -20,27 +20,27 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-card group core-base relative flex min-h-0 min-w-0 flex-col gap-2 shadow-(--shadow) select-none"
+			className="core-surface-contrast core-pad group relative flex min-h-0 min-w-0 flex-col gap-2 bg-(--bg-secondary) shadow-(--shadow-contrast) select-none md:gap-3"
 			style={combinedStyle}
 		>
 			<header className="flex items-center justify-between">
 				<Tooltip className="flex items-center gap-2" content={tip}>
-					<div className="flex size-7 items-center justify-center rounded-lg bg-(--accent-primary)/10">
+					<div className="flex size-7 items-center justify-center rounded-md bg-(--accent-primary-muted)">
 						<Icon className="size-4 text-(--accent-primary)" stroke={2.5} />
 					</div>
 					<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
 				</Tooltip>
 				<Button
-					centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
+					centerIcon={<IconGripHorizontal className="size-4" />}
 					className="cursor-grab touch-none pl-4 opacity-0 transition-opacity group-hover:opacity-100"
-					size="custom"
+					padding="none"
 					title="Переместить"
-					variant="mobile"
+					variant="icon"
 					{...listeners}
 					{...attributes}
 				/>
 			</header>
-			<div className="flex min-h-0 flex-1 flex-col gap-2">{content}</div>
+			{content}
 		</div>
 	);
 });

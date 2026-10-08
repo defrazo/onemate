@@ -40,15 +40,14 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 			{tools.map(({ id, icon: Icon, title, description }) => (
 				<Button
 					key={id}
-					className="min-h-0 rounded-xl bg-white/5 px-3 py-2 hover:bg-white/10 xl:min-h-16"
+					className="min-h-0 rounded-xl xl:min-h-16"
 					leftIcon={
-						<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/10">
+						<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
 							<Icon className="size-4 text-(--accent-primary)" />
 						</div>
 					}
-					size="custom"
 					type="button"
-					variant="custom"
+					variant="tone"
 					onClick={() => setActiveTool(id)}
 				>
 					<div className="flex min-w-0 flex-1 flex-col items-start">
@@ -58,13 +57,12 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 				</Button>
 			))}
 			<Button
-				className="mt-auto min-h-0 rounded-xl bg-(--accent-primary)/5 px-3 py-2 transition-colors hover:bg-(--accent-primary)/10 xl:min-h-16"
+				className="mt-auto min-h-0 rounded-xl bg-(--accent-primary)/5 hover:bg-(--accent-primary-muted) xl:min-h-16"
 				leftIcon={
-					<div className="flex size-9 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/10">
+					<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
 						<IconPlus className="size-4 text-(--accent-primary)" />
 					</div>
 				}
-				size="custom"
 				type="button"
 				variant="custom"
 				onClick={onAddService}

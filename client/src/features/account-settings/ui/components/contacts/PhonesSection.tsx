@@ -1,9 +1,8 @@
 import { useState } from 'react';
-import { IconPhoneFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Collapse, InputLabel, PhoneInput } from '@/shared/ui';
+import { Collapse, PhoneInput } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
 import { FormActions, RemoveButton } from '..';
@@ -81,11 +80,10 @@ export const PhonesSection = observer(() => {
 						<PhoneInput
 							key={idx}
 							id={`phone-${idx}`}
-							leftIcon={<InputLabel htmlFor={`phone-${idx}`} icon={IconPhoneFilled} />}
 							name={`phone-${idx}`}
 							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(idx)} />}
 							value={phone}
-							variant="ghost"
+							variant="tone"
 							onChange={(value) => handleChange(idx, value)}
 						/>
 					);

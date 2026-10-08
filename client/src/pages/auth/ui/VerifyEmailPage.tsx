@@ -75,7 +75,7 @@ export const VerifyEmailPage = () => {
 							{isPending ? 'Новый e-mail успешно подтверждён.' : 'E-mail успешно подтверждён.'}
 						</p>
 						<Button
-							className="core-elements mt-4 h-10 w-full"
+							className="mt-4 h-10 w-full"
 							onClick={() => navigate(isPending ? '/account/profile?tab=contacts' : '/dashboard')}
 						>
 							Продолжить
@@ -89,7 +89,7 @@ export const VerifyEmailPage = () => {
 							Не удалось подтвердить e-mail. Ссылка могла устареть или быть повреждена.
 						</p>
 						<Button
-							className="core-elements mt-4 h-10 w-full"
+							className="mt-4 h-10 w-full"
 							onClick={() => {
 								navigate('/');
 								authFormStore.switchToConfirm();

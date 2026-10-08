@@ -1,24 +1,11 @@
-import { IconRefresh } from '@tabler/icons-react';
+import { pluralize } from '@/shared/lib/utils';
 
-import { Button } from '@/shared/ui';
-
-export const Status = ({ count, onClear }: { count: number; onClear: () => void }) => {
+export const Status = ({ count }: { count: number }) => {
 	return (
-		<div className="flex items-center justify-between border-t border-(--border-primary) pt-2">
-			<div className="flex h-6 items-center rounded-lg bg-(--accent-primary)/10 px-2 text-xs text-(--accent-primary)">
-				{count} вычислений
+		<div className="hidden items-center justify-end border-t border-(--border-primary) pt-2 md:flex md:pt-3">
+			<div className="flex h-6 items-center rounded-md bg-(--accent-primary-muted) px-2 text-xs text-(--accent-primary)">
+				{count} {pluralize(count, 'вычисление', 'вычисления', 'вычислений')}
 			</div>
-			<Button
-				className="h-6 min-w-22.5 rounded-lg bg-(--accent-primary)/10 px-2 text-xs text-(--accent-primary)"
-				disabled={!count}
-				leftIcon={<IconRefresh className="size-4" />}
-				size="custom"
-				title="Очистить историю"
-				variant="accent"
-				onClick={onClear}
-			>
-				Очистить
-			</Button>
 		</div>
 	);
 };

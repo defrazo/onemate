@@ -2,7 +2,7 @@ import { ArticleSection, Divider, PrintButton } from '@/shared/ui';
 
 export const PrivacyPage = () => {
 	return (
-		<div className="flex w-full flex-col gap-4">
+		<div className="core-gap flex w-full flex-col">
 			<div className="mx-auto flex items-center gap-2">
 				<h1 className="print-header cursor-default text-lg font-bold md:text-3xl">
 					Политика конфиденциальности
@@ -14,9 +14,9 @@ export const PrivacyPage = () => {
 				веб-приложения OneMate (далее – «Приложение»), для чего они используются и как хранятся. Объём обработки
 				зависит от режима использования: обычного аккаунта или демо-режима.
 			</p>
-			<article className="print-content flex flex-col gap-4">
+			<article className="print-content core-gap flex flex-col">
 				<ArticleSection first id="data-processing" number={1} title="Какие данные обрабатываются">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							При использовании обычного аккаунта Приложение обрабатывает данные, необходимые для
 							регистрации и авторизации, включая имя пользователя и адрес электронной почты.
@@ -40,7 +40,7 @@ export const PrivacyPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="data-storage" number={2} title="Хранение и использование данных">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Данные обычного аккаунта и функций, требующих синхронизации, могут храниться на сервере
 							Приложения и используются только для предоставления соответствующего функционала.
@@ -57,7 +57,7 @@ export const PrivacyPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="demo-mode" number={3} title="Демо-режим">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Демо-режим позволяет ознакомиться с возможностями OneMate без создания личного аккаунта.
 						</li>
@@ -73,7 +73,7 @@ export const PrivacyPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="technical-data" number={4} title="Cookie и сторонние сервисы">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Приложение использует технические cookie, необходимые для авторизации, защиты сессии и
 							корректной работы. Они не используются для рекламы или профилирования.
@@ -91,7 +91,7 @@ export const PrivacyPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="data-deletion" number={5} title="Удаление данных">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>Пользователь может удалить свой аккаунт средствами Приложения.</li>
 						<li>
 							После запроса на удаление аккаунт становится недоступен, но в течение 30 дней может быть
@@ -110,7 +110,7 @@ export const PrivacyPage = () => {
 				</ArticleSection>
 				<Divider />
 				<ArticleSection id="final" number={6} title="Изменения и контакты">
-					<ul className="list-default">
+					<ul className="list-disc pl-4.5">
 						<li>
 							Настоящая Политика может обновляться по мере изменения Приложения. Актуальная версия и дата
 							обновления всегда доступны на этой странице.

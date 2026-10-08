@@ -24,12 +24,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 
 		if (service.lastResponseTime !== null) {
 			return (
-				<span
-					className={cn(
-						'shrink-0 text-sm font-bold tabular-nums',
-						getResponseTimeClass(service.lastResponseTime)
-					)}
-				>
+				<span className={cn('shrink-0 text-sm tabular-nums', getResponseTimeClass(service.lastResponseTime))}>
 					{service.lastResponseTime} мс
 				</span>
 			);
@@ -42,25 +37,19 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 	const AddressIcon = service.type === 'http' ? IconWorld : IconServer;
 
 	return (
-		<Button
-			className="min-h-16 rounded-xl bg-white/3 px-3 hover:bg-white/6"
-			size="custom"
-			type="button"
-			variant="custom"
-			onClick={onClick}
-		>
+		<Button className="core-tone min-h-16.5 snap-start" type="button" variant="custom" onClick={onClick}>
 			<div className="flex min-w-0 flex-1 flex-col gap-1.5">
 				<div className="flex items-center justify-between">
-					<div className="flex min-w-0 items-center gap-1">
+					<div className="flex max-w-2/3 min-w-0 items-center gap-1">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
 						<span className="truncate text-(--text-primary)">{service.name}</span>
 					</div>
 					{renderStatus()}
 				</div>
 				<div className="flex items-center justify-between text-sm text-(--text-secondary)">
-					<div className="flex min-w-0 items-center gap-1">
+					<div className="flex max-w-2/3 min-w-0 items-center gap-1">
 						<AddressIcon className="size-3.5 shrink-0" />
-						<span className="truncate">{address}</span>
+						<span className="mt-px truncate">{address}</span>
 					</div>
 					{lastCheckedAt && (
 						<div
@@ -68,7 +57,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 							title="Последняя проверка"
 						>
 							<IconClock className="size-3" />
-							<span className="trim">{lastCheckedAt}</span>
+							<span className="trim font-mono">{lastCheckedAt}</span>
 						</div>
 					)}
 				</div>

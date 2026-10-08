@@ -15,13 +15,13 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 	if (!targetWidget) return null;
 
 	return (
-		<div className="-mt-4 flex flex-col gap-4 pb-4 select-none xl:w-md xl:pb-0">
+		<div className="core-gap -mt-4 flex flex-col pb-4 select-none md:pb-0 xl:w-md">
 			<div className="flex gap-2">
-				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12">
-					<IconLayersSelected className="size-5.5 text-(--accent-primary)" />
+				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-(--accent-primary)/12">
+					<IconLayersSelected className="size-6 text-(--accent-primary)" />
 				</div>
 				<div className="flex h-full flex-col justify-between gap-0.5 select-none">
-					<h2 className="text-xl font-semibold">Заменить виджет</h2>
+					<h2 className="-mt-0.5 text-xl font-semibold">Заменить виджет</h2>
 					<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 				</div>
 			</div>
@@ -39,7 +39,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					return (
 						<button
 							key={id}
-							className="flex h-10 cursor-pointer items-center gap-2 rounded-xl bg-(--bg-tertiary) px-3 text-sm text-(--text-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)"
+							className="flex h-10 cursor-pointer items-center gap-2 rounded-lg bg-(--bg-tertiary) px-3 text-sm text-(--text-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
 							type="button"
 							onClick={() => onReplace(id)}
 						>
@@ -49,7 +49,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					);
 				})}
 			</div>
-			<Button className="ml-auto h-8" variant="warning" onClick={onCancel}>
+			<Button className="ml-auto h-7 min-w-24" variant="danger" onClick={onCancel}>
 				Отмена
 			</Button>
 		</div>

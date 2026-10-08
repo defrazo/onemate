@@ -1,13 +1,13 @@
 export const Calendar = () => (
-	<div className="relative h-36 overflow-hidden rounded-lg border border-white/8 bg-white/5 p-3">
+	<div className="relative h-36 overflow-hidden rounded-lg border border-(--tone-strong-hover) bg-(--tone-strong) p-3">
 		<div className="mb-3 flex items-center justify-between">
 			<div className="flex items-center gap-2">
 				<div className="flex size-5 items-center justify-center rounded-md bg-(--accent-primary)/15">
 					<span className="size-1.5 rounded-full bg-(--accent-primary)/70" />
 				</div>
-				<div className="h-1.5 w-12 rounded-full bg-white/25" />
+				<div className="h-1.5 w-12 rounded-full bg-(--border-tone)" />
 			</div>
-			<div className="h-1.5 w-8 rounded-full bg-white/10" />
+			<div className="h-1.5 w-8 rounded-full bg-(--tone-strong)" />
 		</div>
 		<div className="mb-2 grid grid-cols-7 gap-2">
 			{Array.from({ length: 7 }).map((_, idx) => (
@@ -21,7 +21,7 @@ export const Calendar = () => (
 					className={
 						idx === 19
 							? 'mx-auto size-2 rounded-full bg-(--accent-primary)/65'
-							: 'mx-auto size-1 rounded-full bg-white/15'
+							: 'mx-auto size-1 rounded-full bg-(--border-tone)'
 					}
 				/>
 			))}

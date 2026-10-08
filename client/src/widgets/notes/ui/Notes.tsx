@@ -21,10 +21,10 @@ export const Notes = observer(() => {
 	if (notesStore.activeNote) return <Editor />;
 
 	return (
-		<div className="flex min-h-0 flex-col gap-2 overflow-hidden xl:h-full">
+		<div className="flex min-h-0 flex-col gap-2 overflow-y-hidden xl:h-full">
 			<List>{(note) => <Card key={note.id} id={note.id} />}</List>
 			<div className="flex shrink-0 items-center justify-between">
-				<div className="flex h-6 min-w-22.5 items-center justify-center gap-1 rounded-lg bg-(--accent-primary)/10 px-2 text-sm text-(--accent-primary)">
+				<div className="flex h-6 min-w-22.5 items-center justify-center gap-1 rounded-md bg-(--accent-primary-muted) px-2 text-sm text-(--accent-primary)">
 					<span>{notesStore.notes.length}</span>
 					<span>{pluralize(notesStore.notes.length, 'заметка', 'заметки', 'заметок')}</span>
 				</div>
@@ -36,9 +36,8 @@ export const Notes = observer(() => {
 							<IconLoader2 className="size-4 animate-spin" />
 						)
 					}
-					className="h-6 min-w-22.5 rounded-lg text-sm"
+					className="h-6 min-w-22.5 text-sm"
 					disabled={notesStore.isLoading}
-					size="custom"
 					title="Добавить заметку"
 					variant="accent"
 					onClick={handleAdd}

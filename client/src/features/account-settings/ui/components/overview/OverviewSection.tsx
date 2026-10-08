@@ -9,9 +9,9 @@ interface OverviewSectionProps {
 
 export const OverviewSection = ({ title, icon: Icon, children }: OverviewSectionProps) => {
 	return (
-		<section className="core-base core-card flex flex-col gap-4 shadow-(--shadow)">
+		<section className="core-surface-contrast core-pad core-gap flex flex-col bg-(--bg-secondary) shadow-(--shadow-contrast)">
 			<div className="flex items-center gap-2">
-				<div className="flex size-8 items-center justify-center rounded-lg bg-(--accent-primary)/12">
+				<div className="flex size-8 items-center justify-center rounded-md bg-(--accent-primary)/12">
 					<Icon className="size-4.5 text-(--accent-primary)" />
 				</div>
 				<h2 className="text-lg font-semibold">{title}</h2>

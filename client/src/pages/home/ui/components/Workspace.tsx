@@ -10,10 +10,10 @@ export const Workspace = () => (
 				'linear-gradient(to bottom, black 0%, black 24%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.35) 72%, transparent 100%)',
 		}}
 	>
-		<div className="relative overflow-hidden rounded-xl border border-white/10 bg-(--bg-secondary)/95 opacity-75 shadow-2xl shadow-black/30">
+		<div className="relative overflow-hidden rounded-xl border border-(--tone-strong) bg-(--bg-secondary)/95 opacity-75 shadow-2xl shadow-black/30">
 			<div className="pointer-events-none absolute inset-0 bg-violet-500/2" />
-			<div className="relative flex h-10 items-center border-b border-white/8">
-				<div className="mx-auto flex items-center gap-5 text-[10px] text-white/20">
+			<div className="relative flex h-10 items-center border-b border-(--tone-strong-hover)">
+				<div className="mx-auto flex items-center gap-5 text-[10px] text-(--text-tertiary)">
 					<span className="font-bold text-(--accent-primary)/70">Dashboard</span>
 					<span>ToDo</span>
 					<span>Kanban</span>
@@ -28,7 +28,7 @@ export const Workspace = () => (
 				<Weather />
 				<Translator />
 			</div>
-			<div className="pointer-events-none absolute inset-x-0 top-9 h-20 bg-linear-to-b from-white/2 to-transparent" />
+			<div className="pointer-events-none absolute inset-x-0 top-10 h-20 bg-linear-to-b from-(--tone) to-transparent" />
 		</div>
 	</div>
 );

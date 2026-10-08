@@ -1,10 +1,10 @@
 import { useState } from 'react';
-import { IconAlertCircle, IconMailFilled } from '@tabler/icons-react';
+import { IconAlertCircle } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useValidation } from '@/shared/lib/hooks';
-import { Collapse, Input, InputLabel, PasswordInput } from '@/shared/ui';
+import { Collapse, Input, PasswordInput } from '@/shared/ui';
 
 import { FormActions } from '..';
 import { PendingEmailDialog } from '.';
@@ -63,7 +63,6 @@ export const PrimaryEmail = observer(() => {
 					disabled={userStore.isEmailPending}
 					error={!mainEmail}
 					id="email-main"
-					leftIcon={<InputLabel htmlFor="email-main" icon={IconMailFilled} />}
 					name="email-main"
 					placeholder="Введите e-mail"
 					rightIcon={
@@ -80,7 +79,7 @@ export const PrimaryEmail = observer(() => {
 					}
 					type="email"
 					value={isEmailPending ? userStore.pendingEmail : mainEmail}
-					variant="ghost"
+					variant="tone"
 					onChange={(e) => setMainEmail(e.target.value)}
 				/>
 
@@ -93,11 +92,12 @@ export const PrimaryEmail = observer(() => {
 						<PasswordInput
 							autoComplete="off"
 							id="email-current-password"
+							leftIcon={null}
 							name="email-current-password"
 							placeholder="Текущий пароль для смены e-mail"
 							type="password"
 							value={password}
-							variant="ghost"
+							variant="tone"
 							onChange={(e) => setPassword(e.target.value)}
 						/>
 						<FormActions

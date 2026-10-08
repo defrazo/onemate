@@ -9,10 +9,9 @@ interface SwitcherProps {
 	options: SwitcherOption[];
 	value: WidgetSlot;
 	onChange: (value: WidgetId) => void;
-	className?: string;
 }
 
-export const Switcher = ({ options, value, onChange, className }: SwitcherProps) => {
+export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 	const listRef = useRef<HTMLDivElement>(null);
 	const switcherRef = useRef<HTMLDivElement>(null);
 	const optionRefs = useRef<Partial<Record<WidgetId, HTMLButtonElement | null>>>({});
@@ -60,14 +59,14 @@ export const Switcher = ({ options, value, onChange, className }: SwitcherProps)
 	}, [options, value]);
 
 	return (
-		<div className={cn('flex', className)}>
+		<div className="z-0 flex rounded-xl border-(--border-primary) bg-(--bg-primary) p-1">
 			<div
 				ref={listRef}
 				className="relative flex flex-1 items-center justify-between gap-1 py-1 whitespace-nowrap"
 			>
 				<div
 					ref={switcherRef}
-					className="absolute top-0 left-0 z-0 rounded-xl bg-(--accent-primary)/10 transition-[transform,width,opacity] duration-300 ease-out"
+					className="absolute top-0 left-0 z-0 rounded-lg bg-(--accent-primary-muted) transition-[transform,width,opacity] duration-300 ease-out"
 					style={{ opacity: 0 }}
 				/>
 				{options.map((option) => {
@@ -79,10 +78,7 @@ export const Switcher = ({ options, value, onChange, className }: SwitcherProps)
 							ref={(element) => {
 								optionRefs.current[option.value] = element;
 							}}
-							className={cn(
-								'group relative z-10 rounded-lg px-1.5 py-0.5 transition-colors',
-								isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)'
-							)}
+							className={cn('px-1', isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)')}
 							role="tab"
 							type="button"
 							onClick={() => onChange(option.value)}

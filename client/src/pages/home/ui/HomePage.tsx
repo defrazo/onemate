@@ -1,10 +1,10 @@
 import { IconArrowRight } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
-import { Link, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
-import { Button } from '@/shared/ui';
+import { Button, Link } from '@/shared/ui';
 
 import { Workspace } from './components';
 
@@ -31,16 +31,17 @@ export const HomePage = observer(() => {
 				<span className="trim mb-2 font-mono text-xs tracking-wide text-(--text-disabled)/80">
 					PERSONAL WORKSPACE
 				</span>
-				<h1 className="my-4 max-w-md text-4xl font-bold md:my-0 md:max-w-none md:text-5xl lg:text-6xl">
+				<h1 className="my-4 max-w-md text-4xl font-semibold md:my-0 md:max-w-none md:text-5xl lg:text-6xl">
 					Всё нужное в одном месте
 				</h1>
 				<p className="mt-2 max-w-xl text-sm text-(--text-secondary) md:text-base">
 					Личное пространство для работы, идей и повседневных инструментов.
 				</p>
 				<Button
-					className="mt-8 h-9 gap-2 rounded-md px-5"
+					className="mt-8 h-9"
 					loading={authStore.isLoading}
 					loadingText="Открываем..."
+					padding="lg"
 					rightIcon={<IconArrowRight className="size-4" />}
 					variant="accent"
 					onClick={handleDemo}
@@ -48,8 +49,10 @@ export const HomePage = observer(() => {
 					Открыть демо
 				</Button>
 				<Link
-					className="mt-2 font-mono text-xs text-(--text-secondary) transition-colors hover:text-(--accent-primary-hover)"
+					className="mt-2 font-mono text-xs text-(--text-secondary) hover:text-(--accent-primary-hover)"
+					padding="none"
 					to="/demo"
+					variant="custom"
 				>
 					О демо-режиме
 				</Link>

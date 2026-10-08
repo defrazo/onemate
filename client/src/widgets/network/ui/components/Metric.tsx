@@ -4,7 +4,7 @@ export const Metric = ({ label, value, style }: { label: string; value: string; 
 	return (
 		<div className="flex flex-col items-center gap-1">
 			<span className="text-xs text-(--text-secondary)">{label}</span>
-			<span className={cn('trim text-sm font-bold text-(--text-primary) tabular-nums', style)}>{value}</span>
+			<span className={cn('trim text-sm font-semibold text-(--text-primary) tabular-nums', style)}>{value}</span>
 		</div>
 	);
 };

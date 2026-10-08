@@ -8,21 +8,24 @@ interface ArticleSectionProps {
 	children: ReactNode;
 	number?: number;
 	first?: boolean;
+	className?: string;
 }
 
-export const ArticleSection = ({ id, title, children, number, first = false }: ArticleSectionProps) => {
+export const ArticleSection = ({ id, title, children, number, first = false, className }: ArticleSectionProps) => {
 	return (
 		<section>
 			<h2
 				className={cn(
-					'text-lg font-bold tracking-tight md:text-xl',
+					'text-lg font-semibold tracking-tight md:text-xl',
 					first ? 'scroll-mt-72' : 'scroll-mt-24 md:scroll-mt-32'
 				)}
 				id={id}
 			>
 				{number}. {title}
 			</h2>
-			<div className="print-content mt-3 leading-relaxed text-(--text-secondary)">{children}</div>
+			<div className={cn('print-content mt-3 leading-relaxed text-(--text-secondary)', className)}>
+				{children}
+			</div>
 		</section>
 	);
 };

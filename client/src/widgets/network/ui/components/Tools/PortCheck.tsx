@@ -1,9 +1,9 @@
 import { useState } from 'react';
-import { IconAlertCircle, IconLink, IconNetwork, IconPlugConnected, IconWorld, IconX } from '@tabler/icons-react';
+import { IconAlertCircle, IconLink, IconNetwork, IconPlugConnected, IconServer, IconX } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Button, Input, InputLabel } from '@/shared/ui';
+import { Button, Divider, Input, InputLabel } from '@/shared/ui';
 
 import { getResponseTimeClass, portResultToCopy } from '../../../lib';
 import type { PortCheckResult } from '../../../model';
@@ -22,7 +22,6 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const portNumber = Number(port);
-	const isValid = host.trim() !== '' && Number.isInteger(portNumber) && portNumber >= 1 && portNumber <= 65535;
 
 	const statusLabel = result?.status === 'open' ? 'Порт открыт' : 'Порт закрыт';
 
@@ -45,14 +44,28 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
 		e.preventDefault();
+		if (isLoading) return;
 
-		if (!isValid || isLoading) return;
+		if (!host.trim()) {
+			notifyStore.setNotice('Не указан хост', 'error');
+			return;
+		}
+
+		if (!port.trim()) {
+			notifyStore.setNotice('Не указан порт', 'error');
+			return;
+		}
+
+		if (!Number.isInteger(portNumber) || portNumber < 1 || portNumber > 65535) {
+			notifyStore.setNotice('Порт должен быть числом от 1 до 65535', 'error');
+			return;
+		}
 
 		setIsLoading(true);
 		setError(null);
 
 		try {
-			setResult(await networkStore.checkPort(host.trim(), Number(port)));
+			setResult(await networkStore.checkPort(host.trim(), portNumber));
 		} catch (error) {
 			error instanceof Error ? setError(error.message) : notifyStore.setNotice('Что-то пошло не так', 'error');
 		} finally {
@@ -61,9 +74,9 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 	};
 
 	return (
-		<div className="flex h-full min-h-0 flex-col gap-2">
+		<div className="core-gap flex h-full min-h-0 flex-col">
 			<ViewHeader icon={IconNetwork} title="Проверка порта" onBack={onBack} />
-			<form className="flex flex-col gap-2" onSubmit={handleSubmit}>
+			<form className="core-gap flex flex-col" onSubmit={handleSubmit}>
 				<div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_144px]">
 					<Input
 						autoComplete="url"
@@ -86,6 +99,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 					/>
 					<Input
 						autoComplete="off"
+						className="number-no-spinner"
 						id="port"
 						leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
 						max="65535"
@@ -105,7 +119,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						onChange={(e) => handlePortChange(e.target.value)}
 					/>
 				</div>
-				<div className="flex flex-wrap items-center justify-end gap-3">
+				<div className="flex flex-wrap items-center justify-end gap-2">
 					{result && <CopyButton onClick={handleCopy} />}
 					{error && (
 						<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
@@ -114,11 +128,10 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						</div>
 					)}
 					<Button
-						className="h-7 min-w-36 rounded-lg text-sm"
-						disabled={!isValid || isLoading}
+						className="h-7 min-w-36 text-sm"
+						disabled={isLoading}
 						loading={isLoading}
 						loadingText="Проверяем..."
-						size="custom"
 						title="Проверить порт"
 						type="submit"
 						variant="accent"
@@ -131,19 +144,19 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 				<div className="flex flex-col">
 					<div className="mb-3 flex items-center gap-2">
 						<span className="text-xs text-(--text-secondary)">Результат</span>
-						<div className="h-px flex-1 bg-(--border-primary)" />
+						<Divider />
 					</div>
-					<div className="flex flex-col">
+					<div className="flex flex-col gap-0.5">
 						<div className="flex min-w-0 items-center gap-1">
 							<StatusDot status={result.status === 'open' ? 'up' : 'down'} />
 							<span className="max-w-64 min-w-0 truncate">{result.host}</span>
 						</div>
-						<span className="flex items-center gap-1 text-(--text-secondary)">
-							<IconWorld className="size-3 shrink-0" />
+						<div className="flex items-center gap-1 text-(--text-secondary)">
+							<IconServer className="size-3 shrink-0" />
 							<span className="text-xs tabular-nums">{result.ip}</span>
-						</span>
+						</div>
 					</div>
-					<div className="my-3 grid shrink-0 grid-cols-3 rounded-xl bg-white/5 py-2.5">
+					<div className="my-3 grid shrink-0 grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5">
 						<Metric
 							label="Отклик"
 							style={getResponseTimeClass(result.responseTime)}

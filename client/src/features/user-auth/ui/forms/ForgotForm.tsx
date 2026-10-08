@@ -29,21 +29,23 @@ export const ForgotForm = observer(() => {
 	};
 
 	return (
-		<form className="flex w-full max-w-md flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="core-gap flex w-full max-w-md flex-col" onSubmit={handleSubmit}>
 			<Input
-				className="border border-(--border-primary) bg-(--bg-secondary)/50 pl-11.5 hover:border-(--accent-primary-hover)"
+				className="border-(--border-tone)"
 				id="email"
-				leftIcon={<InputLabel htmlFor="email" icon={IconMailFilled} />}
+				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}
 				placeholder="Введите e-mail"
 				type="email"
 				value={email}
+				variant="ghost"
 				onChange={(e) => setEmail(e.target.value)}
 			/>
 			<Button
-				className="core-elements mt-4 h-10 w-full"
+				className="mt-4 h-8 w-full"
 				loading={authStore.isLoading}
 				loadingText="Выполняется отправка..."
 				type="submit"
+				variant="accent"
 			>
 				Отправить письмо
 			</Button>

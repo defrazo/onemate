@@ -8,21 +8,21 @@ export const Controls = observer(() => {
 	const { translatorStore } = useStore();
 
 	return (
-		<div className="grid grid-cols-[1fr_auto_1fr] border-b border-(--border-primary) pb-2">
+		<div className="grid grid-cols-[1fr_auto_1fr] border-b border-(--border-primary)">
 			<Select
 				hideChevron
 				align="start"
-				className="justify-center text-sm transition-colors hover:text-(--accent-primary)"
-				listClassName="-left-2 right-auto mt-2 w-50"
+				className="justify-center text-sm"
+				listClassName="right-auto mt-2 w-50"
 				options={translatorStore.languages}
-				size="custom"
 				value={translatorStore.sourceLang}
-				variant="mobile"
+				variant="custom"
 				onChange={translatorStore.setSourceLanguage}
 			/>
 			<Button
-				centerIcon={<IconArrowsExchange className="size-4" />}
-				className="h-6 w-13 rounded-lg"
+				centerIcon={<IconArrowsExchange className="size-4 group-active:scale-90" />}
+				className="group h-6 w-13"
+				padding="none"
 				title="Поменять языки местами"
 				variant="accent"
 				onClick={translatorStore.swap}
@@ -30,12 +30,11 @@ export const Controls = observer(() => {
 			<Select
 				hideChevron
 				align="start"
-				className="justify-center text-sm transition-colors hover:text-(--accent-primary)"
-				listClassName="-right-2 left-auto mt-2 w-50"
+				className="justify-center text-sm"
+				listClassName="left-auto mt-2 w-50"
 				options={translatorStore.languages}
-				size="custom"
 				value={translatorStore.targetLang}
-				variant="mobile"
+				variant="custom"
 				onChange={translatorStore.setTargetLanguage}
 			/>
 		</div>

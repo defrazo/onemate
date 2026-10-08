@@ -41,22 +41,22 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 	};
 
 	return (
-		<div className="flex shrink-0 flex-col items-center justify-evenly xl:justify-between">
+		<div className="flex shrink-0 flex-col items-center justify-evenly gap-2 px-2 xl:justify-between">
 			<Button
 				centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
 				className="hidden cursor-grab hover:text-(--accent-primary-hover) xl:block"
-				size="sm"
+				padding="none"
 				title="Переместить"
-				variant="mobile"
+				variant="icon"
 				{...listeners}
 				{...attributes}
 			/>
 			<Button
 				centerIcon={<IconCopy className="size-4" />}
-				className="cursor-pointer transition-[color,opacity] hover:text-(--status-success) xl:opacity-0 xl:group-hover/note:opacity-100"
-				size="sm"
+				className="transition-[color,opacity] xl:opacity-0 xl:group-hover/note:opacity-100"
+				padding="none"
 				title="Скопировать"
-				variant="mobile"
+				variant="icon"
 				onClick={() => {
 					if (!text) {
 						notifyStore.setNotice('Заметка пуста', 'info');
@@ -67,10 +67,10 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-4" />}
-				className="cursor-pointer transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
-				size="sm"
+				className="transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
+				padding="none"
 				title="Удалить заметку"
-				variant="mobile"
+				variant="icon"
 				onClick={() => removeNote(id)}
 			/>
 		</div>

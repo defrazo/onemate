@@ -2,10 +2,10 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadingState } from '@/shared/ui';
+import { LoadingState, SegmentedControl } from '@/shared/ui';
 
 import type { NetworkView } from '../model';
-import { AddService, Details, Empty, List, Settings, Tools, ViewSwitch } from './components';
+import { AddService, Details, Empty, List, Settings, Tools } from './components';
 
 export const Network = observer(() => {
 	const { networkStore } = useStore();
@@ -65,9 +65,17 @@ export const Network = observer(() => {
 	};
 
 	return (
-		<div className="flex h-full min-h-0 flex-col gap-2 overflow-hidden">
+		<div className="flex h-full min-h-0 flex-col gap-3 overflow-hidden">
 			{renderContent()}
-			<ViewSwitch view={view} onChange={setView} />
+			<SegmentedControl
+				className="mx-auto w-60 shrink-0"
+				options={[
+					{ value: 'monitoring', label: 'Мониторинг' },
+					{ value: 'tools', label: 'Инструменты' },
+				]}
+				value={view}
+				onChange={setView}
+			/>
 		</div>
 	);
 });

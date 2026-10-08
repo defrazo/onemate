@@ -8,7 +8,7 @@ type LogoSize = 'sm' | 'md' | 'lg';
 const sizes = {
 	sm: { icon: 'size-5', text: 'text-xl' },
 	md: { icon: 'size-6', text: 'text-2xl' },
-	lg: { icon: 'size-7 xl:size-8', text: 'text-xl xl:text-3xl' },
+	lg: { icon: 'size-7', text: 'text-xl xl:text-3xl' },
 } satisfies Record<LogoSize, { icon: string; text: string }>;
 
 interface LogoProps {
@@ -35,9 +35,9 @@ export const Logo = ({ isLink, className, size = 'md' }: LogoProps) => {
 				loading="lazy"
 				src={IconLogo}
 			/>
-			<h1 className={cn('trim font-semibold', currentSize.text)}>
+			<h1 className={cn('trim', currentSize.text)}>
 				<span className="text-(--accent-primary-text)">One</span>
-				<span className="text-(--accent-primary)">Mate</span>
+				<span className="font-bold text-(--accent-secondary)">Mate</span>
 			</h1>
 		</div>
 	);

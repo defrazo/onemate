@@ -38,10 +38,11 @@ export const MobileUserMenu = observer(() => {
 				{profileTabs.map(({ id, icon: Icon, label }) => (
 					<Button
 						key={id}
-						className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-primary)"
+						className="h-9 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
 						leftIcon={<Icon className="size-4.5" />}
+						padding="sm"
 						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
-						variant="mobile"
+						variant="custom"
 						onClick={() => openProfileTab(id)}
 					>
 						<span className="trim w-full text-left">{label}</span>
@@ -50,10 +51,11 @@ export const MobileUserMenu = observer(() => {
 				{mobileUserMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
-						className="h-10 justify-start rounded-lg px-2.5 text-(--text-secondary) active:bg-white/6 active:text-(--text-primary)"
+						className="h-9 justify-start text-(--text-secondary) active:bg-(--tone-strong) active:text-(--text-primary)"
 						leftIcon={<Icon className="size-4.5" />}
+						padding="sm"
 						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
-						variant="mobile"
+						variant="custom"
 						onClick={() => handleNavigate(to)}
 					>
 						<span className="trim w-full text-left">{label}</span>
@@ -62,9 +64,10 @@ export const MobileUserMenu = observer(() => {
 			</div>
 			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<Button
-				className="h-10 justify-start rounded-lg px-2.5 active:bg-white/6 active:text-(--accent-primary)"
+				className="h-9 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
-				variant="mobile"
+				padding="sm"
+				variant="custom"
 				onClick={handleLogout}
 			>
 				<span className="trim">Выйти</span>

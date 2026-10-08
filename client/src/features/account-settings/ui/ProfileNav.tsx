@@ -4,8 +4,8 @@ import { ProfileMenu } from './components/navigation';
 
 export const ProfileNav = () => {
 	return (
-		<div className="flex h-fit w-full flex-col gap-4">
-			<UserInfo className="core-base rounded-xl p-3" />
+		<div className="core-gap flex h-fit w-full flex-col">
+			<UserInfo className="core-surface-contrast bg-(--bg-secondary) p-3" />
 			<ProfileMenu />
 		</div>
 	);

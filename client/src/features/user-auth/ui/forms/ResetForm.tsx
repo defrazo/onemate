@@ -35,7 +35,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 	};
 
 	return (
-		<form className="flex w-full flex-col gap-4" onSubmit={handleSubmit}>
+		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
 			<div className="relative">
 				<PasswordInput
 					autoComplete="new-password"
@@ -43,6 +43,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 					name="password"
 					placeholder="Пароль"
 					value={authFormStore.password}
+					variant="ghost"
 					onBlur={() => setShowHint(false)}
 					onChange={(e) => authFormStore.update('password', e.target.value)}
 					onFocus={() => setShowHint(true)}
@@ -55,6 +56,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 				name="password-confirm"
 				placeholder="Подтвердите пароль"
 				value={authFormStore.passwordConfirm}
+				variant="ghost"
 				onChange={(e) => authFormStore.update('passwordConfirm', e.target.value)}
 				onPaste={(e) => {
 					e.preventDefault();
@@ -62,7 +64,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 				}}
 			/>
 			<Button
-				className="core-elements mt-4 h-10 w-full"
+				className="mt-4 h-8 w-full"
 				loading={authStore.isLoading}
 				loadingText="Выполняется сохранение..."
 				type="submit"

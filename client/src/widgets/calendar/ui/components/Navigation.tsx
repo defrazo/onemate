@@ -15,23 +15,23 @@ export const Navigation = ({ month, onNext, onPrev }: NavigationProps) => {
 		<div className="flex h-8 items-center justify-center">
 			<Button
 				centerIcon={
-					<IconChevronLeft className="size-4 text-(--text-secondary) transition-[color,opacity] group-hover:opacity-100 hover:text-(--accent-primary) xl:opacity-0" />
+					<IconChevronLeft className="size-4 transition-opacity group-hover:opacity-100 xl:opacity-0" />
 				}
-				className="group size-6 rounded-lg hover:bg-(--accent-primary)/10"
-				size="custom"
+				className="group size-6 rounded-md"
+				padding="none"
 				title="Предыдущий месяц"
-				variant="custom"
+				variant="iconSurface"
 				onClick={onPrev}
 			/>
-			<div className="trim min-w-38 cursor-default text-center font-bold">{formatMonthTitle(month)}</div>
+			<div className="trim min-w-38 cursor-default text-center font-semibold">{formatMonthTitle(month)}</div>
 			<Button
 				centerIcon={
-					<IconChevronRight className="size-4 text-(--text-secondary) transition-[color,opacity] group-hover:opacity-100 hover:text-(--accent-primary) xl:opacity-0" />
+					<IconChevronRight className="size-4 transition-opacity group-hover:opacity-100 xl:opacity-0" />
 				}
-				className="group size-6 rounded-lg hover:bg-(--accent-primary)/10"
-				size="custom"
+				className="group size-6 rounded-md"
+				padding="none"
 				title="Следующий месяц"
-				variant="custom"
+				variant="iconSurface"
 				onClick={onNext}
 			/>
 		</div>

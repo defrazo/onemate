@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { IconMapPinFilled, IconTrashFilled } from '@tabler/icons-react';
+import { IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
-import { Input, InputLabel, LoadingState } from '@/shared/ui';
+import { Input, LoadingState } from '@/shared/ui';
 
 import { LocationSearchStore } from '../model';
 import { Suggestions } from './components';
@@ -16,10 +16,11 @@ interface LocationSearchProps {
 	onRemove?: () => void;
 	validate?: (city: City) => void | Promise<void>;
 	onSelect: (city: City) => void | Promise<void>;
+	className?: string;
 }
 
 export const LocationSearch = observer(
-	({ value, showGeolocation, onRemove, validate, onSelect }: LocationSearchProps) => {
+	({ value, showGeolocation, onRemove, validate, onSelect, className }: LocationSearchProps) => {
 		const { notifyStore, userProfileStore } = useStore();
 
 		const [store] = useState(() => new LocationSearchStore());
@@ -66,30 +67,29 @@ export const LocationSearch = observer(
 			<div className="relative w-full">
 				<Input
 					autoComplete="off"
-					className="bg-(--bg-secondary)"
+					className={className}
 					disabled={!userProfileStore.isReady}
 					id="location"
-					leftIcon={<InputLabel htmlFor="location" icon={IconMapPinFilled} />}
 					name="fake-location"
 					placeholder={isLoading ? 'Загрузка города...' : 'Введите город'}
 					rightIcon={
 						isLoading ? (
 							<LoadingState className="mr-1" size="sm" />
 						) : onRemove && value ? (
-							<IconTrashFilled
-								className="mr-1 ml-1.5 size-5.5 cursor-pointer opacity-50 transition-[color,opacity] hover:text-(--status-error) hover:opacity-100"
+							<IconTrash
+								className="mr-1 ml-1.5 size-5.5 cursor-pointer text-(--text-primary)/80 opacity-50 transition-[color,opacity] hover:text-(--status-error) hover:opacity-100"
 								onClick={onRemove}
 							/>
 						) : showGeolocation ? (
 							<IconLocation
-								className="size-7 cursor-pointer transition-colors hover:text-(--accent-primary-hover)"
+								className="size-7 cursor-pointer text-(--text-primary)/80 transition-colors hover:text-(--accent-primary-hover)"
 								onClick={() => void handleGeolocation()}
 							/>
 						) : null
 					}
 					spellCheck={false}
 					value={store.inputValue}
-					variant="ghost"
+					variant="tone"
 					onBlur={() => store.setFocused(false)}
 					onChange={(e) => store.setQuery(e.target.value)}
 					onFocus={() => store.setFocused(true)}

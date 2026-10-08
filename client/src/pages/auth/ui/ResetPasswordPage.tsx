@@ -29,12 +29,12 @@ export const ResetPasswordPage = () => {
 					<ResetForm email={email} token={token} />
 				</>
 			) : (
-				<div className="flex flex-col gap-4">
+				<div className="core-gap flex flex-col">
 					<p className="text-center text-(--text-secondary)">
 						Ссылка для восстановления пароля устарела или повреждена.
 					</p>
 					<Button
-						className="core-elements h-10 w-full"
+						className="h-10 w-full"
 						onClick={() => {
 							navigate('/');
 							authFormStore.switchToForgot();

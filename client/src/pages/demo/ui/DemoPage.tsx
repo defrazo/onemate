@@ -1,16 +1,16 @@
 import { ArticleSection } from '@/shared/ui';
 
 export const DemoPage = () => (
-	<div className="flex w-full flex-col gap-4">
+	<div className="core-gap flex w-full flex-col">
 		<header className="flex flex-col items-center">
 			<h1 className="cursor-default text-center text-xl leading-tight font-bold md:text-3xl">О демо-режиме</h1>
 			<p className="text-center text-(--text-disabled)">
 				Как устроена демонстрационная версия OneMate и какие ограничения в ней действуют.
 			</p>
 		</header>
-		<article className="flex flex-col gap-4">
+		<article className="core-gap flex flex-col">
 			<ArticleSection first id="about" number={1} title="Что такое демо-режим">
-				<ul className="list-default">
+				<ul className="list-disc pl-4.5">
 					<li>
 						Демо-режим позволяет познакомиться с OneMate без регистрации. При запуске используется
 						подготовленный демо-аккаунт с демонстрационными данными, на котором можно посмотреть интерфейс и
@@ -23,7 +23,7 @@ export const DemoPage = () => (
 				</ul>
 			</ArticleSection>
 			<ArticleSection id="storage" number={2} title="Как сохраняются изменения">
-				<ul className="list-default">
+				<ul className="list-disc pl-4.5">
 					<li>
 						Данные, созданные во время демо-сессии, хранятся локально в браузере. Поэтому изменения видны
 						только на текущем устройстве и не переносятся между браузерами или устройствами.
@@ -35,7 +35,7 @@ export const DemoPage = () => (
 				</ul>
 			</ArticleSection>
 			<ArticleSection id="available" number={3} title="Что доступно">
-				<ul className="list-default">
+				<ul className="list-disc pl-4.5">
 					<li>Навигация по основным разделам OneMate и работа с интерфейсом.</li>
 					<li>Создание, редактирование и удаление демонстрационных записей.</li>
 					<li>Задачи, канбан, календарь, заметки и другие основные модули приложения.</li>
@@ -43,7 +43,7 @@ export const DemoPage = () => (
 				</ul>
 			</ArticleSection>
 			<ArticleSection id="limits" number={4} title="Ограничения">
-				<ul className="list-default">
+				<ul className="list-disc pl-4.5">
 					<li>
 						<b>Нет серверной синхронизации.</b> Созданные данные остаются только в текущем браузере.
 					</li>
@@ -62,7 +62,7 @@ export const DemoPage = () => (
 				</ul>
 			</ArticleSection>
 			<ArticleSection id="privacy" number={5} title="Данные и конфиденциальность">
-				<ul className="list-default">
+				<ul className="list-disc pl-4.5">
 					<li>
 						Для использования демо-режима не требуется указывать имя, e-mail, пароль или другие персональные
 						данные. Информацию, которую вы создаёте внутри доступных демо-функций, следует считать временной
@@ -91,7 +91,7 @@ export const DemoPage = () => (
 					</li>
 				</ul>
 			</ArticleSection>
-			<ArticleSection id="faq" number={6} title="Частые вопросы">
+			<ArticleSection className="mt-0" id="faq" number={6} title="Частые вопросы">
 				<div className="flex flex-col">
 					<FaqItem
 						answer="В демо-режиме отключены возможности, которым требуется персональный аккаунт или передача введённых данных сторонним сервисам."
@@ -125,7 +125,7 @@ export const DemoPage = () => (
 
 const FaqItem = ({ question, answer }: { question: string; answer: string }) => (
 	<details className="group border-(--border-primary) py-3 not-last:border-b">
-		<summary className="cursor-pointer list-none font-bold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary)">
+		<summary className="cursor-pointer list-none font-semibold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary)">
 			{question}
 		</summary>
 		<p className="mt-2 pr-6 text-sm leading-relaxed text-(--text-secondary)">{answer}</p>

@@ -48,7 +48,7 @@ export const WidgetsSection = observer(() => {
 					{activeWidgets.map(({ id, title, icon: Icon }) => (
 						<div
 							key={id}
-							className="flex h-10 items-center gap-2 rounded-xl bg-(--bg-tertiary) px-3 text-sm"
+							className="flex h-10 items-center gap-2 rounded-lg bg-(--bg-tertiary) px-3 text-sm"
 						>
 							<Icon className="size-5 text-(--accent-primary)" />
 							<span className="trim">{title}</span>
@@ -63,13 +63,11 @@ export const WidgetsSection = observer(() => {
 						{availableWidgets.map(({ id, title, icon: Icon }) => (
 							<Button
 								key={id}
-								className="h-10 rounded-xl bg-(--bg-tertiary) px-3 text-sm transition-colors hover:border-(--accent-primary)/30 hover:bg-(--accent-primary)/10 hover:text-(--accent-primary)"
+								className="h-10 bg-(--bg-tertiary) text-sm hover:border-(--accent-primary)/30 hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
 								leftIcon={<Icon className="size-4 text-(--accent-primary)" />}
 								rightIcon={<IconPlus className="size-4" />}
-								size="custom"
 								title={title}
 								type="button"
-								variant="custom"
 								onClick={() => changeWidget(id)}
 							>
 								<span className="trim mr-auto">{title}</span>

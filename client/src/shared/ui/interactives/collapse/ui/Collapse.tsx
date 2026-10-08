@@ -16,6 +16,6 @@ export const Collapse = ({ open, children, className }: CollapseProps) => (
 			className
 		)}
 	>
-		<div className="overflow-hidden">{children}</div>
+		<div className={cn('min-h-0', open ? 'overflow-visible' : 'overflow-hidden')}>{children}</div>
 	</div>
 );

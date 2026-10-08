@@ -4,7 +4,7 @@ import { ContactsOverview, PersonalOverview, SecurityOverview } from './componen
 
 export const OverviewTab = observer(() => {
 	return (
-		<div className="flex flex-col gap-4">
+		<div className="core-gap flex flex-col">
 			<PersonalOverview />
 			<ContactsOverview />
 			<SecurityOverview />

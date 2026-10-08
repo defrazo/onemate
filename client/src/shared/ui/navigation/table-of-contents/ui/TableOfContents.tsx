@@ -51,12 +51,11 @@ export const TableOfContents = () => {
 			<div className="relative">
 				<Button
 					centerIcon={<IconListNumbers className="size-4.5" />}
-					className="flex size-9 items-center justify-center rounded-lg border border-(--border-primary) bg-(--bg-secondary) text-(--text-secondary) transition-colors hover:bg-(--bg-tertiary) hover:text-(--text-primary)"
-					size="custom"
+					className="size-9 border border-(--border-primary) bg-(--bg-secondary) hover:bg-(--bg-tertiary) hover:text-(--text-primary)"
 					title="Оглавление"
-					variant="custom"
+					variant="iconSurface"
 				/>
-				<div className="invisible absolute top-1/2 left-11 w-72 -translate-y-1/2 rounded-xl border border-(--border-primary) bg-(--bg-secondary) px-2 py-1 opacity-0 shadow-(--shadow) transition-[opacity,visibility] group-hover:visible group-hover:opacity-100">
+				<div className="invisible absolute top-1/2 left-11 w-72 -translate-y-1/2 rounded-xl border border-(--border-primary) bg-(--bg-secondary) px-2 py-1 opacity-0 shadow-(--shadow-contrast) transition-[opacity,visibility] group-hover:visible group-hover:opacity-100">
 					<div className="px-2.5 pt-1.5 pb-2">
 						<span className="text-xs font-bold tracking-wide text-(--text-disabled)">Оглавление</span>
 					</div>
@@ -70,7 +69,7 @@ export const TableOfContents = () => {
 									className={cn(
 										'relative rounded-lg px-3 py-2 text-sm transition-colors',
 										active
-											? 'bg-(--bg-tertiary) font-bold text-(--text-primary)'
+											? 'bg-(--bg-tertiary) font-semibold text-(--text-primary)'
 											: 'text-(--text-secondary) hover:bg-(--bg-tertiary)/50 hover:text-(--text-primary)'
 									)}
 									href={`#${id}`}

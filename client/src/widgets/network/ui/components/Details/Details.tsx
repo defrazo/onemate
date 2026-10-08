@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconReload, IconReport, IconSettings } from '@tabler/icons-react';
+import { IconReload, IconReport, IconServer, IconSettings, IconWorld } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
@@ -91,63 +91,58 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 	}, [service.id, networkStore]);
 
 	return (
-		<div className="flex h-full min-h-0 flex-col gap-3">
+		<div className="core-gap flex h-full min-h-0 flex-col">
 			<ViewHeader icon={IconReport} title="Мониторинг сервиса" onBack={onBack} />
 			<div className="flex justify-between">
-				<div className="flex flex-col gap-1">
+				<div className="flex flex-col">
 					<div className="flex items-center gap-0.5">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
-						<span className="trim text-lg font-bold">{service.name}</span>
+						<span className="mr-1 max-w-44 truncate text-lg font-bold">{service.name}</span>
 						<Button
-							centerIcon={
-								<IconSettings className="size-4 text-(--text-secondary) hover:text-(--accent-primary)" />
-							}
-							className="size-5 rounded-lg hover:bg-(--accent-primary)/10"
-							size="custom"
+							centerIcon={<IconSettings className="size-4.5" />}
+							padding="none"
 							title="Настройки мониторинга"
-							variant="mobile"
+							variant="icon"
 							onClick={onSettings}
 						/>
 					</div>
 					{service.type === 'http' ? (
-						<a
-							className="block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--text-secondary) hover:text-(--accent-primary) lg:text-sm xl:max-w-64"
-							href={service.url}
-							rel="noopener noreferrer"
-							target="_blank"
-						>
-							{service.url}
-						</a>
+						<div className="flex items-center gap-1 text-(--text-secondary)">
+							<IconWorld className="size-3 shrink-0" />
+							<a
+								className="mt-px block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--text-secondary) hover:text-(--accent-primary) lg:text-sm xl:max-w-64"
+								href={service.url}
+								rel="noopener noreferrer"
+								target="_blank"
+							>
+								{service.url}
+							</a>
+						</div>
 					) : (
-						<span className="max-w-44 truncate text-xs text-(--text-secondary) lg:text-sm xl:max-w-64">
-							{address}
-						</span>
+						<div className="flex items-center gap-1 text-(--text-secondary)">
+							<IconServer className="size-3 shrink-0" />
+							<span className="mt-px max-w-44 truncate font-mono text-xs text-(--text-secondary) lg:text-sm xl:max-w-64">
+								{address}
+							</span>
+						</div>
 					)}
 				</div>
-				<div className="flex flex-col gap-0.5 text-(--text-secondary)">
+				<div className="mt-1 flex flex-col gap-1 text-(--text-secondary)">
 					<span className="text-xs">Последняя проверка:</span>
-					<div className="mx-auto flex items-center gap-1">
+					<div className="mx-auto flex items-center gap-1.5">
 						<span className="trim text-xs tabular-nums xl:text-sm">{lastChecked}</span>
 						<Button
-							centerIcon={
-								<IconReload
-									className={cn(
-										'size-3.5 text-(--text-secondary) hover:text-(--accent-primary)',
-										isChecking && 'animate-spin'
-									)}
-								/>
-							}
-							className="size-5 rounded-lg hover:bg-(--accent-primary)/10"
+							centerIcon={<IconReload className={cn('size-4', isChecking && 'animate-spin')} />}
 							disabled={isChecking}
-							size="sm"
+							padding="none"
 							title="Проверить сейчас"
-							variant="mobile"
+							variant="icon"
 							onClick={checkMonitoredService}
 						/>
 					</div>
 				</div>
 			</div>
-			<div className="my-3 grid grid-cols-3 rounded-xl bg-white/5 py-2.5">
+			<div className="my-3 grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5">
 				<Metric
 					label="Отклик"
 					style={getResponseTimeClass(service.lastResponseTime)}
