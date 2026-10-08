@@ -38,6 +38,10 @@ export class DeviceActivityStore extends AsyncStore {
 		return this.deviceInfo?.isMobile ?? false;
 	}
 
+	get currentActivity(): ActivityLog | null {
+		return this.activityLog[0] ?? null;
+	}
+
 	async deleteLogAuth(): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.isLoading) return;
@@ -109,6 +113,7 @@ export class DeviceActivityStore extends AsyncStore {
 			region: computed,
 			browser: computed,
 			isMobile: computed,
+			currentActivity: computed,
 
 			applyDeviceInfo: action,
 			applyActivityLog: action,

@@ -1,34 +1,21 @@
-import { fetchCityByIP } from '@/entities/city';
+import type { City } from '@/entities/city';
+import { api } from '@/shared/api';
 import { getBrowserInfo } from '@/shared/lib/utils';
 
 import type { DeviceData, IDeviceProvider } from '../../model';
-import { fetchIP } from '..';
 
 export class DeviceProviderApi implements IDeviceProvider {
-	private ipCache: string | null = null;
-
 	async getDeviceData(): Promise<DeviceData> {
-		let ip = this.ipCache;
-
-		if (!ip) {
-			try {
-				ip = await fetchIP();
-				this.ipCache = ip;
-			} catch {
-				ip = '0.0.0.0';
-			}
-		}
-
+		let ip = '0.0.0.0';
 		let city = '';
 		let region = '';
 
 		try {
-			const location = await fetchCityByIP();
+			const { data } = await api.get<{ ip: string; location: City | null }>('/user/location/detect');
 
-			if (location) {
-				city = location.name;
-				region = location.region ?? '';
-			}
+			ip = data.ip;
+			city = data.location?.name ?? '';
+			region = data.location?.region ?? '';
 		} catch {}
 
 		let browser = 'Unknown';

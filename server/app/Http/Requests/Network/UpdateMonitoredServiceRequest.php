@@ -10,7 +10,7 @@ class UpdateMonitoredServiceRequest extends NetworkRequest
     {
         return [
             'type' => ['required', Rule::in(['http', 'tcp'])],
-            'name' => ['sometimes', 'string', 'max:100'],
+            'name' => ['sometimes', 'string', 'max:50'],
             'url' => ['sometimes', 'string', 'max:2048', 'url:http,https'],
             'host' => ['sometimes', 'string', 'max:253'],
             'port' => ['sometimes', 'integer', 'between:1,65535'],

@@ -6,6 +6,7 @@ use App\Enums\UserLocationType;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Http;
 
 class UserLocationController extends Controller
 {
@@ -60,6 +61,80 @@ class UserLocationController extends Controller
 
         return response()->json([
             'code' => 'LOCATION_DELETED',
+        ]);
+    }
+
+    public function detect(Request $request): JsonResponse
+    {
+        $ip = $request->ip();
+
+        $isLocal = in_array($ip, ['127.0.0.1', '::1'], true);
+
+        $url = $isLocal
+            ? 'https://ipinfo.io/json'
+            : "https://ipinfo.io/{$ip}/json";
+
+        $response = Http::get($url, [
+            'token' => config('services.ipinfo.token'),
+        ]);
+
+        if ($response->failed()) {
+            return response()->json([
+                'ip' => $ip,
+                'location' => null,
+            ]);
+        }
+
+        $data = $response->json();
+
+        if (empty($data['loc']) || empty($data['city'])) {
+            return response()->json([
+                'ip' => $ip,
+                'location' => null,
+            ]);
+        }
+
+        [$lat, $lon] = array_map('floatval', explode(',', $data['loc']));
+
+        $geoResponse = Http::get('https://nominatim.openstreetmap.org/reverse', [
+            'lat' => $lat,
+            'lon' => $lon,
+            'format' => 'json',
+            'accept-language' => 'ru',
+        ]);
+
+        $geo = $geoResponse->successful()
+            ? $geoResponse->json()
+            : [];
+
+        $address = $geo['address'] ?? [];
+
+        $name = $address['hamlet']
+            ?? $address['village']
+            ?? $address['town']
+            ?? $address['city']
+            ?? $address['locality']
+            ?? $data['city']
+            ?? '';
+
+        $region = $address['state']
+            ?? $address['region']
+            ?? $data['region']
+            ?? '';
+
+        $country = $address['country']
+            ?? $data['country']
+            ?? '';
+
+        return response()->json([
+            'ip' => $data['ip'] ?? $ip,
+            'location' => [
+                'name' => $name,
+                'region' => $region,
+                'country' => $country,
+                'lat' => $lat,
+                'lon' => $lon,
+            ],
         ]);
     }
 

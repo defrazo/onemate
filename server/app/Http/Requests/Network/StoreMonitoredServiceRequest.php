@@ -10,7 +10,7 @@ class StoreMonitoredServiceRequest extends NetworkRequest
     {
         return [
             'type' => ['required', Rule::in(['http', 'tcp'])],
-            'name' => ['required', 'string', 'max:100'],
+            'name' => ['required', 'string', 'max:50'],
 
             'url' => [
                 Rule::requiredIf($this->input('type') === 'http'),

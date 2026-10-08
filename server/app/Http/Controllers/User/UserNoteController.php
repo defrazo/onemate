@@ -27,7 +27,7 @@ class UserNoteController extends Controller
         $data = $request->validate([
             'notes' => ['required', 'array', 'min:1', 'max:50'],
             'notes.*.id' => ['required', 'uuid'],
-            'notes.*.text' => ['required', 'string', 'max:2000'],
+            'notes.*.text' => ['present', 'nullable', 'string', 'max:2000'],
             'notes.*.order_idx' => ['required', 'integer', 'min:0'],
         ]);
 
@@ -41,7 +41,7 @@ class UserNoteController extends Controller
                 ->map(fn (array $note) => [
                     'id' => $note['id'],
                     'user_id' => $user->id,
-                    'text' => $note['text'],
+                    'text' => $note['text'] ?? '',
                     'order_idx' => $note['order_idx'],
                     'created_at' => $now,
                     'updated_at' => $now,

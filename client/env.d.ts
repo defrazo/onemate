@@ -1,7 +1,6 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-	readonly VITE_IPINFO_API_KEY: string;
 	readonly VITE_MYMEMORY_API_KEY: string;
 	readonly VITE_OPENWEATHER_API_KEY: string;
 }

@@ -94,6 +94,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/user/profile/widgets', [UserProfileController::class, 'updateWidgets']);
 
         // Locations
+        Route::get('/user/location/detect', [UserLocationController::class, 'detect']);
         Route::get('/user/locations/{type}', [UserLocationController::class, 'show']);
         Route::put('/user/locations/{type}', [UserLocationController::class, 'update']);
         Route::delete('/user/locations/{type}', [UserLocationController::class, 'destroy']);
