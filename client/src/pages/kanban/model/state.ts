@@ -339,102 +339,44 @@ export const createState = (repo: IKanbanRepo) => {
 		}
 	};
 
-	const moveTask = async (id: string, newColumnId: string, newIdx: number) => {
+	const moveTask = async (id: string, newColumnId: string) => {
 		if (isMovingTask) return;
+
+		const task = tasks.find((task) => task.id === id);
+		if (!task || task.columnId === newColumnId) return;
+
+		const column = columns.find((column) => column.id === newColumnId);
+		if (!column) return;
+
+		const columnTasks = tasks.filter((task) => task.columnId === newColumnId);
+
+		if (columnTasks.length >= column.taskLimit) {
+			notifier.setNotice(MESSAGES.tasks.moveLimit, 'info');
+			return;
+		}
+
 		isMovingTask = true;
 
 		const snapshot = tasks.map((task) => ({ ...task }));
 
 		try {
-			const task = tasks.find((task) => task.id === id);
-			if (!task) return;
-
-			const isSameColumn = task.columnId === newColumnId;
-
-			const tasksInNewColumn = tasks
-				.filter((task) => task.columnId === newColumnId)
-				.sort((a, b) => a.position - b.position);
-
-			const oldIdxInNewColumn = tasksInNewColumn.findIndex((task) => task.id === id);
-
-			const isSamePosition = oldIdxInNewColumn === newIdx;
-
-			if (isSameColumn && isSamePosition) return;
-
-			if (!isSameColumn) {
-				const columnData = columns.find((column) => column.id === newColumnId);
-
-				if (tasksInNewColumn.length + 1 > (columnData?.taskLimit ?? Infinity)) {
-					notifier.setNotice(MESSAGES.tasks.moveLimit, 'info');
-					return;
-				}
-			}
-
-			const withoutTask = tasks.filter((task) => task.id !== id);
-
-			const columnTasks = withoutTask
-				.filter((task) => task.columnId === newColumnId)
-				.sort((a, b) => a.position - b.position);
-
-			const clampedIdx = Math.max(0, Math.min(newIdx, columnTasks.length));
-
-			let newPosition: number;
-
-			if (columnTasks.length === 0) newPosition = 1000;
-			else if (clampedIdx === 0) newPosition = columnTasks[0].position - 1000;
-			else if (clampedIdx >= columnTasks.length)
-				newPosition = columnTasks[columnTasks.length - 1].position + 1000;
-			else newPosition = (columnTasks[clampedIdx - 1].position + columnTasks[clampedIdx].position) / 2;
-
-			if (isSameColumn && task.position === newPosition) return;
-
 			const updatedAt = now();
-			const updatedTask: Task = { ...task, columnId: newColumnId, position: newPosition, updatedAt };
 
-			tasks = [...withoutTask, updatedTask];
+			const position = columnTasks.length ? Math.max(...columnTasks.map((task) => task.position)) + 1000 : 1000;
+
+			tasks = tasks.map((item) =>
+				item.id === id ? { ...item, columnId: newColumnId, position, updatedAt } : item
+			);
+
 			notifyTasks();
 
-			await repo.moveTask(id, newColumnId, newPosition, updatedAt);
-			if (shouldNormalizeTasksInColumn(newColumnId)) await normalizeTaskPositionsInColumn(newColumnId);
+			await repo.moveTask(id, newColumnId, position, updatedAt);
 		} catch {
 			notifier.setNotice(MESSAGES.tasks.moveError, 'error');
 			rollback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);
 		} finally {
 			isMovingTask = false;
 		}
-	};
-
-	const shouldNormalizeTasksInColumn = (columnId: string) => {
-		const sorted = tasks
-			.filter((task) => task.columnId === columnId)
-			.slice()
-			.sort((a, b) => a.position - b.position);
-
-		for (let i = 1; i < sorted.length; i++) {
-			const gap = sorted[i].position - sorted[i - 1].position;
-			if (gap < 0.01) return true;
-		}
-
-		return false;
-	};
-
-	const normalizeTaskPositionsInColumn = async (columnId: string) => {
-		const updatedAt = now();
-
-		const sortedColumnTasks = tasks
-			.filter((task) => task.columnId === columnId)
-			.slice()
-			.sort((a, b) => a.position - b.position)
-			.map((task, idx) => ({ ...task, position: (idx + 1) * 1000, updatedAt }));
-
-		const otherTasks = tasks.filter((task) => task.columnId !== columnId);
-		tasks = [...otherTasks, ...sortedColumnTasks];
-
-		notifyTasks();
-
-		await Promise.all(
-			sortedColumnTasks.map((task) => repo.moveTask(task.id, task.columnId, task.position, task.updatedAt))
-		);
 	};
 
 	const subscribeTasks = (listener: TaskListener) => {

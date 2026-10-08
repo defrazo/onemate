@@ -2,7 +2,7 @@ type DragType = 'task' | 'column' | null;
 
 export const setupDnD = (
 	board: HTMLElement,
-	onTaskDrop: (taskId: string, targetColumnId: string, newIdx: number) => void,
+	onTaskDrop: (taskId: string, targetColumnId: string) => void,
 	onColumnDrop: (columnId: string, newIdx: number) => void
 ) => {
 	let currentDragType: DragType = null;
@@ -80,23 +80,9 @@ export const setupDnD = (
 			const targetContainer = target.closest<HTMLElement>('[data-tasks-container]');
 			if (!targetContainer) return;
 
-			const targetCard = target.closest<HTMLElement>('[data-task-id]');
+			if (placeholder.parentElement !== targetContainer) targetContainer.append(placeholder);
 
-			if (!targetCard) {
-				if (!targetContainer.contains(placeholder)) targetContainer.appendChild(placeholder!);
-				return;
-			}
-
-			if (targetCard === draggingElement) return;
-
-			const rect = targetCard.getBoundingClientRect();
-			const isAfter = e.clientY > rect.top + rect.height / 2;
-			const referenceNode = isAfter ? targetCard.nextElementSibling : targetCard;
-
-			if (placeholder.nextElementSibling !== referenceNode) {
-				if (isAfter) targetCard.after(placeholder);
-				else targetCard.before(placeholder);
-			}
+			return;
 		}
 
 		if (currentDragType === 'column') {
@@ -126,17 +112,22 @@ export const setupDnD = (
 
 		if (currentDragType === 'task') {
 			const container = placeholder.closest<HTMLElement>('[data-tasks-container]');
-			if (!container) return restore();
 
-			const newIdx = Array.from(container.children).indexOf(placeholder);
-			draggingElement.style.display = '';
-			placeholder.replaceWith(draggingElement);
+			if (!container) {
+				restore();
+				return;
+			}
 
-			const taskId = draggingElement.dataset.taskId!;
-			const targetColumnId = container.dataset.tasksContainer!;
+			const taskId = draggingElement.dataset.taskId;
+			const targetColumnId = container.dataset.tasksContainer;
+			const sourceColumnId = parent?.dataset.tasksContainer;
 
-			cleanup();
-			onTaskDrop(taskId, targetColumnId, newIdx);
+			restore();
+
+			if (!taskId || !targetColumnId || targetColumnId === sourceColumnId) return;
+
+			onTaskDrop(taskId, targetColumnId);
+			return;
 		}
 
 		if (currentDragType === 'column') {

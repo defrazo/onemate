@@ -1,5 +1,5 @@
 import { addIcon, insertSvg } from '../lib';
-import { type Column, type createState, enableMouseScroll, LIMITS, setupDnD, type Task } from '../model';
+import { type Column, type createState, enableMouseScroll, LIMITS, setupDnD, sortTasks, type Task } from '../model';
 import { createColumn, createTaskCard, editColumn } from '.';
 
 export const createBoard = (state: ReturnType<typeof createState>) => {
@@ -65,13 +65,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 			const columnId = columnInstance.element.dataset.columnId;
 			if (!columnId) continue;
 
-			const tasksInColumn = tasks
-				.filter((task) => task.columnId === columnId)
-				.sort((a, b) => {
-					if (a.completed && !b.completed) return 1;
-					if (!a.completed && b.completed) return -1;
-					return a.position - b.position;
-				});
+			const tasksInColumn = tasks.filter((task) => task.columnId === columnId).sort(sortTasks);
 
 			for (const task of tasksInColumn) {
 				const card = createTaskCard(task, state);
@@ -131,10 +125,9 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	// === EVENTS ===
 	addColumnButton.addEventListener('click', onAddColumn);
 
-	// === DND ===
 	const destroyDnD = setupDnD(
 		board,
-		(taskId, targetColumn, newIdx) => state.moveTask(taskId, targetColumn, newIdx),
+		(taskId, targetColumn) => state.moveTask(taskId, targetColumn),
 		(columnId, newIdx) => state.moveColumn(columnId, newIdx)
 	);
 

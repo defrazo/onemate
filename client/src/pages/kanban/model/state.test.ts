@@ -582,55 +582,106 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.moveTask('t1', 'c2', 0);
-
-					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', expect.any(Number), MOCKED_NOW);
-
-					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
-					const moved = tasks.find((task: Task) => task.id === 't1');
-					expect(moved?.columnId).toBe('c2');
-				});
-
-				it('should move task to end when idx exceeds length', async () => {
-					// ARRANGE
-					(repo.moveTask as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.moveTask('t1', 'c2', 99);
+					await state.moveTask('t1', 'c2');
 
 					// ASSERT
 					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 1000, MOCKED_NOW);
+
+					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
+					const moved = tasks.find((task) => task.id === 't1');
+
+					expect(moved).toMatchObject({ columnId: 'c2', position: 1000, updatedAt: MOCKED_NOW });
+					expect(listener).toHaveBeenCalledTimes(1);
 				});
 
-				it('should move task to empty column with default position', async () => {
+				it('should assign next position when target column already contains tasks', async () => {
 					// ARRANGE
-					const emptyCol: Column = {
-						id: 'c3',
-						title: 'Пустая задача',
-						color: 'slate',
-						taskLimit: 10,
-						position: 2,
-					};
-					(repo.fetchColumns as Mock).mockResolvedValue([...mockColumns, emptyCol]);
-					(repo.fetchTasks as Mock).mockResolvedValue(mockTasks);
 					(repo.moveTask as Mock).mockResolvedValue(undefined);
+
+					(repo.fetchTasks as Mock).mockResolvedValue([
+						...mockTasks,
+						{ ...mockTasks[0], id: 't3', columnId: 'c2', position: 2000 },
+					]);
 
 					await state.loadData();
 
 					// ACT
-					await state.moveTask('t1', 'c3', 0);
+					await state.moveTask('t1', 'c2');
 
 					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c3', 1000, MOCKED_NOW);
+					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 3000, MOCKED_NOW);
+				});
+
+				it('should do nothing when task is already in target column', async () => {
+					// ACT
+					await state.moveTask('t1', 'c1');
+
+					// ASSERT
+					expect(repo.moveTask).not.toHaveBeenCalled();
 				});
 
 				it('should do nothing when task is not found', async () => {
 					// ACT
-					await state.moveTask('t999', 'c2', 0);
+					await state.moveTask('t999', 'c2');
 
 					// ASSERT
 					expect(repo.moveTask).not.toHaveBeenCalled();
+				});
+
+				it('should do nothing when target column is not found', async () => {
+					// ACT
+					await state.moveTask('t1', 'unknown');
+
+					// ASSERT
+					expect(repo.moveTask).not.toHaveBeenCalled();
+				});
+
+				it('should not move task when target column is full', async () => {
+					// ARRANGE
+					(repo.fetchColumns as Mock).mockResolvedValue(
+						mockColumns.map((column) => (column.id === 'c2' ? { ...column, taskLimit: 1 } : column))
+					);
+
+					(repo.fetchTasks as Mock).mockResolvedValue([
+						...mockTasks,
+						{ ...mockTasks[0], id: 't3', columnId: 'c2', position: 1000 },
+					]);
+
+					await state.loadData();
+
+					// ACT
+					await state.moveTask('t1', 'c2');
+
+					// ASSERT
+					expect(repo.moveTask).not.toHaveBeenCalled();
+					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moveLimit, 'info');
+					expect(state.getTasks().find((task) => task.id === 't1')?.columnId).toBe('c1');
+				});
+
+				it('should ignore second moveTask call while first one is pending', async () => {
+					// ARRANGE
+					let resolveMove!: () => void;
+
+					(repo.moveTask as Mock).mockImplementation(
+						() =>
+							new Promise<void>((resolve) => {
+								resolveMove = resolve;
+							})
+					);
+
+					// ACT
+					const firstCall = state.moveTask('t1', 'c2');
+					const secondCall = state.moveTask('t2', 'c3');
+
+					// ASSERT
+					expect(state.isMovingTask).toBe(true);
+					expect(repo.moveTask).toHaveBeenCalledTimes(1);
+
+					resolveMove();
+
+					await Promise.all([firstCall, secondCall]);
+
+					expect(state.isMovingTask).toBe(false);
 				});
 
 				it('should rollback move when request fails', async () => {
@@ -639,15 +690,17 @@ describe('state', () => {
 
 					const listener = vi.fn();
 					state.subscribeTasks(listener);
+
 					const before = listener.mock.calls.at(-1)?.[0];
 					listener.mockClear();
 
 					// ACT
-					await state.moveTask('t1', 'c2', 0);
+					await state.moveTask('t1', 'c2');
 
 					// ASSERT
 					expect(listener).toHaveBeenLastCalledWith(before);
 					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moveError, 'error');
+					expect(state.isMovingTask).toBe(false);
 				});
 			});
 
