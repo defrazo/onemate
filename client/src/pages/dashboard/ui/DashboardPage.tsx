@@ -3,7 +3,7 @@ import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
 
-import { useDeviceType, useOrientation, usePageTitle } from '@/shared/lib/hooks';
+import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 
 import { useDashboard } from '../model';
 import { Slot, Widget } from './components';
@@ -11,15 +11,14 @@ import { Slot, Widget } from './components';
 export const DashboardPage = observer(() => {
 	usePageTitle('Dashboard');
 
-	const device = useDeviceType();
-	const orientation = useOrientation();
+	const { isDesktop, isTablet, isLandscape } = useResponsive();
 
 	const { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd } = useDashboard();
 
 	return (
 		<>
-			{device === 'desktop' || (device === 'tablet' && orientation === 'landscape') ? (
-				<div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
+			{isDesktop || (isTablet && isLandscape) ? (
+				<div className="core-gap grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
 					<DndContext
 						collisionDetection={closestCenter}
 						modifiers={[restrictToParentElement]}
@@ -33,8 +32,8 @@ export const DashboardPage = observer(() => {
 						</SortableContext>
 					</DndContext>
 				</div>
-			) : device === 'tablet' ? (
-				<div className="grid min-h-0 flex-1 grid-cols-2 gap-4">
+			) : isTablet ? (
+				<div className="core-gap grid min-h-0 flex-1 grid-cols-2">
 					{slots.map((slot, idx) => (
 						<Slot
 							key={idx}
@@ -47,7 +46,7 @@ export const DashboardPage = observer(() => {
 					))}
 				</div>
 			) : (
-				<div className="grid w-full grid-cols-1 gap-2">
+				<div className="core-gap grid w-full grid-cols-1">
 					{slots.slice(0, 2).map((slot, idx) => (
 						<Slot
 							key={idx}

@@ -1,4 +1,3 @@
-import { useRef } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -6,29 +5,22 @@ import { Navbar } from '@/features/navigation';
 import { NotificationButton } from '@/features/notifications';
 import { ThemeSwitcher } from '@/features/theme-switcher';
 import { LoginButton } from '@/features/user-auth';
-import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { DateTime, Logo } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 export const Header = observer(() => {
-	const device = useDeviceType();
-	const orientation = useOrientation();
+	const { isMobile } = useResponsive();
 
 	const { authStore } = useStore();
 
-	const headerRef = useRef<HTMLDivElement>(null);
-
 	const isAuth = authStore.isReady;
-	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 
 	return (
-		<header
-			ref={headerRef}
-			className="z-30 flex items-center justify-between rounded-xl bg-(--bg-tertiary) px-4 py-2 shadow-(--shadow) select-none md:py-2 print:hidden"
-		>
+		<header className="z-30 flex items-center justify-between border-b border-(--border-tone) px-4 pb-3 select-none print:hidden">
 			<Logo isLink size="lg" />
 			{isAuth && !isMobile && <Navbar variant="desktop" />}
-			<div className="flex items-center gap-2 xl:gap-4">
+			<div className="core-gap flex items-center">
 				{!isAuth ? (
 					<>
 						<ThemeSwitcher />
@@ -37,12 +29,12 @@ export const Header = observer(() => {
 				) : (
 					<>
 						<NotificationButton />
-						<UserMenuButton headerRef={headerRef} />
+						<UserMenuButton />
 					</>
 				)}
 				{!isMobile && (
 					<>
-						<div className="h-7 w-px bg-(--border-secondary)" />
+						<div className="h-7 w-px bg-(--border-tone)/70" />
 						<DateTime />
 					</>
 				)}

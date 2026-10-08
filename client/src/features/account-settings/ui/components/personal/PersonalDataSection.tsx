@@ -1,20 +1,19 @@
 import { useMemo, useState } from 'react';
-import { IconAt, IconUserFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { Gender } from '@/entities/user-profile';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
-import { Collapse, Input, InputLabel, Radio, Select } from '@/shared/ui';
+import { Collapse, Input, Radio, Select } from '@/shared/ui';
 
 import { genderOptions, getAvailableDays } from '../../../lib';
 import type { PersonalDraft } from '../../../model';
 import { FormActions, RemoveButton } from '..';
 
 export const PersonalDataSection = observer(() => {
-	const device = useDeviceType();
+	const { isMobile } = useResponsive();
 
 	const { notifyStore, userProfileStore, userStore } = useStore();
 
@@ -104,7 +103,7 @@ export const PersonalDataSection = observer(() => {
 	};
 
 	return (
-		<div className="flex flex-1 flex-col gap-4">
+		<div className="core-gap flex flex-1 flex-col">
 			<div className="flex flex-col gap-1">
 				<label className="text-(--text-secondary) opacity-70" htmlFor="username">
 					Никнейм
@@ -112,14 +111,13 @@ export const PersonalDataSection = observer(() => {
 				<Input
 					autoComplete="username"
 					id="username"
-					leftIcon={<InputLabel htmlFor="username" icon={IconAt} />}
 					placeholder="Ваш никнейм"
 					rightIcon={
 						draft.username &&
 						userStore.username && <RemoveButton onClick={() => updateField('username', '')} />
 					}
 					value={draft.username}
-					variant="ghost"
+					variant="tone"
 					onChange={(e) => updateField('username', e.target.value)}
 				/>
 			</div>
@@ -130,14 +128,14 @@ export const PersonalDataSection = observer(() => {
 				<Input
 					autoComplete="given-name"
 					id="firstName"
-					leftIcon={<InputLabel htmlFor="firstName" icon={IconUserFilled} />}
 					placeholder="Ваше имя"
 					rightIcon={
 						draft.firstName &&
 						userProfileStore.firstName && <RemoveButton onClick={() => updateField('firstName', '')} />
 					}
+
 					value={draft.firstName}
-					variant="ghost"
+					variant="tone"
 					onChange={(e) => updateField('firstName', e.target.value)}
 				/>
 			</div>
@@ -148,14 +146,13 @@ export const PersonalDataSection = observer(() => {
 				<Input
 					autoComplete="family-name"
 					id="lastName"
-					leftIcon={<InputLabel htmlFor="lastName" icon={IconUserFilled} />}
 					placeholder="Ваша фамилия"
 					rightIcon={
 						draft.lastName &&
 						userProfileStore.lastName && <RemoveButton onClick={() => updateField('lastName', '')} />
 					}
 					value={draft.lastName}
-					variant="ghost"
+					variant="tone"
 					onChange={(e) => updateField('lastName', e.target.value)}
 				/>
 			</div>
@@ -164,30 +161,30 @@ export const PersonalDataSection = observer(() => {
 				<div className="flex flex-col gap-2 md:flex-row">
 					<Select
 						clearable
-						direction={device === 'mobile' ? 'up' : 'down'}
+						direction={isMobile ? 'up' : 'down'}
 						options={generateYears()}
 						placeholder="Год"
 						value={draft.birthYear}
-						variant="embedded"
+						variant="tone"
 						onChange={(value) => setDraft((prev) => ({ ...prev, birthYear: value, birthDay: '' }))}
 					/>
 					<Select
 						clearable
-						direction={device === 'mobile' ? 'up' : 'down'}
+						direction={isMobile ? 'up' : 'down'}
 						options={generateMonth()}
 						placeholder="Месяц"
 						value={draft.birthMonth}
-						variant="embedded"
+						variant="tone"
 						onChange={(value) => setDraft((prev) => ({ ...prev, birthMonth: value, birthDay: '' }))}
 					/>
 					<Select
 						clearable
-						direction={device === 'mobile' ? 'up' : 'down'}
+						direction={isMobile ? 'up' : 'down'}
 						disabled={!draft.birthYear || !draft.birthMonth}
 						options={days.map((day) => ({ value: day, label: day }))}
 						placeholder="День"
 						value={draft.birthDay}
-						variant="embedded"
+						variant="tone"
 						onChange={(value) => updateField('birthDay', value)}
 					/>
 				</div>
@@ -195,10 +192,11 @@ export const PersonalDataSection = observer(() => {
 			<div className="flex flex-col gap-1">
 				<span className="text-(--text-secondary) opacity-70">Пол</span>
 				<Radio
-					className="flex flex-wrap gap-4 md:flex-row"
+					className="flex flex-wrap md:flex-row"
 					name="gender"
 					options={genderOptions}
 					value={draft.gender}
+					variant="tone"
 					onChange={(e) => updateField('gender', e.target.value as Gender)}
 				/>
 			</div>

@@ -1,25 +1,25 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Button, Thumbnail } from '@/shared/ui';
 
 import { PersonalTab } from '../../PersonalTab';
 import { AvatarPicker } from '.';
 
 export const AvatarSection = observer(() => {
-	const device = useDeviceType();
+	const { isMobile } = useResponsive();
 
 	const { modalStore, userProfileStore } = useStore();
 
 	const handleOpen = () => {
-		modalStore.setModal(<AvatarPicker />, device === 'mobile' ? 'sheet' : undefined, {
+		modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined, {
 			back: () => modalStore.setModal(<PersonalTab />, 'sheet'),
 		});
 	};
 
 	return (
-		<div className="flex items-center gap-2 md:w-1/5 lg:flex-col">
+		<div className="flex items-center gap-2 md:w-1/5 md:flex-col">
 			<Thumbnail
 				alt="avatar"
 				className="size-28 cursor-pointer ring-(--accent-primary-hover) hover:ring-2 md:size-fit"
@@ -28,7 +28,7 @@ export const AvatarSection = observer(() => {
 				title="Сменить аватар"
 				onClick={handleOpen}
 			/>
-			<Button className="core-elements mx-auto h-8 w-1/2 lg:w-full" onClick={handleOpen}>
+			<Button className="mx-auto h-8 w-1/2 lg:w-full" onClick={handleOpen}>
 				Изменить
 			</Button>
 		</div>

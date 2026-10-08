@@ -1,64 +1,57 @@
-import { type RefObject, useCallback, useEffect } from 'react';
+import { useState } from 'react';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { UserAvatar } from '@/entities/user-profile';
-import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
+import { useEscapeClose, useOutsideClick, useResponsive } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { DesktopUserMenu, MobileUserMenu } from '.';
 
-export const UserMenuButton = ({ headerRef }: { headerRef: RefObject<HTMLDivElement | null> }) => {
-	const device = useDeviceType();
-	const orientation = useOrientation();
+export const UserMenuButton = () => {
+	const { isMobile } = useResponsive();
 
 	const { modalStore } = useStore();
 
-	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
+	const [isOpen, setIsOpen] = useState(false);
 
-	const isUserMenuOpen = useCallback(
-		() => modalStore.modalType === 'sheet' || modalStore.modalType === 'dropdown',
-		[modalStore]
-	);
+	const menuRef = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
 
-	const handleUserMenuClick = useCallback(() => {
-		const rect = headerRef.current?.getBoundingClientRect();
+	useEscapeClose(() => setIsOpen(false));
 
-		if (!rect) return;
-
-		if (isUserMenuOpen()) {
-			modalStore.closeModal();
+	const handleUserMenuClick = () => {
+		if (isMobile) {
+			modalStore.setModal(<MobileUserMenu />, 'sheet');
 			return;
 		}
 
-		const position = { top: rect.bottom + window.scrollY - 7, left: rect.right + window.scrollX };
-
-		isMobile
-			? modalStore.setModal(<MobileUserMenu />, 'sheet')
-			: modalStore.setModal(<DesktopUserMenu />, 'dropdown', { position });
-	}, [headerRef, isMobile, isUserMenuOpen, modalStore]);
-
-	useEffect(() => {
-		if (modalStore.modal && isUserMenuOpen()) {
-			modalStore.closeModal();
-			handleUserMenuClick();
-		}
-	}, [device, orientation, modalStore, isUserMenuOpen, handleUserMenuClick]);
+		setIsOpen((value) => !value);
+	};
 
 	return (
-		<Button
-			className="group xl:rounded-xl xl:bg-white/4 xl:px-2 xl:py-1 xl:transition-colors xl:hover:bg-white/8"
-			rightIcon={
-				!isMobile && (
-					<IconChevronDown className="size-4 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary)" />
-				)
-			}
-			size="custom"
-			title="Открыть меню пользователя"
-			variant="custom"
-			onClick={handleUserMenuClick}
-		>
-			<UserAvatar className="size-8" />
-		</Button>
+		<div ref={menuRef} className="relative">
+			<Button
+				active={!isMobile && isOpen}
+				className="group xl:core-tone-strong relative xl:px-2 xl:py-1"
+				padding="none"
+				rightIcon={
+					!isMobile && (
+						<IconChevronDown
+							className={cn(
+								'size-4 text-(--text-secondary) transition-transform duration-300 group-hover:text-(--accent-primary)',
+								isOpen ? 'rotate-180' : 'rotate-0'
+							)}
+						/>
+					)
+				}
+				title="Открыть меню пользователя"
+				variant="custom"
+				onClick={handleUserMenuClick}
+			>
+				<UserAvatar className="size-7" />
+			</Button>
+			{!isMobile && isOpen && <DesktopUserMenu onClose={() => setIsOpen(false)} />}
+		</div>
 	);
 };

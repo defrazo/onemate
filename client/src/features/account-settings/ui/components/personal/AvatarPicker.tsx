@@ -2,14 +2,14 @@ import { useState } from 'react';
 
 import { useStore } from '@/app/providers';
 import { AVATAR_ENTRIES, type AvatarId } from '@/shared/assets/images/avatars';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
 import { PersonalTab } from '../../PersonalTab';
 
 export const AvatarPicker = () => {
-	const device = useDeviceType();
+	const { isMobile } = useResponsive();
 
 	const { modalStore, notifyStore, userProfileStore } = useStore();
 
@@ -29,7 +29,7 @@ export const AvatarPicker = () => {
 
 			await userProfileStore.updateAvatar(avatarUrl);
 
-			device === 'mobile' ? modalStore.setModal(<PersonalTab />, 'sheet') : modalStore.closeModal();
+			isMobile ? modalStore.setModal(<PersonalTab />, 'sheet') : modalStore.closeModal();
 			notifyStore.setNotice('Аватар обновлен', 'success');
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
@@ -55,13 +55,11 @@ export const AvatarPicker = () => {
 					/>
 				))}
 				<Button
-					className={cn(
-						'mx-auto mt-2 h-8 w-full hover:shadow-(--shadow) xl:w-52',
-						canSaveAvatar && 'active-btn'
-					)}
+					className="mx-auto mt-2 h-8 w-full xl:mt-4 xl:w-52"
 					disabled={isLoading || !canSaveAvatar}
 					loading={isLoading}
 					loadingText="Сохранение..."
+					variant="accent"
 					onClick={applyAvatar}
 				>
 					Применить аватар

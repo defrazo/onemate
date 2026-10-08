@@ -3,12 +3,12 @@ import { useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { accountSettingsTabs, isAccountSettingsTab, type TabId } from '@/features/account-settings';
-import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
+import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 
 export const AccountProfilePage = () => {
 	usePageTitle('Профиль');
 
-	const device = useDeviceType();
+	const { isMobile } = useResponsive();
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const { modalStore } = useStore();
@@ -32,7 +32,7 @@ export const AccountProfilePage = () => {
 	}, [tab, setSearchParams]);
 
 	useEffect(() => {
-		if (device === 'mobile')
+		if (isMobile)
 			modalStore.setModal(
 				<Suspense fallback={null}>
 					<Tab />
@@ -40,9 +40,9 @@ export const AccountProfilePage = () => {
 				'sheet'
 			);
 		else modalStore.closeModal();
-	}, [device, Tab, modalStore]);
+	}, [isMobile, Tab, modalStore]);
 
-	return device !== 'mobile' ? (
+	return !isMobile ? (
 		<div className="w-full max-w-2xl">
 			<Suspense fallback={null}>
 				<Tab />

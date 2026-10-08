@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 import type { ReactNode } from 'react';
 
 import { useEscapeClose } from '@/shared/lib/hooks';
+import { Button } from '@/shared/ui';
 
 interface ModalProps {
 	children: ReactNode;
@@ -15,12 +16,15 @@ export const Modal = observer(({ children, onClose }: ModalProps) => {
 
 	return ReactDOM.createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-			<div className="core-card core-border max-w-fit flex-col bg-(--bg-secondary)/70 shadow-2xl backdrop-blur-sm">
+			<div className="core-surface core-pad max-w-fit flex-col bg-(--bg-secondary)/70 shadow-2xl backdrop-blur-sm">
 				<div className="top-4 flex h-4 w-full justify-between">
 					{onClose && (
-						<IconX
-							className="z-10 ml-auto size-4.5 cursor-pointer text-(--text-secondary) transition-colors hover:text-(--accent-primary-hover)"
-							onClick={onClose}
+						<Button
+							centerIcon={<IconX className="size-4.5" onClick={onClose} />}
+							className="z-10 ml-auto"
+							padding="none"
+							type="button"
+							variant="icon"
 						/>
 					)}
 				</div>

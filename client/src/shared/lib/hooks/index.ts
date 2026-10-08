@@ -7,4 +7,5 @@ export { useOrientation } from './useOrientation';
 export { useOutsideClick } from './useOutsideClick';
 export { usePageTitle } from './usePageTitle';
 export { useRemainingTime } from './useRemainingTime';
+export { useResponsive } from './useResponsive';
 export { useValidation } from './useValidation';

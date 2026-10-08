@@ -1,28 +1,34 @@
-import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { EmptyHistory } from '@/shared/ui';
+import { Button, NoContent } from '@/shared/ui';
 
 import type { ResultItem } from '../../model';
 
-export const Log = ({ result }: { result: ResultItem[] }) => {
-	const device = useDeviceType();
-	const orientation = useOrientation();
-
-	const isMobile = device === 'mobile' || device === 'tablet' || orientation === 'portrait';
+export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => void }) => {
+	const { isMobile } = useResponsive();
 
 	return (
 		<div className={cn('min-h-0 min-w-0 overflow-hidden', isMobile ? 'basis-28' : 'basis-1/2')}>
 			<div
 				className={cn(
 					'flex h-full min-h-0 flex-col border-(--border-primary)',
-					isMobile ? 'mt-2 border-t pt-2' : 'ml-2 border-l pl-3'
+					isMobile ? 'mt-2 border-t pt-2' : 'ml-4 border-l pl-4'
 				)}
 			>
 				{result.length === 0 ? (
-					<EmptyHistory description="Вычисления появятся здесь" />
+					<NoContent description="Вычисления появятся здесь" title="История пуста" />
 				) : (
-					<div className="hide-scrollbar min-h-0 flex-1 overflow-y-auto">
-						<div className="flex flex-col gap-1">
+					<div className="flex min-h-0 flex-1 flex-col gap-1">
+						<Button
+							className="w-fit text-xs text-(--text-secondary) opacity-70 hover:text-(--status-error)"
+							padding="none"
+							title="Очистить историю"
+							variant="custom"
+							onClick={onClear}
+						>
+							Очистить
+						</Button>
+						<div className="flex scrollbar-none flex-col gap-1 overflow-y-auto">
 							{result
 								.slice()
 								.reverse()

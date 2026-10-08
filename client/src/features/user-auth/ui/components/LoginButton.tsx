@@ -2,18 +2,15 @@ import { IconLogin2 } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useDeviceType, useOrientation } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { UserAuth } from '..';
 
 export const LoginButton = observer(() => {
-	const device = useDeviceType();
-	const orientation = useOrientation();
+	const { isMobile } = useResponsive();
 
 	const { authFormStore, modalStore } = useStore();
-
-	const isMobile = device === 'mobile' || (device === 'tablet' && orientation === 'portrait');
 
 	const openAuth = () => {
 		authFormStore.reset();
@@ -23,10 +20,9 @@ export const LoginButton = observer(() => {
 
 	return (
 		<Button
-			className="font-bold text-(--text-primary) transition-colors hover:bg-(--accent-primary)/12 hover:text-(--accent-primary) lg:rounded-xl lg:bg-white/7"
+			className="font-semibold lg:bg-(--tone-strong) lg:hover:bg-(--tone-strong-hover)"
 			leftIcon={!isMobile && <IconLogin2 />}
-			size={isMobile ? 'custom' : 'md'}
-			variant="mobile"
+			variant="tone"
 			onClick={openAuth}
 		>
 			Войти

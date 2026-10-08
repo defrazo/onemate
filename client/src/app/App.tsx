@@ -4,12 +4,12 @@ import { Toaster } from 'sonner';
 
 import { ModalManager } from '@/features/modal';
 import { DemoBanner } from '@/pages/demo';
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 
 import { NotificationsProvider, RouterProvider, useStore } from './providers';
 
 export const App = observer(() => {
-	const device = useDeviceType();
+	const { isDesktop } = useResponsive();
 
 	const { userStore } = useStore();
 
@@ -19,7 +19,7 @@ export const App = observer(() => {
 				{userStore.id && userStore.userRole === 'demo' && <DemoBanner />}
 				<RouterProvider />
 				<ModalManager />
-				<Toaster duration={5000} position={device === 'desktop' ? 'bottom-right' : 'top-left'} />
+				<Toaster duration={5000} position={isDesktop ? 'bottom-right' : 'top-left'} />
 			</NotificationsProvider>
 		</BrowserRouter>
 	);

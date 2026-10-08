@@ -1,6 +1,6 @@
-import { IconCancel, IconCopy, IconSquare, IconSquareCheck, IconTrash } from '@tabler/icons-react';
+import { IconCancel, IconCheck, IconCopy, IconTrash } from '@tabler/icons-react';
 
-import { useCopy, useDeviceType, useOrientation } from '@/shared/lib/hooks';
+import { useCopy, useResponsive } from '@/shared/lib/hooks';
 import { cn, pluralize } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
@@ -15,38 +15,34 @@ interface ControlsProps {
 }
 
 export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, onReset }: ControlsProps) => {
-	const device = useDeviceType();
-	const orientation = useOrientation();
+	const { isMobile } = useResponsive();
 	const copy = useCopy();
 
-	const isMobile = device === 'mobile' || device === 'tablet' || orientation === 'portrait';
 	const hasStart = range[0];
 
 	return (
 		<div className="flex flex-col">
 			<div className="my-2 flex h-8 items-center">
 				{rangeInfo ? (
-					<>
-						<div className="flex w-full justify-center gap-1 text-sm lg:-mr-10">
-							<span className="trim text-(--text-secondary)">{rangeInfo.label} </span>
-							<span className="trim text-(--text-disabled)">·</span>
-							<span className="trim font-bold">
-								{rangeInfo.days} {pluralize(rangeInfo.days, 'день', 'дня', 'дней')}
-							</span>
-							{rangeInfo.weekendLabel && (
-								<span className="trim text-(--text-secondary)">({rangeInfo.weekendLabel})</span>
-							)}
-						</div>
+					<div className="mx-auto flex items-center gap-1 text-sm">
+						<span className="trim text-(--text-secondary)">{rangeInfo.label} </span>
+						<span className="trim text-(--text-disabled)">·</span>
+						<span className="trim font-semibold">
+							{rangeInfo.days} {pluralize(rangeInfo.days, 'день', 'дня', 'дней')}
+						</span>
+						{rangeInfo.weekendLabel && (
+							<span className="trim text-(--text-secondary)">({rangeInfo.weekendLabel})</span>
+						)}
 						<Button
 							centerIcon={<IconCopy className="size-4" />}
-							className="hidden px-3 text-sm hover:text-(--accent-primary) lg:block"
+							className="ml-1 hidden text-sm lg:block"
 							disabled={rangeInfo === null}
-							size="custom"
+							padding="none"
 							title="Скопировать период"
-							variant="mobile"
+							variant="icon"
 							onClick={() => copy(rangeInfo.copyText, 'Период скопирован')}
 						/>
-					</>
+					</div>
 				) : (
 					<span className="flex-1 text-center text-sm text-(--text-secondary)">
 						Выберите дату {hasStart ? 'конца' : 'начала'} периода
@@ -56,26 +52,22 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 			<div className="flex w-full items-center justify-between gap-2">
 				<Button
 					className={cn(
-						'core-border h-8 w-full bg-transparent text-xs text-(--text-secondary) enabled:border-transparent enabled:bg-(--accent-primary)/10 enabled:text-(--accent-primary) xl:text-sm',
+						'h-8 w-full border border-(--border-primary) bg-transparent text-xs text-(--text-primary) hover:bg-(--accent-primary)/20 hover:text-(--accent-primary) enabled:border-(--accent-primary)/70 xl:text-sm',
 						includeWeekends &&
-							'border-transparent bg-(--accent-primary)/10 text-(--accent-primary) hover:bg-(--accent-primary)/20'
+							'border-transparent bg-(--accent-primary-muted) text-(--accent-primary) hover:bg-(--accent-primary)/20'
 					)}
 					disabled={!rangeInfo?.hasWeekends}
-					leftIcon={
-						includeWeekends ? <IconSquareCheck className="size-4.5" /> : <IconSquare className="size-4.5" />
-					}
-					variant="mobile"
+					rightIcon={includeWeekends && <IconCheck className="size-4" />}
 					onClick={onToggleWeekends}
 				>
 					Учитывать выходные
 				</Button>
 				<Button
 					centerIcon={<IconCopy className="size-4" />}
-					className="block px-3 text-xs lg:hidden"
+					className="block text-xs lg:hidden"
 					disabled={rangeInfo === null}
-					size="custom"
 					title="Скопировать период"
-					variant="mobile"
+					variant="icon"
 					onClick={() => {
 						if (!rangeInfo) return;
 						copy(rangeInfo.copyText, 'Период скопирован');
@@ -87,13 +79,12 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
 					}
 					className={cn(
-						'h-8 px-3 text-xs hover:border-transparent hover:enabled:bg-(--special-danger)/80 xl:text-sm',
-						!isMobile && 'core-border w-32'
+						'h-8 min-w-30 bg-transparent px-3 text-xs hover:border-transparent xl:text-sm',
+						!isMobile && 'w-32'
 					)}
 					leftIcon={!isMobile && hasStart && <IconTrash className="size-4.5" />}
-					size="custom"
 					title={hasStart ? 'Сбросить' : 'Отмена'}
-					variant="mobile"
+					variant="danger"
 					onClick={onReset}
 				>
 					{!isMobile && hasStart ? 'Сбросить' : 'Отмена'}
