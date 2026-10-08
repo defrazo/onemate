@@ -22,14 +22,14 @@ export const ConfirmDialog = ({
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => (
-	<div className="-mt-4 flex flex-col gap-4 pb-4 select-none lg:w-sm lg:pb-0">
+	<div className="core-gap -mt-4 flex flex-col pb-4 select-none lg:w-sm lg:pb-0">
 		<div className="flex gap-2">
 			<div
 				className={cn(
 					'flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12',
 					variant === 'danger'
-						? 'bg-(--status-error)/10 text-(--status-error)'
-						: 'bg-(--special-danger)/10 text-(--special-danger)'
+						? 'bg-(--status-error-muted) text-(--status-error)'
+						: 'bg-(--danger)/10 text-(--danger)'
 				)}
 			>
 				<IconAlertTriangle className="size-5.5" />
@@ -40,11 +40,11 @@ export const ConfirmDialog = ({
 			</div>
 		</div>
 		<p className="trim text-sm text-(--text-secondary) opacity-80">{description}</p>
-		<div className="flex h-8 justify-end gap-3">
+		<div className="flex h-7 justify-end gap-3">
 			<Button variant="accent" onClick={onConfirm}>
 				{confirmLabel}
 			</Button>
-			<Button variant="warning" onClick={onCancel}>
+			<Button variant="danger" onClick={onCancel}>
 				{cancelLabel}
 			</Button>
 		</div>

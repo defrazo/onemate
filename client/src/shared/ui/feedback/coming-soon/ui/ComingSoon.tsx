@@ -20,36 +20,37 @@ export const ComingSoon = ({
 	return (
 		<div className="flex flex-1 items-center justify-center px-4 py-10 select-none">
 			<div className="flex w-full max-w-xl flex-col items-center text-center">
-				<div className="mb-8 w-64 rounded-2xl border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-(--shadow)">
+				<div className="mb-8 w-64 rounded-2xl border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-(--shadow-contrast)">
 					<div className="mb-4 flex items-center gap-1.5">
 						<span className="size-1.5 rounded-full bg-(--accent-primary)" />
-						<span className="size-1.5 rounded-full bg-white/15" />
-						<span className="size-1.5 rounded-full bg-white/15" />
+						<span className="size-1.5 rounded-full bg-(--border-tone)" />
+						<span className="size-1.5 rounded-full bg-(--border-tone)" />
 					</div>
 					<div className="space-y-2">
-						<div className="h-2 w-2/3 rounded-full bg-white/10" />
-						<div className="h-2 w-full rounded-full bg-white/5" />
-						<div className="h-2 w-4/5 rounded-full bg-white/5" />
+						<div className="h-2 w-2/3 rounded-full bg-(--tone-strong-hover)" />
+						<div className="h-2 w-full rounded-full bg-(--tone)" />
+						<div className="h-2 w-4/5 rounded-full bg-(--tone)" />
 					</div>
 					<div className="mt-4 flex gap-2">
-						<div className="h-10 flex-1 rounded-lg bg-white/5" />
-						<div className="h-10 flex-1 rounded-lg bg-(--accent-primary)/10" />
+						<div className="h-10 flex-1 rounded-lg bg-(--tone)" />
+						<div className="h-10 flex-1 rounded-lg bg-(--accent-primary-muted)" />
 					</div>
 				</div>
 				<span className="mb-4 h-0.5 w-8 rounded-full bg-(--accent-primary)" />
-				<h1 className="text-2xl font-bold md:text-3xl">{title}</h1>
+				<h1 className="text-2xl font-semibold md:text-3xl">{title}</h1>
 				<p className="mt-3 max-w-md text-sm text-(--text-secondary) md:text-base">{description}</p>
 				<div className="mt-7 flex flex-wrap items-center justify-center gap-3">
 					{suggestions ?? (
 						<>
 							<Button
+								className="h-9"
 								leftIcon={<IconArrowLeft className="size-4" />}
 								variant="ghost"
 								onClick={() => navigate(-1)}
 							>
 								Назад
 							</Button>
-							<Link leftIcon={<IconHome className="size-4" />} to="/">
+							<Link className="h-9" leftIcon={<IconHome className="size-4" />} to="/" variant="accent">
 								На главную
 							</Link>
 						</>
