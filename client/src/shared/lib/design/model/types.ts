@@ -1,4 +1,4 @@
-import type { sizes, variants } from '../lib';
+import type { paddings, variants } from '../lib';
 
 export type Component = 'button' | 'input' | 'textarea' | 'checkbox' | 'radio' | 'select';
 
@@ -11,11 +11,4 @@ export type VariantMap = {
 	select: keyof typeof variants.select;
 };
 
-export type SizeMap = {
-	button: keyof typeof sizes.button;
-	input: keyof typeof sizes.input;
-	textarea: keyof typeof sizes.textarea;
-	checkbox: keyof typeof sizes.checkbox;
-	radio: keyof typeof sizes.radio;
-	select: keyof typeof sizes.select;
-};
+export type Padding = keyof typeof paddings;

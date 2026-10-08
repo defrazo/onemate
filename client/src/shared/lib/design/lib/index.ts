@@ -1,4 +1,3 @@
 export { base } from './base';
-export { sizes } from './sizes';
-export { states } from './states';
+export { paddings } from './paddings';
 export { variants } from './variants';

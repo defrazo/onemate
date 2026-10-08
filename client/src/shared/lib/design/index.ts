@@ -1,2 +1,2 @@
-export { sizes, variants } from './lib';
-export { getComponentStyles } from './model';
+export { variants } from './lib';
+export { type Padding, resolveStyles } from './model';

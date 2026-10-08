@@ -1,2 +1,2 @@
-export { getComponentStyles } from './getComponentStyles';
-export type { Component, SizeMap, VariantMap } from './types';
+export { resolveStyles } from './styles';
+export type { Component, Padding, VariantMap } from './types';
