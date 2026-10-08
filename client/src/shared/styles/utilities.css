@@ -1,57 +1,58 @@
-@layer utilities {
-	.core-card {
-		@apply rounded-xl p-4;
-	}
+@utility core-surface {
+	@apply rounded-xl border border-(--border-primary);
+}
 
-	.core-base {
-		@apply bg-(--bg-secondary) text-(--text-primary);
-	}
+@utility core-surface-contrast {
+	@apply rounded-xl border border-(--border-contrast);
+}
 
-	.core-gap {
-		@apply gap-2 lg:gap-3 2xl:gap-4;
-	}
+@utility core-card {
+	@apply rounded-lg border border-(--border-primary);
+}
 
-	.core-elements {
-		@apply border border-(--border-contrast) bg-(--bg-tertiary);
-	}
+@utility core-card-contrast {
+	@apply rounded-lg border border-(--border-contrast);
+}
 
-	.core-border {
-		@apply rounded-xl border border-(--border-primary);
-	}
+@utility core-tone {
+	@apply bg-(--tone) text-(--text-secondary) transition-colors hover:bg-(--tone-hover) hover:text-(--text-primary) focus:text-(--text-primary);
+}
 
-	.core-semiborder {
-		@apply rounded-xl border border-(--border-primary-op);
-	}
+@utility core-tone-strong {
+	@apply bg-(--tone-strong) text-(--text-secondary) transition-colors hover:bg-(--tone-strong-hover) hover:text-(--text-primary) focus:text-(--text-primary);
+}
 
-	.core-header {
-		@apply text-center text-xl leading-tight font-bold select-none md:mr-auto md:ml-0 md:text-2xl md:leading-normal;
-	}
+@utility core-pad {
+	@apply p-2 lg:p-3 2xl:p-4;
+}
 
-	.trim {
-		text-box: trim-both cap alphabetic;
-	}
+@utility core-gap {
+	@apply gap-2 md:gap-3 2xl:gap-4;
+}
 
-	/* Отключение touch эффекта на элементе */
-	.no-touch-callout {
-		@apply select-none;
-		-webkit-touch-callout: none;
-		-webkit-tap-highlight-color: transparent;
-	}
+@utility trim {
+	text-box: trim-both cap alphabetic;
+}
 
-	.loader {
-		@apply aspect-square w-16 animate-spin rounded-full bg-(--accent-primary);
-		mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
-		-webkit-mask-image: radial-gradient(circle closest-side at 50% 40%, transparent 94%, black);
-		transform-origin: 50% 40%;
-	}
+/* Отключение touch эффекта на элементе */
+@utility no-touch-callout {
+	@apply select-none;
+	-webkit-touch-callout: none;
+	-webkit-tap-highlight-color: transparent;
+}
 
-	/* Скрыть скроллбар */
-	.hide-scrollbar {
-		scrollbar-width: none;
-		-ms-overflow-style: none;
-	}
+/* Отключение спиннера чисел для инпутов */
+@utility number-no-spinner {
+	appearance: textfield;
 
-	.hide-scrollbar::-webkit-scrollbar {
-		display: none;
+	&::-webkit-inner-spin-button,
+	&::-webkit-outer-spin-button {
+		appearance: none;
+		margin: 0;
 	}
+}
+
+/* Кастомизация скроллбара */
+@utility core-scrollbar {
+	@apply scrollbar-thin scrollbar-track-transparent scrollbar-thumb-(--border-primary);
 }

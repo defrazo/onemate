@@ -1,48 +1,32 @@
-* {
-	box-sizing: border-box;
-}
-
-html,
-body,
-#root {
-	height: 100svh;
-}
-
-html {
-	scroll-behavior: smooth;
-}
-
-body {
-	font-family: 'Nunito', sans-serif;
-	color: var(--text-primary);
-	background: var(--bg-base);
-}
-
-@media (hover: hover) and (pointer: fine) {
-	html {
-		scrollbar-gutter: stable;
-	}
+@layer base {
 
 	html,
-	body {
+	body,
+	#root {
+		height: 100%;
+	}
+
+	html {
+		scroll-behavior: smooth;
+		scrollbar-gutter: stable;
 		scrollbar-width: thin;
-		scrollbar-color: var(--bg-base) var(--bg-tertiary);
+		scrollbar-color: var(--bg-primary) var(--bg-tertiary);
 	}
 
-	html::-webkit-scrollbar,
-	body::-webkit-scrollbar {
-		width: 12px;
+	body {
+		min-height: 100svh;
+		font-family: 'Nunito', sans-serif;
+		font-weight: 500;
+		color: var(--text-primary);
+		background: var(--bg-base);
 	}
 
-	html::-webkit-scrollbar-thumb,
-	body::-webkit-scrollbar-thumb {
-		border-radius: 6px;
-		background-color: var(--bg-base);
-	}
-
-	html::-webkit-scrollbar-track,
-	body::-webkit-scrollbar-track {
-		border-radius: 6px;
-		background-color: var(--bg-tertiary);
+	input:-webkit-autofill,
+	input:-webkit-autofill:hover,
+	input:-webkit-autofill:focus,
+	input:-webkit-autofill:active {
+		-webkit-text-fill-color: var(--text-primary);
+		caret-color: var(--text-primary);
+		box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
 	}
 }
