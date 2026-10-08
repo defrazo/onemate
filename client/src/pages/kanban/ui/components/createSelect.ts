@@ -30,7 +30,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	const selected = document.createElement('button');
 	selected.type = 'button';
 	selected.className =
-		'flex w-full min-w-0 cursor-pointer items-center justify-between rounded-lg border border-(--border-primary) bg-white/3 px-2.5 py-2 text-left text-(--text-primary) transition-colors hover:border-white/15 hover:bg-white/5 focus-visible:border-(--accent-primary) focus-visible:outline-none';
+		'flex w-full min-w-0 cursor-pointer items-center justify-between rounded-md border border-(--tone-strong) bg-(--tone) px-2.5 py-2 text-left text-(--text-primary) transition-colors hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus-visible:border-(--accent-primary) focus-visible:outline-none';
 
 	const selectedValue = document.createElement('span');
 	selectedValue.textContent = findLabel(currentValue);
@@ -47,7 +47,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	const optionsContainer = document.createElement('div');
 	optionsContainer.dataset.customSelect = '';
 	optionsContainer.className = cn(
-		'hide-scrollbar absolute right-0 left-0 z-30 hidden max-h-36 overflow-y-auto rounded-lg border border-(--border-primary) bg-(--bg-secondary) p-1 shadow-(--shadow)',
+		'scrollbar-none absolute right-0 left-0 z-30 hidden max-h-36 overflow-y-auto rounded-lg border border-(--border-primary) bg-(--bg-secondary) p-1 shadow-(--shadow-contrast)',
 		options.direction === 'up' ? 'mb-1' : 'mt-1'
 	);
 
@@ -62,7 +62,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 		option.type = 'button';
 		option.textContent = label;
 		option.className =
-			'w-full cursor-pointer rounded-md px-2.5 py-2 text-left text-sm text-(--text-secondary) transition-colors not-first:mt-0.5 hover:bg-white/5 hover:text-(--text-primary)';
+			'w-full cursor-pointer rounded-md px-2.5 py-2 text-center text-sm text-(--text-secondary) transition-colors not-first:mt-0.5 hover:bg-(--tone-strong) hover:text-(--text-primary)';
 
 		const onOptionClick = () => {
 			currentValue = value;
@@ -115,7 +115,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	function updateSelectedOption() {
 		optionElements.forEach((option, value) => {
 			const isSelected = value === currentValue;
-			option.classList.toggle('bg-white/5', isSelected);
+			option.classList.toggle('bg-(--tone-strong)', isSelected);
 			option.classList.toggle('text-(--text-primary)', isSelected);
 		});
 	}

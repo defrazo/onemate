@@ -34,7 +34,7 @@ export const createTaskProperties = ({
 
 	// === CONTAINER ===
 	const element = document.createElement('div');
-	element.className = 'flex flex-col rounded-xl border border-(--border-primary) bg-white/3 select-none';
+	element.className = 'flex flex-col rounded-lg border border-(--border-primary) bg-(--tone) select-none';
 
 	// === PERIOD ===
 	const periodRow = createPropertyRow(calendarIcon, 'Период');
@@ -104,7 +104,8 @@ export const createTaskProperties = ({
 		completed = document.createElement('input');
 		completed.type = 'checkbox';
 		completed.checked = initialCompleted;
-		completed.className = 'size-4 shrink-0 cursor-pointer accent-(--accent-primary)';
+		completed.className =
+			'size-4 shrink-0 cursor-pointer opacity-60 accent-(--accent-primary) transition-opacity hover:opacity-80 checked:opacity-100';
 
 		completedRow.content.append(completed);
 	}

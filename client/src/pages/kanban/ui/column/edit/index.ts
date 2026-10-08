@@ -1,3 +1,3 @@
-export { createColumnFields } from './createColumnFields';
+export { createColumnDetails } from './createColumnDetails';
 export { createColumnProperties } from './createColumnProperties';
 export { editColumn } from './editColumn';

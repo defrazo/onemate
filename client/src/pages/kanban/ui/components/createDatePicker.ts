@@ -18,8 +18,8 @@ export const createDatePicker = ({
 	// === CONTAINER ===
 	const container = document.createElement('div');
 	container.className = cn(
-		'relative flex min-h-8.5 min-w-0 items-center rounded-lg border border-(--border-primary) bg-white/3 px-2.5 py-2 text-center text-sm text-(--text-primary) transition-colors',
-		!readonly && 'cursor-pointer hover:border-white/15 hover:bg-white/5',
+		'relative flex min-h-8.5 min-w-0 items-center rounded-md border border-(--tone-strong) bg-(--tone) px-2.5 py-2 text-center text-sm text-(--text-primary) transition-colors',
+		!readonly && 'cursor-pointer hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover)',
 		className
 	);
 

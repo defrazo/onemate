@@ -16,7 +16,7 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const taskCard = document.createElement('div');
 	taskCard.dataset.taskId = task.id;
 	taskCard.className =
-		'group/task flex min-h-40 min-w-0 flex-col gap-2 rounded-lg border border-white/4 bg-white/5 transition-colors select-none hover:border-white/8 hover:bg-white/7';
+		'group/task flex min-h-40 min-w-0 flex-col gap-2 rounded-lg border border-(--tone) bg-(--tone-strong) transition-colors select-none hover:border-(--tone-strong-hover) hover:bg-(--tone-strong-hover)/70';
 
 	// === TASK HEADER ===
 	const taskHeader = createTaskHeader({ task, onView: onViewTask, onEdit: onEditTask, onDelete: onDeleteTask });

@@ -28,7 +28,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 	const tasksContainer = document.createElement('div');
 	tasksContainer.dataset.tasksContainer = column.id;
 	tasksContainer.className =
-		'hide-scrollbar flex flex-1 flex-col gap-4 xl:max-h-[calc(100vh-225px)] xl:overflow-y-auto';
+		'core-gap scrollbar-none flex flex-1 flex-col xl:max-h-[calc(100vh-225px)] xl:overflow-y-auto';
 
 	// === ACTION FUNCTIONS ===
 	function onAddTask(columnId: string, taskLimit: number) {

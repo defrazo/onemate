@@ -13,7 +13,7 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 	const element = document.createElement('div');
 	element.dataset.taskOptions = '';
 	element.className =
-		'absolute top-8 right-0 z-20 hidden min-w-40 flex-col overflow-hidden rounded-lg border border-white/10 bg-(--bg-tertiary)/50 p-1 shadow-lg backdrop-blur-sm';
+		'absolute top-8 right-0 z-20 hidden min-w-40 flex-col overflow-hidden rounded-lg border border-(--tone) bg-(--bg-tertiary)/50 p-1 shadow-lg backdrop-blur-sm';
 
 	const definitions = [
 		{ icon: viewIcon, title: 'Просмотреть', action: onView },
@@ -27,8 +27,8 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 		button.className = cn(
 			'flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors',
 			danger
-				? 'hover:bg-(--special-danger)/10 hover:text-(--status-error)/80'
-				: 'hover:bg-white/5 hover:text-(--text-primary)'
+				? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
+				: 'hover:bg-(--tone) hover:text-(--text-primary)'
 		);
 		insertSvg(button, icon, 'size-4');
 

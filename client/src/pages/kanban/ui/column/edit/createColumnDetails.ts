@@ -1,6 +1,6 @@
 import { LIMITS } from '../../../model';
 
-export const createColumnFields = ({ title: initialTitle, onChange }: { title: string; onChange: () => void }) => {
+export const createColumnDetails = ({ title: initialTitle, onChange }: { title: string; onChange: () => void }) => {
 	// === CONTAINER ===
 	const element = document.createElement('div');
 	element.className = 'flex flex-col gap-1';
@@ -20,7 +20,7 @@ export const createColumnFields = ({ title: initialTitle, onChange }: { title: s
 	input.autocomplete = 'off';
 	input.placeholder = 'Введите название колонки';
 	input.className =
-		'w-full rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover)';
+		'w-full rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 focus:border-(--accent-primary) focus:text-(--text-primary)';
 
 	// === HINT ===
 	const hint = document.createElement('span');
@@ -47,7 +47,7 @@ export const createColumnFields = ({ title: initialTitle, onChange }: { title: s
 			? `${length} / ${LIMITS.COLUMN_TITLE} символов`
 			: `До ${LIMITS.COLUMN_TITLE} символов`;
 
-		hint.classList.toggle('text-(--status-error)', tooLong);
+		hint.style.color = tooLong ? 'var(--status-error)' : '';
 	}
 
 	// === LIFECYCLE ===

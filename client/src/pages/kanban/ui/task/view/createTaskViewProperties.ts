@@ -2,7 +2,7 @@ import { arrowIcon, calendarIcon, insertSvg } from '../../../lib';
 
 export const createTaskViewProperties = ({ startDate, endDate }: { startDate: string; endDate: string | null }) => {
 	const element = document.createElement('div');
-	element.className = 'flex flex-col overflow-hidden rounded-xl border border-(--border-primary) bg-white/3';
+	element.className = 'flex flex-col overflow-hidden rounded-lg bg-(--tone)';
 
 	// === PERIOD ROW ===
 	const periodRow = document.createElement('div');
@@ -14,14 +14,14 @@ export const createTaskViewProperties = ({ startDate, endDate }: { startDate: st
 
 	const label = document.createElement('span');
 	label.textContent = 'Период';
-	label.className = 'trim min-w-0 flex-1 text-(--text-secondary) opacity-70 select-none';
+	label.className = 'trim mt-px min-w-0 flex-1 text-(--text-secondary) opacity-70 select-none';
 
 	const value = document.createElement('div');
 	value.className = 'ml-auto flex shrink-0 items-center gap-2 text-sm text-(--text-secondary)';
 
 	const start = document.createElement('span');
 	start.textContent = formatDate(startDate);
-	start.className = 'trim';
+	start.className = 'trim text-(--text-primary)';
 
 	const arrow = document.createElement('div');
 	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
@@ -29,7 +29,7 @@ export const createTaskViewProperties = ({ startDate, endDate }: { startDate: st
 
 	const end = document.createElement('span');
 	end.textContent = endDate ? formatDate(endDate) : 'Без срока';
-	end.className = 'trim';
+	end.className = 'trim text-(--text-primary)';
 
 	value.append(start, arrow, end);
 

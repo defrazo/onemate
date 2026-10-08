@@ -7,14 +7,14 @@ import { AsyncStore } from '@/shared/lib/store';
 
 import { fetchWeatherData } from '../api';
 import { weatherCache } from '../lib';
-import type { CurrentType, ForecastType } from '.';
+import type { CurrentType, ForecastType, View } from '.';
 
 export class WeatherStore extends AsyncStore {
 	private currentLocation: City | null = null;
 
 	current: CurrentType | null = null;
 	forecast: ForecastType[] = [];
-	isOpenCurrent = true;
+	view: View = 'current';
 
 	get isReady(): boolean {
 		return this.current !== null && this.forecast.length > 0;
@@ -28,8 +28,8 @@ export class WeatherStore extends AsyncStore {
 		return this.currentLocation?.name ?? '';
 	}
 
-	toggleView(): void {
-		this.isOpenCurrent = !this.isOpenCurrent;
+	setView(view: View): void {
+		this.view = view;
 	}
 
 	async setLocation(city: City): Promise<void> {
@@ -129,13 +129,13 @@ export class WeatherStore extends AsyncStore {
 			currentLocation: observable,
 			current: observable,
 			forecast: observable,
-			isOpenCurrent: observable,
+			view: observable,
 
 			isReady: computed,
 			location: computed,
 			locationName: computed,
 
-			toggleView: action,
+			setView: action,
 			applyLocation: action,
 			applyWeather: action,
 			reset: action,
@@ -166,6 +166,6 @@ export class WeatherStore extends AsyncStore {
 		this.currentLocation = null;
 		this.current = null;
 		this.forecast = [];
-		this.isOpenCurrent = true;
+		this.view = 'current';
 	}
 }

@@ -18,15 +18,15 @@ const base =
 
 const variants: Record<ButtonVariant, string> = {
 	primary: 'bg-(--accent-primary) text-(--text-on-accent) hover:bg-(--accent-primary-hover)',
-	secondary: 'bg-white/5 text-(--text-primary) hover:bg-white/10',
-	ghost: 'text-(--text-secondary) hover:bg-white/5 hover:text-(--text-primary)',
-	danger: 'text-(--status-error) hover:bg-red-500/10',
-	icon: 'text-(--text-secondary) hover:bg-white/5 hover:text-(--text-primary)',
+	secondary: 'core-tone-strong text-(--text-primary)',
+	ghost: 'text-(--text-secondary) hover:bg-(--tone-strong) hover:text-(--text-primary)',
+	danger: 'text-(--danger) hover:bg-(--danger-hover) hover:text-(--text-on-accent)',
+	icon: 'text-(--text-secondary) hover:bg-(--tone-strong) hover:text-(--text-primary)',
 };
 
 const sizes: Record<ButtonSize, string> = {
-	sm: 'h-8 min-w-20 gap-1.5 px-2 text-sm',
-	md: 'h-9 min-w-24 gap-2 px-4 text-sm',
+	sm: 'h-7 min-w-20 gap-1.5 px-2',
+	md: 'h-8 min-w-24 gap-2 px-4',
 };
 
 export const createButton = ({

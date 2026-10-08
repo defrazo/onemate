@@ -1,16 +1,16 @@
 import { LIMITS } from '../../../model';
 
-type CreateTaskFieldsProps = {
+type CreateTaskDetailsProps = {
 	title: string;
 	description?: string;
 	onChange: () => void;
 };
 
-export const createTaskFields = ({
+export const createTaskDetails = ({
 	title: initialTitle,
 	description: initialDescription,
 	onChange,
-}: CreateTaskFieldsProps) => {
+}: CreateTaskDetailsProps) => {
 	// === CONTAINER ===
 	const element = document.createElement('div');
 	element.className = 'flex flex-col gap-2 select-none';
@@ -32,7 +32,7 @@ export const createTaskFields = ({
 	title.autocomplete = 'off';
 	title.placeholder = 'Введите название задачи';
 	title.className =
-		'w-full rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover)';
+		'w-full rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary)';
 
 	const titleHint = document.createElement('span');
 	titleHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
@@ -62,7 +62,7 @@ export const createTaskFields = ({
 	description.autocomplete = 'off';
 	description.placeholder = 'Добавьте комментарий к задаче';
 	description.className =
-		'hide-scrollbar min-h-24 w-full resize-none rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-2 transition-colors outline-none hover:border-(--accent-primary-hover) focus:border-(--accent-primary-hover) 2xl:min-h-28';
+		'min-h-24 w-full resize-none scrollbar-none rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary) 2xl:min-h-28';
 
 	const descriptionHint = document.createElement('span');
 	descriptionHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
@@ -94,7 +94,7 @@ export const createTaskFields = ({
 			? `${length} / ${LIMITS.TASK_TITLE} символов`
 			: `Введите название (до ${LIMITS.TASK_TITLE} символов)`;
 
-		titleHint.classList.toggle('text-(--status-error)', tooLong);
+		titleHint.style.color = tooLong ? 'var(--status-error)' : '';
 	}
 
 	function updateDescriptionHint() {
@@ -106,7 +106,7 @@ export const createTaskFields = ({
 			? `${length} / ${LIMITS.TASK_DESC} символов`
 			: `Необязательно, до ${LIMITS.TASK_DESC} символов`;
 
-		descriptionHint.classList.toggle('text-(--status-error)', tooLong);
+		descriptionHint.style.color = tooLong ? 'var(--status-error)' : '';
 	}
 
 	// === LIFECYCLE ===

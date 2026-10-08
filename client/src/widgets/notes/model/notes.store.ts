@@ -49,7 +49,7 @@ export class NotesStore extends AsyncStore {
 	}
 
 	updateOrder(newNotes: Note[]): void {
-		this.draft = [...newNotes];
+		this.draft = this.normalizeOrder(newNotes);
 		this.commitDraft();
 		this.scheduleServerUpdate();
 	}
@@ -61,7 +61,7 @@ export class NotesStore extends AsyncStore {
 		const now = new Date().toISOString();
 		const note: Note = { id: generateUUID(), text: '', order_idx: maxOrder, created_at: now, updated_at: now };
 
-		this.draft.push(note);
+		this.draft = this.normalizeOrder([note, ...this.draft]);
 		this.commitDraft();
 		this.scheduleServerUpdate();
 	}
@@ -153,6 +153,10 @@ export class NotesStore extends AsyncStore {
 			this.draft.map((note) => ({ ...note })),
 			true
 		);
+	}
+
+	private normalizeOrder(notes: Note[]): Note[] {
+		return notes.map((note, index) => ({ ...note, order_idx: index }));
 	}
 
 	private sortNotes(notes: Note[]): Note[] {

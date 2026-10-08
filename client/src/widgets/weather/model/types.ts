@@ -10,6 +10,8 @@ export type ConditionCode =
 	| '13d' | '13n'
 	| '50d' | '50n';
 
+export type View = 'current' | 'forecast';
+
 export type ForecastApiItem = {
 	dt: number;
 	main: WeatherMain;
@@ -22,6 +24,7 @@ export type ForecastApiItem = {
 export type CurrentType = {
 	name: string;
 	main: WeatherMain;
+	visibility: number;
 	wind: WeatherWind;
 	clouds: { all: number };
 	sys: { sunrise: number; sunset: number };
@@ -49,6 +52,7 @@ type WeatherMain = {
 type WeatherWind = {
 	speed: number;
 	deg: number;
+	gust: number;
 };
 
 type WeatherDescription = {

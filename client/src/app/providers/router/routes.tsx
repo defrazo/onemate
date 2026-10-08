@@ -7,26 +7,23 @@ import { DemoPage } from '@/pages/demo';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
 
+const AboutPage = lazy(() => import('@/pages/about').then((m) => ({ default: m.AboutPage })));
 const AccountProfilePage = lazy(() =>
 	import('@/pages/account-profile').then((m) => ({ default: m.AccountProfilePage }))
 );
-
-const AboutPage = lazy(() => import('@/pages/about').then((m) => ({ default: m.AboutPage })));
+const Background = lazy(() => import('@/pages/home').then((m) => ({ default: m.Background })));
+const DashboardPage = lazy(() => import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })));
 const DeletedAccountPage = lazy(() =>
 	import('@/pages/account-deleted').then((m) => ({ default: m.DeletedAccountPage }))
 );
-
-const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
-const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
-const DashboardPage = lazy(() => import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })));
-
-const Background = lazy(() => import('@/pages/home').then((m) => ({ default: m.Background })));
 const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
 const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));
 const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
 const PrivacyPage = lazy(() => import('@/pages/privacy').then((m) => ({ default: m.PrivacyPage })));
+const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
 const TermsPage = lazy(() => import('@/pages/terms').then((m) => ({ default: m.TermsPage })));
 const TodoPage = lazy(() => import('@/pages/to-do').then((m) => ({ default: m.TodoPage })));
+const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
 
 export const routes: RouteObject[] = [
 	{
@@ -48,7 +45,7 @@ export const routes: RouteObject[] = [
 						children: [{ path: '/dashboard', element: <DashboardPage /> }],
 					},
 					{
-						element: <Layout />,
+						element: <Layout background={<Background />} />,
 						children: [{ path: '/todo', element: <TodoPage /> }],
 					},
 					{
@@ -90,7 +87,7 @@ export const routes: RouteObject[] = [
 		children: [{ path: '/privacy', element: <PrivacyPage /> }],
 	},
 	{
-		element: <Layout />,
+		element: <Layout background={<Background />} />,
 		children: [{ path: '*', element: <NotFoundPage /> }],
 	},
 ];

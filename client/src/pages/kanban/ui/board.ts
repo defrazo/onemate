@@ -13,11 +13,11 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === BOARD ===
 	const board = document.createElement('div');
-	board.className = 'flex h-full max-w-full min-w-0 items-start gap-4 overflow-x-auto xl:overflow-y-hidden';
+	board.className = 'core-gap flex h-full max-w-full min-w-0 items-start overflow-x-auto xl:overflow-y-hidden';
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');
-	columnsContainer.className = 'flex size-full items-start gap-4';
+	columnsContainer.className = 'core-gap flex size-full items-start';
 	columnsContainer.dataset.columnsContainer = '';
 
 	// === ADD COLUMN BUTTON ===

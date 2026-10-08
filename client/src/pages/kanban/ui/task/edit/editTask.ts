@@ -1,7 +1,7 @@
 import { createSvg, settingsIcon } from '../../../lib';
 import { LIMITS, type TaskPriority, type TaskStatus } from '../../../model';
 import { createButton, createDialog } from '../../components';
-import { createTaskFields, createTaskProperties } from '.';
+import { createTaskDetails, createTaskProperties } from '.';
 
 type EditTaskProps = {
 	mode: 'create' | 'edit';
@@ -42,7 +42,7 @@ export const editTask = (options: EditTaskProps) => {
 	form.className = 'flex flex-col gap-3';
 
 	// === MAIN FIELDS ===
-	const mainFields = createTaskFields({
+	const mainFields = createTaskDetails({
 		title: options.initial.title,
 		description: options.initial.description,
 		onChange: updateSubmitState,

@@ -1,7 +1,7 @@
 import { createSvg, deleteIcon, settingsIcon } from '../../../lib';
 import { type ColumnColor, LIMITS } from '../../../model';
 import { createButton, createConfirmDialog, createDialog } from '../../components';
-import { createColumnFields, createColumnProperties } from '.';
+import { createColumnDetails, createColumnProperties } from '.';
 
 type EditColumnProps = {
 	mode: 'create' | 'edit';
@@ -27,7 +27,7 @@ export const editColumn = (options: EditColumnProps) => {
 	form.className = 'flex flex-col gap-2 select-none';
 
 	// === FIELDS ===
-	const fields = createColumnFields({ title: options.initial.columnTitle, onChange: updateSubmitState });
+	const fields = createColumnDetails({ title: options.initial.columnTitle, onChange: updateSubmitState });
 
 	// === PROPERTIES ===
 	const properties = createColumnProperties({
