@@ -1,41 +1,57 @@
-import { arrowIcon, calendarIcon, insertSvg } from '../../../lib';
+import { arrowIcon, calendarIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
+import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../../../model';
+import { createPropertyRow } from '../../components';
 
-export const createTaskViewProperties = ({ startDate, endDate }: { startDate: string; endDate: string | null }) => {
+type CreateTaskViewPropertiesProps = {
+	status: TaskStatus;
+	priority: TaskPriority;
+	startDate: string;
+	endDate: string | null;
+};
+
+export const createTaskViewProperties = ({ status, priority, startDate, endDate }: CreateTaskViewPropertiesProps) => {
 	const element = document.createElement('div');
-	element.className = 'flex flex-col overflow-hidden rounded-lg bg-(--tone)';
+	element.className = 'flex flex-col rounded-lg border border-(--border-primary) bg-(--tone) select-none';
 
 	// === PERIOD ROW ===
-	const periodRow = document.createElement('div');
-	periodRow.className = 'flex min-h-11 items-center gap-2 px-3 py-2';
+	const periodRow = createPropertyRow(calendarIcon, 'Период', false);
 
-	const icon = document.createElement('span');
-	icon.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
-	insertSvg(icon, calendarIcon, 'size-5');
-
-	const label = document.createElement('span');
-	label.textContent = 'Период';
-	label.className = 'trim mt-px min-w-0 flex-1 text-(--text-secondary) opacity-70 select-none';
-
-	const value = document.createElement('div');
-	value.className = 'ml-auto flex shrink-0 items-center gap-2 text-sm text-(--text-secondary)';
+	const period = document.createElement('div');
+	period.className = 'flex items-center gap-2 text-sm text-(--text-primary)';
 
 	const start = document.createElement('span');
 	start.textContent = formatDate(startDate);
-	start.className = 'trim text-(--text-primary)';
 
-	const arrow = document.createElement('div');
-	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
+	const arrow = document.createElement('span');
+	arrow.className = 'flex size-5 items-center justify-center text-(--text-disabled)';
 	insertSvg(arrow, arrowIcon, 'size-5');
 
 	const end = document.createElement('span');
 	end.textContent = endDate ? formatDate(endDate) : 'Без срока';
-	end.className = 'trim text-(--text-primary)';
 
-	value.append(start, arrow, end);
+	period.append(start, arrow, end);
+	periodRow.content.append(period);
 
-	periodRow.append(icon, label, value);
+	// === STATUS ===
+	const statusRow = createPropertyRow(statusIcon, 'Статус', false);
 
-	element.append(periodRow);
+	const statusValue = document.createElement('span');
+	statusValue.textContent = TASK_STATUS[status].label;
+	statusValue.className = 'text-sm text-(--text-primary)';
+
+	statusRow.content.append(statusValue);
+
+	// === PRIORITY ===
+	const priorityRow = createPropertyRow(priorityIcon, 'Приоритет', false);
+
+	const priorityValue = document.createElement('span');
+	priorityValue.textContent = TASK_PRIORITY[priority].label;
+	priorityValue.className = 'text-sm font-medium';
+	priorityValue.style.color = `var(${TASK_PRIORITY[priority].color})`;
+
+	priorityRow.content.append(priorityValue);
+
+	element.append(periodRow.element, statusRow.element, priorityRow.element);
 
 	return { element };
 };

@@ -15,9 +15,9 @@ export const TASK_STATUS = {
 } satisfies Record<string, TaskStatusConfig>;
 
 export const TASK_PRIORITY = {
-	low: { label: 'Низкий', color: '--priority-low' },
-	medium: { label: 'Обычный', color: '--priority-medium' },
 	high: { label: 'Высокий', color: '--priority-high' },
+	medium: { label: 'Обычный', color: '--priority-medium' },
+	low: { label: 'Низкий', color: '--priority-low' },
 } satisfies Record<string, { label: string; color: string }>;
 
 export const COLUMN_COLORS = {

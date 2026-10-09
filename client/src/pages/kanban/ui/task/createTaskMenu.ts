@@ -28,7 +28,7 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 			'flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors',
 			danger
 				? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
-				: 'hover:bg-(--tone) hover:text-(--text-primary)'
+				: 'hover:bg-(--tone-strong-hover) hover:text-(--text-primary)'
 		);
 		insertSvg(button, icon, 'size-4');
 

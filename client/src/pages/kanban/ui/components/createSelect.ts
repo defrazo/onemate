@@ -4,7 +4,7 @@ import { chevronDownIcon, insertSvg } from '../../lib';
 
 type SelectValue = string | number;
 
-type SelectItem<T extends SelectValue> = { value: T; label: string };
+type SelectItem<T extends SelectValue> = { value: T; label: string; color?: string };
 
 type CreateSelectOptions<T extends SelectValue> = {
 	initialValue?: T;
@@ -34,7 +34,8 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 
 	const selectedValue = document.createElement('span');
 	selectedValue.textContent = findLabel(currentValue);
-	selectedValue.className = 'min-w-0 flex-1 truncate text-center';
+	selectedValue.className = 'trim min-w-0 flex-1 text-center';
+	selectedValue.style.color = findColor(currentValue) ? `var(${findColor(currentValue)})` : '';
 
 	const arrow = document.createElement('div');
 	arrow.className =
@@ -62,11 +63,17 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 		option.type = 'button';
 		option.textContent = label;
 		option.className =
-			'w-full cursor-pointer rounded-md px-2.5 py-2 text-center text-sm text-(--text-secondary) transition-colors not-first:mt-0.5 hover:bg-(--tone-strong) hover:text-(--text-primary)';
+			'w-full cursor-pointer rounded-md px-2.5 py-1.5 text-center text-sm text-(--text-secondary) transition-colors not-first:mt-0.5 hover:bg-(--tone-strong) hover:text-(--text-primary)';
+		const color = typeof item === 'object' && item !== null && 'color' in item ? item.color : undefined;
+
+		if (color) option.style.color = `var(${color})`;
 
 		const onOptionClick = () => {
 			currentValue = value;
 			selectedValue.textContent = label;
+
+			const color = findColor(value);
+			selectedValue.style.color = color ? `var(${color})` : '';
 
 			updateSelectedOption();
 			close();
@@ -86,6 +93,14 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	function findLabel(value: T): string {
 		const item = items.find((item) => getItemValue(item) === value);
 		return item ? getItemLabel(item) : String(value);
+	}
+
+	function findColor(value: T): string | undefined {
+		const item = items.find((item) => getItemValue(item) === value);
+
+		if (typeof item === 'object' && item !== null && 'color' in item) return item.color;
+
+		return undefined;
 	}
 
 	function getValue(): T {

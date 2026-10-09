@@ -12,7 +12,6 @@ type EditTaskProps = {
 		priority: TaskPriority;
 		startDate: string;
 		endDate: string | null;
-		completed: boolean;
 	};
 	onSubmit: (
 		title: string,
@@ -20,8 +19,7 @@ type EditTaskProps = {
 		status: TaskStatus,
 		priority: TaskPriority,
 		startDate: string,
-		endDate: string | null,
-		completed: boolean
+		endDate: string | null
 	) => void;
 };
 
@@ -54,8 +52,6 @@ export const editTask = (options: EditTaskProps) => {
 		priority: options.initial.priority,
 		startDate: options.initial.startDate,
 		endDate: options.initial.endDate,
-		completed: options.initial.completed,
-		showCompleted: options.mode === 'edit',
 		onChange: updateSubmitState,
 	});
 
@@ -104,7 +100,6 @@ export const editTask = (options: EditTaskProps) => {
 			priority: taskProperties.priority,
 			startDate: taskProperties.startDate,
 			endDate: taskProperties.endDate,
-			completed: taskProperties.completed,
 		};
 	}
 
@@ -120,15 +115,7 @@ export const editTask = (options: EditTaskProps) => {
 			return;
 		}
 
-		options.onSubmit(
-			data.title,
-			data.description,
-			data.status,
-			data.priority,
-			data.startDate,
-			data.endDate,
-			data.completed
-		);
+		options.onSubmit(data.title, data.description, data.status, data.priority, data.startDate, data.endDate);
 
 		close();
 	}

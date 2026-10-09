@@ -298,7 +298,7 @@ export const createState = (repo: IKanbanRepo) => {
 		priority: TaskPriority,
 		startDate: string,
 		endDate: string | null,
-		completed: boolean
+		completed?: boolean
 	) => {
 		const snapshot = tasks.map((task) => ({ ...task }));
 
@@ -310,14 +310,21 @@ export const createState = (repo: IKanbanRepo) => {
 
 			const updatedAt = now();
 
-			tasks = tasks.map((task) =>
-				task.id === id
-					? { ...task, title, description, status, priority, startDate, endDate, completed, updatedAt }
-					: task
-			);
+			const changes = {
+				title,
+				description,
+				status,
+				priority,
+				startDate,
+				endDate,
+				...(completed !== undefined && { completed }),
+				updatedAt,
+			};
+
+			tasks = tasks.map((task) => (task.id === id ? { ...task, ...changes } : task));
 			notifyTasks();
 
-			await repo.editTask(id, { title, description, status, priority, startDate, endDate, completed, updatedAt });
+			await repo.editTask(id, changes);
 		} catch {
 			notifier.setNotice(MESSAGES.tasks.updateError, 'error');
 			rollback(snapshot, (snapshot) => (tasks = snapshot), notifyTasks);

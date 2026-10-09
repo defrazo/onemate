@@ -45,9 +45,8 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 				priority: 'medium',
 				startDate: today,
 				endDate: null,
-				completed: false,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate, completed) => {
+			onSubmit: (title, description, status, priority, startDate, endDate) => {
 				state.addTask(
 					columnId,
 					title,
@@ -56,7 +55,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 					priority,
 					startDate || today,
 					endDate || null,
-					completed,
+					false,
 					taskLimit
 				);
 

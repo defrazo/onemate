@@ -1,14 +1,12 @@
-import { arrowIcon, calendarIcon, checkIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
+import { arrowIcon, calendarIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
 import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../../../model';
-import { createDatePicker, createPropertyRow, createSelect, type PropertyRowInstance } from '../../components';
+import { createDatePicker, createPropertyRow, createSelect } from '../../components';
 
 type CreateTaskPropertiesProps = {
 	status: TaskStatus;
 	priority: TaskPriority;
 	startDate: string;
 	endDate: string | null;
-	completed: boolean;
-	showCompleted: boolean;
 	onChange: () => void;
 };
 
@@ -17,7 +15,6 @@ type TaskPropertiesValue = {
 	priority: TaskPriority;
 	startDate: string;
 	endDate: string | null;
-	completed: boolean;
 };
 
 export const createTaskProperties = ({
@@ -25,8 +22,6 @@ export const createTaskProperties = ({
 	priority: initialPriority,
 	startDate: initialStartDate,
 	endDate: initialEndDate,
-	completed: initialCompleted,
-	showCompleted,
 	onChange,
 }: CreateTaskPropertiesProps) => {
 	let selectedStatus = initialStatus;
@@ -79,7 +74,11 @@ export const createTaskProperties = ({
 	// === PRIORITY ===
 	const priorityRow = createPropertyRow(priorityIcon, 'Приоритет');
 
-	const priorityItems = Object.entries(TASK_PRIORITY).map(([value, config]) => ({ value, label: config.label }));
+	const priorityItems = Object.entries(TASK_PRIORITY).map(([value, config]) => ({
+		value,
+		label: config.label,
+		color: config.color,
+	}));
 
 	const prioritySelect = createSelect({
 		initialValue: initialPriority,
@@ -94,22 +93,6 @@ export const createTaskProperties = ({
 
 	priorityRow.content.append(prioritySelect.element);
 
-	// === COMPLETED ===
-	let completedRow: PropertyRowInstance | null = null;
-	let completed: HTMLInputElement | null = null;
-
-	if (showCompleted) {
-		completedRow = createPropertyRow(checkIcon, 'Завершено');
-
-		completed = document.createElement('input');
-		completed.type = 'checkbox';
-		completed.checked = initialCompleted;
-		completed.className =
-			'size-4 shrink-0 cursor-pointer opacity-60 accent-(--accent-primary) transition-opacity hover:opacity-80 checked:opacity-100';
-
-		completedRow.content.append(completed);
-	}
-
 	// === EVENTS ===
 	const onStartDateChange = () => {
 		setDatesInvalid(!areDatesValid());
@@ -121,11 +104,8 @@ export const createTaskProperties = ({
 		onChange();
 	};
 
-	const onCompletedChange = () => onChange();
-
 	startDate.element.addEventListener('dateChange', onStartDateChange);
 	endDate.element.addEventListener('dateChange', onEndDateChange);
-	completed?.addEventListener('change', onCompletedChange);
 
 	// === ACTION FUNCTIONS ===
 	function getValue(): TaskPropertiesValue {
@@ -134,7 +114,6 @@ export const createTaskProperties = ({
 			priority: selectedPriority,
 			startDate: startDate.getValue(),
 			endDate: endDate.getValue() || null,
-			completed: completed?.checked ?? initialCompleted,
 		};
 	}
 
@@ -155,7 +134,6 @@ export const createTaskProperties = ({
 	function destroy() {
 		startDate.element.removeEventListener('dateChange', onStartDateChange);
 		endDate.element.removeEventListener('dateChange', onEndDateChange);
-		completed?.removeEventListener('change', onCompletedChange);
 
 		startDate.destroy();
 		endDate.destroy();
@@ -165,7 +143,6 @@ export const createTaskProperties = ({
 
 	// === ASSEMBLY ===
 	element.append(periodRow.element, dateError, statusRow.element, priorityRow.element);
-	if (completedRow) element.append(completedRow.element);
 
 	return { element, getValue, areDatesValid, setDatesInvalid, destroy };
 };

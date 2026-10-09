@@ -1,4 +1,5 @@
-import { createSvg, viewIcon } from '../../../lib';
+import { createSvg, formatTaskSummary, notifier, viewIcon } from '../../../lib';
+import type { TaskPriority, TaskStatus } from '../../../model';
 import { createButton, createDialog } from '../../components';
 import { createTaskDetails, createTaskMeta, createTaskViewProperties } from '.';
 
@@ -6,6 +7,8 @@ type ViewTaskProps = {
 	initial: {
 		title: string;
 		description?: string;
+		status: TaskStatus;
+		priority: TaskPriority;
 		startDate: string;
 		endDate: string | null;
 		completed: boolean;
@@ -30,6 +33,8 @@ export const viewTask = (options: ViewTaskProps) => {
 
 	// === PROPERTIES ===
 	const properties = createTaskViewProperties({
+		status: options.initial.status,
+		priority: options.initial.priority,
 		startDate: options.initial.startDate,
 		endDate: options.initial.endDate,
 	});
@@ -38,12 +43,25 @@ export const viewTask = (options: ViewTaskProps) => {
 	const meta = createTaskMeta({ created: options.initial.created, updated: options.initial.updated });
 
 	// === ACTION ===
+	const actions = document.createElement('div');
+	actions.className = 'flex flex-col items-center gap-2 pt-2';
+
 	const actionButton = createButton({
 		text: isCompleted ? 'Возобновить' : 'Завершить',
 		variant: 'primary',
-		className: 'mx-auto mt-2 min-w-48',
+		className: 'min-w-48',
 		onClick: handleAction,
 	});
+
+	const copyButton = document.createElement('button');
+	copyButton.type = 'button';
+	copyButton.textContent = 'Копировать в буфер';
+	copyButton.className =
+		'mx-auto cursor-pointer text-xs text-(--text-secondary) transition-colors hover:text-(--text-primary)';
+
+	copyButton.addEventListener('click', handleCopy);
+
+	actions.append(actionButton, copyButton);
 
 	// === ACTION FUNCTIONS ===
 	function handleAction() {
@@ -51,16 +69,26 @@ export const viewTask = (options: ViewTaskProps) => {
 		close();
 	}
 
+	async function handleCopy(): Promise<void> {
+		try {
+			await navigator.clipboard.writeText(formatTaskSummary(options.initial));
+			notifier.setNotice('Скопировано в буфер обмена', 'success');
+		} catch {
+			notifier.setNotice('Что-то пошло не так', 'error');
+		}
+	}
+
 	// === LIFECYCLE ===
 	function close() {
 		if (isClosed) return;
 		isClosed = true;
 
+		copyButton.removeEventListener('click', handleCopy);
 		closeDialog();
 	}
 
 	// === ASSEMBLY ===
-	container.append(details.element, properties.element, actionButton, meta.element);
+	container.append(details.element, properties.element, actions, meta.element);
 
 	return { element: overlay, close };
 };

@@ -1,7 +1,7 @@
 export { default as addIcon } from '@/shared/assets/icons/kanban/add.svg?raw';
 export { default as arrowIcon } from '@/shared/assets/icons/kanban/arrow-right.svg?raw';
 export { default as calendarIcon } from '@/shared/assets/icons/kanban/calendar.svg?raw';
-export { default as checkIcon } from '@/shared/assets/icons/kanban/check.svg?raw';
+export { default as calendarDueIcon } from '@/shared/assets/icons/kanban/calendar-clock.svg?raw';
 export { default as chevronDownIcon } from '@/shared/assets/icons/kanban/chevron-down.svg?raw';
 export { default as closeIcon } from '@/shared/assets/icons/kanban/close.svg?raw';
 export { default as dateIcon } from '@/shared/assets/icons/kanban/date.svg?raw';

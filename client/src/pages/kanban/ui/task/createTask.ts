@@ -1,6 +1,6 @@
-import { cn, fullDate } from '@/shared/lib/utils';
+import { cn } from '@/shared/lib/utils';
 
-import { createSvg, deleteIcon, deviceUtils } from '../../lib';
+import { calendarDueIcon, calendarIcon, createSvg, deleteIcon, deviceUtils, insertSvg } from '../../lib';
 import type { createState, Task } from '../../model';
 import { createConfirmDialog } from '../components';
 import { createTaskHeader, createTaskMeta, editTask, viewTask } from '.';
@@ -37,10 +37,45 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	taskContent.append(taskMeta.element, taskDescription);
 
 	// === TIMESTAMP ===
-	const timestamp = document.createElement('span');
-	timestamp.title = 'Дата создания';
-	timestamp.textContent = fullDate(task.createdAt);
-	timestamp.className = 'trim mt-auto px-3 pb-3 text-xs text-(--text-secondary) opacity-70';
+	const timestamp = document.createElement('div');
+	timestamp.className = 'mt-auto flex items-center justify-between gap-2 px-3 pb-3 text-xs text-(--text-disabled)';
+
+	const formatShortDate = (value: string): string => {
+		const date = new Date(value);
+		return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+	};
+
+	const createDateLabel = (icon: string, date: string, title: string) => {
+		const element = document.createElement('span');
+		element.title = title;
+		element.className = 'flex min-w-0 items-center gap-1';
+
+		insertSvg(element, icon, 'size-3.5 shrink-0');
+
+		const text = document.createElement('span');
+		text.textContent = formatShortDate(date);
+		text.className = 'trim mt-px';
+
+		element.append(text);
+
+		return element;
+	};
+
+	timestamp.append(createDateLabel(calendarIcon, task.startDate, `Начало периода: ${task.startDate}`));
+
+	if (task.endDate) {
+		const deadline = createDateLabel(calendarDueIcon, task.endDate, `Срок выполнения: ${task.endDate}`);
+		deadline.classList.add('shrink-0');
+
+		const today = new Date();
+		today.setHours(0, 0, 0, 0);
+
+		const dueDate = new Date(`${task.endDate.slice(0, 10)}T00:00:00`);
+		const isOverdue = !task.completed && dueDate < today;
+		if (isOverdue) deadline.classList.add('line-through', 'decoration-(--text-tertiary)');
+
+		timestamp.append(deadline);
+	}
 
 	// === ACTION FUNCTIONS ===
 	function onViewTask() {
@@ -50,6 +85,8 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 			initial: {
 				title: task.title,
 				description: task.description,
+				status: task.status,
+				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
 				completed: task.completed,
@@ -87,10 +124,9 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
-				completed: task.completed,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate, completed) => {
-				state.editTask(task.id, title, description, status, priority, startDate, endDate, completed);
+			onSubmit: (title, description, status, priority, startDate, endDate) => {
+				state.editTask(task.id, title, description, status, priority, startDate, endDate);
 				editTaskModal = null;
 			},
 		});
