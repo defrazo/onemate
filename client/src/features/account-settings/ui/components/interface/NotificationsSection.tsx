@@ -40,7 +40,7 @@ export const NotificationsSection = observer(() => {
 					onCheckedChange={handleBrowserNotificationsChange}
 				/>
 			</div>
-			<Divider />
+			<Divider className="hidden xl:block" />
 			<div className="flex flex-col gap-2">
 				<p className="text-xs text-(--text-secondary)">Источники</p>
 				<div className="flex items-center justify-between">

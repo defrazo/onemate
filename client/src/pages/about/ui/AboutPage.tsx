@@ -189,7 +189,7 @@ export const AboutPage = () => {
 						Есть идея, нашли ошибку или хотите что-то предложить?
 					</div>
 					<a
-						className="inline-flex max-w-40 shrink-0 items-center gap-2 rounded-lg bg-(--bg-tertiary) px-4 py-2 text-sm font-medium transition-colors not-xl:mx-auto hover:text-(--accent-primary)"
+						className="inline-flex max-w-40 shrink-0 items-center gap-2 rounded-lg bg-(--bg-tertiary) px-4 py-2 text-sm font-medium transition-colors not-md:mx-auto hover:text-(--accent-primary)"
 						href="mailto:defrazo@inbox.ru"
 					>
 						<IconMail className="size-4" />

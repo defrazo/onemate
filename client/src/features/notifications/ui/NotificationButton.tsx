@@ -21,7 +21,7 @@ export const NotificationButton = observer(() => {
 		<div ref={buttonRef} className="relative">
 			<Button
 				active={isOpen}
-				centerIcon={<IconBell className="size-5" />}
+				centerIcon={<IconBell className="size-5.5 xl:size-5" />}
 				className="size-9 aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
 				type="button"
 				variant="iconSurface"

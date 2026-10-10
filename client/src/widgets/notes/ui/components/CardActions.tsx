@@ -41,7 +41,7 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 	};
 
 	return (
-		<div className="flex shrink-0 flex-col items-center justify-evenly gap-2 px-2 xl:justify-between">
+		<div className="flex shrink-0 flex-col items-center justify-between gap-2 px-2">
 			<Button
 				centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
 				className="hidden cursor-grab hover:text-(--accent-primary-hover) xl:block"

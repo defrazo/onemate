@@ -49,7 +49,7 @@ export const routes: RouteObject[] = [
 						children: [{ path: '/todo', element: <TodoPage /> }],
 					},
 					{
-						element: <Layout hideFooter landscapeMode />,
+						element: <Layout hideFooter />,
 						children: [{ path: '/kanban', element: <KanbanPage /> }],
 					},
 				],

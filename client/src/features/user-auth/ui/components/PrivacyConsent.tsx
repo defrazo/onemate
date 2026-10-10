@@ -2,8 +2,8 @@ import { Checkbox } from '@/shared/ui';
 
 export const PrivacyConsent = ({ checked, onChange }: { checked: boolean; onChange: (value: boolean) => void }) => {
 	return (
-		<label className="mx-auto -mb-2 flex w-full items-start justify-center gap-3 text-xs text-(--text-secondary) select-none md:text-sm">
-			<Checkbox checked={checked} className="mt-0.5" onChange={onChange} />
+		<label className="mx-auto flex w-full items-start justify-center gap-1.5 text-sm leading-[1.15] text-(--text-secondary) select-none">
+			<Checkbox checked={checked} className="size-4" onChange={onChange} />
 			<span>
 				Я принимаю{' '}
 				<a

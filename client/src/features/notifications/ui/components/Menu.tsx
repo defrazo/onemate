@@ -10,7 +10,7 @@ export const Menu = observer(() => {
 	const { notificationStore: store } = useStore();
 
 	return (
-		<div className="core-surface absolute top-full -right-14 z-50 mt-1 flex h-82 w-88 flex-col overflow-hidden rounded-lg bg-(--bg-secondary) shadow-(--shadow-contrast) xl:right-0">
+		<div className="core-surface absolute top-full right-0 z-50 mt-1 flex h-82 w-[72svw] flex-col overflow-hidden rounded-lg bg-(--bg-secondary) shadow-(--shadow-contrast) md:w-88">
 			<div className="flex h-9 items-center justify-between px-4 py-2.5">
 				<div className="flex items-center gap-2">
 					<span className="trim text-sm font-semibold text-(--text-primary)">Уведомления</span>

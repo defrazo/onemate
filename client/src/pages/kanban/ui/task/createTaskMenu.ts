@@ -25,7 +25,7 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 		const button = document.createElement('button');
 		button.type = 'button';
 		button.className = cn(
-			'flex w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors',
+			'flex h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors lg:h-7',
 			danger
 				? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
 				: 'hover:bg-(--tone-strong-hover) hover:text-(--text-primary)'

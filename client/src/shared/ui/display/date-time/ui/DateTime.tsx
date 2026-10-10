@@ -34,7 +34,7 @@ export const DateTime = () => {
 	}, []);
 
 	return (
-		<div className="hidden flex-col items-center gap-2 xl:flex">
+		<div className="hidden flex-col items-center gap-2 md:flex">
 			<time className="trim text-lg font-bold text-(--text-primary) tabular-nums" dateTime={dateTime.iso}>
 				{dateTime.time}
 			</time>

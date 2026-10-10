@@ -5,6 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import type { City } from '@/entities/city';
 import { IconLocation } from '@/shared/assets/icons';
+import { cn } from '@/shared/lib/utils';
 import { Input, LoadingState } from '@/shared/ui';
 
 import { LocationSearchStore } from '../model';
@@ -67,7 +68,7 @@ export const LocationSearch = observer(
 			<div className="relative w-full">
 				<Input
 					autoComplete="off"
-					className={className}
+					className={cn('not-lg:text-base', className)}
 					disabled={!userProfileStore.isReady}
 					id="location"
 					name="fake-location"

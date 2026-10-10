@@ -8,15 +8,15 @@ export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => 
 	const { isMobile } = useResponsive();
 
 	return (
-		<div className={cn('min-h-0 min-w-0 overflow-hidden', isMobile ? 'basis-28' : 'basis-1/2')}>
+		<div className={cn('min-h-0 min-w-0 overflow-hidden not-xl:flex-1', !isMobile && 'basis-1/2')}>
 			<div
 				className={cn(
 					'flex h-full min-h-0 flex-col border-(--border-primary)',
-					isMobile ? 'mt-2 border-t pt-2' : 'ml-4 border-l pl-4'
+					isMobile ? 'mt-2' : 'ml-4 border-l pl-4'
 				)}
 			>
 				{result.length === 0 ? (
-					<NoContent description="Вычисления появятся здесь" title="История пуста" />
+					<NoContent className="-mt-2" description="Вычисления появятся здесь" title="История пуста" />
 				) : (
 					<div className="flex min-h-0 flex-1 flex-col gap-1">
 						<Button
@@ -28,14 +28,14 @@ export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => 
 						>
 							Очистить
 						</Button>
-						<div className="flex scrollbar-none flex-col gap-1 overflow-y-auto">
+						<div className="flex flex-col gap-1 overflow-y-auto not-xl:pr-2 xl:scrollbar-none">
 							{result
 								.slice()
 								.reverse()
 								.map(({ expression, result }, idx) => (
 									<div
 										key={idx}
-										className="flex items-center justify-between gap-3 text-sm tabular-nums"
+										className="flex items-center justify-between gap-3 text-xs tabular-nums lg:text-sm"
 									>
 										<span className="truncate text-(--text-secondary)">{expression}</span>
 										<span className="shrink-0">{result}</span>

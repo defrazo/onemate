@@ -3,11 +3,11 @@ import { IconAlertCircle, IconCertificate, IconLink, IconServer, IconX } from '@
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Button, Divider, Input, InputLabel } from '@/shared/ui';
+import { Divider, Input, InputLabel } from '@/shared/ui';
 
 import { getDaysRemaining, sslResultToCopy } from '../../../lib';
 import type { SslCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, ViewHeader } from '..';
+import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
 
 export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();
@@ -87,17 +87,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 							<span>{error}</span>
 						</div>
 					)}
-					<Button
-						className="h-7 min-w-36 text-sm"
-						disabled={isLoading}
-						loading={isLoading}
-						loadingText="Проверяем..."
-						title="Проверить SSL"
-						type="submit"
-						variant="accent"
-					>
-						Проверить
-					</Button>
+					<SubmitButton isLoading={isLoading} title="Проверить SSL" />
 				</div>
 			</form>
 			{result && (
@@ -122,9 +112,14 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 							style={result.status === 'valid' ? 'text-(--status-success)' : 'text-(--status-error)'}
 							value={statusLabel}
 						/>
-						<Metric label="Издатель" value={result.issuer ?? '–'} />
+						<Metric
+							label="Издатель"
+							style={getDaysRemaining(result.daysRemaining)}
+							value={result.issuer ?? '–'}
+						/>
 						<Metric
 							label="Истекает"
+							style={getDaysRemaining(result.daysRemaining)}
 							value={result.validTo ? new Date(result.validTo).toLocaleDateString('ru-RU') : '–'}
 						/>
 						<Metric

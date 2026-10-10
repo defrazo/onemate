@@ -19,7 +19,7 @@ export const App = observer(() => {
 				{userStore.id && userStore.userRole === 'demo' && <DemoBanner />}
 				<RouterProvider />
 				<ModalManager />
-				<Toaster duration={5000} position={isDesktop ? 'bottom-right' : 'top-left'} />
+				<Toaster duration={5000} position={isDesktop ? 'bottom-right' : 'top-right'} />
 			</NotificationsProvider>
 		</BrowserRouter>
 	);

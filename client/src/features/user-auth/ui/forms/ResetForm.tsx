@@ -35,7 +35,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 	};
 
 	return (
-		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
+		<form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
 			<div className="relative">
 				<PasswordInput
 					autoComplete="new-password"

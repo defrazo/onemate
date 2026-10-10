@@ -15,9 +15,9 @@ export const FormActions = ({ isLoading = false, onSave, onCancel, saveDisabled 
 			<IconCircleFilled className="size-2 animate-pulse text-(--accent-secondary)" />
 			<span className="trim">Изменения не сохранены</span>
 		</div>
-		<div className="core-gap ml-auto flex h-8">
+		<div className="core-gap flex h-8 not-md:mt-2 not-lg:flex-1 lg:ml-auto">
 			<Button
-				className="min-w-40"
+				className="not-lg:w-full lg:min-w-40"
 				disabled={saveDisabled}
 				loading={isLoading}
 				loadingText="Сохранение..."
@@ -26,7 +26,7 @@ export const FormActions = ({ isLoading = false, onSave, onCancel, saveDisabled 
 			>
 				Сохранить
 			</Button>
-			<Button className="w-fit" disabled={isLoading} variant="danger" onClick={onCancel}>
+			<Button className="w-fit not-lg:w-full" disabled={isLoading} variant="danger" onClick={onCancel}>
 				Отменить
 			</Button>
 		</div>

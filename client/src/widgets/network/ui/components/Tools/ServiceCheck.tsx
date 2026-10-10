@@ -3,11 +3,11 @@ import { IconAlertCircle, IconLink, IconWorld, IconWorldCheck, IconX } from '@ta
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Button, Divider, Input, InputLabel } from '@/shared/ui';
+import { Divider, Input, InputLabel } from '@/shared/ui';
 
 import { getResponseTimeClass, getStatusCodeClass, serviceResultToCopy } from '../../../lib';
 import type { ServiceCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, ViewHeader } from '..';
+import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
 
 export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();
@@ -87,17 +87,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 							<span>{error}</span>
 						</div>
 					)}
-					<Button
-						className="h-7 min-w-36 text-sm"
-						disabled={isLoading}
-						loading={isLoading}
-						loadingText="Проверяем..."
-						title="Проверить сервис"
-						type="submit"
-						variant="accent"
-					>
-						Проверить
-					</Button>
+					<SubmitButton isLoading={isLoading} title="Проверить сервис" />
 				</div>
 			</form>
 			{result && (

@@ -1,2 +1,2 @@
 export { navItems } from './navItems';
-export type { NavItem } from './types';
+export * from './types';

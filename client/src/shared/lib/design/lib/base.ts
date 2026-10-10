@@ -11,7 +11,7 @@ export const base: Record<Component, string> = {
 		'aria-disabled:pointer-events-none aria-disabled:opacity-50'
 	),
 	input: cn(
-		'w-full rounded-lg',
+		'w-full rounded-lg not-lg:text-base',
 		'transition-colors',
 		'focus:border-(--accent-primary) focus:outline-none',
 		'disabled:pointer-events-none disabled:opacity-50',

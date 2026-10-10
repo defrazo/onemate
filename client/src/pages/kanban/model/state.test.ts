@@ -16,15 +16,13 @@ const createRepoMock = (): IKanbanRepo => ({
 	moveTask: vi.fn(),
 });
 
-vi.mock('../lib', async () => {
-	// eslint-disable-next-line @typescript-eslint/consistent-type-imports
-	const actual = await vi.importActual<typeof import('../lib')>('../lib');
+vi.mock('../lib/notifier', () => ({
+	notifier: { setNotice: vi.fn() },
+}));
 
-	return {
-		...actual,
-		notifier: { setNotice: vi.fn() },
-		now: vi.fn(),
-	};
+vi.mock('../lib/utils', async (importOriginal) => {
+	const actual = await importOriginal<typeof import('../lib/utils')>();
+	return { ...actual, now: vi.fn() };
 });
 
 const mockColumns: Column[] = [
@@ -454,7 +452,7 @@ describe('state', () => {
 
 					// ASSERT
 					expect(repo.addTask).toHaveBeenCalledWith(
-						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 3000 })
+						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 3000, completed: false })
 					);
 					expect(listener).toHaveBeenCalledTimes(1);
 				});
@@ -514,11 +512,12 @@ describe('state', () => {
 						'active',
 						'high',
 						'2024-02-01',
-						'2024-02-01',
-						false
+						'2024-02-01'
 					);
 
 					// ASSERT
+					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(false);
+
 					expect(repo.editTask).toHaveBeenCalledWith('t1', {
 						title: 'Задача 3',
 						description: 'Новое описание задачи',
@@ -526,9 +525,87 @@ describe('state', () => {
 						priority: 'high',
 						startDate: '2024-02-01',
 						endDate: '2024-02-01',
-						completed: false,
 						updatedAt: MOCKED_NOW,
 					});
+				});
+
+				it('should preserve completion when editing a completed task', async () => {
+					// ARRANGE
+					(repo.fetchTasks as Mock).mockResolvedValue([{ ...mockTasks[0], completed: true }, mockTasks[1]]);
+
+					await state.loadData();
+
+					(repo.editTask as Mock).mockResolvedValue(undefined);
+
+					// ACT
+					await state.editTask(
+						't1',
+						'Новое название',
+						'Описание задачи',
+						'waiting',
+						'high',
+						'2026-03-18',
+						'2026-03-20'
+					);
+
+					// ASSERT
+					expect(state.getTasks().find((task) => task.id === 't1')).toMatchObject({
+						title: 'Новое название',
+						completed: true,
+					});
+
+					const [, changes] = (repo.editTask as Mock).mock.calls[0];
+
+					expect(changes).not.toHaveProperty('completed');
+				});
+
+				it('should update task completion when completed is provided', async () => {
+					// ARRANGE
+					(repo.editTask as Mock).mockResolvedValue(undefined);
+
+					// ACT
+					await state.editTask(
+						't1',
+						'Задача 1',
+						'Описание задачи',
+						'waiting',
+						'high',
+						'2026-03-18',
+						'2026-03-20',
+						true
+					);
+
+					// ASSERT
+					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(true);
+
+					expect(repo.editTask).toHaveBeenCalledWith(
+						't1',
+						expect.objectContaining({ completed: true, updatedAt: MOCKED_NOW })
+					);
+				});
+
+				it('should resume a completed task', async () => {
+					// ARRANGE
+					(repo.fetchTasks as Mock).mockResolvedValue([{ ...mockTasks[0], completed: true }, mockTasks[1]]);
+
+					await state.loadData();
+
+					// ACT
+					await state.editTask(
+						't1',
+						'Задача 1',
+						'Описание задачи',
+						'waiting',
+						'high',
+						'2026-03-18',
+						'2026-03-20',
+						false
+					);
+
+					// ASSERT
+					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(false);
+
+					expect(repo.editTask).toHaveBeenCalledWith('t1', expect.objectContaining({ completed: false }));
 				});
 
 				it('should not update or call repo if title exceeds length limit', async () => {
@@ -543,8 +620,7 @@ describe('state', () => {
 						'waiting',
 						'high',
 						'2026-03-18',
-						null,
-						false
+						null
 					);
 
 					// ASSERT
@@ -564,7 +640,7 @@ describe('state', () => {
 					listener.mockClear();
 
 					// ACT
-					await state.editTask('t1', 'Задача 3', '', 'active', 'low', '', '', false);
+					await state.editTask('t1', 'Задача 3', '', 'active', 'low', '', '');
 
 					// ASSERT
 					expect(listener).toHaveBeenLastCalledWith(before);

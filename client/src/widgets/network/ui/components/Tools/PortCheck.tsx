@@ -3,11 +3,11 @@ import { IconAlertCircle, IconLink, IconNetwork, IconPlugConnected, IconServer, 
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Button, Divider, Input, InputLabel } from '@/shared/ui';
+import { Divider, Input, InputLabel } from '@/shared/ui';
 
 import { getResponseTimeClass, portResultToCopy } from '../../../lib';
 import type { PortCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, ViewHeader } from '..';
+import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
 
 export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();
@@ -127,17 +127,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 							<span>{error}</span>
 						</div>
 					)}
-					<Button
-						className="h-7 min-w-36 text-sm"
-						disabled={isLoading}
-						loading={isLoading}
-						loadingText="Проверяем..."
-						title="Проверить порт"
-						type="submit"
-						variant="accent"
-					>
-						Проверить
-					</Button>
+					<SubmitButton isLoading={isLoading} title="Проверить порт" />
 				</div>
 			</form>
 			{result && (

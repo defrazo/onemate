@@ -45,7 +45,6 @@ export const ComingSoon = ({
 							<Button
 								className="h-9"
 								leftIcon={<IconArrowLeft className="size-4" />}
-								variant="ghost"
 								onClick={() => navigate(-1)}
 							>
 								Назад

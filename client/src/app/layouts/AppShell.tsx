@@ -14,7 +14,6 @@ interface AppShellProps {
 	hideLeftOnMobile?: boolean;
 	hideRightOnMobile?: boolean;
 	hideFooter?: boolean;
-	landscapeMode?: boolean;
 	fillViewport?: boolean;
 }
 
@@ -26,28 +25,28 @@ export const AppShell = ({
 	hideLeftOnMobile = false,
 	hideRightOnMobile = false,
 	hideFooter = false,
-	landscapeMode = false,
 	fillViewport = false,
 }: AppShellProps) => {
-	const { isMobile, isMobileLandscape } = useResponsive();
+	const { isMobile, isTablet, isMobileLandscape } = useResponsive();
 
-	const left = hideLeftOnMobile && isMobile ? null : leftSide;
-	const right = hideRightOnMobile && isMobile ? null : rightSide;
+	const left = hideLeftOnMobile && isMobile && !isTablet ? null : leftSide;
+	const right = hideRightOnMobile && isMobile && !isTablet ? null : rightSide;
 
-	const showMobileTabBar = isMobile && !(isMobileLandscape && landscapeMode);
+	const showMobileTabBar = isMobile && !isTablet;
 
 	return (
-		<div className="relative min-h-svh">
+		<div className="relative flex min-h-svh flex-col">
 			{background}
 			<div
 				className={cn(
-					'mx-auto flex w-full flex-col px-4 pt-4 text-sm xl:max-w-400 xl:text-base',
-					fillViewport && !isMobile ? 'h-svh lg:h-auto 2xl:h-svh' : 'min-h-svh',
-					showMobileTabBar && 'pb-16',
-					!isMobile && 'pb-4'
+					'mx-auto flex w-full flex-1 flex-col px-3 pt-3 text-sm lg:px-4 lg:pt-4 xl:max-w-400 xl:text-base',
+					fillViewport && !isMobileLandscape
+						? 'h-auto md:h-svh xl:h-auto lg:landscape:h-auto 2xl:landscape:h-svh'
+						: 'min-h-svh',
+					(!isMobile || isTablet) && 'pb-3 lg:pb-4'
 				)}
 			>
-				{!isMobileLandscape && <Header />}
+				<Header />
 				<div
 					className={cn(
 						'core-gap grid min-h-0 flex-1 pt-4',
@@ -64,7 +63,7 @@ export const AppShell = ({
 					<main className="flex min-h-0 min-w-0">{children}</main>
 					{right && <aside className="flex min-h-0">{right}</aside>}
 				</div>
-				{!isMobile && !hideFooter && <Footer />}
+				{(!isMobile || isTablet) && !hideFooter && <Footer />}
 			</div>
 			{showMobileTabBar && <MobileTabBar />}
 		</div>

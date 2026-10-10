@@ -5,5 +5,6 @@ export { Empty, List } from './List';
 export { Metric } from './Metric';
 export { Settings } from './Settings';
 export { StatusDot } from './StatusDot';
+export { SubmitButton } from './SubmitButton';
 export { Tools } from './Tools';
 export { ViewHeader } from './ViewHeader';

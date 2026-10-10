@@ -41,13 +41,13 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 				}}
 			>
 				<div {...bind()} style={{ touchAction: 'none' }}>
-					<div className="drag-handle relative flex h-10 cursor-grab items-center justify-center bg-transparent select-none">
+					<div className="relative flex h-6 cursor-grab items-center justify-center bg-transparent pt-4 select-none">
 						<span className={cn(lineStyle, getLineClass('top'))} />
 						<span className={cn(lineStyle, getLineClass('bottom'))} />
 					</div>
 				</div>
 				{onBack && <BackButton className="absolute top-2 right-2" onClick={onBack} />}
-				<div className="px-2 pb-4" {...bind()} style={{ touchAction: 'pan-y' }}>
+				<div className="px-3 pt-2 pb-4" {...bind()} style={{ touchAction: 'pan-y' }}>
 					{children}
 				</div>
 			</div>

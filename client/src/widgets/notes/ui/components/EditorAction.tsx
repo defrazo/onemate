@@ -11,7 +11,7 @@ interface EditorActionProps {
 export const EditorAction = ({ icon: Icon, title, onClick }: EditorActionProps) => (
 	<Button
 		centerIcon={<Icon className="size-4.5" />}
-		className="size-6.5"
+		className="size-8 lg:size-6.5"
 		padding="none"
 		title={title}
 		variant="iconSurface"

@@ -90,7 +90,7 @@ export const Select = ({
 				)}
 				<span
 					className={cn(
-						'mt-0.5 min-w-0 truncate',
+						'min-w-0',
 						!selectedOption && 'text-(--text-secondary) transition-colors group-hover:text-(--text-primary)'
 					)}
 				>

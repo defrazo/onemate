@@ -54,9 +54,9 @@
 	--shadow-contrast: none;
 
 	/* Приоритет (Kanban) */
-	--priority-low: #7095cf;
-	--priority-medium: #65a86e;
-	--priority-high: #d85b55;
+	--priority-low: #f8ab30;
+	--priority-medium: #58d889;
+	--priority-high: #fa6961;
 
 	/* Палитра (Kanban) */
 	--palette-slate: #94a3b8;
@@ -124,9 +124,9 @@
 	--shadow-contrast: 0 1px 2px rgb(35 40 50 / 10%);
 
 	/* Приоритет (Kanban) */
-	--priority-low: #7095cf;
-	--priority-medium: #65a86e;
-	--priority-high: #d85b55;
+	--priority-low: #f8ab30;
+	--priority-medium: #319c58;
+	--priority-high: #d94d48;
 
 	/* Палитра (Kanban) */
 	--palette-slate: #94a3b8;

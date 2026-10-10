@@ -37,7 +37,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 	const AddressIcon = service.type === 'http' ? IconWorld : IconServer;
 
 	return (
-		<Button className="core-tone min-h-16.5 snap-start" type="button" variant="custom" onClick={onClick}>
+		<Button className="core-tone min-h-17 snap-start xl:min-h-17" type="button" variant="custom" onClick={onClick}>
 			<div className="flex min-w-0 flex-1 flex-col gap-1.5">
 				<div className="flex items-center justify-between">
 					<div className="flex max-w-2/3 min-w-0 items-center gap-1">

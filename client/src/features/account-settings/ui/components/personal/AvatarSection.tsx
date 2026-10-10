@@ -8,12 +8,12 @@ import { PersonalTab } from '../../PersonalTab';
 import { AvatarPicker } from '.';
 
 export const AvatarSection = observer(() => {
-	const { isMobile } = useResponsive();
+	const { isMobile, isTablet } = useResponsive();
 
 	const { modalStore, userProfileStore } = useStore();
 
 	const handleOpen = () => {
-		modalStore.setModal(<AvatarPicker />, isMobile ? 'sheet' : undefined, {
+		modalStore.setModal(<AvatarPicker />, isMobile && !isTablet ? 'sheet' : undefined, {
 			back: () => modalStore.setModal(<PersonalTab />, 'sheet'),
 		});
 	};
@@ -28,7 +28,7 @@ export const AvatarSection = observer(() => {
 				title="Сменить аватар"
 				onClick={handleOpen}
 			/>
-			<Button className="mx-auto h-8 w-1/2 lg:w-full" onClick={handleOpen}>
+			<Button className="mx-auto h-9 w-1/2 md:h-8 md:w-full" onClick={handleOpen}>
 				Изменить
 			</Button>
 		</div>

@@ -39,9 +39,9 @@ export const AvatarPicker = () => {
 	};
 
 	return (
-		<div className="-mt-6 flex min-w-80 flex-col rounded-xl pb-2 md:pb-0 lg:w-120">
-			<h2 className="font-semibold lg:text-lg">Выберите аватар</h2>
-			<div className="my-2 flex flex-wrap justify-between gap-2">
+		<div className="flex min-w-80 flex-col rounded-xl md:-mt-5.5 md:w-88 lg:w-98 xl:w-120">
+			<h2 className="font-semibold md:text-lg">Выберите аватар</h2>
+			<div className="mt-2 flex flex-wrap justify-between gap-1 md:gap-2">
 				{AVATAR_ENTRIES.map(([id, src], idx) => (
 					<img
 						key={id}

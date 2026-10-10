@@ -44,7 +44,7 @@ export const LoginForm = observer(() => {
 	};
 
 	return (
-		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
+		<form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
 			<Input
 				className="border-(--border-tone)"
 				id="login"
@@ -65,7 +65,7 @@ export const LoginForm = observer(() => {
 				onChange={(e) => authFormStore.update('password', e.target.value)}
 			/>
 			<Button
-				className="-mt-2 ml-auto text-sm hover:text-(--accent-primary-hover)"
+				className="ml-auto text-sm hover:text-(--accent-primary-hover) lg:-mt-2"
 				padding="none"
 				type="button"
 				variant="custom"

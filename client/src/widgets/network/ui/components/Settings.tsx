@@ -246,9 +246,9 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 					</div>
 					<Switch checked={isActive} onCheckedChange={setIsActive} />
 				</div>
-				<div className="ml-auto flex h-7 gap-3">
+				<div className="flex h-9 gap-3 md:h-7 lg:ml-auto">
 					<Button
-						className="w-40 text-sm"
+						className="w-40 text-sm not-lg:flex-1"
 						disabled={!hasChanges || isSaving || isDeleting}
 						loading={isSaving}
 						loadingText="Сохраняем..."
@@ -260,7 +260,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 						<span className="trim">Сохранить</span>
 					</Button>
 					<Button
-						className="w-40 text-sm"
+						className="w-40 text-sm not-lg:flex-1"
 						disabled={isSaving || isDeleting}
 						loading={isDeleting}
 						loadingText="Удаляем..."

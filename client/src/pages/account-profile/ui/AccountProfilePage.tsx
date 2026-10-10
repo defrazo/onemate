@@ -8,7 +8,7 @@ import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 export const AccountProfilePage = () => {
 	usePageTitle('Профиль');
 
-	const { isMobile } = useResponsive();
+	const { isDesktop, isMobile, isTablet } = useResponsive();
 	const [searchParams, setSearchParams] = useSearchParams();
 
 	const { modalStore } = useStore();
@@ -32,7 +32,7 @@ export const AccountProfilePage = () => {
 	}, [tab, setSearchParams]);
 
 	useEffect(() => {
-		if (isMobile)
+		if (isMobile && !isTablet)
 			modalStore.setModal(
 				<Suspense fallback={null}>
 					<Tab />
@@ -40,10 +40,10 @@ export const AccountProfilePage = () => {
 				'sheet'
 			);
 		else modalStore.closeModal();
-	}, [isMobile, Tab, modalStore]);
+	}, [isMobile, isTablet, Tab, modalStore]);
 
-	return !isMobile ? (
-		<div className="w-full max-w-2xl">
+	return isDesktop || isTablet ? (
+		<div className="w-full max-w-2xl md:pb-3 2xl:pb-4">
 			<Suspense fallback={null}>
 				<Tab />
 			</Suspense>

@@ -122,7 +122,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 				<div className="flex flex-wrap items-center justify-between gap-2">
 					<span className="text-(--text-secondary) opacity-70">Тип проверки</span>
 					<SegmentedControl
-						className="w-64"
+						className="w-64 not-lg:ml-auto"
 						options={[
 							{ value: 'http', label: 'Сайт' },
 							{ value: 'tcp', label: 'Сервер / Порт' },
@@ -168,7 +168,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						<div className="flex items-center gap-1.5 text-(--text-secondary) opacity-70">
 							<label htmlFor="host">Хост и порт</label>
 							<Tooltip content={tip}>
-								<IconLifebuoy className="size-4" />
+								<IconLifebuoy className="hidden size-4 xl:block" />
 							</Tooltip>
 						</div>
 						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
@@ -223,7 +223,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					</div>
 				)}
 				<Button
-					className="ml-auto h-7 text-sm"
+					className="h-9 min-w-36 text-sm md:ml-auto md:h-7"
 					disabled={isLoading}
 					loading={isLoading}
 					loadingText="Добавляем..."

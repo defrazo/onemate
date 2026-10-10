@@ -10,7 +10,7 @@ import { Modal } from './Modal';
 const BottomSheet = lazy(() => import('./BottomSheet').then(({ BottomSheet }) => ({ default: BottomSheet })));
 
 export const ModalManager = observer(() => {
-	const { isMobile } = useResponsive();
+	const { isMobile, isTablet } = useResponsive();
 
 	const { modalStore } = useStore();
 
@@ -30,7 +30,7 @@ export const ModalManager = observer(() => {
 		);
 	}
 
-	if (modal.type === 'sheet' || (modal.type === 'auto' && isMobile)) {
+	if (modal.type === 'sheet' || (modal.type === 'auto' && isMobile && !isTablet)) {
 		return (
 			<Suspense fallback={null}>
 				<BottomSheet onBack={modal.back} onClose={onClose}>

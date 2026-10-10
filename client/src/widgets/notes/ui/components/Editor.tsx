@@ -28,9 +28,9 @@ export const Editor = observer(() => {
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="flex shrink-0 items-center justify-between border-b border-(--border-primary) pb-2">
+			<div className="flex shrink-0 flex-wrap items-center justify-between border-b border-(--border-primary) pb-2">
 				<BackButton title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
-				<div className="flex items-center justify-end gap-1.5">
+				<div className="ml-auto flex items-center justify-end gap-1.5">
 					<EditorAction
 						icon={feedback === 'undo' ? IconCheck : IconArrowBackUp}
 						title="Отменить"
@@ -73,8 +73,8 @@ export const Editor = observer(() => {
 				variant="custom"
 				onChange={(e) => notesStore.updateNote(note.id, 'text', e.target.value)}
 			/>
-			<div className="core-gap flex shrink-0 items-end pt-2 text-sm text-(--text-disabled) xl:-mb-1">
-				<div className="hidden items-center gap-1 xl:flex" title="Дата создания">
+			<div className="core-gap flex shrink-0 items-end pt-2 text-xs text-(--text-disabled) lg:text-sm xl:-mb-1">
+				<div className="hidden items-center gap-1 lg:flex" title="Дата создания">
 					<IconCalendarPlus className="size-3.5" />
 					<span className="trim">{fullDate(note.created_at)}</span>
 				</div>

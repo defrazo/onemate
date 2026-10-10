@@ -29,19 +29,19 @@ export const PendingEmailDialog = () => {
 	};
 
 	return (
-		<div className="core-gap -mt-4 flex w-md flex-col">
+		<div className="flex flex-col gap-3 md:-mt-4 md:w-md">
 			<div className="flex gap-2">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-(--accent-primary)/12">
 					<IconMailCheck className="size-6 text-(--accent-primary)" />
 				</div>
 				<div className="flex h-full flex-col justify-between gap-0.5 select-none">
 					<h2 className="-mt-0.5 text-lg font-semibold">Подтвердите смену e-mail</h2>
-					<p className="trim text-sm text-(--text-secondary) opacity-60">
+					<p className="trim text-xs text-(--text-secondary) opacity-60 md:text-sm">
 						Мы ждём подтверждения по ссылке из письма
 					</p>
 				</div>
 			</div>
-			<div className="core-gap flex">
+			<div className="flex gap-3">
 				<div className="flex-1 rounded-lg bg-(--tone) px-3 py-1.5">
 					<span className="text-xs text-(--text-secondary) opacity-55 select-none">Текущий e-mail</span>
 					<div className="truncate text-sm">{userStore.email}</div>
@@ -57,8 +57,8 @@ export const PendingEmailDialog = () => {
 					Для завершения смены адреса перейдите по ссылке в письме, отправленном на текущую почту.
 				</p>
 			</div>
-			<div className="flex h-7 justify-end gap-3">
-				<Button variant="accent" onClick={handleResend}>
+			<div className="flex h-9 gap-3 md:h-7 lg:justify-end">
+				<Button className="not-lg:flex-1" variant="accent" onClick={handleResend}>
 					Отправить повторно
 				</Button>
 				<Button variant="danger" onClick={handleCancel}>

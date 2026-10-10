@@ -2,7 +2,7 @@ import { Calendar, Currency, Network, Notes, Translator, Weather } from '.';
 
 export const Workspace = () => (
 	<div
-		className="pointer-events-none absolute -bottom-30 left-1/2 z-10 w-full -translate-x-1/2 md:bottom-0 lg:max-w-5xl xl:-bottom-20 2xl:bottom-0"
+		className="pointer-events-none absolute -bottom-45 left-1/2 z-10 w-full -translate-x-1/2 md:bottom-0 lg:max-w-5xl xl:-bottom-20 2xl:bottom-0 md:landscape:-bottom-20 xl:landscape:-bottom-20"
 		style={{
 			maskImage:
 				'linear-gradient(to bottom, black 0%, black 24%, rgba(0, 0, 0, 0.8) 48%, rgba(0, 0, 0, 0.35) 72%, transparent 100%)',

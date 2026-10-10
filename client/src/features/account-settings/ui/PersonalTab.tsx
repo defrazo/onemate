@@ -11,9 +11,9 @@ export const PersonalTab = observer(() => {
 	const { userProfileStore } = useStore();
 
 	return (
-		<div className="core-surface-contrast core-gap flex cursor-default flex-col bg-(--bg-secondary) pb-4 select-none md:p-4 md:shadow-(--shadow-contrast)">
+		<div className="core-surface-contrast core-gap flex cursor-default flex-col bg-(--bg-secondary) select-none md:p-3 md:shadow-(--shadow-contrast)">
 			<SectionHeader icon={IconUser} title="Личные данные" />
-			<div className="core-gap flex flex-col lg:flex-row">
+			<div className="core-gap flex flex-col md:flex-row">
 				{!userProfileStore.isReady ? (
 					<div className="min-h-103 w-full">
 						<LoadingState size="lg" />

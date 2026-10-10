@@ -16,7 +16,7 @@ export const Weather = observer(() => {
 				value={weatherStore.location}
 				onSelect={(city) => weatherStore.setLocation(city)}
 			/>
-			{weatherStore.isLoading && !weatherStore.isReady ? (
+			{weatherStore.isLoading || !weatherStore.isReady ? (
 				<LoadingState size="lg" />
 			) : weatherStore.view === 'current' ? (
 				<Current />

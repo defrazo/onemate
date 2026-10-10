@@ -40,7 +40,7 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 			{tools.map(({ id, icon: Icon, title, description }) => (
 				<Button
 					key={id}
-					className="min-h-0 rounded-xl xl:min-h-16"
+					className="min-h-16 rounded-xl"
 					leftIcon={
 						<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
 							<Icon className="size-4 text-(--accent-primary)" />
@@ -57,7 +57,7 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 				</Button>
 			))}
 			<Button
-				className="mt-auto min-h-0 rounded-xl bg-(--accent-primary)/5 hover:bg-(--accent-primary-muted) xl:min-h-16"
+				className="mt-auto min-h-16 rounded-xl bg-(--accent-primary)/5 hover:bg-(--accent-primary-muted)"
 				leftIcon={
 					<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
 						<IconPlus className="size-4 text-(--accent-primary)" />

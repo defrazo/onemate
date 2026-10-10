@@ -27,7 +27,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 				className={cn(
 					'h-full min-h-0 flex-1 resize-none overflow-auto py-3',
 					!isSource && 'text-(--text-primary)',
-					isSource ? 'pr-4 pl-0' : 'pr-0 pl-4'
+					isSource ? 'lg:pr-4 lg:pl-0' : 'pl-4 lg:pr-0'
 				)}
 				maxLength={isSource ? TRANSLATOR_MAX_LENGTH : undefined}
 				name={`${side}-textbox`}

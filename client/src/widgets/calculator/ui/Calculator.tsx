@@ -18,7 +18,7 @@ export const Calculator = () => {
 				value={display}
 				variant="tone"
 			/>
-			<div className="mt-2 flex min-h-0 flex-1 flex-col md:mt-3 xl:flex-row">
+			<div className="mt-2 flex min-h-0 flex-1 flex-col md:mt-3 xl:flex-row md:landscape:flex-row">
 				<Buttons onClick={handleButtonClick} />
 				<Log result={result} onClear={clearHistory} />
 			</div>

@@ -4,6 +4,7 @@ import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
 
 import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 
 import { useDashboard } from '../model';
 import { Slot, Widget } from './components';
@@ -11,13 +12,13 @@ import { Slot, Widget } from './components';
 export const DashboardPage = observer(() => {
 	usePageTitle('Dashboard');
 
-	const { isDesktop, isTablet, isLandscape } = useResponsive();
+	const { isDesktop, isTablet, isMobileLandscape } = useResponsive();
 
 	const { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd } = useDashboard();
 
 	return (
 		<>
-			{isDesktop || (isTablet && isLandscape) ? (
+			{isDesktop ? (
 				<div className="core-gap grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
 					<DndContext
 						collisionDetection={closestCenter}
@@ -33,7 +34,7 @@ export const DashboardPage = observer(() => {
 					</DndContext>
 				</div>
 			) : isTablet ? (
-				<div className="core-gap grid min-h-0 flex-1 grid-cols-2">
+				<div className="core-gap grid min-h-0 min-w-0 flex-1 grid-cols-2 grid-rows-2 lg:items-center">
 					{slots.map((slot, idx) => (
 						<Slot
 							key={idx}
@@ -46,11 +47,15 @@ export const DashboardPage = observer(() => {
 					))}
 				</div>
 			) : (
-				<div className="core-gap grid w-full grid-cols-1">
+				<div
+					className={cn(
+						'core-gap grid w-full grid-cols-1 grid-rows-2 gap-y-3',
+						isMobileLandscape && 'mx-auto max-w-[60svw]'
+					)}
+				>
 					{slots.slice(0, 2).map((slot, idx) => (
 						<Slot
 							key={idx}
-							className="min-h-[65svh]"
 							content={getSlotContent(slot)}
 							options={options}
 							reverse={idx === 1}

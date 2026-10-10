@@ -11,19 +11,19 @@ export const InterfaceTab = observer(() => {
 	const { userProfileStore } = useStore();
 
 	return (
-		<div className="core-gap flex flex-col divide-y divide-(--border-primary) xl:divide-y-0">
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast)">
+		<div className="core-gap flex flex-col">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconCategory} title="Виджеты" />
 				<WidgetsSection />
 			</div>
-			<Divider className="xl:hidden" />
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast)">
+			<Divider className="mb-1 md:hidden" />
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconAdjustmentsHorizontal} title="Внешний вид" />
 				<AppearanceSection />
 				<LanguageSection />
 			</div>
-			<Divider className="xl:hidden" />
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) pb-4 md:p-4 md:shadow-(--shadow-contrast)">
+			<Divider className="mb-1 md:hidden" />
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconNotification} title="Уведомления" />
 				{!userProfileStore.isReady ? <LoadingState /> : <NotificationsSection />}
 			</div>

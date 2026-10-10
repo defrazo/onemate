@@ -22,7 +22,7 @@ export const ConfirmDialog = ({
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => (
-	<div className="core-gap -mt-4 flex flex-col pb-4 select-none lg:w-sm lg:pb-0">
+	<div className="core-gap flex flex-col select-none md:-mt-4 md:w-sm">
 		<div className="flex gap-2">
 			<div
 				className={cn(
@@ -35,16 +35,16 @@ export const ConfirmDialog = ({
 				<IconAlertTriangle className="size-5.5" />
 			</div>
 			<div className="flex h-full flex-col justify-between gap-0.5 select-none">
-				<h2 className="text-xl font-semibold">{title}</h2>
+				<h2 className="text-lg font-semibold lg:text-xl">{title}</h2>
 				<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 			</div>
 		</div>
-		<p className="trim text-sm text-(--text-secondary) opacity-80">{description}</p>
-		<div className="flex h-7 justify-end gap-3">
-			<Button variant="accent" onClick={onConfirm}>
+		<p className="trim text-sm text-(--text-secondary) opacity-80 not-md:py-4">{description}</p>
+		<div className="flex h-9 justify-center gap-3 md:h-7 md:justify-end">
+			<Button className="not-md:flex-1" variant="accent" onClick={onConfirm}>
 				{confirmLabel}
 			</Button>
-			<Button variant="danger" onClick={onCancel}>
+			<Button className="not-md:flex-1" variant="danger" onClick={onCancel}>
 				{cancelLabel}
 			</Button>
 		</div>

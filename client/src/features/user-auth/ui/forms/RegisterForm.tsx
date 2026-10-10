@@ -55,7 +55,7 @@ export const RegisterForm = observer(() => {
 	};
 
 	return (
-		<form className="core-gap flex w-full flex-col" onSubmit={handleSubmit}>
+		<form className="flex w-full flex-col gap-3" onSubmit={handleSubmit}>
 			<Input
 				autoComplete="username"
 				className="border-(--border-tone)"

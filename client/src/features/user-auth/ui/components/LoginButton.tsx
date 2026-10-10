@@ -20,7 +20,7 @@ export const LoginButton = observer(() => {
 
 	return (
 		<Button
-			className="font-semibold lg:bg-(--tone-strong) lg:hover:bg-(--tone-strong-hover)"
+			className="bg-(--tone-strong-hover) font-semibold lg:hover:bg-(--tone-strong-hover)"
 			leftIcon={!isMobile && <IconLogin2 />}
 			variant="tone"
 			onClick={openAuth}

@@ -15,7 +15,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 	if (!targetWidget) return null;
 
 	return (
-		<div className="core-gap -mt-4 flex flex-col pb-4 select-none md:pb-0 xl:w-md">
+		<div className="core-gap flex flex-col select-none xl:w-md">
 			<div className="flex gap-2">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-(--accent-primary)/12">
 					<IconLayersSelected className="size-6 text-(--accent-primary)" />
@@ -25,7 +25,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 				</div>
 			</div>
-			<p className="trim text-sm text-(--text-secondary) opacity-80">
+			<p className="trim py-2 text-sm text-(--text-secondary) opacity-80">
 				Выберите виджет, который будет заменён на{' '}
 				<span className="text-(--accent-primary)">«{targetWidget.title}»</span>
 			</p>
@@ -49,7 +49,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					);
 				})}
 			</div>
-			<Button className="ml-auto h-7 min-w-24" variant="danger" onClick={onCancel}>
+			<Button className="ml-auto h-9 min-w-24 lg:h-7" variant="danger" onClick={onCancel}>
 				Отмена
 			</Button>
 		</div>

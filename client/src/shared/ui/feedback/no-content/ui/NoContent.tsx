@@ -15,6 +15,6 @@ export const NoContent = ({ icon: Icon = IconHistory, title, description, classN
 			<Icon className="size-4.5 shrink-0 text-(--text-disabled) md:size-5.5" />
 		</div>
 		<span className="text-sm text-(--text-secondary)">{title}</span>
-		{description && <span className="trim text-xs text-(--text-disabled)">{description}</span>}
+		{description && <span className="trim text-center text-xs text-(--text-disabled)">{description}</span>}
 	</div>
 );

@@ -48,7 +48,7 @@ export const ResendEmailForm = observer(() => {
 	}, []);
 
 	return (
-		<form className="core-gap flex w-full max-w-md flex-col" onSubmit={handleSubmit}>
+		<form className="flex w-full max-w-md flex-col gap-3" onSubmit={handleSubmit}>
 			<Input
 				className="border-(--border-tone)"
 				id="email"

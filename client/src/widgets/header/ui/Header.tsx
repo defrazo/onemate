@@ -10,16 +10,16 @@ import { DateTime, Logo } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 export const Header = observer(() => {
-	const { isMobile } = useResponsive();
+	const { isMobile, isTablet } = useResponsive();
 
 	const { authStore } = useStore();
 
 	const isAuth = authStore.isReady;
 
 	return (
-		<header className="z-30 flex items-center justify-between border-b border-(--border-tone) px-4 pb-3 select-none print:hidden">
+		<header className="z-30 flex items-center justify-between border-b border-(--border-tone) pb-2 select-none lg:px-4 lg:pb-3 print:hidden">
 			<Logo isLink size="lg" />
-			{isAuth && !isMobile && <Navbar variant="desktop" />}
+			{isAuth && (!isMobile || isTablet) && <Navbar variant="desktop" />}
 			<div className="core-gap flex items-center">
 				{!isAuth ? (
 					<>

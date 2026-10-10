@@ -192,7 +192,7 @@ export const PersonalDataSection = observer(() => {
 			<div className="flex flex-col gap-1">
 				<span className="text-(--text-secondary) opacity-70">Пол</span>
 				<Radio
-					className="flex flex-wrap md:flex-row"
+					className="flex flex-col md:flex-row"
 					name="gender"
 					options={genderOptions}
 					value={draft.gender}

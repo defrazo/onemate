@@ -15,14 +15,14 @@ interface ControlsProps {
 }
 
 export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, onReset }: ControlsProps) => {
-	const { isMobile } = useResponsive();
+	const { isMobile, isTablet } = useResponsive();
 	const copy = useCopy();
 
 	const hasStart = range[0];
 
 	return (
 		<div className="flex flex-col">
-			<div className="my-2 flex h-8 items-center">
+			<div className="mb-2 flex h-8 items-center lg:my-2">
 				{rangeInfo ? (
 					<div className="mx-auto flex items-center gap-1 text-sm">
 						<span className="trim text-(--text-secondary)">{rangeInfo.label} </span>
@@ -35,7 +35,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						)}
 						<Button
 							centerIcon={<IconCopy className="size-4" />}
-							className="ml-1 hidden text-sm lg:block"
+							className="ml-1 hidden text-sm md:block"
 							disabled={rangeInfo === null}
 							padding="none"
 							title="Скопировать период"
@@ -64,7 +64,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 				</Button>
 				<Button
 					centerIcon={<IconCopy className="size-4" />}
-					className="block text-xs lg:hidden"
+					className="block text-xs md:hidden"
 					disabled={rangeInfo === null}
 					title="Скопировать период"
 					variant="icon"
@@ -76,18 +76,19 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 				<Button
 					centerIcon={
 						isMobile &&
+						!isTablet &&
 						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
 					}
 					className={cn(
-						'h-8 min-w-30 bg-transparent px-3 text-xs hover:border-transparent xl:text-sm',
+						'h-8 bg-transparent text-xs lg:min-w-30 lg:px-3 xl:text-sm xl:hover:border-transparent',
 						!isMobile && 'w-32'
 					)}
-					leftIcon={!isMobile && hasStart && <IconTrash className="size-4.5" />}
+					leftIcon={!isMobile || (isTablet && hasStart && <IconTrash className="size-4.5" />)}
 					title={hasStart ? 'Сбросить' : 'Отмена'}
-					variant="danger"
+					variant={isMobile && !isTablet ? 'icon' : 'danger'}
 					onClick={onReset}
 				>
-					{!isMobile && hasStart ? 'Сбросить' : 'Отмена'}
+					{(!isMobile || isTablet) && hasStart ? 'Сбросить' : 'Отмена'}
 				</Button>
 			</div>
 		</div>

@@ -36,7 +36,7 @@ export const List = observer(({ children }: { children: (note: Note) => ReactEle
 				{notesStore.isLoading && !notesStore.isReady ? (
 					<LoadingState size="lg" />
 				) : (
-					<div className="flex max-h-[60svh] min-h-0 scrollbar-none flex-col gap-2 overflow-y-auto md:flex md:max-h-[40svh] md:gap-3">
+					<div className="flex min-h-0 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
 						{notesStore.draft.map((note) => children(note))}
 					</div>
 				)}

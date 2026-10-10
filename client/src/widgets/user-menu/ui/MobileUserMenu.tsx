@@ -31,14 +31,14 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	return (
-		<div className="flex h-full w-full flex-col overflow-auto overscroll-contain pb-2">
+		<div className="flex size-full flex-col overscroll-contain">
 			<UserInfo className="px-2.5 py-2" />
 			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<div className="flex flex-col">
 				{profileTabs.map(({ id, icon: Icon, label }) => (
 					<Button
 						key={id}
-						className="h-9 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
+						className="h-10 justify-start text-lg active:bg-(--tone-strong) active:text-(--accent-primary)"
 						leftIcon={<Icon className="size-4.5" />}
 						padding="sm"
 						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
@@ -51,7 +51,7 @@ export const MobileUserMenu = observer(() => {
 				{mobileUserMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
-						className="h-9 justify-start text-(--text-secondary) active:bg-(--tone-strong) active:text-(--text-primary)"
+						className="h-10 justify-start text-(--text-secondary) active:bg-(--tone-strong) active:text-(--text-primary)"
 						leftIcon={<Icon className="size-4.5" />}
 						padding="sm"
 						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
@@ -64,7 +64,7 @@ export const MobileUserMenu = observer(() => {
 			</div>
 			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<Button
-				className="h-9 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
+				className="h-10 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
 				padding="sm"
 				variant="custom"

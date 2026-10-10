@@ -26,7 +26,11 @@ export const Calendar = () => {
 			<Navigation month={currentMonth} onNext={nextMonth} onPrev={prevMonth} />
 			<Grid month={currentMonth} range={range} selectDay={selectDay} />
 			<Collapse open={!isControlsOpen}>
-				<Button className="mx-auto h-7 w-fit text-sm" variant="accent" onClick={() => setIsControlsOpen(true)}>
+				<Button
+					className="mx-auto h-7 w-fit text-sm not-lg:mb-1"
+					variant="accent"
+					onClick={() => setIsControlsOpen(true)}
+				>
 					Выбрать период
 				</Button>
 			</Collapse>

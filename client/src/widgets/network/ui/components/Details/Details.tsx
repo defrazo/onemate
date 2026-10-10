@@ -97,7 +97,9 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 				<div className="flex flex-col">
 					<div className="flex items-center gap-0.5">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
-						<span className="mr-1 max-w-44 truncate text-lg font-bold">{service.name}</span>
+						<span className="mr-1 max-w-32 truncate text-base font-bold lg:max-w-44 lg:text-lg">
+							{service.name}
+						</span>
 						<Button
 							centerIcon={<IconSettings className="size-4.5" />}
 							padding="none"
@@ -110,7 +112,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 						<div className="flex items-center gap-1 text-(--text-secondary)">
 							<IconWorld className="size-3 shrink-0" />
 							<a
-								className="mt-px block max-w-44 min-w-0 cursor-pointer truncate text-xs text-(--text-secondary) hover:text-(--accent-primary) lg:text-sm xl:max-w-64"
+								className="mt-px block max-w-32 min-w-0 cursor-pointer truncate text-xs text-(--text-secondary) hover:text-(--accent-primary) lg:max-w-44 lg:text-sm xl:max-w-64"
 								href={service.url}
 								rel="noopener noreferrer"
 								target="_blank"
@@ -121,7 +123,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					) : (
 						<div className="flex items-center gap-1 text-(--text-secondary)">
 							<IconServer className="size-3 shrink-0" />
-							<span className="mt-px max-w-44 truncate font-mono text-xs text-(--text-secondary) lg:text-sm xl:max-w-64">
+							<span className="mt-px max-w-32 truncate font-mono text-xs text-(--text-secondary) lg:max-w-44 lg:text-sm xl:max-w-64">
 								{address}
 							</span>
 						</div>
@@ -142,7 +144,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					</div>
 				</div>
 			</div>
-			<div className="my-3 grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5">
+			<div className="my-auto grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5 xl:my-3">
 				<Metric
 					label="Отклик"
 					style={getResponseTimeClass(service.lastResponseTime)}

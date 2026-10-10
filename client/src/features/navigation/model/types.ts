@@ -9,3 +9,5 @@ export type NavItem = {
 	external?: boolean;
 	primaryMobile?: boolean;
 };
+
+export type NavVariant = 'desktop' | 'mobile';

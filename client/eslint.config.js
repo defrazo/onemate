@@ -50,6 +50,7 @@ export default [
 				{
 					prefer: 'type-imports',
 					fixStyle: 'inline-type-imports',
+					disallowTypeAnnotations: false,
 				},
 			],
 

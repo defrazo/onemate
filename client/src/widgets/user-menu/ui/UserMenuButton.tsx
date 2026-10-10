@@ -10,7 +10,7 @@ import { Button } from '@/shared/ui';
 import { DesktopUserMenu, MobileUserMenu } from '.';
 
 export const UserMenuButton = () => {
-	const { isMobile } = useResponsive();
+	const { isDesktop, isMobile, isTablet } = useResponsive();
 
 	const { modalStore } = useStore();
 
@@ -21,7 +21,7 @@ export const UserMenuButton = () => {
 	useEscapeClose(() => setIsOpen(false));
 
 	const handleUserMenuClick = () => {
-		if (isMobile) {
+		if (isMobile && !isTablet) {
 			modalStore.setModal(<MobileUserMenu />, 'sheet');
 			return;
 		}
@@ -33,7 +33,7 @@ export const UserMenuButton = () => {
 		<div ref={menuRef} className="relative">
 			<Button
 				active={!isMobile && isOpen}
-				className="group xl:core-tone-strong relative xl:px-2 xl:py-1"
+				className="group md:landscape:core-tone-strong xl:core-tone-strong relative xl:px-2 xl:py-1 md:landscape:px-2 md:landscape:py-1"
 				padding="none"
 				rightIcon={
 					!isMobile && (
@@ -49,9 +49,9 @@ export const UserMenuButton = () => {
 				variant="custom"
 				onClick={handleUserMenuClick}
 			>
-				<UserAvatar className="size-7" />
+				<UserAvatar className="size-10 xl:size-7 md:landscape:size-8 xl:landscape:size-7" />
 			</Button>
-			{!isMobile && isOpen && <DesktopUserMenu onClose={() => setIsOpen(false)} />}
+			{(isDesktop || isTablet) && isOpen && <DesktopUserMenu onClose={() => setIsOpen(false)} />}
 		</div>
 	);
 };
