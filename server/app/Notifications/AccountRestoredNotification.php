@@ -36,7 +36,7 @@ class AccountRestoredNotification extends Notification implements ShouldQueue
     {
         return [
             'title' => 'Аккаунт восстановлен',
-            'message' => 'Ваша учётная запись была успешно восстановлена.',
+            'message' => 'Ваша учётная запись была успешно восстановлена',
         ];
     }
 }

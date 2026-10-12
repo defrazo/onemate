@@ -20,9 +20,8 @@ export const handleLaravelError = (error: unknown): never => {
 	if (axios.isAxiosError<LaravelErrorResponse>(error)) {
 		const { code, message } = error.response?.data ?? {};
 
-		if (code && errorMessages[code]) throw new Error(errorMessages[code]);
-
-		if (message) throw new Error(message);
+		if (code && errorMessages[code]) error.message = errorMessages[code];
+		else if (message) error.message = message;
 
 		throw error;
 	}

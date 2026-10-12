@@ -32,7 +32,7 @@ export const NotificationsProvider = observer(({ children }: PropsWithChildren) 
 						const newNotifications = await notificationStore.refresh();
 						notificationStore.showBrowserNotifications(newNotifications);
 					} catch {
-						// Следующая попытка будет через интервал.
+						// Следующая попытка будет через интервал
 					}
 				})();
 			}, NOTIFICATIONS_REFRESH_INTERVAL);

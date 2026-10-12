@@ -36,7 +36,7 @@ class PasswordChangedNotification extends Notification implements ShouldQueue
     {
         return [
             'title' => 'Пароль изменён',
-            'message' => 'Пароль вашей учётной записи был успешно изменён.',
+            'message' => 'Пароль вашей учётной записи был успешно изменён',
         ];
     }
 }

@@ -43,7 +43,7 @@ class EmailChangedNotification extends Notification implements ShouldQueue
     {
         return [
             'title' => 'E-mail изменён',
-            'message' => 'Основной e-mail вашей учётной записи был успешно изменён.',
+            'message' => 'Основной e-mail вашей учётной записи был успешно изменён',
         ];
     }
 }

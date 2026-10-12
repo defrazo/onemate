@@ -17,6 +17,10 @@ export const variants: Record<Component, Record<string, string>> = {
 			'rounded-lg bg-(--tone) text-(--text-primary) shadow-(--shadow-contrast)',
 			'hover:bg-(--tone-hover) focus:text-(--text-primary)'
 		),
+		toneStrong: cn(
+			'rounded-lg bg-(--tone-strong) text-(--text-primary) shadow-(--shadow-contrast)',
+			'hover:bg-(--tone-strong-hover) focus:text-(--text-primary)'
+		),
 		accent: cn(
 			'rounded-lg bg-(--accent-primary) text-(--text-on-accent)/85',
 			'hover:bg-(--accent-primary-hover)',

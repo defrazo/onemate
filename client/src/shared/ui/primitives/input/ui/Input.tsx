@@ -1,4 +1,4 @@
-import type { InputHTMLAttributes, ReactNode } from 'react';
+import type { InputHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { type Padding, resolveStyles, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
@@ -10,6 +10,8 @@ const alignStyles = {
 } as const;
 
 interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'> {
+	ref?: Ref<HTMLInputElement>;
+
 	leftIcon?: ReactNode;
 	rightIcon?: ReactNode;
 
@@ -21,6 +23,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 }
 
 export const Input = ({
+	ref,
 	leftIcon,
 	rightIcon,
 
@@ -45,7 +48,7 @@ export const Input = ({
 		<div className={cn('relative flex w-full items-center', align && alignStyles[align])}>
 			{leftIcon && <span className="absolute left-0 px-1.5">{leftIcon}</span>}
 			{rightIcon && <span className="absolute right-0 px-1.5">{rightIcon}</span>}
-			<input {...props} aria-invalid={error || undefined} className={styles} disabled={disabled} />
+			<input {...props} ref={ref} aria-invalid={error || undefined} className={styles} disabled={disabled} />
 		</div>
 	);
 };
