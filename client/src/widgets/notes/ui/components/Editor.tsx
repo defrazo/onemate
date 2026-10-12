@@ -13,15 +13,15 @@ import {
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useTextEditor } from '@/shared/lib/hooks';
 import { fullDate } from '@/shared/lib/utils';
-import { BackButton, Textarea } from '@/shared/ui';
+import { BackButton, Divider, EditorAction, Textarea } from '@/shared/ui';
 
-import { NOTE_MAX_LENGTH, useNoteEditor } from '../../model';
-import { EditorAction } from '.';
+import { NOTE_MAX_LENGTH } from '../../model';
 
 export const Editor = observer(() => {
 	const { notesStore } = useStore();
-	const { textareaRef, feedback, undo, redo, cut, copy, paste, selectAll, clear } = useNoteEditor();
+	const { textareaRef, feedback, undo, redo, cut, copy, paste, selectAll, clear } = useTextEditor(NOTE_MAX_LENGTH);
 
 	const note = notesStore.activeNote;
 	if (!note) return null;
@@ -30,7 +30,7 @@ export const Editor = observer(() => {
 		<div className="flex h-full min-h-0 flex-col">
 			<div className="flex shrink-0 flex-wrap items-center justify-between border-b border-(--border-primary) pb-2">
 				<BackButton title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
-				<div className="ml-auto flex items-center justify-end gap-1.5">
+				<div className="ml-auto flex items-center justify-end md:gap-1">
 					<EditorAction
 						icon={feedback === 'undo' ? IconCheck : IconArrowBackUp}
 						title="Отменить"
@@ -41,7 +41,7 @@ export const Editor = observer(() => {
 						title="Повторить"
 						onClick={redo}
 					/>
-					<div className="mx-1 h-4 w-px bg-(--border-primary)" />
+					<Divider className="my-auto h-4" direction="Y" margX="sm" />
 					<EditorAction icon={feedback === 'cut' ? IconCheck : IconCut} title="Вырезать" onClick={cut} />
 					<EditorAction
 						icon={feedback === 'paste' ? IconCheck : IconClipboard}
@@ -49,7 +49,7 @@ export const Editor = observer(() => {
 						onClick={paste}
 					/>
 					<EditorAction icon={feedback === 'copy' ? IconCheck : IconCopy} title="Копировать" onClick={copy} />
-					<div className="mx-1 h-4 w-px bg-(--border-primary)" />
+					<Divider className="my-auto h-4" direction="Y" margX="sm" />
 					<EditorAction
 						icon={feedback === 'select' ? IconCheck : IconSelectAll}
 						title="Выделить всё"
@@ -65,7 +65,7 @@ export const Editor = observer(() => {
 			<Textarea
 				ref={textareaRef}
 				autoFocus
-				className="min-h-0 flex-1 scrollbar-none py-2 text-base"
+				className="min-h-0 flex-1 scrollbar-none px-0 py-2 text-base"
 				maxLength={NOTE_MAX_LENGTH}
 				name={`note-${note.id}`}
 				resize="none"
