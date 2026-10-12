@@ -8,4 +8,5 @@ export { useOutsideClick } from './useOutsideClick';
 export { usePageTitle } from './usePageTitle';
 export { useRemainingTime } from './useRemainingTime';
 export { useResponsive } from './useResponsive';
+export { useTextEditor } from './useTextEditor';
 export { useValidation } from './useValidation';
