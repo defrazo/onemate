@@ -90,4 +90,9 @@ class User extends Authenticatable implements MustVerifyEmail
     {
         return $this->hasMany(MonitoredService::class);
     }
+
+    public function cloudFiles(): HasMany
+    {
+        return $this->hasMany(CloudFile::class);
+    }
 }

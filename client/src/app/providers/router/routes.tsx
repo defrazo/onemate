@@ -21,6 +21,7 @@ const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m
 const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
 const PrivacyPage = lazy(() => import('@/pages/privacy').then((m) => ({ default: m.PrivacyPage })));
 const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
+const SharedFilePage = lazy(() => import('@/pages/shared-file').then((m) => ({ default: m.SharedFilePage })));
 const TermsPage = lazy(() => import('@/pages/terms').then((m) => ({ default: m.TermsPage })));
 const TodoPage = lazy(() => import('@/pages/to-do').then((m) => ({ default: m.TodoPage })));
 const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
@@ -69,6 +70,10 @@ export const routes: RouteObject[] = [
 	{
 		path: '/email/verify/:id/:hash',
 		element: <VerifyEmailPage />,
+	},
+	{
+		path: '/share/:token',
+		element: <SharedFilePage />,
 	},
 	{
 		element: <StaticPageLayout title="О демо-режиме OneMate" />,

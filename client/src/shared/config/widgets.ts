@@ -5,6 +5,7 @@ import {
 	IconCalendarWeek,
 	IconCash,
 	IconCloudPin,
+	IconCloudUpload,
 	IconLanguage,
 	IconNote,
 } from '@tabler/icons-react';
@@ -23,6 +24,7 @@ export const WIDGETS = [
 	{ id: 'currency', title: 'Конвертер валют', icon: IconCash },
 	{ id: 'translator', title: 'Переводчик', icon: IconLanguage },
 	{ id: 'network', title: 'Сеть', icon: IconActivityHeartbeat },
+	{ id: 'cloud', title: 'Облако', icon: IconCloudUpload },
 ] as const satisfies readonly WidgetConfig[];
 
 export type WidgetId = (typeof WIDGETS)[number]['id'];

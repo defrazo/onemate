@@ -11,6 +11,7 @@ export class StoreInitializer {
 		'themeStore',
 		'userProfileStore',
 		'deviceActivityStore',
+		'cloudStore',
 		'networkStore',
 		'weatherStore',
 		'notesStore',

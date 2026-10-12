@@ -3,6 +3,9 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Cloud\CloudController;
+use App\Http\Controllers\Cloud\CloudFileController;
+use App\Http\Controllers\Cloud\CloudShareController;
 use App\Http\Controllers\Kanban\KanbanColumnController;
 use App\Http\Controllers\Kanban\KanbanTaskController;
 use App\Http\Controllers\Network\MonitoredServiceController;
@@ -58,6 +61,13 @@ Route::get('/user/email/verify/{id}/{hash}', [UserAccountController::class, 'ver
 Route::post('/network/service/check', ServiceCheckController::class);
 Route::post('/network/port/check', PortCheckController::class);
 Route::post('/network/ssl/check', SslCheckController::class);
+
+// Cloud
+Route::prefix('cloud/shared')->middleware('throttle:60,1')->group(function () {
+    Route::get('/{token}', [CloudShareController::class, 'show']);
+    Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
+    Route::get('/{token}/download', [CloudShareController::class, 'download']);
+});
 
 // Authenticated all
 Route::middleware('auth:sanctum')->group(function () {
@@ -132,6 +142,19 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/network/services/{service}', [MonitoredServiceController::class, 'destroy']);
         Route::post('/network/services/{service}/check', [MonitoredServiceController::class, 'check']);
         Route::get('/network/services/{service}/history', [MonitoredServiceController::class, 'history']);
+
+        // Cloud
+        Route::prefix('cloud')->group(function () {
+            Route::get('/', [CloudController::class, 'index']);
+            Route::get('/text', [CloudController::class, 'getText']);
+            Route::put('/text', [CloudController::class, 'saveText']);
+            Route::post('/files', [CloudFileController::class, 'store']);
+            Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
+            Route::patch('/files/{id}', [CloudFileController::class, 'update']);
+            Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);
+            Route::post('/files/{id}/share', [CloudShareController::class, 'store']);
+            Route::delete('/files/{id}/share', [CloudShareController::class, 'destroy']);
+        });
 
         // Notifications
         Route::get('/notifications', [NotificationController::class, 'index']);

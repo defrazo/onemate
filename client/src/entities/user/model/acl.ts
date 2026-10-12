@@ -8,6 +8,7 @@ export const FEATURES = {
 	translator: ['use'],
 	kanban: ['read', 'save', 'delete'],
 	network: ['read', 'save', 'delete', 'use'],
+	cloud: ['read', 'save', 'delete', 'upload', 'use'],
 } as const;
 
 export type Role = 'user' | 'demo';
@@ -26,6 +27,7 @@ export const ACL: Record<Role, Capabilities> = {
 		translator: { use: true },
 		kanban: { read: true, save: true, delete: true },
 		network: { read: true, save: true, delete: true, use: true },
+		cloud: { read: true, save: true, delete: true, upload: true, use: true },
 	},
 	demo: {
 		user: { read: true, save: true, delete: true },
@@ -37,6 +39,7 @@ export const ACL: Record<Role, Capabilities> = {
 		translator: { use: false },
 		kanban: { read: true, save: true, delete: true },
 		network: { read: true, save: true, delete: true, use: true },
+		cloud: { read: true, save: true, delete: false, upload: false, use: false },
 	},
 } satisfies Record<Role, Capabilities>;
 
