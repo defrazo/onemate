@@ -2,7 +2,7 @@
 
 namespace App\Notifications\Network;
 
-use App\Models\MonitoredService;
+use App\Models\Network\MonitoredService;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 

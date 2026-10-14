@@ -6,7 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Network\StoreMonitoredServiceRequest;
 use App\Http\Requests\Network\UpdateMonitoredServiceRequest;
 use App\Http\Resources\MonitoredServiceResource;
-use App\Models\MonitoredService;
+use App\Models\Network\MonitoredService;
 use App\Services\Network\MonitoredServiceCheckService;
 use App\Services\Network\Support\HostNormalizer;
 use App\Services\Network\Support\PublicHostResolver;

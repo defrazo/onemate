@@ -1,27 +1,33 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\Kanban;
 
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['name', 'path', 'mime_type', 'size', 'is_favorite', 'public_token'])]
-class CloudFile extends Model
+#[Fillable(['title', 'task_limit', 'position', 'color', 'unique_key'])]
+class KanbanColumn extends Model
 {
     use HasUuids;
 
     protected function casts(): array
     {
         return [
-            'size' => 'integer',
-            'is_favorite' => 'boolean',
+            'task_limit' => 'integer',
+            'position' => 'float',
         ];
     }
 
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function tasks(): HasMany
+    {
+        return $this->hasMany(KanbanTask::class, 'column_id');
     }
 }

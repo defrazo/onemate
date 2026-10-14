@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Notifications\AccountDeletionScheduledNotification;
-use App\Notifications\AccountRestoredNotification;
-use App\Notifications\EmailChangedNotification;
-use App\Notifications\PasswordChangedNotification;
+use App\Models\User\User;
+use App\Notifications\User\AccountDeletionScheduledNotification;
+use App\Notifications\User\AccountRestoredNotification;
+use App\Notifications\User\EmailChangedNotification;
+use App\Notifications\user\PasswordChangedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;

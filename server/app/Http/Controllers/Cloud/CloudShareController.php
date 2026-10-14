@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Cloud;
 
 use App\Http\Controllers\Controller;
-use App\Models\CloudFile;
+use App\Models\Cloud\CloudFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;

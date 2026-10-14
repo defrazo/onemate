@@ -2,7 +2,7 @@
 
 namespace App\Services\Kanban;
 
-use App\Models\KanbanTask;
+use App\Models\Kanban\KanbanTask;
 use App\Notifications\Kanban\TaskOverdueNotification;
 use Illuminate\Support\Facades\DB;
 

@@ -2,7 +2,7 @@
 
 namespace App\Services\Network;
 
-use App\Models\MonitoredService;
+use App\Models\Network\MonitoredService;
 use App\Notifications\Network\ServiceDownNotification;
 use App\Notifications\Network\ServiceRecoveredNotification;
 

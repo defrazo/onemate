@@ -2,7 +2,7 @@
 
 namespace App\Notifications\Kanban;
 
-use App\Models\KanbanTask;
+use App\Models\Kanban\KanbanTask;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 

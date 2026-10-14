@@ -2,7 +2,7 @@
 
 namespace App\Jobs;
 
-use App\Models\MonitoredService;
+use App\Models\Network\MonitoredService;
 use App\Services\Network\MonitoredServiceCheckService;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;

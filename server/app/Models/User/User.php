@@ -1,10 +1,14 @@
 <?php
 
-namespace App\Models;
+namespace App\Models\User;
 
-use App\Notifications\ResetPasswordNotification;
-use App\Notifications\VerifyEmailNotification;
-use App\Notifications\VerifyPendingEmailNotification;
+use App\Models\Cloud\CloudFile;
+use App\Models\Kanban\KanbanColumn;
+use App\Models\Kanban\KanbanTask;
+use App\Models\Network\MonitoredService;
+use App\Notifications\User\ResetPasswordNotification;
+use App\Notifications\User\VerifyEmailNotification;
+use App\Notifications\User\VerifyPendingEmailNotification;
 use Database\Factories\UserFactory;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;

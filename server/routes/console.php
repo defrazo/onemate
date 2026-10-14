@@ -2,8 +2,8 @@
 
 use App\Jobs\CheckMonitoredService;
 use App\Jobs\CheckOverdueKanbanTasks;
-use App\Models\MonitoredService;
-use App\Models\MonitoringCheck;
+use App\Models\Network\MonitoredService;
+use App\Models\Network\MonitoringCheck;
 use Illuminate\Support\Facades\Schedule;
 
 Schedule::call(function () {

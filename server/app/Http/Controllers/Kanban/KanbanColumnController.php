@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Kanban;
 
 use App\Http\Controllers\Controller;
-use App\Models\KanbanColumn;
+use App\Models\Kanban\KanbanColumn;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
