@@ -6,11 +6,13 @@ import { useStore } from '@/app/providers';
 import { Divider, Switch } from '@/shared/ui';
 
 export const NotificationsSection = observer(() => {
-	const { notificationStore, userProfileStore } = useStore();
+	const { notificationStore, notifyStore, userProfileStore } = useStore();
 
 	const [isNetworkLoading, setIsNetworkLoading] = useState(false);
+	const [isKanbanLoading, setIsKanbanLoading] = useState(false);
 
 	const networkNotificationsEnabled = userProfileStore.profile?.network_notifications_enabled ?? true;
+	const kanbanNotificationsEnabled = userProfileStore.profile?.kanban_notifications_enabled ?? true;
 
 	const handleBrowserNotificationsChange = (enabled: boolean) => {
 		void notificationStore.setBrowserNotificationsEnabled(enabled);
@@ -23,8 +25,28 @@ export const NotificationsSection = observer(() => {
 			setIsNetworkLoading(true);
 
 			await userProfileStore.updateProfile({ network_notifications_enabled: enabled });
+
+			notifyStore.setNotice(`Уведомления о сервисах ${enabled ? 'включены' : 'отключены'}`, 'success');
+		} catch {
+			notifyStore.setNotice('Что-то пошло не так', 'error');
 		} finally {
 			setIsNetworkLoading(false);
+		}
+	};
+
+	const handleKanbanNotificationsChange = async (enabled: boolean): Promise<void> => {
+		if (isKanbanLoading) return;
+
+		try {
+			setIsKanbanLoading(true);
+
+			await userProfileStore.updateProfile({ kanban_notifications_enabled: enabled });
+
+			notifyStore.setNotice(`Уведомления о задачах ${enabled ? 'включены' : 'отключены'}`, 'success');
+		} catch {
+			notifyStore.setNotice('Что-то пошло не так', 'error');
+		} finally {
+			setIsKanbanLoading(false);
 		}
 	};
 
@@ -59,15 +81,21 @@ export const NotificationsSection = observer(() => {
 						onCheckedChange={handleNetworkNotificationsChange}
 					/>
 				</div>
-				<div className="flex items-center justify-between opacity-40">
+				<div className="flex items-center justify-between">
 					<div className="flex items-center gap-2">
-						<IconLayoutKanban className="size-5" />
+						<IconLayoutKanban className="size-5 text-(--accent-primary)" />
 						<div className="flex flex-col">
 							<span className="text-sm">Канбан</span>
-							<span className="text-xs text-(--text-secondary)">Уведомления о задачах и сроках</span>
+							<span className="text-xs text-(--text-secondary) opacity-70">
+								Уведомления о просроченных задачах
+							</span>
 						</div>
 					</div>
-					<Switch disabled checked={false} />
+					<Switch
+						checked={kanbanNotificationsEnabled}
+						disabled={isKanbanLoading}
+						onCheckedChange={handleKanbanNotificationsChange}
+					/>
 				</div>
 			</div>
 		</section>

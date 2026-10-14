@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\KanbanTask;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class KanbanTaskController extends Controller
@@ -104,7 +105,7 @@ class KanbanTaskController extends Controller
         if (
             $startDate &&
             $endDate &&
-            $endDate < $startDate
+            Carbon::parse($endDate)->lt(Carbon::parse($startDate))
         ) {
             return response()->json([
                 'code' => 'INVALID_DATE_RANGE',

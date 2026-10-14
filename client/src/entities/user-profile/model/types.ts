@@ -13,6 +13,7 @@ export type UserProfile = {
 	widgets_sequence?: WidgetId[] | null;
 	widgets_slots?: WidgetSlot[] | null;
 	network_notifications_enabled?: boolean;
+	kanban_notifications_enabled?: boolean;
 	password_changed_at?: string | null;
 	deleted_at?: string | null;
 	created_at?: string;

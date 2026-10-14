@@ -18,6 +18,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'widgets_sequence',
     'widgets_slots',
     'network_notifications_enabled',
+    'kanban_notifications_enabled',
 ])]
 class UserProfile extends Model
 {
@@ -36,6 +37,7 @@ class UserProfile extends Model
             'widgets_sequence' => 'array',
             'widgets_slots' => 'array',
             'network_notifications_enabled' => 'boolean',
+            'kanban_notifications_enabled' => 'boolean',
             'password_changed_at' => 'datetime',
         ];
     }

@@ -29,6 +29,7 @@ class KanbanTask extends Model
             'start_date' => 'date:Y-m-d',
             'end_date' => 'date:Y-m-d',
             'completed' => 'boolean',
+            'overdue_notified_date' => 'date:Y-m-d',
         ];
     }
 

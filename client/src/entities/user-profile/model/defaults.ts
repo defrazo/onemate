@@ -23,6 +23,7 @@ const DEFAULT_PROFILE: UserProfile = {
 	widgets_sequence: createDefaultWidgets(),
 	widgets_slots: createDefaultSlots(),
 	network_notifications_enabled: true,
+	kanban_notifications_enabled: true,
 	password_changed_at: null,
 };
 export const createDefaultProfile = (): UserProfile => clone(DEFAULT_PROFILE);
@@ -39,6 +40,7 @@ const DEMO_PROFILE: UserProfile = {
 	widgets_sequence: createDefaultWidgets(),
 	widgets_slots: createDefaultSlots(),
 	network_notifications_enabled: true,
+	kanban_notifications_enabled: true,
 	password_changed_at: null,
 };
 export const createDemoProfile = (): UserProfile => clone(DEMO_PROFILE);
