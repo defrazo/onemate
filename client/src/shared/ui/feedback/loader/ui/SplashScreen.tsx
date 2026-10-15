@@ -1,3 +1,5 @@
+import { APP_NAME } from '@/shared/config';
+
 import './SplashScreen.css';
 
 export const SplashScreen = () => {
@@ -9,7 +11,7 @@ export const SplashScreen = () => {
 				<div className="splash-core relative size-3 rounded-sm bg-(--accent-primary) shadow-[0_0_12px_var(--accent-primary)]" />
 			</div>
 			<div className="flex flex-col items-center">
-				<span className="font-bold tracking-[0.04em] text-(--text-primary)">OneMate</span>
+				<span className="font-bold tracking-[0.04em] text-(--text-primary)">{APP_NAME}</span>
 				<span className="text-sm text-(--text-secondary)">Подготавливаем пространство</span>
 			</div>
 		</div>

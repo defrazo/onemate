@@ -1,3 +1,4 @@
+import { APP_NAME } from '@/shared/config';
 import { Link } from '@/shared/ui';
 
 const links = [
@@ -20,9 +21,9 @@ export const Footer = () => (
 			</ul>
 		</nav>
 		<div className="flex items-center gap-2">
-			<span>OneMate</span>
+			<span>{APP_NAME}</span>
 			<span>·</span>
-			<span>2026</span>
+			<span>{new Date().getFullYear()}</span>
 		</div>
 	</footer>
 );

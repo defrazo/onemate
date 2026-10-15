@@ -4,6 +4,7 @@ import type { RouteObject } from 'react-router-dom';
 import { Layout, StaticPageLayout } from '@/app/layouts';
 import { ProfileNav } from '@/features/account-settings';
 import { DemoPage } from '@/pages/demo';
+import { APP_NAME } from '@/shared/config';
 
 import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
 
@@ -76,7 +77,7 @@ export const routes: RouteObject[] = [
 		element: <SharedFilePage />,
 	},
 	{
-		element: <StaticPageLayout title="О демо-режиме OneMate" />,
+		element: <StaticPageLayout title={`О демо-режиме ${APP_NAME}`} />,
 		children: [{ path: '/demo', element: <DemoPage /> }],
 	},
 	{

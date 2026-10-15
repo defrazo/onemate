@@ -1,6 +1,7 @@
 import { IconBook, IconHome, IconShieldLock, IconStack2, IconUser } from '@tabler/icons-react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
+import { APP_NAME } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
 
@@ -26,7 +27,7 @@ export const ProfileMenu = () => {
 				<h1 className="text-xl font-semibold">Настройки</h1>
 				<div className="my-1 flex h-5.5 items-center justify-center rounded-md bg-(--accent-primary-muted) px-2 py-1">
 					<span className="trim text-sm text-(--accent-primary)">
-						{currentTab === 'interface' ? 'Персонализация OneMate' : 'Управление аккаунтом'}
+						{currentTab === 'interface' ? `Персонализация ${APP_NAME}` : 'Управление аккаунтом'}
 					</span>
 				</div>
 			</div>

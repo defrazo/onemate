@@ -19,6 +19,7 @@ import {
 	IconTrendingUp,
 } from '@tabler/icons-react';
 
+import { APP_NAME } from '@/shared/config';
 import { usePageTitle } from '@/shared/lib/hooks';
 
 const areas = [
@@ -96,8 +97,9 @@ export const AboutPage = () => {
 					</div>
 					<div className="space-y-5 leading-relaxed text-(--text-secondary)">
 						<p>
-							OneMate – частный pet-проект, который начинался как набор небольших утилит и постепенно
-							вырос в полноценное веб-приложение.
+							{`${APP_NAME} – частный pet-проект, который начинался как набор небольших утилит и постепенно
+							вырос в полноценное веб-приложение`}
+							.
 						</p>
 						<p>
 							В одном интерфейсе проект объединяет задачи, заметки, канбан, календарь, мониторинг сервисов
@@ -133,8 +135,9 @@ export const AboutPage = () => {
 				</div>
 				<div className="grid gap-3 lg:grid-cols-[0.9fr_1.1fr] lg:gap-10">
 					<p className="space-y-5 leading-relaxed text-(--text-secondary)">
-						За интерфейсом OneMate стоит полноценная серверная часть и инфраструктура. Проект развивается
-						как единая система, а не набор отдельных инструментов.
+						{`За интерфейсом ${APP_NAME} стоит полноценная серверная часть и инфраструктура. Проект развивается
+						как единая система, а не набор отдельных инструментов`}
+						.
 					</p>
 					<div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-(--border-primary) bg-(--border-primary) sm:grid-cols-3">
 						{technologies.map(({ icon: Icon, title, description }) => (
@@ -178,10 +181,11 @@ export const AboutPage = () => {
 						<IconPointFilled className="size-3 animate-pulse text-(--status-success)" />
 						<span className="trim mt-px">ACTIVE DEVELOPMENT</span>
 					</div>
-					<h2 className="mt-3 text-lg font-semibold">OneMate – проект в процессе</h2>
+					<h2 className="mt-3 text-lg font-semibold">{`${APP_NAME} – проект в процессе`}</h2>
 					<p className="mt-2 max-w-2xl space-y-5 leading-relaxed text-(--text-secondary)">
-						OneMate меняется вместе с реальными задачами: полезное остаётся, лишнее упрощается, а новые идеи
-						постепенно становятся частью приложения.
+						{`${APP_NAME} меняется вместе с реальными задачами: полезное остаётся, лишнее упрощается, а новые идеи
+						постепенно становятся частью приложения`}
+						.
 					</p>
 				</div>
 				<div className="core-gap flex flex-col border-t border-(--border-primary) px-6 py-4 sm:flex-row sm:items-center sm:justify-between md:px-7">

@@ -2,6 +2,7 @@ import { IconArrowLeft, IconHome } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { APP_NAME } from '@/shared/config';
 import { Button, Link } from '@/shared/ui';
 
 interface ComingSoonProps {
@@ -12,7 +13,7 @@ interface ComingSoonProps {
 
 export const ComingSoon = ({
 	title = 'Скоро будет готово',
-	description = 'Этот раздел OneMate пока находится в разработке. Загляните сюда немного позже.',
+	description = `Этот раздел ${APP_NAME} пока находится в разработке. Загляните сюда немного позже.`,
 	suggestions,
 }: ComingSoonProps) => {
 	const navigate = useNavigate();

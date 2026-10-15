@@ -1,6 +1,7 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { APP_NAME } from '@/shared/config';
 
 import { AuthFooterLink, AuthFormHeader, AuthWrapper } from '../components';
 import { ForgotForm } from '../forms';
@@ -12,8 +13,9 @@ export const ForgotScreen = observer(() => {
 		<AuthWrapper>
 			<AuthFormHeader title="Восстановить пароль" />
 			<p className="text-justify">
-				Введите e-mail, к которому привязан ваш аккаунт OneMate. Мы отправим на него письмо с инструкциями по
-				восстановлению пароля.
+				{`Введите e-mail, к которому привязан ваш аккаунт ${APP_NAME}. Мы отправим на него письмо с инструкциями по
+				восстановлению пароля`}
+				.
 			</p>
 			<p className="text-justify text-sm text-(--text-disabled)">
 				Пожалуйста, проверьте почту, включая папку «Спам». Если письмо не придет, убедитесь, что адрес указан
