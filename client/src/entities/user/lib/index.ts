@@ -1,1 +1,1 @@
-export { userCache, type UserCacheData } from './userCache';
+export * from './userCache';

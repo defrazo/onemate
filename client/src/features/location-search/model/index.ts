@@ -1,1 +1,1 @@
-export { LocationSearchStore } from './location.store';
+export * from './location.store';

@@ -1,2 +1,2 @@
-export { fetchCitiesByName } from './fetchCitiesByName';
-export { fetchCitySuggestion } from './fetchCitySuggestion';
+export * from './fetchCitiesByName';
+export * from './fetchCitySuggestion';

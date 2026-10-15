@@ -1,2 +1,2 @@
-export { navItems } from './navItems';
-export * from './types';
+export * from './navItems';
+export type * from './types';

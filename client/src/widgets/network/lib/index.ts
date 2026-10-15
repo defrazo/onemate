@@ -1,2 +1,2 @@
-export { networkCache } from './networkCache';
+export * from './networkCache';
 export * from './utils';

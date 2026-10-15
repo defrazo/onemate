@@ -51,10 +51,12 @@ export class ThemeStore extends BaseStore {
 	}
 
 	private onStorage = (e: StorageEvent): void => {
-		if (e.key !== LS_CACHE_UI || !e.newValue) return;
+		if (e.key !== LS_CACHE_UI) return;
 
 		const theme = this.getStoredTheme();
-		this.setLocalTheme(theme);
+
+		this.theme = theme;
+		this.applyTheme(theme);
 	};
 
 	constructor(

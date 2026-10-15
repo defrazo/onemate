@@ -1,2 +1,2 @@
-export type { Direction, Justify, SelectOption } from './types';
-export { useSelect } from './useSelect';
+export type * from './types';
+export * from './useSelect';

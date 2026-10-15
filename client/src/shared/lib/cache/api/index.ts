@@ -1,1 +1,1 @@
-export { clearCache, readCache, writeCache } from './cache';
+export * from './cache';

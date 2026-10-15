@@ -1,1 +1,1 @@
-export { UserRepoRouting } from './repo';
+export * from './repo';

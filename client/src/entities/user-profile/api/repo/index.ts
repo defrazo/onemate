@@ -1,3 +1,3 @@
-export { ProfileRepoDemo } from './profileRepoDemo';
-export { ProfileRepoLaravel } from './profileRepoLaravel';
-export { ProfileRepoRouting } from './profileRepoRouting';
+export * from './profileRepoDemo';
+export * from './profileRepoLaravel';
+export * from './profileRepoRouting';

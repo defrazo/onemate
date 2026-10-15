@@ -1,1 +1,1 @@
-export { showBrowserNotification } from './utils';
+export * from './utils';

@@ -1,3 +1,3 @@
-export { CloudRepoDemo } from './cloud.repo.demo';
-export { CloudRepoLaravel } from './cloud.repo.laravel';
-export { CloudRepoRouting } from './cloud.repo.routing';
+export * from './cloud.repo.demo';
+export * from './cloud.repo.laravel';
+export * from './cloud.repo.routing';

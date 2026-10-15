@@ -1,2 +1,2 @@
-export type { IUserLocationProfilePort, IUserLocationRepo, IUserLocationWeatherPort } from './ports';
-export type { UserLocationType } from './types';
+export type * from './ports';
+export type * from './types';

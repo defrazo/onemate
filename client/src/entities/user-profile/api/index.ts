@@ -1,1 +1,1 @@
-export { ProfileRepoRouting } from './repo';
+export * from './repo';

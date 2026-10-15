@@ -1,3 +1,3 @@
-export { DeviceProviderRouting } from './providers';
-export { ActivityRepoRouting } from './repo';
-export { fakeIP, fakeLocation, fakeLog, fetchIP } from './utils';
+export * from './providers';
+export * from './repo';
+export * from './utils';

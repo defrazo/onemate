@@ -1,3 +1,3 @@
-export { TranslatorProviderApi } from './translatorProviderApi';
-export { TranslatorProviderDemo } from './translatorProviderDemo';
-export { TranslatorProviderRouting } from './translatorProviderRouting';
+export * from './translatorProviderApi';
+export * from './translatorProviderDemo';
+export * from './translatorProviderRouting';

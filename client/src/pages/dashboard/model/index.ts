@@ -1,3 +1,3 @@
-export type { SwitcherOption, WidgetItem } from './types';
-export { useDashboard } from './useDashboard';
-export { widgets } from './widgets';
+export type * from './types';
+export * from './useDashboard';
+export * from './widgets';

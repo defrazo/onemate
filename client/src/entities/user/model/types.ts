@@ -1,3 +1,5 @@
+import type { Role } from '.';
+
 export type User = {
 	id: string;
 	username: string;
@@ -16,5 +18,3 @@ export type UserByEmail = {
 	email: string;
 	email_confirmed_at: string;
 };
-
-export type Role = 'user' | 'demo';

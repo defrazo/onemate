@@ -1,4 +1,4 @@
-export { buttons } from './buttons';
-export { CALCULATOR_TIP } from './tip';
-export type { ButtonValue, CalcButton, CalcDigit, ResultItem } from './types';
-export { useCalculator } from './useCalculator';
+export * from './buttons';
+export * from './tip';
+export type * from './types';
+export * from './useCalculator';

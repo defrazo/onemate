@@ -2,6 +2,7 @@ import { IconPointFilled, IconX } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { APP_NAME } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
@@ -32,7 +33,7 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 					<span className="line-clamp-2 text-xs text-(--text-secondary)">{notification.message}</span>
 					<div className="mt-1 ml-auto flex items-center gap-1.5 text-(--text-disabled)">
 						<span className="trim text-[11px] text-(--accent-primary)/70">
-							{config?.source ?? 'OneMate'}
+							{config?.source ?? APP_NAME}
 						</span>
 						<span className="mx-0.5 size-0.75 rounded-full bg-current opacity-60" />
 						<span className="trim text-[11px]">

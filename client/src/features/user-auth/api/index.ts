@@ -1,10 +1,2 @@
-export { authApi } from './auth';
-export type {
-	AuthResponse,
-	AuthSessionResponse,
-	ForgotPasswordPayload,
-	LoginPayload,
-	RegisterPayload,
-	ResetPasswordPayload,
-	VerifyInviteResponse,
-} from './types';
+export * from './auth';
+export type * from './types';

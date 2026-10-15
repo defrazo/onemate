@@ -1,3 +1,3 @@
-export { NetworkRepoDemo } from './network.repo.demo';
-export { NetworkRepoLaravel } from './network.repo.laravel';
-export { NetworkRepoRouting } from './network.repo.routing';
+export * from './network.repo.demo';
+export * from './network.repo.laravel';
+export * from './network.repo.routing';

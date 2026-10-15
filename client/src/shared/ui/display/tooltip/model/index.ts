@@ -1,2 +1,2 @@
-export type { Placement } from './types';
-export { useTooltip } from './useTooltip';
+export type * from './types';
+export * from './useTooltip';

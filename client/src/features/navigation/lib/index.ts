@@ -1,1 +1,1 @@
-export { isActiveRoute } from './utils';
+export * from './utils';

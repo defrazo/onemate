@@ -1,1 +1,1 @@
-export { demoCache } from './demoCache';
+export * from './demoCache';

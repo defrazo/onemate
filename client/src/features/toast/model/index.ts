@@ -1,3 +1,3 @@
-export { notify } from './notify';
-export { NotifyStore } from './notify.store';
-export type { Notification, NotifyType, ToastOptions } from './types';
+export * from './notify';
+export * from './notify.store';
+export type * from './types';

@@ -1,4 +1,4 @@
-export { createDefaultProfile, createDefaultSlots, createDefaultWidgets, createDemoProfile } from './defaults';
-export type { IUserProfileRepo, IUserProfileThemePort } from './ports';
-export type { Gender, UserProfile, UserProfilePatch } from './types';
-export { UserProfileStore } from './userProfile.store';
+export * from './defaults';
+export type * from './ports';
+export type * from './types';
+export * from './userProfile.store';

@@ -1,4 +1,4 @@
-export { getRootStore, RootStore } from './root.store';
-export { StoreFactory } from './StoreFactory';
-export { StoreInitializer } from './StoreInitializer';
-export type { AllStores, CoreStores, InitKeys } from './types';
+export * from './root.store';
+export * from './StoreFactory';
+export * from './StoreInitializer';
+export type * from './types';
