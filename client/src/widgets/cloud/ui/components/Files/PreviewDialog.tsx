@@ -95,7 +95,7 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 				) : type === 'image' && url ? (
 					<img alt={file.name} className="max-h-[65vh] max-w-full object-contain" src={url} />
 				) : type === 'pdf' && url ? (
-					<iframe className="h-[65vh] w-full border-0" sandbox="" src={url} title={file.name} />
+					<iframe className="h-[65vh] w-full border-0" src={url} title={file.name} />
 				) : type === 'text' ? (
 					<textarea
 						readOnly
