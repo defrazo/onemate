@@ -4,15 +4,8 @@ import type { IBaseUserPort } from '@/entities/user';
 import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 
-import {
-	deleteAllNotifications,
-	deleteNotification,
-	getNotifications,
-	readAllNotifications,
-	readNotification,
-} from '../api';
 import { showBrowserNotification } from '../lib';
-import type { AppNotification } from '.';
+import type { AppNotification, INotificationRepo } from '.';
 
 const BROWSER_NOTIFICATIONS_KEY = 'browser-notifications-enabled';
 
@@ -60,7 +53,7 @@ export class NotificationStore extends AsyncStore {
 		if (this.isLoading) return;
 
 		await this.withLoading(async () => {
-			const notifications = await getNotifications();
+			const notifications = await this.repo.getNotifications();
 
 			runInAction(() => {
 				this.notifications = notifications;
@@ -70,7 +63,7 @@ export class NotificationStore extends AsyncStore {
 	}
 
 	async refresh(): Promise<AppNotification[]> {
-		const notifications = await getNotifications();
+		const notifications = await this.repo.getNotifications();
 
 		const currentIds = new Set(this.notifications.map((notification) => notification.id));
 
@@ -85,7 +78,7 @@ export class NotificationStore extends AsyncStore {
 		const notification = this.notifications.find((notification) => notification.id === id);
 		if (!notification || notification.readAt !== null) return;
 
-		const updatedNotification = await readNotification(id);
+		const updatedNotification = await this.repo.readNotification(id);
 
 		runInAction(() => {
 			this.notifications = this.notifications.map((notification) =>
@@ -97,7 +90,7 @@ export class NotificationStore extends AsyncStore {
 	async markAllAsRead(): Promise<void> {
 		if (this.unreadCount === 0) return;
 
-		await readAllNotifications();
+		await this.repo.readAllNotifications();
 
 		const readAt = new Date().toISOString();
 
@@ -109,7 +102,7 @@ export class NotificationStore extends AsyncStore {
 	}
 
 	async remove(id: string): Promise<void> {
-		await deleteNotification(id);
+		await this.repo.deleteNotification(id);
 
 		runInAction(() => (this.notifications = this.notifications.filter((notification) => notification.id !== id)));
 	}
@@ -117,12 +110,15 @@ export class NotificationStore extends AsyncStore {
 	async removeAll(): Promise<void> {
 		if (this.notifications.length === 0) return;
 
-		await deleteAllNotifications();
+		await this.repo.deleteAllNotifications();
 
 		runInAction(() => (this.notifications = []));
 	}
 
-	constructor(private readonly userStore: IBaseUserPort) {
+	constructor(
+		private readonly userStore: IBaseUserPort,
+		private readonly repo: INotificationRepo
+	) {
 		super();
 
 		makeObservable<this, 'reset'>(this, {

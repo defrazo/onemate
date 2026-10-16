@@ -1,1 +1,2 @@
-export * from './notification';
+export * from './demoNotifications';
+export * from './repo';
