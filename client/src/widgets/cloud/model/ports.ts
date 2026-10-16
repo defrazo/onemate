@@ -1,4 +1,4 @@
-import type { CloudData, CloudFilePatch, CloudTextData } from './types';
+import type { CloudData, CloudFilePatch, CloudTextData } from '.';
 
 export interface ICloudRepo {
 	load(): Promise<CloudData>;

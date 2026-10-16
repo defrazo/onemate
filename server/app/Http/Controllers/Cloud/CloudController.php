@@ -50,18 +50,29 @@ class CloudController extends Controller
         $userId = $request->user()->id;
 
         return DB::transaction(function () use ($userId, $data) {
-            DB::table('cloud_clipboards')->insertOrIgnore([
-                'user_id' => $userId,
-                'text' => '',
-                'revision' => 0,
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+            DB::table('users')
+                ->where('id', $userId)
+                ->lockForUpdate()
+                ->first(['id']);
 
             $clipboard = DB::table('cloud_clipboards')
                 ->where('user_id', $userId)
-                ->lockForUpdate()
-                ->first();
+                ->first(['text', 'revision']);
+
+            if (!$clipboard) {
+                DB::table('cloud_clipboards')->insert([
+                    'user_id' => $userId,
+                    'text' => '',
+                    'revision' => 0,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+
+                $clipboard = (object) [
+                    'text' => '',
+                    'revision' => 0,
+                ];
+            }
 
             if ((int) $clipboard->revision !== (int) $data['revision']) {
                 return response()->json([

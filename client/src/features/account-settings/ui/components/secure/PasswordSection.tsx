@@ -13,7 +13,7 @@ import { FormActions } from '..';
 export const PasswordSection = observer(() => {
 	const { checkPassword } = useValidation();
 
-	const { notifyStore, userStore } = useStore();
+	const { notifyStore, userProfileStore, userStore } = useStore();
 	const { formattedDate } = useProfile();
 
 	const [passOld, setPassOld] = useState('');
@@ -48,6 +48,7 @@ export const PasswordSection = observer(() => {
 
 			await userStore.updatePassword(passOld, passNew, passConfirm);
 
+			userProfileStore.markPasswordChanged();
 			clearPasswords();
 			notifyStore.setNotice('Пароль успешно изменен', 'success');
 		} catch (error) {

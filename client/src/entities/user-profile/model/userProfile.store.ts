@@ -110,6 +110,10 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		return this.profile?.password_changed_at ?? null;
 	}
 
+	markPasswordChanged(): void {
+		this.patchProfile({ password_changed_at: new Date().toISOString() });
+	}
+
 	private async load(userId: string): Promise<void> {
 		if (this.isLoading) return;
 
@@ -207,12 +211,6 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 		await Promise.all([this.updateWidgetSequence(widgets), this.updateWidgetSlots(slots)]);
 	}
-
-	// async markPasswordChanged(userId: string): Promise<void> {
-	// 	const changedAt = await this.repo.markPasswordChanged(userId);
-
-	// 	this.patchProfile({ password_changed_at: changedAt });
-	// }
 
 	setLocation(city: City): void {
 		if (this.currentLocation && isSameCity(this.currentLocation, city)) return;
@@ -321,6 +319,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			| 'applyProfile'
 			| 'patchProfile'
 			| 'applyLocation'
+			| 'markPasswordChanged'
 			| 'reset'
 		>(this, {
 			profile: observable,
@@ -353,6 +352,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			applyProfile: action,
 			patchProfile: action,
 			applyLocation: action,
+			markPasswordChanged: action,
 			reset: action,
 		});
 	}

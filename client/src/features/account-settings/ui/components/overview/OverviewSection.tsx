@@ -10,7 +10,7 @@ interface OverviewSectionProps {
 export const OverviewSection = ({ title, icon: Icon, children }: OverviewSectionProps) => {
 	return (
 		<section className="core-surface-contrast core-gap flex flex-col bg-(--bg-secondary) p-3 shadow-(--shadow-contrast)">
-			<div className="flex items-center gap-2">
+			<div className="flex items-center gap-2 select-none">
 				<div className="flex size-8 items-center justify-center rounded-md bg-(--accent-primary)/12">
 					<Icon className="size-4.5 text-(--accent-primary)" />
 				</div>

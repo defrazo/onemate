@@ -22,11 +22,11 @@ Schedule::call(function () {
 
 Schedule::call(function () {
     MonitoringCheck::query()
-        ->where('checked_at', '<', now()->subDays(5))
+        ->where('checked_at', '<', now()->subDays(2))
         ->delete();
 })
     ->name('cleanup-monitoring-checks')
-    ->dailyAt('03:00')
+    ->hourly()
     ->withoutOverlapping();
 
 Schedule::job(new CheckOverdueKanbanTasks)

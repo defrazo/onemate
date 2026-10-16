@@ -53,9 +53,4 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 		this.checkPermission('profile', 'save');
 		return this.getTargetRepo().updateSlots(id, slots);
 	}
-
-	// async markPasswordChanged(id: string): Promise<string | null> {
-	// 	this.checkPermission('profile', 'save');
-	// 	return this.getTargetRepo().markPasswordChanged(id);
-	// }
 }

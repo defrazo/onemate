@@ -7,11 +7,6 @@ type ProfileResponse = {
 	profile: UserProfile;
 };
 
-// type DeleteAccountResponse = {
-// 	code: string;
-// 	deleted_at: string;
-// };
-
 export class ProfileRepoLaravel implements IUserProfileRepo {
 	async loadProfile(_id: string): Promise<UserProfile> {
 		const { data } = await api.get<ProfileResponse>('/user/profile');
@@ -43,17 +38,4 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 	async updateSlots(_id: string, slots: WidgetSlot[]): Promise<void> {
 		await api.patch('/user/profile/widgets', { widgets_slots: slots });
 	}
-
-	// async markPasswordChanged(_id: string): Promise<string | null> {
-	// 	throw new Error('Not implemented');
-	// }
-
-	// async deleteAccount(_id: string): Promise<string | null> {
-	// 	const { data } = await api.delete<DeleteAccountResponse>('/user');
-	// 	return data.deleted_at;
-	// }
-
-	// async restoreAccount(_id: string): Promise<void> {
-	// 	await api.post('/user/restore');
-	// }
 }

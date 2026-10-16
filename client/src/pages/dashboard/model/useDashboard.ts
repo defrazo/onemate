@@ -16,7 +16,8 @@ export const useDashboard = () => {
 	const slots = store.slots;
 
 	const widgetMap = new Map<WidgetId, WidgetItem>(widgets.map((widget) => [widget.id, widget]));
-	const options: SwitcherOption[] = WIDGETS.map(({ id, icon }) => ({
+
+	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => rowIds.includes(id)).map(({ id, icon }) => ({
 		value: id,
 		label: createElement(icon, { className: 'size-7', stroke: 2 }),
 	}));

@@ -23,7 +23,7 @@ export const InterfaceTab = observer(() => {
 				<LanguageSection />
 			</div>
 			<Divider className="mb-1 md:hidden" />
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast) xl:min-h-55">
 				<SectionHeader icon={IconNotification} title="Уведомления" />
 				{!userProfileStore.isReady ? <LoadingState /> : <NotificationsSection />}
 			</div>

@@ -49,21 +49,4 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_slots: slots }));
 	}
-
-	// async markPasswordChanged(id: string): Promise<string | null> {
-	// 	const profile = await this.loadProfile(id);
-	// 	const iso = new Date().toISOString();
-
-	// 	storage.set(key(id, 'profile'), toPlain({ ...profile, password_changed_at: iso }));
-
-	// 	return iso;
-	// }
-
-	// async deleteAccount(_id: string): Promise<string | null> {
-	// 	return null;
-	// }
-
-	// async restoreAccount(_id: string): Promise<void> {
-	// 	return;
-	// }
 }

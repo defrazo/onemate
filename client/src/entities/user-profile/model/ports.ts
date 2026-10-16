@@ -17,5 +17,4 @@ export interface IUserProfileRepo {
 	updateWidgets(id: string, widgets: string[]): Promise<void>;
 	updateSlots(id: string, slots: string[]): Promise<void>;
 	updateNotification(id: string, patch: UserProfilePatch): Promise<UserProfile>;
-	// markPasswordChanged(id: string): Promise<string | null>;
 }

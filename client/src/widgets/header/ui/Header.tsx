@@ -6,7 +6,7 @@ import { NotificationButton } from '@/features/notifications';
 import { ThemeSwitcher } from '@/features/theme-switcher';
 import { LoginButton } from '@/features/user-auth';
 import { useResponsive } from '@/shared/lib/hooks';
-import { DateTime, Logo } from '@/shared/ui';
+import { DateTime, Divider, Logo } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';
 
 export const Header = observer(() => {
@@ -34,7 +34,7 @@ export const Header = observer(() => {
 				)}
 				{!isMobile && (
 					<>
-						<div className="h-7 w-px bg-(--border-tone)/70" />
+						<Divider direction="Y" />
 						<DateTime />
 					</>
 				)}
