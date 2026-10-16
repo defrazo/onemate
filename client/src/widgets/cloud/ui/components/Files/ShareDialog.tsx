@@ -25,8 +25,8 @@ export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 
 		try {
 			await action();
-		} catch {
-			notifyStore.setNotice('Что-то пошло не так', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
 		} finally {
 			setIsLoading(false);
 		}

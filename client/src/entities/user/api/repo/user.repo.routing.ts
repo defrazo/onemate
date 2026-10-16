@@ -20,7 +20,7 @@ export class UserRepoRouting implements IUserRepo {
 
 	protected checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string) {
 		if (!PermissionService.canPerform(this.role, feature, operation)) {
-			const defaultMsg = this.role === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав';
+			const defaultMsg = this.role === 'demo' ? 'Недоступно в демо-режиме' : 'Недостаточно прав';
 			throw new PermissionError(message ?? defaultMsg);
 		}
 	}

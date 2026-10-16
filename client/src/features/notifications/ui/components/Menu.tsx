@@ -7,7 +7,23 @@ import { Button, NoContent } from '@/shared/ui';
 import { Item } from '.';
 
 export const Menu = observer(() => {
-	const { notificationStore: store } = useStore();
+	const { notificationStore: store, notifyStore } = useStore();
+
+	const readAll = async (): Promise<void> => {
+		try {
+			await store.markAllAsRead();
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
+		}
+	};
+
+	const removeAll = async (): Promise<void> => {
+		try {
+			await store.removeAll();
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
+		}
+	};
 
 	return (
 		<div className="core-surface absolute top-full right-0 z-50 mt-1 flex h-82 w-[72svw] flex-col overflow-hidden rounded-lg bg-(--bg-secondary) shadow-(--shadow-contrast) md:w-88">
@@ -27,7 +43,7 @@ export const Menu = observer(() => {
 							padding="sm"
 							type="button"
 							variant="custom"
-							onClick={() => void store.markAllAsRead()}
+							onClick={readAll}
 						>
 							Прочитать все
 						</Button>
@@ -40,7 +56,7 @@ export const Menu = observer(() => {
 							title="Удалить все"
 							type="button"
 							variant="icon"
-							onClick={() => void store.removeAll()}
+							onClick={removeAll}
 						/>
 					)}
 				</div>

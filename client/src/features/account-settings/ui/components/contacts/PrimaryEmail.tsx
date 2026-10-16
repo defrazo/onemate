@@ -46,8 +46,8 @@ export const PrimaryEmail = observer(() => {
 			setPassword('');
 
 			notifyStore.setNotice('Подтвердите смену e-mail по ссылке из письма', 'success');
-		} catch {
-			notifyStore.setNotice('Проверьте введенные данные', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Проверьте введенные данные', 'error');
 		} finally {
 			setIsLoading(false);
 		}

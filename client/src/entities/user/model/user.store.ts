@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 
 import { clearCache } from '@/shared/lib/cache';
+import { clearDemoStorage } from '@/shared/lib/storage';
 import { BaseStore } from '@/shared/lib/store';
 
 import { userCache } from '../lib';
@@ -66,10 +67,16 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 
 	clearSession(): void {
 		const userId = this.id ?? this.lastId;
+		const isDemo = this.user?.role === 'demo';
 
 		this.user = null;
+		this.lastId = null;
 
-		if (userId) clearCache(userId);
+		if (!userId) return;
+
+		clearCache(userId);
+
+		if (isDemo) clearDemoStorage(userId);
 	}
 
 	async loadUser(): Promise<void> {

@@ -19,7 +19,7 @@ export class TranslatorProviderRouting extends BaseRouting implements ITranslato
 	}
 
 	async translate(request: TranslateRequest): Promise<string> {
-		this.checkPermission('translator', 'use', 'Перевод недоступен в демо-режиме');
+		this.checkPermission('translator', 'use');
 		return this.getTargetProvider().translate(request);
 	}
 }

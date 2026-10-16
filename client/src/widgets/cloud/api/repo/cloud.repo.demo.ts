@@ -1,17 +1,10 @@
 import type { User } from '@/entities/user';
+import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key } from '@/shared/lib/utils';
 
 import { CLOUD_STORAGE_BYTES, type CloudData, type CloudTextData, type ICloudRepo } from '../../model';
-import { CLOUD_DEMO_FILES } from '..';
-
-const DEMO_FILE_PATHS: Record<string, string> = {
-	'demo-welcome': '/demo/cloud/welcome.txt',
-	'demo-guide': '/demo/cloud/guide.pdf',
-	'demo-json': '/demo/cloud/sample.json',
-	'demo-landscape': '/demo/cloud/landscape.webp',
-	'demo-city': '/demo/cloud/city.jpg',
-};
+import { CLOUD_DEMO_FILES, DEMO_FILE_PATHS } from '..';
 
 export class CloudRepoDemo implements ICloudRepo {
 	constructor(private readonly getCurrentUser: () => User | null) {}
@@ -42,7 +35,7 @@ export class CloudRepoDemo implements ICloudRepo {
 	}
 
 	async upload(): Promise<void> {
-		throw new Error('Загрузка файлов недоступна в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async download(id: string, filename: string): Promise<void> {
@@ -58,19 +51,19 @@ export class CloudRepoDemo implements ICloudRepo {
 	}
 
 	async update(): Promise<void> {
-		throw new Error('Изменение файлов недоступно в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async delete(): Promise<void> {
-		throw new Error('Удаление файлов недоступно в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async share(): Promise<string> {
-		throw new Error('Публичные ссылки недоступны в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async unshare(): Promise<void> {
-		throw new Error('Публичные ссылки недоступны в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async loadText(): Promise<CloudTextData> {
@@ -88,7 +81,6 @@ export class CloudRepoDemo implements ICloudRepo {
 		if (!user) throw new Error('Нет активного пользователя');
 
 		const current = await this.loadText();
-
 		if (current.revision !== revision) throw new Error('Текст изменён в другой вкладке');
 
 		const nextRevision = current.text === text ? revision : revision + 1;

@@ -26,8 +26,8 @@ export const Files = observer(({ searchOpen, onSearchClose }: { searchOpen: bool
 
 		try {
 			await cloudStore.upload(files);
-		} catch {
-			notifyStore.setNotice('Что-то пошло не так', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
 		}
 	};
 

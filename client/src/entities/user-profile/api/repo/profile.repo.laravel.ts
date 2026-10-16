@@ -7,10 +7,10 @@ type ProfileResponse = {
 	profile: UserProfile;
 };
 
-type DeleteAccountResponse = {
-	code: string;
-	deleted_at: string;
-};
+// type DeleteAccountResponse = {
+// 	code: string;
+// 	deleted_at: string;
+// };
 
 export class ProfileRepoLaravel implements IUserProfileRepo {
 	async loadProfile(_id: string): Promise<UserProfile> {
@@ -20,7 +20,6 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 
 	async updateProfile(_id: string, patch: UserProfilePatch): Promise<UserProfile> {
 		const { data } = await api.patch<ProfileResponse>('/user/profile', patch);
-
 		return data.profile;
 	}
 
@@ -32,6 +31,11 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 		await api.patch('/user/profile/theme', { theme });
 	}
 
+	async updateNotification(_id: string, patch: UserProfilePatch): Promise<UserProfile> {
+		const { data } = await api.patch<ProfileResponse>('/user/profile', patch);
+		return data.profile;
+	}
+
 	async updateWidgets(_id: string, widgets: WidgetId[]): Promise<void> {
 		await api.patch('/user/profile/widgets', { widgets_sequence: widgets });
 	}
@@ -40,16 +44,16 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 		await api.patch('/user/profile/widgets', { widgets_slots: slots });
 	}
 
-	async markPasswordChanged(_id: string): Promise<string | null> {
-		throw new Error('Not implemented');
-	}
+	// async markPasswordChanged(_id: string): Promise<string | null> {
+	// 	throw new Error('Not implemented');
+	// }
 
-	async deleteAccount(_id: string): Promise<string | null> {
-		const { data } = await api.delete<DeleteAccountResponse>('/user');
-		return data.deleted_at;
-	}
+	// async deleteAccount(_id: string): Promise<string | null> {
+	// 	const { data } = await api.delete<DeleteAccountResponse>('/user');
+	// 	return data.deleted_at;
+	// }
 
-	async restoreAccount(_id: string): Promise<void> {
-		await api.post('/user/restore');
-	}
+	// async restoreAccount(_id: string): Promise<void> {
+	// 	await api.post('/user/restore');
+	// }
 }

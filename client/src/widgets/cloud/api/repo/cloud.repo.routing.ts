@@ -19,7 +19,7 @@ export class CloudRepoRouting implements ICloudRepo {
 
 	private checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string): void {
 		if (!PermissionService.canPerform(this.userStore.userRole, feature, operation)) {
-			const defaultMsg = this.userStore.userRole === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав';
+			const defaultMsg = this.userStore.userRole === 'demo' ? 'Недоступно в демо-режиме' : 'Недостаточно прав';
 			throw new PermissionError(message ?? defaultMsg);
 		}
 	}
@@ -70,7 +70,7 @@ export class CloudRepoRouting implements ICloudRepo {
 	}
 
 	async saveText(text: string, revision: number): Promise<CloudTextData> {
-		this.checkPermission('cloud', 'save');
+		this.checkPermission('cloud', 'read');
 		return this.getTargetRepo().saveText(text, revision);
 	}
 }

@@ -1,3 +1,4 @@
+import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
@@ -26,39 +27,31 @@ export class UserRepoDemo implements IUserRepo {
 		return structuredClone(updated);
 	}
 
-	async updateEmail(email: string, _currentPassword: string): Promise<User> {
-		const user = await this.loadUser();
-
-		const updated: User = { ...user, email, updated_at: new Date().toISOString() };
-		storage.set(key(user.id, 'user'), toPlain(updated));
-		return structuredClone(updated);
+	async updateEmail(_email: string, _currentPassword: string): Promise<User> {
+		throw new RestrictedAccess();
 	}
 
 	async updatePassword(_currentPassword: string, _password: string, _passwordConfirmation: string): Promise<User> {
-		const user = await this.loadUser();
-
-		const updated: User = { ...user, updated_at: new Date().toISOString() };
-		storage.set(key(user.id, 'user'), toPlain(updated));
-		return structuredClone(updated);
+		throw new RestrictedAccess();
 	}
 
 	async verifyPendingEmail(): Promise<User> {
-		throw new Error('Смена e-mail недоступна в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async resendPendingEmail(): Promise<void> {
-		throw new Error('Смена e-mail недоступна в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async cancelPendingEmail(): Promise<User> {
-		throw new Error('Смена e-mail недоступна в демо-версии');
+		throw new RestrictedAccess();
 	}
 
 	async deleteAccount(): Promise<User> {
-		throw new Error('Удаление аккаунта недоступно в демо-режиме');
+		throw new RestrictedAccess();
 	}
 
 	async restoreAccount(): Promise<User> {
-		throw new Error('Восстановление аккаунта недоступно в демо-режиме');
+		throw new RestrictedAccess();
 	}
 }

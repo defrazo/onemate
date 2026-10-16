@@ -16,7 +16,7 @@ export const CLOUD_DEMO_FILES: CloudFile[] = [
 		mimeType: 'application/pdf',
 		size: 49545,
 		createdAt: '2026-10-03T12:00:00.000Z',
-		isFavorite: false,
+		isFavorite: true,
 		publicUrl: null,
 	},
 	{
@@ -47,3 +47,11 @@ export const CLOUD_DEMO_FILES: CloudFile[] = [
 		publicUrl: null,
 	},
 ];
+
+export const DEMO_FILE_PATHS: Record<string, string> = {
+	'demo-welcome': '/demo/cloud/welcome.txt',
+	'demo-guide': '/demo/cloud/guide.pdf',
+	'demo-json': '/demo/cloud/sample.json',
+	'demo-landscape': '/demo/cloud/landscape.webp',
+	'demo-city': '/demo/cloud/city.jpg',
+};

@@ -1,3 +1,3 @@
-export * from './translatorProviderApi';
-export * from './translatorProviderDemo';
-export * from './translatorProviderRouting';
+export * from './translator.provider.demo';
+export * from './translator.provider.real';
+export * from './translator.provider.routing';

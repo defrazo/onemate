@@ -23,8 +23,8 @@ export const DeleteAccountSection = () => {
 						modalStore.closeModal();
 						notifyStore.setNotice('Аккаунт успешно удалён', 'success');
 						navigate('/');
-					} catch {
-						notifyStore.setNotice('Произошла ошибка при удалении аккаунта', 'error');
+					} catch (error) {
+						notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
 					}
 				}}
 			/>

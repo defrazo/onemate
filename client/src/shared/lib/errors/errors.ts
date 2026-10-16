@@ -28,7 +28,7 @@ export class EmptyResultError extends Error {
 
 export class RestrictedAccess extends Error {
 	constructor() {
-		super('Недоступно в демо-версии');
+		super('Недоступно в демо-режиме');
 		this.name = 'RestrictedAccess';
 	}
 }

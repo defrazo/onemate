@@ -9,7 +9,7 @@ import { Button } from '@/shared/ui';
 import { type AppNotification, notificationConfig } from '../../model';
 
 export const Item = observer(({ notification }: { notification: AppNotification }) => {
-	const { notificationStore: store } = useStore();
+	const { notificationStore: store, notifyStore } = useStore();
 
 	const config = notificationConfig[notification.type];
 	const isUnread = notification.readAt === null;
@@ -18,7 +18,13 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 		if (isUnread) void store.markAsRead(notification.id);
 	};
 
-	const handleDelete = () => void store.remove(notification.id);
+	const handleDelete = async (): Promise<void> => {
+		try {
+			await store.remove(notification.id);
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
+		}
+	};
 
 	return (
 		<div className="group relative border-b border-(--border-primary) transition-colors last:border-b-0 hover:bg-(--tone-hover)">

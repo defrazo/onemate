@@ -39,6 +39,11 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 		return this.getTargetRepo().updateTheme(id, theme);
 	}
 
+	async updateNotification(id: string, patch: UserProfilePatch): Promise<UserProfile> {
+		this.checkPermission('profile', 'configure');
+		return this.getTargetRepo().updateNotification(id, patch);
+	}
+
 	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
 		this.checkPermission('profile', 'save');
 		return this.getTargetRepo().updateWidgets(id, widgets);
@@ -49,8 +54,8 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 		return this.getTargetRepo().updateSlots(id, slots);
 	}
 
-	async markPasswordChanged(id: string): Promise<string | null> {
-		this.checkPermission('profile', 'save');
-		return this.getTargetRepo().markPasswordChanged(id);
-	}
+	// async markPasswordChanged(id: string): Promise<string | null> {
+	// 	this.checkPermission('profile', 'save');
+	// 	return this.getTargetRepo().markPasswordChanged(id);
+	// }
 }

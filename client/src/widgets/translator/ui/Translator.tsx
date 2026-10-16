@@ -18,10 +18,10 @@ export const Translator = observer(() => {
 		let active = true;
 
 		const timeout = setTimeout(() => {
-			store.translate().catch(() => {
+			store.translate().catch((error) => {
 				if (!active) return;
 
-				notifyStore.setNotice('Что-то пошло не так', 'error');
+				notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
 			});
 		}, TRANSLATE_DELAY);
 

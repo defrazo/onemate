@@ -28,7 +28,7 @@ export class NetworkRepoRouting implements INetworkRepo {
 
 	private checkPermission<F extends Feature>(feature: F, operation: Operation<F>, message?: string): void {
 		if (!PermissionService.canPerform(this.userStore.userRole, feature, operation)) {
-			const defaultMsg = this.userStore.userRole === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав';
+			const defaultMsg = this.userStore.userRole === 'demo' ? 'Недоступно в демо-режиме' : 'Недостаточно прав';
 			throw new PermissionError(message ?? defaultMsg);
 		}
 	}

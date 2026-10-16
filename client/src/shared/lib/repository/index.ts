@@ -1,1 +1,1 @@
-export { BaseRouting } from './baseRouting';
+export { BaseRouting } from './base.routing';

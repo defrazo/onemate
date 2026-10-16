@@ -16,5 +16,6 @@ export interface IUserProfileRepo {
 	updateTheme(id: string, theme: Theme): Promise<void>;
 	updateWidgets(id: string, widgets: string[]): Promise<void>;
 	updateSlots(id: string, slots: string[]): Promise<void>;
-	markPasswordChanged(id: string): Promise<string | null>;
+	updateNotification(id: string, patch: UserProfilePatch): Promise<UserProfile>;
+	// markPasswordChanged(id: string): Promise<string | null>;
 }

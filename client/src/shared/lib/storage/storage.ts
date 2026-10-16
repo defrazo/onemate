@@ -1,3 +1,5 @@
+import { LS_PREFIX } from '@/shared/config';
+
 export const storage = {
 	get: (key: string): any => {
 		const item = localStorage.getItem(key);
@@ -14,4 +16,12 @@ export const storage = {
 	},
 
 	remove: (key: string) => localStorage.removeItem(key),
+};
+
+export const clearDemoStorage = (userId: string) => {
+	const suffix = `_demo_${userId}`;
+
+	for (const key of Object.keys(localStorage)) {
+		if (key.startsWith(LS_PREFIX) && key.endsWith(suffix)) localStorage.removeItem(key);
+	}
 };

@@ -58,7 +58,7 @@ export const DeviceActivitySection = observer(() => {
 				{!store.isReady ? (
 					<LoadingState />
 				) : (
-					<div className="flex flex-col xl:min-w-0 xl:flex-1 xl:justify-between">
+					<div className="flex flex-col gap-2.5 xl:min-w-0 xl:flex-1 xl:justify-between">
 						<div className="flex items-center xl:gap-3">
 							<div className="flex min-w-0 items-center gap-2">
 								<div className="flex size-15 shrink-0 items-center justify-center rounded-xl bg-(--status-success-muted) text-(--status-success) xl:size-10">

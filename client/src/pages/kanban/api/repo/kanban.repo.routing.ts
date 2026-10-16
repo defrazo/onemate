@@ -33,7 +33,7 @@ export class KanbanRepoRouting implements IKanbanRepo {
 
 	private checkPermission(operation: 'read' | 'save' | 'delete') {
 		if (!PermissionService.canPerform(this.role, 'kanban', operation)) {
-			throw new PermissionError(this.role === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав');
+			throw new PermissionError(this.role === 'demo' ? 'Недоступно в демо-режиме' : 'Недостаточно прав');
 		}
 	}
 

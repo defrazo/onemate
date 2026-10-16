@@ -3,7 +3,7 @@ import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
 import { ActivityRepoRouting, DeviceActivityStore, DeviceProviderRouting } from '@/features/device-activity';
 import { ModalStore } from '@/features/modal';
-import { NotificationStore } from '@/features/notifications';
+import { NotificationRepoRouting, NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
 import { NotifyStore } from '@/features/toast';
 import { AuthFormStore, AuthStore } from '@/features/user-auth';
@@ -42,7 +42,7 @@ export class StoreFactory {
 		const authStore = new AuthStore(userStore);
 		const authFormStore = new AuthFormStore();
 		const themeStore = new ThemeStore(userStore, userProfileStore);
-		const notificationStore = new NotificationStore(userStore);
+		const notificationStore = new NotificationStore(userStore, new NotificationRepoRouting(userStore));
 		const deviceActivityStore = new DeviceActivityStore(
 			userStore,
 			authStore,

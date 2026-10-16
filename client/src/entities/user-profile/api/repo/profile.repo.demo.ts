@@ -1,4 +1,5 @@
 import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
@@ -35,6 +36,10 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		storage.set(key(id, 'profile'), toPlain({ ...profile, theme }));
 	}
 
+	async updateNotification(_id: string, _patch: UserProfilePatch): Promise<UserProfile> {
+		throw new RestrictedAccess();
+	}
+
 	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_sequence: widgets }));
@@ -45,20 +50,20 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_slots: slots }));
 	}
 
-	async markPasswordChanged(id: string): Promise<string | null> {
-		const profile = await this.loadProfile(id);
-		const iso = new Date().toISOString();
+	// async markPasswordChanged(id: string): Promise<string | null> {
+	// 	const profile = await this.loadProfile(id);
+	// 	const iso = new Date().toISOString();
 
-		storage.set(key(id, 'profile'), toPlain({ ...profile, password_changed_at: iso }));
+	// 	storage.set(key(id, 'profile'), toPlain({ ...profile, password_changed_at: iso }));
 
-		return iso;
-	}
+	// 	return iso;
+	// }
 
-	async deleteAccount(_id: string): Promise<string | null> {
-		return null;
-	}
+	// async deleteAccount(_id: string): Promise<string | null> {
+	// 	return null;
+	// }
 
-	async restoreAccount(_id: string): Promise<void> {
-		return;
-	}
+	// async restoreAccount(_id: string): Promise<void> {
+	// 	return;
+	// }
 }

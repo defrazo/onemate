@@ -50,8 +50,8 @@ export const PasswordSection = observer(() => {
 
 			clearPasswords();
 			notifyStore.setNotice('Пароль успешно изменен', 'success');
-		} catch {
-			notifyStore.setNotice('Проверьте введенные данные', 'error');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Проверьте введенные данные', 'error');
 		} finally {
 			setIsLoading(false);
 		}

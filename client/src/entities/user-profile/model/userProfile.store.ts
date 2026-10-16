@@ -143,26 +143,17 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	async updateProfile(patch: UserProfilePatch): Promise<void> {
-		const userId = this.userStore.id;
-		if (!userId || this.isLoading) return;
+		const normalized: UserProfilePatch = {
+			...patch,
+			...(patch.phones !== undefined && {
+				phones: patch.phones?.map((phone) => phone.trim()).filter(Boolean) ?? null,
+			}),
+			...(patch.additional_emails !== undefined && {
+				additional_emails: patch.additional_emails?.map((email) => email.trim()).filter(Boolean) ?? null,
+			}),
+		};
 
-		await this.withLoading(async () => {
-			const normalized: UserProfilePatch = {
-				...patch,
-				...(patch.phones !== undefined && {
-					phones: patch.phones?.map((phone) => phone.trim()).filter(Boolean) ?? null,
-				}),
-				...(patch.additional_emails !== undefined && {
-					additional_emails: patch.additional_emails?.map((email) => email.trim()).filter(Boolean) ?? null,
-				}),
-			};
-
-			const updated = await this.repo.updateProfile(userId, normalized);
-			const nextProfile = { ...createDefaultProfile(), ...updated };
-
-			this.applyProfile(nextProfile);
-			userProfileCache.sync(userId, nextProfile);
-		});
+		await this.saveProfile(normalized, (id, data) => this.repo.updateProfile(id, data));
 	}
 
 	async updateAvatar(avatar: string): Promise<void> {
@@ -182,6 +173,10 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		this.patchProfile({ theme });
 
 		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme));
+	}
+
+	async updateNotification(patch: UserProfilePatch): Promise<void> {
+		await this.saveProfile(patch, (id, data) => this.repo.updateNotification(id, data));
 	}
 
 	async updateWidgetSequence(widgets: WidgetId[]): Promise<void> {
@@ -213,11 +208,11 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		await Promise.all([this.updateWidgetSequence(widgets), this.updateWidgetSlots(slots)]);
 	}
 
-	async markPasswordChanged(userId: string): Promise<void> {
-		const changedAt = await this.repo.markPasswordChanged(userId);
+	// async markPasswordChanged(userId: string): Promise<void> {
+	// 	const changedAt = await this.repo.markPasswordChanged(userId);
 
-		this.patchProfile({ password_changed_at: changedAt });
-	}
+	// 	this.patchProfile({ password_changed_at: changedAt });
+	// }
 
 	setLocation(city: City): void {
 		if (this.currentLocation && isSameCity(this.currentLocation, city)) return;
@@ -293,6 +288,22 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		this.widgetSequenceUpdate.cancel();
 		this.widgetSlotsUpdate.cancel();
 		this.locationUpdate.cancel();
+	}
+
+	private async saveProfile(
+		patch: UserProfilePatch,
+		save: (userId: string, patch: UserProfilePatch) => Promise<UserProfile>
+	): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.isLoading) return;
+
+		await this.withLoading(async () => {
+			const updated = await save(userId, patch);
+			const nextProfile = { ...createDefaultProfile(), ...updated };
+
+			this.applyProfile(nextProfile);
+			userProfileCache.sync(userId, nextProfile);
+		});
 	}
 
 	constructor(

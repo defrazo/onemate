@@ -87,8 +87,8 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 
 						modalStore.closeModal();
 						notifyStore.setNotice('Файл удалён', 'success');
-					} catch {
-						notifyStore.setNotice('Не удалось удалить файл', 'error');
+					} catch (error) {
+						notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
 					}
 				}}
 			/>
