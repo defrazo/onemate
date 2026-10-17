@@ -5,7 +5,7 @@ import type { UserProfile } from '.';
 const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
-const DEFAULT_WIDGETS = ['calculator', 'calendar', 'notes', 'currency', 'weather', 'translator'] as const;
+const DEFAULT_WIDGETS = ['cloud', 'calendar', 'notes', 'currency', 'weather', 'translator'] as const;
 export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;

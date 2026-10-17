@@ -1,3 +1,5 @@
+import { dateOffset } from '@/shared/lib/utils';
+
 import type { AppNotification } from '../model';
 
 export const demoNotifications: AppNotification[] = [
@@ -7,7 +9,7 @@ export const demoNotifications: AppNotification[] = [
 		title: 'Задача просрочена',
 		message: 'Обновить главную страницу',
 		readAt: null,
-		createdAt: '2026-10-15T10:30:00.000Z',
+		createdAt: dateOffset({ days: -3, hours: -2, minutes: -15, withTime: true }),
 	},
 	{
 		id: 'demo-kanban-2',
@@ -15,7 +17,7 @@ export const demoNotifications: AppNotification[] = [
 		title: 'Задача просрочена',
 		message: 'Подготовить документацию API',
 		readAt: null,
-		createdAt: '2026-10-14T14:15:00.000Z',
+		createdAt: dateOffset({ days: -4, hours: -5, minutes: -18, withTime: true }),
 	},
 	{
 		id: 'demo-kanban-3',
@@ -23,15 +25,15 @@ export const demoNotifications: AppNotification[] = [
 		title: 'Задача просрочена',
 		message: 'Обновить план на месяц',
 		readAt: null,
-		createdAt: '2026-10-14T13:00:00.000Z',
+		createdAt: dateOffset({ days: -5, hours: -6, minutes: -21, withTime: true }),
 	},
 	{
 		id: 'demo-kanban-4',
 		type: 'kanban.task_overdue',
 		title: 'Задача просрочена',
 		message: 'Уточнить детали заказа',
-		readAt: '2026-10-14T12:00:00.000Z',
-		createdAt: '2026-10-14T11:00:00.000Z',
+		readAt: dateOffset({ days: -5, hours: -6, minutes: -21, withTime: true }),
+		createdAt: dateOffset({ days: -5, hours: -8, minutes: -25, withTime: true }),
 	},
 	{
 		id: 'demo-kanban-5',
@@ -39,6 +41,6 @@ export const demoNotifications: AppNotification[] = [
 		title: 'Задача просрочена',
 		message: 'Уточнить детали заказа',
 		readAt: null,
-		createdAt: '2026-10-14T11:00:00.000Z',
+		createdAt: dateOffset({ days: -6, hours: -9, minutes: -32, withTime: true }),
 	},
 ];
