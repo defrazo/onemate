@@ -1,11 +1,11 @@
 import type { UserStore } from '@/entities/user';
 import type { UserProfileStore } from '@/entities/user-profile';
+import type { AuthFormStore, AuthStore } from '@/features/auth';
 import type { DeviceActivityStore } from '@/features/device-activity';
 import type { ModalStore } from '@/features/modal';
 import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
 import type { NotifyStore } from '@/features/toast';
-import type { AuthFormStore, AuthStore } from '@/features/user-auth';
 import type { CloudStore } from '@/widgets/cloud';
 import type { CurrencyStore } from '@/widgets/currency';
 import type { NetworkStore } from '@/widgets/network';

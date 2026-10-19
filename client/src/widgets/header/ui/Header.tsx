@@ -1,10 +1,10 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { LoginButton } from '@/features/auth';
 import { Navbar } from '@/features/navigation';
 import { NotificationButton } from '@/features/notifications';
 import { ThemeSwitcher } from '@/features/theme-switcher';
-import { LoginButton } from '@/features/user-auth';
 import { useResponsive } from '@/shared/lib/hooks';
 import { DateTime, Divider, Logo } from '@/shared/ui';
 import { UserMenuButton } from '@/widgets/user-menu';

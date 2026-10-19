@@ -1,12 +1,12 @@
 import { UserRepoRouting, UserStore } from '@/entities/user';
 import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
+import { AuthFormStore, AuthStore } from '@/features/auth';
 import { ActivityRepoRouting, DeviceActivityStore, DeviceProviderRouting } from '@/features/device-activity';
 import { ModalStore } from '@/features/modal';
 import { NotificationRepoRouting, NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
 import { NotifyStore } from '@/features/toast';
-import { AuthFormStore, AuthStore } from '@/features/user-auth';
 import { CloudRepoRouting, CloudStore } from '@/widgets/cloud';
 import { CurrencyStore } from '@/widgets/currency';
 import { NetworkRepoRouting, NetworkStore } from '@/widgets/network';

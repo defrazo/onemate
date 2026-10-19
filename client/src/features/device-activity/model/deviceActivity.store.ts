@@ -1,7 +1,7 @@
 import { action, computed, makeObservable, observable, reaction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
-import type { IAuthDevicePort } from '@/features/user-auth';
+import type { IAuthDevicePort } from '@/features/auth';
 import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 import { key } from '@/shared/lib/utils';

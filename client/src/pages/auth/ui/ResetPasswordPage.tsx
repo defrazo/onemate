@@ -1,7 +1,7 @@
 import { useNavigate, useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
-import { AuthFormHeader, AuthWrapper, ResetForm, UserAuth } from '@/features/user-auth';
+import { AuthFormHeader, AuthWrapper, ResetForm, UserAuth } from '@/features/auth';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
