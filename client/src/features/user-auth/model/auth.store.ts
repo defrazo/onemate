@@ -4,9 +4,12 @@ import type { IUserAuthPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
 import { authApi } from '../api';
+import { authChannel } from '../lib';
 import type { IAuthDevicePort } from '.';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
+	private authVersion = 0;
+
 	isInitializing = true;
 	lastAuthTime = 0;
 
@@ -109,6 +112,8 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	async logout(): Promise<void> {
 		try {
 			await authApi.logout();
+
+			authChannel.postMessage({ type: 'logout' });
 		} finally {
 			this.userStore.clearSession();
 			this.reset();
@@ -116,7 +121,10 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	}
 
 	private async checkAuth(): Promise<void> {
+		const version = this.authVersion;
 		const { authenticated, user } = await authApi.getSession();
+
+		if (version !== this.authVersion) return;
 
 		if (!authenticated || !user) {
 			this.userStore.setUser(null);
@@ -129,6 +137,14 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	private updateAuthTime(): void {
 		this.lastAuthTime = Date.now();
 	}
+
+	private readonly handleAuthMessage = (event: MessageEvent) => {
+		if (event.data?.type !== 'logout') return;
+
+		this.authVersion++;
+		this.userStore.clearSession();
+		this.reset();
+	};
 
 	constructor(private readonly userStore: IUserAuthPort) {
 		super();
@@ -146,6 +162,10 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	async init(): Promise<void> {
 		if (this.inited) return;
 		this.inited = true;
+
+		authChannel.addEventListener('message', this.handleAuthMessage);
+
+		this.track(() => authChannel.removeEventListener('message', this.handleAuthMessage));
 
 		try {
 			await this.checkAuth();
