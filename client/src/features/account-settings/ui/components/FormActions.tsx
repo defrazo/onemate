@@ -1,4 +1,4 @@
-import { IconCircleFilled } from '@tabler/icons-react';
+import { IconPointFilled } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 
@@ -10,12 +10,12 @@ interface FormActionsProps {
 }
 
 export const FormActions = ({ isLoading = false, onSave, onCancel, saveDisabled = false }: FormActionsProps) => (
-	<div className="core-gap mt-2 flex flex-1 flex-wrap items-center justify-between">
-		<div className="flex items-center gap-2 text-sm text-(--text-secondary) opacity-60 select-none">
-			<IconCircleFilled className="size-2 animate-pulse text-(--accent-secondary)" />
-			<span className="trim">Изменения не сохранены</span>
+	<div className="core-gap mt-2 flex flex-1 flex-wrap items-center justify-end select-none">
+		<div className="flex items-center gap-1">
+			<IconPointFilled className="size-3.5 animate-pulse text-(--accent-secondary)" />
+			<span className="trim text-sm text-(--text-disabled)">Изменения не сохранены</span>
 		</div>
-		<div className="core-gap flex h-8 not-md:mt-2 not-lg:flex-1 lg:ml-auto">
+		<div className="core-gap flex h-8 not-md:mt-2 not-lg:flex-1">
 			<Button
 				className="not-lg:w-full lg:min-w-40"
 				disabled={saveDisabled}

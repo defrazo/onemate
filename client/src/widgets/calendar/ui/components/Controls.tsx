@@ -80,7 +80,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
 					}
 					className={cn(
-						'h-8 bg-transparent text-xs lg:min-w-30 lg:px-3 xl:text-sm xl:hover:border-transparent',
+						'h-8 bg-transparent text-xs md:border md:border-(--border-primary) lg:min-w-30 lg:px-3 xl:text-sm xl:hover:border-transparent',
 						!isMobile && 'w-32'
 					)}
 					leftIcon={!isMobile || (isTablet && hasStart && <IconTrash className="size-4.5" />)}

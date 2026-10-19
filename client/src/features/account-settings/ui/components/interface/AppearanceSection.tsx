@@ -17,10 +17,11 @@ export const AppearanceSection = observer(() => {
 
 	return (
 		<section className="flex items-center justify-between select-none">
-			<span className="text-sm text-(--text-secondary) opacity-70 xl:text-base">Тема интерфейса</span>
+			<span className="text-sm text-(--text-secondary) opacity-70">Тема интерфейса</span>
 			<div className="flex w-fit gap-1 rounded-lg bg-(--bg-tertiary) p-1 xl:w-52">
 				{themes.map(({ value, label, icon: Icon }) => {
 					const isActive = userProfileStore.theme === value;
+
 					return (
 						<button
 							key={value}

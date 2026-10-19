@@ -32,7 +32,7 @@ export const createTaskDetails = ({
 	title.autocomplete = 'off';
 	title.placeholder = 'Введите название задачи';
 	title.className =
-		'w-full rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary)';
+		'w-full rounded-lg border border-(--border-contrast)/15 bg-(--tone) p-2 text-(--text-primary) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary)';
 
 	const titleHint = document.createElement('span');
 	titleHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';
@@ -62,7 +62,7 @@ export const createTaskDetails = ({
 	description.autocomplete = 'off';
 	description.placeholder = 'Добавьте комментарий к задаче';
 	description.className =
-		'min-h-24 w-full resize-none scrollbar-none rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary) 2xl:min-h-28';
+		'min-h-24 w-full resize-none scrollbar-none rounded-lg border border-(--border-contrast)/15 bg-(--tone) p-2 text-(--text-primary) transition-colors outline-none hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:border-(--accent-primary) focus:text-(--text-primary) 2xl:min-h-28';
 
 	const descriptionHint = document.createElement('span');
 	descriptionHint.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';

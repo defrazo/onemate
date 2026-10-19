@@ -46,7 +46,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 					)}
 					{!isSource && translatorStore.isLoading && <LoadingState size="xs" />}
 				</div>
-				<div className="pointer-events-auto flex items-end gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
+				<div className="pointer-events-auto flex h-full items-end gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
 							centerIcon={<IconX className="size-4 hover:text-(--status-error)" stroke={3} />}

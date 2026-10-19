@@ -20,7 +20,7 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 	}, [currency.value, isEditing]);
 
 	return (
-		<div className="core-tone flex items-center rounded-lg p-1">
+		<div className="core-tone flex items-center rounded-lg border border-(--border-contrast)/15 p-1">
 			<div className="flex-1">
 				<Input
 					className="number-no-spinner border-none bg-transparent px-4 text-right focus-visible:ring-0"

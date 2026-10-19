@@ -63,9 +63,7 @@ export const NotificationsSection = observer(() => {
 	return (
 		<section className="flex flex-col gap-3 select-none">
 			<div className="flex items-center justify-between">
-				<p className="text-sm text-(--text-secondary) opacity-70 xl:text-base">
-					Показывать новые уведомления в браузере
-				</p>
+				<p className="text-sm text-(--text-secondary) opacity-70">Показывать новые уведомления в браузере</p>
 				<Switch
 					checked={notificationStore.browserNotificationsEnabled}
 					disabled={!notificationStore.browserNotificationsSupported}

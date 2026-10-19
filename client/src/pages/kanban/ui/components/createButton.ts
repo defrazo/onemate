@@ -20,7 +20,7 @@ const variants: Record<ButtonVariant, string> = {
 	primary: 'bg-(--accent-primary) text-(--text-on-accent) hover:bg-(--accent-primary-hover)',
 	secondary: 'core-tone-strong text-(--text-primary)',
 	ghost: 'text-(--text-secondary) hover:bg-(--tone-strong) hover:text-(--text-primary)',
-	danger: 'text-(--danger) hover:bg-(--danger-hover) hover:text-(--text-on-accent)',
+	danger: 'text-(--status-error) hover:bg-(--danger-hover) hover:text-(--text-on-accent)',
 	icon: 'text-(--text-secondary) hover:bg-(--tone-strong) hover:text-(--text-primary)',
 };
 

@@ -104,6 +104,7 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 						<Input
 							autoFocus
 							className="min-w-0 flex-1 bg-transparent pl-1.5 text-sm outline-none not-lg:py-0.5"
+							id={`filename-${file.name}`}
 							maxLength={255 - extension.length}
 							rightIcon={
 								extension && (

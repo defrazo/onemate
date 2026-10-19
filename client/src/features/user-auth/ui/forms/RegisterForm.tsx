@@ -96,6 +96,7 @@ export const RegisterForm = observer(() => {
 			</div>
 			<PasswordInput
 				autoComplete="new-password"
+				id="password-confirm"
 				name="password-confirm"
 				placeholder="Подтвердите пароль"
 				value={authFormStore.passwordConfirm}

@@ -16,7 +16,7 @@ export const Modal = observer(({ children, onClose }: ModalProps) => {
 
 	return ReactDOM.createPortal(
 		<div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60">
-			<div className="core-surface core-pad max-w-fit flex-col bg-(--bg-secondary)/70 shadow-2xl backdrop-blur-sm">
+			<div className="core-surface core-pad max-w-fit flex-col bg-(--bg-secondary) shadow-2xl backdrop-blur-sm">
 				<div className="top-4 flex h-4 w-full justify-between">
 					{onClose && (
 						<Button

@@ -47,7 +47,7 @@ export const Buttons = ({ onClick }: { onClick: (value: ButtonValue) => void }) 
 				<Button
 					key={value}
 					className={cn(
-						'h-7 border border-(--border-contrast) text-sm lg:text-base',
+						'h-7 border border-(--border-contrast)/15 text-sm text-(--text-primary)/80 lg:text-base',
 						colSpan === 2 ? 'col-span-2' : 'col-span-1',
 						type === 'digit'
 							? 'bg-(--bg-tertiary)'

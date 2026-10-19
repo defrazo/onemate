@@ -55,7 +55,7 @@ export const PrimaryEmail = observer(() => {
 
 	return (
 		<div className="flex flex-col gap-1">
-			<label className="text-(--text-secondary) opacity-70" htmlFor="mainEmail">
+			<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="email-main">
 				Основная почта
 			</label>
 			<div className="flex flex-col gap-2">

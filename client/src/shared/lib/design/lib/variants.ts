@@ -5,20 +5,16 @@ import type { Component } from '../model';
 export const variants: Record<Component, Record<string, string>> = {
 	button: {
 		default: cn(
-			'rounded-lg border border-(--border-contrast)',
-			'bg-(--bg-tertiary) shadow-(--shadow-contrast)',
+			'rounded-lg border border-(--border-contrast)/15 bg-(--bg-tertiary)',
 			'hover:bg-(--accent-primary-hover) hover:text-(--text-on-accent)'
 		),
 		ghost: cn(
 			'rounded-lg border border-(--border-primary) bg-transparent',
 			'hover:bg-(--tone) hover:text-(--text-primary)'
 		),
-		tone: cn(
-			'rounded-lg bg-(--tone) text-(--text-primary) shadow-(--shadow-contrast)',
-			'hover:bg-(--tone-hover) focus:text-(--text-primary)'
-		),
+		tone: cn('rounded-lg bg-(--tone) text-(--text-primary)', 'hover:bg-(--tone-hover) focus:text-(--text-primary)'),
 		toneStrong: cn(
-			'rounded-lg bg-(--tone-strong) text-(--text-primary) shadow-(--shadow-contrast)',
+			'rounded-lg bg-(--tone-strong) text-(--text-primary)',
 			'hover:bg-(--tone-strong-hover) focus:text-(--text-primary)'
 		),
 		accent: cn(
@@ -26,10 +22,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'hover:bg-(--accent-primary-hover)',
 			'disabled:not-data-loading:bg-(--bg-tertiary)'
 		),
-		danger: cn(
-			'rounded-lg border border-(--border-primary) bg-(--bg-tertiary)',
-			'hover:border-transparent hover:bg-(--danger-hover) hover:text-(--text-on-accent)'
-		),
+		danger: cn('rounded-lg bg-(--bg-tertiary)', 'hover:bg-(--danger-hover) hover:text-(--text-on-accent)'),
 		iconSurface: cn(
 			'rounded-lg bg-transparent text-(--text-secondary)',
 			'hover:bg-(--tone-strong) hover:text-(--accent-primary) active:scale-90'
@@ -41,7 +34,7 @@ export const variants: Record<Component, Record<string, string>> = {
 		default: cn('border border-transparent bg-(--bg-tertiary)', 'hover:border-(--accent-primary-hover)/70'),
 		ghost: cn('border border-(--border-primary) bg-transparent', 'hover:border-(--accent-primary-hover)/70'),
 		tone: cn(
-			'border border-transparent bg-(--tone) text-(--text-primary)',
+			'border border-(--border-contrast)/15 bg-(--tone) text-(--text-primary)',
 			'hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover)',
 			'focus:text-(--text-primary)'
 		),
@@ -61,7 +54,7 @@ export const variants: Record<Component, Record<string, string>> = {
 	select: {
 		default: cn('border border-transparent bg-(--bg-tertiary)', 'hover:border-(--accent-primary-hover)/70'),
 		tone: cn(
-			'border border-transparent bg-(--tone) text-(--text-primary)',
+			'border border-(--border-contrast)/15 bg-(--tone) text-(--text-primary)',
 			'hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus:text-(--text-primary)'
 		),
 		custom: 'hover:text-(--accent-primary)',

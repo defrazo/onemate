@@ -80,7 +80,7 @@ export const AboutPage = () => {
 
 	return (
 		<div className="mx-auto flex w-full max-w-5xl flex-col gap-10 select-none not-md:pt-8 md:pb-8 xl:gap-16">
-			<section className="grid gap-10 md:grid-cols-2 md:gap-12 md:py-16 xl:grid-cols-[1.2fr_0.8fr]">
+			<section className="grid gap-10 md:grid-cols-2 md:gap-12 md:pt-10 xl:grid-cols-[1.2fr_0.8fr]">
 				<div className="m-auto flex max-w-2xl flex-col items-center gap-3">
 					<span className="h-1 w-10 animate-pulse rounded-full bg-(--accent-primary)/70" />
 					<h1 className="text-center text-2xl leading-[1.1] xl:text-5xl">
@@ -122,7 +122,7 @@ export const AboutPage = () => {
 							</div>
 							<div className="flex items-stretch gap-3">
 								<span className="mx-1 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 md:hidden" />
-								<p className="not-xl:trim text-sm text-(--text-disabled)">{description}</p>
+								<p className="not-xl:trim text-sm text-(--text-secondary)">{description}</p>
 							</div>
 						</div>
 					))}
@@ -139,15 +139,18 @@ export const AboutPage = () => {
 						как единая система, а не набор отдельных инструментов`}
 						.
 					</p>
-					<div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-(--border-primary) bg-(--border-primary) sm:grid-cols-3">
+					<div className="grid grid-cols-2 gap-px overflow-hidden rounded-xl border border-(--border-primary) bg-(--border-primary) shadow-(--shadow-contrast) sm:grid-cols-3">
 						{technologies.map(({ icon: Icon, title, description }) => (
-							<div
-								key={title}
-								className="flex items-center gap-2 bg-(--bg-secondary) px-2.5 py-3 transition-colors hover:bg-(--tone)/5"
-							>
-								<Icon className="size-6 shrink-0 text-(--text-secondary) md:size-8" stroke={1.5} />
+							<div key={title} className="group flex items-center gap-2 bg-(--bg-secondary) px-2.5 py-3">
+								<Icon
+									className="size-6 shrink-0 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary) md:size-8"
+									stroke={1.5}
+								/>
 								<div className="flex flex-col">
-									<div className="text-sm font-medium">{title}</div>
+									<div className="flex items-center gap-1">
+										<div className="text-sm font-medium">{title}</div>
+										<IconPointFilled className="mb-px size-3 text-(--accent-primary) opacity-0 transition-opacity group-hover:opacity-100" />
+									</div>
 									<div className="trim mt-0.5 text-xs text-(--text-disabled)">{description}</div>
 								</div>
 							</div>
@@ -169,17 +172,17 @@ export const AboutPage = () => {
 							</div>
 							<div className="flex items-stretch gap-3">
 								<span className="mx-1 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 transition-opacity group-hover:opacity-100 xl:opacity-0" />
-								<p className="trim text-sm text-(--text-disabled)">{description}</p>
+								<p className="trim text-sm text-(--text-secondary)">{description}</p>
 							</div>
 						</div>
 					))}
 				</div>
 			</section>
-			<section className="rounded-xl border border-(--border-primary) bg-(--bg-secondary)">
+			<section className="rounded-xl border border-(--border-primary) bg-(--bg-secondary) shadow-(--shadow-contrast)">
 				<div className="p-6 md:p-7">
-					<div className="flex items-center gap-2 font-mono text-[9px] tracking-wider text-(--text-disabled)">
+					<div className="flex items-center gap-2 font-mono text-[9px] tracking-wider">
 						<IconPointFilled className="size-3 animate-pulse text-(--status-success)" />
-						<span className="trim mt-px">ACTIVE DEVELOPMENT</span>
+						<span className="trim mt-px text-(--text-secondary)">ACTIVE DEVELOPMENT</span>
 					</div>
 					<h2 className="mt-3 text-lg font-semibold">{`${APP_NAME} – проект в процессе`}</h2>
 					<p className="mt-2 max-w-2xl space-y-5 leading-relaxed text-(--text-secondary)">
@@ -206,7 +209,7 @@ export const AboutPage = () => {
 };
 
 const Labels = ({ titles }: { titles: string[] }) => (
-	<div className="hidden items-center gap-x-3 font-mono text-[10px] tracking-wide text-(--text-disabled) sm:flex">
+	<div className="hidden items-center gap-x-3 font-mono text-[10px] tracking-wide text-(--text-secondary) sm:flex">
 		<span className="trim transition-colors hover:text-(--accent-primary)">{titles[0]}</span>
 		<span>/</span>
 		<span className="trim transition-colors hover:text-(--accent-primary)">{titles[1]}</span>

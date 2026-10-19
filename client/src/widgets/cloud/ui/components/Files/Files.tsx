@@ -109,6 +109,7 @@ export const Files = observer(({ searchOpen, onSearchClose }: { searchOpen: bool
 					<Input
 						ref={searchRef}
 						className="h-8 min-w-0 flex-1 text-sm"
+						id="search"
 						placeholder="Поиск файлов..."
 						value={cloudStore.searchQuery}
 						variant="tone"
@@ -182,7 +183,7 @@ export const Files = observer(({ searchOpen, onSearchClose }: { searchOpen: bool
 					</div>
 				)}
 			</div>
-			<div className="flex items-end justify-between gap-2">
+			<div className="flex items-end justify-between gap-3">
 				<div className="flex w-full min-w-0 flex-col gap-0.5 text-xs text-(--text-secondary)">
 					<div className="flex gap-2">
 						<span>

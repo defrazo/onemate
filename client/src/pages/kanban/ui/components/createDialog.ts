@@ -6,7 +6,8 @@ export const createDialog = (text: string, icon?: SVGElement) => {
 	// === CONTAINER ===
 	const container = document.createElement('div');
 	container.className =
-		'scrollbar-none relative flex h-fit max-h-full min-h-0 w-full max-w-md min-w-0 flex-col gap-2 overflow-x-hidden overflow-y-auto rounded-xl border border-(--border-primary) bg-(--bg-tertiary)/50 p-3 shadow-(--shadow-contrast) backdrop-blur-sm xl:gap-3 xl:p-4';
+		'relative flex h-fit max-h-full min-h-0 w-full max-w-md min-w-0 scrollbar-none flex-col gap-2 overflow-x-hidden overflow-y-auto rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-(--shadow-contrast) backdrop-blur-sm xl:gap-3 xl:p-4';
+
 	// === HEADER ===
 	const header = document.createElement('div');
 	header.className = 'flex min-w-0 items-center gap-2 select-none';

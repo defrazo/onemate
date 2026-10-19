@@ -13,7 +13,7 @@ interface BackButtonProps {
 export const BackButton = ({ title, onBack = 'Назад', onClick, className }: BackButtonProps) => (
 	<Button
 		className={cn(
-			'h-7 rounded-md text-(--text-secondary) hover:text-(--text-primary) active:scale-90 md:text-sm lg:h-6',
+			'h-7 rounded-md border border-(--border-contrast)/15 text-(--text-secondary) hover:text-(--text-primary) active:scale-90 md:text-sm lg:h-6',
 			className
 		)}
 		leftIcon={<IconArrowLeft className="size-4" />}

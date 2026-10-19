@@ -78,7 +78,7 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 							ref={(element) => {
 								optionRefs.current[option.value] = element;
 							}}
-							className={cn('px-1', isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)')}
+							className={cn('px-2', isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)')}
 							role="tab"
 							type="button"
 							onClick={() => onChange(option.value)}

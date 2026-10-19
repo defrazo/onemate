@@ -75,8 +75,8 @@ export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 				</div>
 			</div>
 			<div className="flex min-w-0 cursor-default items-center gap-2 rounded-lg bg-(--tone-strong) px-2 py-1.5">
-				<FileIcon className="size-7.5 shrink-0 text-(--accent-primary)" />
-				<div className="flex min-w-0 flex-1 flex-col gap-0.5">
+				<FileIcon className="size-8 shrink-0 text-(--accent-primary)" />
+				<div className="-mt-px flex min-w-0 flex-1 flex-col gap-0.5">
 					<span className="truncate text-sm font-medium" title={file.name}>
 						{file.name}
 					</span>

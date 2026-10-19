@@ -149,7 +149,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 						return (
 							<line
 								key={position}
-								className="text-white/20"
+								className="text-(--text-secondary)"
 								stroke="currentColor"
 								strokeDasharray="2 7"
 								vectorEffect="non-scaling-stroke"

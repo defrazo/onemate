@@ -174,7 +174,6 @@ export const SharedFilePage = () => {
 						<p className="max-w-sm text-center text-sm text-(--text-secondary)">
 							Произошла ошибка соединения с сервером. Попробуйте ещё раз.
 						</p>
-
 						<Button
 							className="mt-2 h-10 min-w-48"
 							leftIcon={<IconRefresh className="size-4" />}
@@ -200,8 +199,8 @@ export const SharedFilePage = () => {
 									<IconFile className="size-6 text-(--accent-primary)" />
 								)}
 							</div>
-							<div className="flex min-w-0 flex-1 flex-col gap-1">
-								<span className="truncate text-sm font-semibold" title={file.name}>
+							<div className="flex min-w-0 flex-1 flex-col gap-0.5">
+								<span className="truncate font-semibold" title={file.name}>
 									{file.name}
 								</span>
 								<span className="text-xs text-(--text-secondary)">{formatFileSize(file.size)}</span>
@@ -209,14 +208,14 @@ export const SharedFilePage = () => {
 						</div>
 						<div className="flex w-full flex-col gap-2 sm:flex-row">
 							<a
-								className="flex h-8 flex-1 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-opacity hover:opacity-90"
+								className="flex h-8 w-full items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-opacity hover:opacity-90"
 								href={downloadUrl}
 							>
 								<IconDownload className="size-4" />
 								Скачать файл
 							</a>
 							{previewType && (
-								<Button className="h-8 flex-1" variant="ghost" onClick={() => void handlePreview()}>
+								<Button className="h-8 w-full" variant="ghost" onClick={() => void handlePreview()}>
 									{showPreview ? 'Скрыть просмотр' : 'Предпросмотр'}
 								</Button>
 							)}

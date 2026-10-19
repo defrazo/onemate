@@ -39,7 +39,7 @@ export const ReplaceWidgetDialog = ({ selected, target, onCancel, onReplace }: R
 					return (
 						<button
 							key={id}
-							className="flex h-10 cursor-pointer items-center gap-2 rounded-lg bg-(--bg-tertiary) px-3 text-sm text-(--text-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
+							className="flex h-10 cursor-pointer items-center gap-2 rounded-lg border border-(--border-contrast)/15 bg-(--bg-tertiary) px-3 text-sm text-(--text-secondary) transition-[color,background-color,scale] hover:scale-[1.03] hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
 							type="button"
 							onClick={() => onReplace(id)}
 						>

@@ -31,6 +31,7 @@ export const ForgotForm = observer(() => {
 	return (
 		<form className="flex w-full max-w-md flex-col gap-3" onSubmit={handleSubmit}>
 			<Input
+				autoComplete="email"
 				className="border-(--border-tone)"
 				id="email"
 				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}

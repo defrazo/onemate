@@ -6,8 +6,8 @@ export const OverviewRow = ({ label, value }: { label: string; value?: ReactNode
 	const isEmpty = value === undefined || value === null || value === '';
 
 	return (
-		<div className="core-tone flex min-w-0 cursor-default flex-col gap-1 rounded-lg p-3">
-			<span className="text-xs text-(--text-secondary) opacity-55">{label}</span>
+		<div className="core-tone flex min-w-0 cursor-default flex-col gap-1 rounded-lg border border-(--border-contrast)/15 p-3">
+			<span className="text-xs text-(--text-secondary) opacity-70">{label}</span>
 			<span
 				className={cn(
 					'truncate text-sm text-(--text-primary)',

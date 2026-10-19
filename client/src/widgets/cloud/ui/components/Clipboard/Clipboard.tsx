@@ -42,6 +42,7 @@ export const Clipboard = observer(() => {
 				ref={textareaRef}
 				className="min-h-0 flex-1 scrollbar-none p-0 text-base"
 				disabled={store.isResolvingTextConflict}
+				id="clipboard"
 				maxLength={CLOUD_LIMITS.TEXT_LENGTH}
 				placeholder="Текст, ссылка, команда или что-нибудь ещё..."
 				resize="none"

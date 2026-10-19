@@ -144,7 +144,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					</div>
 				</div>
 			</div>
-			<div className="my-auto grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5 xl:my-3">
+			<div className="my-auto grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5 xl:my-1">
 				<Metric
 					label="Отклик"
 					style={getResponseTimeClass(service.lastResponseTime)}

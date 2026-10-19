@@ -35,24 +35,28 @@ export const createTaskProperties = ({
 	const periodRow = createPropertyRow(calendarIcon, 'Период');
 
 	const periodControl = document.createElement('div');
-	periodControl.className = 'flex min-w-0 items-center gap-2';
+	periodControl.className = 'flex min-w-0 flex-col gap-1.5';
 
-	const startDate = createDatePicker({ value: initialStartDate, className: 'w-32' });
+	const datesRow = document.createElement('div');
+	datesRow.className = 'flex min-w-0 items-center gap-2';
+
+	const startDate = createDatePicker({ value: initialStartDate, className: 'w-32', onChange: handleDateChange });
 
 	const arrow = document.createElement('div');
 	arrow.className = 'flex size-5 shrink-0 items-center justify-center text-(--text-disabled)';
 	insertSvg(arrow, arrowIcon, 'size-5');
 
-	const endDate = createDatePicker({ value: initialEndDate, className: 'w-32' });
+	const endDate = createDatePicker({ value: initialEndDate, className: 'w-32', onChange: handleDateChange });
 
-	periodControl.append(startDate.element, arrow, endDate.element);
-
-	periodRow.content.append(periodControl);
+	datesRow.append(startDate.element, arrow, endDate.element);
 
 	// === DATE ERROR ===
 	const dateError = document.createElement('span');
-	dateError.textContent = 'Дата завершения не может быть раньше даты начала';
-	dateError.className = 'hidden px-3 pb-2 text-sm text-(--status-error) opacity-70';
+	dateError.textContent = 'Дата окончания раньше начала';
+	dateError.className = 'hidden text-center text-xs text-(--status-error)';
+
+	periodControl.append(datesRow, dateError);
+	periodRow.content.append(periodControl);
 
 	// === STATUS ===
 	const statusRow = createPropertyRow(statusIcon, 'Статус');
@@ -94,18 +98,10 @@ export const createTaskProperties = ({
 	priorityRow.content.append(prioritySelect.element);
 
 	// === EVENTS ===
-	const onStartDateChange = () => {
+	function handleDateChange() {
 		setDatesInvalid(!areDatesValid());
 		onChange();
-	};
-
-	const onEndDateChange = () => {
-		setDatesInvalid(!areDatesValid());
-		onChange();
-	};
-
-	startDate.element.addEventListener('dateChange', onStartDateChange);
-	endDate.element.addEventListener('dateChange', onEndDateChange);
+	}
 
 	// === ACTION FUNCTIONS ===
 	function getValue(): TaskPropertiesValue {
@@ -132,9 +128,6 @@ export const createTaskProperties = ({
 
 	// === LIFECYCLE ===
 	function destroy() {
-		startDate.element.removeEventListener('dateChange', onStartDateChange);
-		endDate.element.removeEventListener('dateChange', onEndDateChange);
-
 		startDate.destroy();
 		endDate.destroy();
 		statusSelect.destroy();
@@ -142,7 +135,7 @@ export const createTaskProperties = ({
 	}
 
 	// === ASSEMBLY ===
-	element.append(periodRow.element, dateError, statusRow.element, priorityRow.element);
+	element.append(periodRow.element, statusRow.element, priorityRow.element);
 
 	return { element, getValue, areDatesValid, setDatesInvalid, destroy };
 };

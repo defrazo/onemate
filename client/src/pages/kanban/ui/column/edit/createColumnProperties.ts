@@ -53,7 +53,7 @@ export const createColumnProperties = ({
 		button.title = columnColor;
 		button.dataset.color = columnColor;
 		button.className =
-			'relative size-5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-[transform,border-color] duration-150 hover:scale-110 hover:border-white/25';
+			'relative size-5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-[transform,border-color] duration-150 hover:scale-110 hover:border-(--tone-strong-hover)';
 
 		const dot = document.createElement('span');
 		dot.className = 'absolute inset-0.5 rounded-full';
@@ -82,7 +82,8 @@ export const createColumnProperties = ({
 	function updatePalette() {
 		paletteListeners.forEach(({ button }) => {
 			const selected = button.dataset.color === selectedColor;
-			button.classList.toggle('border-white/50', selected);
+			button.classList.toggle('border-(--tone-strong-hover)', selected);
+			button.classList.toggle('border-transparent', !selected);
 			button.classList.toggle('scale-110', selected);
 		});
 	}

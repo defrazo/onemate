@@ -39,16 +39,14 @@ export const WidgetsSection = observer(() => {
 
 	return (
 		<section className="flex flex-col gap-3 select-none">
-			<p className="text-sm text-(--text-secondary) opacity-70 xl:text-base">
-				Выберите, какие виджеты отображать в Dashboard
-			</p>
+			<p className="text-sm text-(--text-secondary) opacity-70">Выберите, какие виджеты отображать в Dashboard</p>
 			<div className="flex flex-col gap-1">
 				<p className="text-xs text-(--text-secondary)">Текущие</p>
 				<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
 					{activeWidgets.map(({ id, title, icon: Icon }) => (
 						<div
 							key={id}
-							className="flex h-10 items-center gap-2 rounded-lg bg-(--bg-tertiary) px-3 text-sm"
+							className="flex h-10 items-center gap-2 rounded-lg border border-(--border-contrast)/15 bg-(--bg-tertiary) px-3 text-sm"
 						>
 							<Icon className="size-5 text-(--accent-primary)" />
 							<span className="trim">{title}</span>

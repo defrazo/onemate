@@ -31,10 +31,11 @@ export const createDatePicker = ({
 	// === DISPLAY ===
 	const display = document.createElement('span');
 	display.textContent = formatDate(value);
-	display.className = cn('trim min-w-0 flex-1', !value && 'text-(--text-disabled)');
+	display.className = cn('trim mt-px min-w-0 flex-1', !value && 'text-(--text-disabled)');
 
 	// === INPUT ===
 	const input = document.createElement('input');
+	input.id = `date-${value}`;
 	input.type = 'date';
 	input.value = value ?? '';
 	input.readOnly = readonly;

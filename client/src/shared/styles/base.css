@@ -27,6 +27,6 @@
 	input:-webkit-autofill:active {
 		-webkit-text-fill-color: var(--text-primary);
 		caret-color: var(--text-primary);
-		box-shadow: 0 0 0 1000px var(--bg-secondary) inset;
+		box-shadow: 0 0 0 1000px var(--tone-strong-hover) inset;
 	}
 }

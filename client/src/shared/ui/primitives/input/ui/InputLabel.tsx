@@ -13,6 +13,6 @@ export const InputLabel = ({ icon: Icon, htmlFor, className }: InputLabelProps) 
 		className={cn('flex cursor-text items-center border-r border-(--border-primary)', className)}
 		htmlFor={htmlFor}
 	>
-		<Icon className="mr-1.5 ml-1 size-5.5 text-(--text-primary)/80" />
+		<Icon className="mr-1.5 ml-1 size-5.5 text-(--text-secondary)" />
 	</label>
 );

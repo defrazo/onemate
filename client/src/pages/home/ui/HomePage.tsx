@@ -28,7 +28,7 @@ export const HomePage = observer(() => {
 	return (
 		<div className="relative flex min-h-0 flex-1 overflow-hidden pb-44 select-none md:pb-84 lg:pb-114 xl:pb-64 2xl:pb-84 md:landscape:pb-44 xl:landscape:pb-64">
 			<div className="mx-auto mt-auto mb-10 flex max-w-6xl flex-col items-center text-center md:mb-30 xl:mb-10 2xl:mb-20">
-				<span className="trim mb-2 font-mono text-xs tracking-wide text-(--text-disabled)/80">
+				<span className="trim mb-2 font-mono text-xs tracking-wide text-(--text-secondary)/80">
 					PERSONAL WORKSPACE
 				</span>
 				<h1 className="my-4 max-w-xs text-4xl font-semibold md:my-0 md:max-w-none md:text-5xl lg:text-6xl">

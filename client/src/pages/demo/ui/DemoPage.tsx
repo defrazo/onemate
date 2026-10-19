@@ -1,3 +1,5 @@
+import { IconChevronDown } from '@tabler/icons-react';
+
 import { APP_NAME } from '@/shared/config';
 import { ArticleSection } from '@/shared/ui';
 
@@ -5,7 +7,7 @@ export const DemoPage = () => (
 	<div className="core-gap flex w-full flex-col">
 		<header className="flex flex-col items-center">
 			<h1 className="cursor-default text-center text-xl leading-tight font-bold md:text-3xl">О демо-режиме</h1>
-			<p className="text-center text-(--text-disabled)">
+			<p className="text-center text-(--text-secondary)">
 				{`Как устроена демонстрационная версия ${APP_NAME} и какие ограничения в ней действуют`}.
 			</p>
 		</header>
@@ -127,8 +129,9 @@ export const DemoPage = () => (
 
 const FaqItem = ({ question, answer }: { question: string; answer: string }) => (
 	<details className="group border-(--border-primary) py-3 not-last:border-b">
-		<summary className="cursor-pointer list-none font-semibold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary)">
-			{question}
+		<summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary) [&::-webkit-details-marker]:hidden">
+			<span>{question}</span>
+			<IconChevronDown className="size-4 shrink-0 text-(--text-tertiary) transition-transform duration-200 group-open:rotate-180 group-open:text-(--text-primary)" />
 		</summary>
 		<p className="mt-2 pr-6 text-sm leading-relaxed text-(--text-secondary)">{answer}</p>
 	</details>

@@ -33,7 +33,7 @@ export const Slot = ({ options, value, content, onChange, reverse, className }: 
 				<div className="flex min-h-0 flex-1 items-center justify-center">
 					<div className="flex flex-col items-center gap-0.5">
 						<div className="mb-1 flex size-12 items-center justify-center rounded-xl bg-(--tone-strong)">
-							<IconLayoutGridAdd className="size-6 text-(--accent-primary)" />
+							<IconLayoutGridAdd className="size-6 text-(--text-disabled)" />
 						</div>
 						<span className="text-(--text-secondary)">Свободное место</span>
 						<span className="trim text-sm text-(--text-disabled)">Выберите виджет на панели</span>

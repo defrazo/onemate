@@ -27,7 +27,7 @@ export const Switch = ({ checked, disabled = false, onCheckedChange }: SwitchPro
 		>
 			<span
 				className={cn(
-					'absolute top-1 left-1 size-4 rounded-full bg-white transition-transform',
+					'absolute top-1 left-1 size-4 rounded-full bg-(--text-on-accent) transition-transform',
 					checked && 'translate-x-5'
 				)}
 			/>

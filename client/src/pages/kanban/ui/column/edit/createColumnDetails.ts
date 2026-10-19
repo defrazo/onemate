@@ -20,7 +20,7 @@ export const createColumnDetails = ({ title: initialTitle, onChange }: { title: 
 	input.autocomplete = 'off';
 	input.placeholder = 'Введите название колонки';
 	input.className =
-		'w-full rounded-lg border border-transparent bg-(--tone) p-2 text-(--text-primary) shadow-(--shadow-contrast) transition-colors outline-none hover:border-(--accent-primary-hover)/70 focus:border-(--accent-primary) focus:text-(--text-primary)';
+		'w-full rounded-lg border border-(--border-contrast)/15 bg-(--tone) p-2 text-(--text-primary) transition-colors outline-none hover:border-(--accent-primary-hover)/70 focus:border-(--accent-primary) focus:text-(--text-primary)';
 
 	// === HINT ===
 	const hint = document.createElement('span');

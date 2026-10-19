@@ -15,7 +15,7 @@ export const createTaskDetails = ({ title, description }: { title: string; descr
 	const titleValue = document.createElement('div');
 	titleValue.textContent = title;
 	titleValue.className =
-		'cursor-default rounded-lg bg-(--tone) px-3 py-2.5 text-sm text-(--text-primary) 2xl:text-base';
+		'cursor-default rounded-lg border border-(--border-contrast)/15 bg-(--tone) px-3 py-2.5 text-sm text-(--text-primary) 2xl:text-base';
 
 	titleField.append(titleLabel, titleValue);
 
@@ -30,7 +30,7 @@ export const createTaskDetails = ({ title, description }: { title: string; descr
 	const descriptionValue = document.createElement('p');
 	descriptionValue.textContent = description || 'Комментарий не добавлен';
 	descriptionValue.className = cn(
-		'min-h-16 cursor-default rounded-lg bg-(--tone) px-3 py-2.5 text-sm leading-5 whitespace-pre-wrap 2xl:text-base',
+		'min-h-16 cursor-default rounded-lg border border-(--border-contrast)/15 bg-(--tone) px-3 py-2.5 text-sm leading-5 whitespace-pre-wrap 2xl:text-base',
 		description ? 'text-(--text-primary)' : 'text-(--text-disabled)'
 	);
 

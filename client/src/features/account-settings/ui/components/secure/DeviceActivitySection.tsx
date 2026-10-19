@@ -99,7 +99,7 @@ export const DeviceActivitySection = observer(() => {
 								</div>
 							</div>
 							<Button
-								className="mr-4 hidden flex-1 text-xs active:scale-90 xl:block"
+								className="mr-4 hidden flex-1 border border-(--border-contrast)/15 text-xs active:scale-90 xl:block"
 								padding="sm"
 								type="button"
 								variant="tone"

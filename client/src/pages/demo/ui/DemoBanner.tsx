@@ -28,7 +28,7 @@ export const DemoBanner = observer(() => {
 			<div className="relative mx-auto flex min-h-10 max-w-400 items-center justify-center px-12 py-2">
 				<p className="flex items-center gap-1 text-center text-xs text-(--text-secondary) md:text-sm">
 					<span className="font-semibold text-(--text-primary)">Вы в демо-режиме.</span>
-					<span className="hidden sm:inline">
+					<span className="hidden lg:inline">
 						Изменения сохраняются только в этом браузере, некоторые функции недоступны.
 					</span>
 					<Link

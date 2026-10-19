@@ -15,7 +15,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	element.dataset.columnHeader = '';
 	element.dataset.columnDragHandle = '';
 	element.className =
-		'group/header flex min-w-0 items-center gap-2 rounded-lg border border-(--tone-strong) bg-(--tone)/50 px-3 py-2';
+		'group/header flex min-w-0 items-center gap-2 rounded-lg border border-transparent bg-(--bg-secondary) px-3 py-2 shadow-(--shadow-contrast) transition-colors hover:border-(--border-primary)';
 
 	// === ACCENT ===
 	const accent = document.createElement('span');
