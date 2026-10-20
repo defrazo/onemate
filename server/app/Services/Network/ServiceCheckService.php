@@ -16,7 +16,7 @@ class ServiceCheckService
     {
     }
 
-    public function check(string $url): array
+    public function check(string $url, string $checkVia = 'direct'): array
     {
         $currentUrl = $url;
 
@@ -24,11 +24,12 @@ class ServiceCheckService
             for ($redirects = 0; $redirects <= self::MAX_REDIRECTS; $redirects++) {
                 [$host, $ip] = $this->resolvePublicHost($currentUrl);
 
-                $response = $this->request($currentUrl, $host, $ip);
+                $response = $this->request($currentUrl, $host, $ip, $checkVia);
 
                 if (!$response->redirect()) {
                     return $this->result(
                         url: $url,
+                        checkVia: $checkVia,
                         status: 'up',
                         statusCode: $response->status(),
                         responseTime: $this->responseTime($response),
@@ -37,7 +38,7 @@ class ServiceCheckService
                 }
 
                 if ($redirects === self::MAX_REDIRECTS) {
-                    return $this->down($url, $ip);
+                    return $this->down($url, $checkVia, $ip);
                 }
 
                 $location = $response->header('Location');
@@ -45,6 +46,7 @@ class ServiceCheckService
                 if (!$location) {
                     return $this->result(
                         url: $url,
+                        checkVia: $checkVia,
                         status: 'up',
                         statusCode: $response->status(),
                         responseTime: $this->responseTime($response),
@@ -55,25 +57,42 @@ class ServiceCheckService
                 $currentUrl = $this->resolveRedirectUrl($currentUrl, $location);
             }
         } catch (ConnectionException) {
-            return $this->down($url);
+            return $this->down($url, $checkVia);
         }
 
-        return $this->down($url);
+        return $this->down($url, $checkVia);
     }
 
-    private function request(string $url, string $host, string $ip): Response
+    private function request(string $url, string $host, string $ip, string $checkVia): Response
     {
         $port = parse_url($url, PHP_URL_PORT)
             ?: (parse_url($url, PHP_URL_SCHEME) === 'https' ? 443 : 80);
 
+        $options = [
+            'allow_redirects' => false,
+            'curl' => [
+                CURLOPT_RESOLVE => ["{$host}:{$port}:{$ip}"],
+            ],
+        ];
+
+        if ($checkVia === 'proxy') {
+            $proxy = config('services.check_proxy');
+
+            $username = rawurlencode($proxy['username']);
+            $password = rawurlencode($proxy['password']);
+
+            $options['proxy'] = sprintf(
+                'socks5://%s:%s@%s:%d',
+                $username,
+                $password,
+                $proxy['host'],
+                $proxy['port'],
+            );
+        }
+
         return Http::connectTimeout(3)
             ->timeout(5)
-            ->withOptions([
-                'allow_redirects' => false,
-                'curl' => [
-                    CURLOPT_RESOLVE => ["{$host}:{$port}:{$ip}"],
-                ],
-            ])
+            ->withOptions($options)
             ->get($url);
     }
 
@@ -100,6 +119,7 @@ class ServiceCheckService
 
     private function result(
         string $url,
+        string $checkVia,
         string $status,
         ?int $statusCode,
         ?int $responseTime,
@@ -107,6 +127,7 @@ class ServiceCheckService
     ): array {
         return [
             'url' => $url,
+            'checkVia' => $checkVia,
             'status' => $status,
             'statusCode' => $statusCode,
             'responseTime' => $responseTime,
@@ -114,10 +135,11 @@ class ServiceCheckService
         ];
     }
 
-    private function down(string $url, ?string $ip = null): array
+    private function down(string $url, string $checkVia, ?string $ip = null): array
     {
         return $this->result(
             url: $url,
+            checkVia: $checkVia,
             status: 'down',
             statusCode: null,
             responseTime: null,

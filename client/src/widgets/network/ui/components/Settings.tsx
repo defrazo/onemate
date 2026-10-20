@@ -2,9 +2,9 @@ import { useState } from 'react';
 import { IconLink, IconPlugConnected, IconServer, IconWorldWww, IconX } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import { Button, ConfirmDialog, Input, InputLabel, LengthHint, Switch } from '@/shared/ui';
+import { Button, ConfirmDialog, Input, InputLabel, LengthHint, SegmentedControl, Switch } from '@/shared/ui';
 
-import { LIMITS, type MonitoredService, type UpdateMonitoredService } from '../../model';
+import { type CheckVia, LIMITS, type MonitoredService, type UpdateMonitoredService } from '../../model';
 import { ViewHeader } from '.';
 
 interface SettingsProps {
@@ -20,10 +20,13 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	const [url, setUrl] = useState(service.type === 'http' ? service.url : '');
 	const [host, setHost] = useState(service.type === 'tcp' ? service.host : '');
 	const [port, setPort] = useState(service.type === 'tcp' ? String(service.port) : '');
-
+	const [checkVia, setCheckVia] = useState<CheckVia>(service.checkVia);
 	const [isActive, setIsActive] = useState(service.isActive);
+
 	const [isSaving, setIsSaving] = useState(false);
 	const [isDeleting, setIsDeleting] = useState(false);
+
+	const isBusy = isSaving || isDeleting;
 
 	const portNumber = Number(port);
 
@@ -32,16 +35,26 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			? url.trim() !== service.url
 			: host.trim() !== service.host || portNumber !== service.port;
 
-	const hasChanges = name.trim() !== service.name || targetChanged || isActive !== service.isActive;
+	const checkViaChanged = checkVia !== service.checkVia;
+
+	const checkConfigChanged = targetChanged || checkViaChanged;
+
+	const hasChanges = name.trim() !== service.name || checkConfigChanged || isActive !== service.isActive;
+
+	const handleRouteChange = (nextType: CheckVia) => {
+		setCheckVia(nextType);
+	};
 
 	const update = async () => {
+		if (isBusy) return;
+
 		setIsSaving(true);
 
 		try {
 			const data: UpdateMonitoredService =
 				service.type === 'http'
-					? { type: 'http', name: name.trim(), url: url.trim(), isActive }
-					: { type: 'tcp', name: name.trim(), host: host.trim(), port: portNumber, isActive };
+					? { type: 'http', name: name.trim(), url: url.trim(), checkVia, isActive }
+					: { type: 'tcp', name: name.trim(), host: host.trim(), port: portNumber, checkVia, isActive };
 
 			await networkStore.updateService(service.id, data);
 
@@ -56,6 +69,8 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	};
 
 	const destroy = async () => {
+		if (isBusy) return;
+
 		setIsDeleting(true);
 
 		try {
@@ -72,7 +87,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	};
 
 	const save = () => {
-		if (!hasChanges || isSaving || isDeleting) return;
+		if (!hasChanges || isBusy) return;
 
 		const trimmedName = name.trim();
 		const trimmedUrl = url.trim();
@@ -110,7 +125,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			}
 		}
 
-		if (!targetChanged) {
+		if (!checkConfigChanged) {
 			void update();
 			return;
 		}
@@ -119,7 +134,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			<ConfirmDialog
 				confirmLabel="Изменить"
 				description="История предыдущих проверок будет удалена"
-				title={service.type === 'http' ? 'Изменить адрес сервиса?' : 'Изменить сервер или порт?'}
+				title="Изменить параметры проверки?"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
 				onConfirm={update}
@@ -128,7 +143,7 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 	};
 
 	const remove = () => {
-		if (isSaving || isDeleting) return;
+		if (isBusy) return;
 
 		modalStore.setModal(
 			<ConfirmDialog
@@ -147,16 +162,18 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 			<ViewHeader icon={IconWorldWww} title="Настройки мониторинга" onBack={onBack} />
 			<div className="flex flex-col gap-3">
 				<div className="flex flex-col gap-1">
-					<label className="text-(--text-secondary) opacity-70" htmlFor="name">
+					<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="name">
 						Название
 					</label>
 					<Input
 						autoComplete="off"
+						disabled={isBusy}
 						id="name"
 						leftIcon={<InputLabel htmlFor="name" icon={IconWorldWww} />}
 						placeholder="Название сервиса"
 						rightIcon={
-							name && (
+							name &&
+							!isBusy && (
 								<IconX
 									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => setName('')}
@@ -172,18 +189,20 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 				</div>
 				{service.type === 'http' ? (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--text-secondary) opacity-70" htmlFor="url">
+						<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="url">
 							Адрес
 						</label>
 						<Input
 							autoComplete="url"
+							disabled={isBusy}
 							id="url"
 							inputMode="url"
 							leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
 							maxLength={LIMITS.URL}
 							placeholder="https://example.com"
 							rightIcon={
-								url && (
+								url &&
+								!isBusy && (
 									<IconX
 										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 										onClick={() => setUrl('')}
@@ -198,18 +217,20 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 					</div>
 				) : (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--text-secondary) opacity-70" htmlFor="host">
+						<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="host">
 							Хост и порт
 						</label>
-						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
+						<div className="grid grid-cols-[minmax(0,1fr)_144px] gap-2">
 							<Input
 								autoComplete="url"
+								disabled={isBusy}
 								id="host"
 								leftIcon={<InputLabel htmlFor="host" icon={IconServer} />}
 								maxLength={LIMITS.HOST}
 								placeholder="94.232.42.121"
 								rightIcon={
-									host && (
+									host &&
+									!isBusy && (
 										<IconX
 											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 											onClick={() => setHost('')}
@@ -224,11 +245,21 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 							<Input
 								autoComplete="off"
 								className="number-no-spinner"
+								disabled={isBusy}
 								id="port"
 								leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
 								max={LIMITS.MAX_PORT}
 								min={LIMITS.MIN_PORT}
 								placeholder="22"
+								rightIcon={
+									port &&
+									!isBusy && (
+										<IconX
+											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
+											onClick={() => setPort('')}
+										/>
+									)
+								}
 								type="number"
 								value={port}
 								variant="ghost"
@@ -238,39 +269,54 @@ export const Settings = ({ service, onBack, onDeleted }: SettingsProps) => {
 					</div>
 				)}
 				<div className="flex items-center justify-between">
-					<div className="flex min-w-0 flex-col">
-						<span className="text-sm xl:text-base">Мониторинг</span>
-						<span className="text-xs text-(--text-secondary) opacity-70">
+					<div className="flex min-w-0 flex-col gap-0.5">
+						<span className="text-sm text-(--text-secondary) opacity-70">Мониторинг</span>
+						<span className="trim text-xs text-(--text-disabled)">
 							Автоматическая проверка каждые 15 минут
 						</span>
 					</div>
-					<Switch checked={isActive} onCheckedChange={setIsActive} />
+					<Switch checked={isActive} disabled={isBusy} onCheckedChange={setIsActive} />
 				</div>
-				<div className="flex h-9 gap-3 md:h-7 lg:ml-auto">
-					<Button
-						className="w-40 text-sm not-lg:flex-1"
-						disabled={!hasChanges || isSaving || isDeleting}
-						loading={isSaving}
-						loadingText="Сохраняем..."
-						title="Сохранить"
-						type="button"
-						variant="accent"
-						onClick={save}
-					>
-						<span className="trim">Сохранить</span>
-					</Button>
-					<Button
-						className="w-40 text-sm not-lg:flex-1"
-						disabled={isSaving || isDeleting}
-						loading={isDeleting}
-						loadingText="Удаляем..."
-						title="Удалить"
-						type="button"
-						variant="danger"
-						onClick={remove}
-					>
-						<span className="trim">Удалить</span>
-					</Button>
+				<div className="flex flex-col gap-3">
+					<div className="flex items-center justify-between gap-3">
+						<span className="text-sm text-(--text-secondary) opacity-70">Маршрут проверки</span>
+						<SegmentedControl
+							className="h-7 min-w-36"
+							disabled={isBusy}
+							options={[
+								{ value: 'direct', label: 'Direct' },
+								{ value: 'proxy', label: 'Proxy' },
+							]}
+							value={checkVia}
+							onChange={handleRouteChange}
+						/>
+					</div>
+					<div className="mt-3 flex h-9 gap-3 md:h-7 lg:ml-auto">
+						<Button
+							className="min-w-36 text-sm not-lg:flex-1"
+							disabled={!hasChanges || isBusy}
+							loading={isSaving}
+							loadingText="Сохраняем..."
+							title="Сохранить"
+							type="button"
+							variant="accent"
+							onClick={save}
+						>
+							<span className="trim">Сохранить</span>
+						</Button>
+						<Button
+							className="min-w-36 text-sm not-lg:flex-1"
+							disabled={isBusy}
+							loading={isDeleting}
+							loadingText="Удаляем..."
+							title="Удалить"
+							type="button"
+							variant="danger"
+							onClick={remove}
+						>
+							<span className="trim">Удалить</span>
+						</Button>
+					</div>
 				</div>
 			</div>
 		</div>

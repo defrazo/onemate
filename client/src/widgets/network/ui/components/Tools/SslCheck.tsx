@@ -62,12 +62,14 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 			<form className="core-gap flex flex-col" onSubmit={handleSubmit}>
 				<Input
 					autoComplete="url"
+					disabled={isLoading}
 					id="host"
 					inputMode="url"
 					leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
 					placeholder="https://example.com"
 					rightIcon={
-						host && (
+						host &&
+						!isLoading && (
 							<IconX
 								className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 								onClick={() => handleHostChange('')}
@@ -80,7 +82,6 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 					onChange={(e) => handleHostChange(e.target.value)}
 				/>
 				<div className="flex flex-wrap items-center justify-end gap-2">
-					{result && <CopyButton onClick={handleCopy} />}
 					{error && (
 						<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
 							<IconAlertCircle className="size-3.5" />
@@ -92,9 +93,10 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 			</form>
 			{result && (
 				<div className="flex flex-col">
-					<div className="mb-3 flex items-center gap-2">
+					<div className="flex items-center gap-2">
 						<span className="text-xs text-(--text-secondary)">Результат</span>
-						<Divider />
+						<Divider className="shrink" />
+						<CopyButton onClick={handleCopy} />
 					</div>
 					<div className="flex flex-col gap-0.5">
 						<div className="flex min-w-0 items-center gap-1">
@@ -106,7 +108,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 							<span className="text-xs tabular-nums">{result.ip}</span>
 						</div>
 					</div>
-					<div className="my-3 grid shrink-0 grid-cols-2 gap-y-1 rounded-lg bg-(--tone-strong) py-2.5 md:gap-y-3 xl:grid-cols-4 xl:gap-y-0">
+					<div className="my-3 grid shrink-0 grid-cols-2 gap-y-1 rounded-lg bg-(--tone-strong) py-1.5 md:gap-y-3 xl:grid-cols-4 xl:gap-y-0">
 						<Metric
 							label="Статус"
 							style={result.status === 'valid' ? 'text-(--status-success)' : 'text-(--status-error)'}

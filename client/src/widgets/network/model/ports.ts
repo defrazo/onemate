@@ -1,4 +1,5 @@
 import type {
+	CheckVia,
 	CreateMonitoredService,
 	MonitoredService,
 	MonitoringHistory,
@@ -15,7 +16,7 @@ export interface INetworkRepo {
 	checkMonitoredService(id: number): Promise<MonitoredService>;
 	updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService>;
 	deleteService(id: number): Promise<void>;
-	checkService(url: string): Promise<ServiceCheckResult>;
-	checkPort(host: string, port: number): Promise<PortCheckResult>;
+	checkService(url: string, checkVia?: CheckVia): Promise<ServiceCheckResult>;
+	checkPort(host: string, port: number, checkVia?: CheckVia): Promise<PortCheckResult>;
 	checkSsl(host: string): Promise<SslCheckResult>;
 }

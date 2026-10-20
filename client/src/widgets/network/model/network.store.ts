@@ -5,6 +5,7 @@ import { AsyncStore } from '@/shared/lib/store';
 
 import { networkCache } from '../lib';
 import type {
+	CheckVia,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
@@ -73,12 +74,12 @@ export class NetworkStore extends AsyncStore {
 		this.persistCache();
 	}
 
-	async checkService(url: string): Promise<ServiceCheckResult> {
-		return this.repo.checkService(url);
+	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
+		return this.repo.checkService(url, checkVia);
 	}
 
-	async checkPort(host: string, port: number): Promise<PortCheckResult> {
-		return this.repo.checkPort(host, port);
+	async checkPort(host: string, port: number, checkVia: CheckVia = 'direct'): Promise<PortCheckResult> {
+		return this.repo.checkPort(host, port, checkVia);
 	}
 
 	async checkSsl(host: string): Promise<SslCheckResult> {

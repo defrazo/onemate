@@ -1,11 +1,11 @@
 import { useEffect, useState } from 'react';
-import { IconReload, IconReport, IconServer, IconSettings, IconWorld } from '@tabler/icons-react';
+import { IconReload, IconReport, IconRoute, IconServer, IconSettings, IconWorld } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { getResponseTimeClass, getStatusCodeClass } from '../../../lib';
+import { getCheckViaLabel, getResponseTimeClass, getStatusCodeClass } from '../../../lib';
 import type { MonitoredService, MonitoringHistory } from '../../../model';
 import { Metric, StatusDot, ViewHeader } from '..';
 import { History } from '.';
@@ -91,10 +91,10 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 	}, [service.id, networkStore]);
 
 	return (
-		<div className="core-gap flex h-full min-h-0 flex-col">
+		<div className="flex h-full min-h-0 flex-col gap-2 md:gap-3">
 			<ViewHeader icon={IconReport} title="Мониторинг сервиса" onBack={onBack} />
 			<div className="flex justify-between">
-				<div className="flex flex-col">
+				<div className="flex flex-col gap-1 md:gap-0.5">
 					<div className="flex items-center gap-0.5">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
 						<span className="mr-1 max-w-32 truncate text-base font-bold lg:max-w-44 lg:text-lg">
@@ -116,6 +116,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 								href={service.url}
 								rel="noopener noreferrer"
 								target="_blank"
+								title={service.url}
 							>
 								{service.url}
 							</a>
@@ -128,6 +129,10 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 							</span>
 						</div>
 					)}
+					<div className="flex items-center gap-1 text-(--text-secondary)">
+						<IconRoute className="size-3 shrink-0" />
+						<span className="text-xs">{getCheckViaLabel(service.checkVia)}</span>
+					</div>
 				</div>
 				<div className="mt-1 flex flex-col gap-1 text-(--text-secondary)">
 					<span className="text-xs">Последняя проверка:</span>
@@ -144,7 +149,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					</div>
 				</div>
 			</div>
-			<div className="my-5 grid grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5 xl:my-1">
+			<div className="my-5 grid grid-cols-3 rounded-lg bg-(--tone-strong) py-1.5 xl:my-0.5">
 				<Metric
 					label="Отклик"
 					style={getResponseTimeClass(service.lastResponseTime)}

@@ -14,7 +14,10 @@ class ServiceCheckController extends Controller
     {
         try {
             return response()->json(
-                $service->check($request->validated('url')),
+                $service->check(
+                    $request->validated('url'),
+                    $request->validated('checkVia') ?? 'direct',
+                ),
             );
         } catch (InvalidArgumentException $exception) {
             return response()->json([

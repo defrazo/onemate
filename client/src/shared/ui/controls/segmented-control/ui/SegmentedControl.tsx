@@ -10,6 +10,7 @@ interface SegmentedControlProps<T extends string> {
 	value: T;
 	options: SegmentedControlOption<T>[];
 	onChange: (value: T) => void;
+	disabled?: boolean;
 	className?: string;
 }
 
@@ -17,6 +18,7 @@ export const SegmentedControl = <T extends string>({
 	value,
 	options,
 	onChange,
+	disabled = false,
 	className,
 }: SegmentedControlProps<T>) => {
 	return (
@@ -34,6 +36,7 @@ export const SegmentedControl = <T extends string>({
 								? 'bg-(--accent-primary-muted) text-(--accent-primary)'
 								: 'text-(--text-secondary) hover:text-(--accent-primary)'
 						)}
+						disabled={disabled}
 						type="button"
 						variant="custom"
 						onClick={() => onChange(option.value)}

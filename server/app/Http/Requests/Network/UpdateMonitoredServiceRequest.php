@@ -14,6 +14,7 @@ class UpdateMonitoredServiceRequest extends NetworkRequest
             'url' => ['sometimes', 'string', 'max:2048', 'url:http,https'],
             'host' => ['sometimes', 'string', 'max:253'],
             'port' => ['sometimes', 'integer', 'between:1,65535'],
+            'checkVia' => ['sometimes', Rule::in(['direct', 'proxy'])],
             'isActive' => ['sometimes', 'boolean'],
         ];
     }

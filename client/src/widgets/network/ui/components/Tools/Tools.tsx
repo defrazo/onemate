@@ -36,7 +36,7 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 	if (activeTool === 'ssl') return <SslCheck onBack={() => setActiveTool(null)} />;
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col gap-2">
+		<div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto">
 			{tools.map(({ id, icon: Icon, title, description }) => (
 				<Button
 					key={id}

@@ -1,15 +1,17 @@
+import { IconCopy } from '@tabler/icons-react';
+
 import { Button } from '@/shared/ui';
 
 export const CopyButton = ({ onClick }: { onClick: () => void }) => {
 	return (
 		<Button
-			className="h-9 text-sm not-md:w-full md:h-7 lg:ml-auto"
+			centerIcon={<IconCopy className="size-4" />}
+			className="p-1.5"
+			padding="none"
 			title="Скопировать"
 			type="button"
-			variant="ghost"
+			variant="iconSurface"
 			onClick={onClick}
-		>
-			Скопировать результат
-		</Button>
+		/>
 	);
 };

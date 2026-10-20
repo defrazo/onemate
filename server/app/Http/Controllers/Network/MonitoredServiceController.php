@@ -13,6 +13,7 @@ use App\Services\Network\Support\PublicHostResolver;
 use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class MonitoredServiceController extends Controller
@@ -54,13 +55,22 @@ class MonitoredServiceController extends Controller
             // Сервис может быть временно недоступен
         }
 
+        $attributes = [
+            'type' => $data['type'],
+            'name' => $data['name'],
+            'check_via' => $data['checkVia'] ?? 'direct',
+        ];
+
+        if ($data['type'] === 'http') {
+            $attributes['url'] = $data['url'];
+        } else {
+            $attributes['host'] = $data['host'];
+            $attributes['port'] = $data['port'];
+        }
+
         $service = $request->user()
             ->monitoredServices()
-            ->create(
-                $data['type'] === 'http'
-                    ? ['type' => 'http', 'name' => $data['name'], 'url' => $data['url']]
-                    : ['type' => 'tcp', 'name' => $data['name'], 'host' => $data['host'], 'port' => $data['port']],
-            );
+            ->create($attributes);
 
         return (new MonitoredServiceResource($service->refresh()))
             ->response()
@@ -138,7 +148,7 @@ class MonitoredServiceController extends Controller
             abort(422, 'Тип мониторинга нельзя изменить');
         }
 
-        $targetChanged = false;
+        $checkConfigChanged = false;
 
         if ($service->type === 'http' && isset($data['url'])) {
             $host = parse_url($data['url'], PHP_URL_HOST);
@@ -155,7 +165,7 @@ class MonitoredServiceController extends Controller
                 // Недоступный сервис сохраняется
             }
 
-            $targetChanged = $data['url'] !== $service->url;
+            $checkConfigChanged = $data['url'] !== $service->url;
             $service->url = $data['url'];
         }
 
@@ -172,12 +182,19 @@ class MonitoredServiceController extends Controller
                 // Недоступный сервис сохраняется
             }
 
-            $targetChanged =
+            $checkConfigChanged =
                 $host !== $service->host
                 || $port !== $service->port;
 
             $service->host = $host;
             $service->port = $port;
+        }
+
+        if (isset($data['checkVia'])) {
+            $checkConfigChanged = $checkConfigChanged
+                || $data['checkVia'] !== $service->check_via;
+
+            $service->check_via = $data['checkVia'];
         }
 
         if (isset($data['name'])) {
@@ -188,18 +205,20 @@ class MonitoredServiceController extends Controller
             $service->is_active = $data['isActive'];
         }
 
-        if ($targetChanged) {
+        if ($checkConfigChanged) {
             $service->last_status = null;
             $service->last_status_code = null;
             $service->last_response_time = null;
             $service->last_checked_at = null;
         }
 
-        $service->save();
+        DB::transaction(function () use ($service, $checkConfigChanged) {
+            $service->save();
 
-        if ($targetChanged) {
-            $service->checks()->delete();
-        }
+            if ($checkConfigChanged) {
+                $service->checks()->delete();
+            }
+        });
 
         return new MonitoredServiceResource($service->refresh());
     }

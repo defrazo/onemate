@@ -1,12 +1,20 @@
 import { useState } from 'react';
-import { IconAlertCircle, IconLink, IconNetwork, IconPlugConnected, IconServer, IconX } from '@tabler/icons-react';
+import {
+	IconAlertCircle,
+	IconLink,
+	IconNetwork,
+	IconPlugConnected,
+	IconRoute,
+	IconServer,
+	IconX,
+} from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Divider, Input, InputLabel } from '@/shared/ui';
+import { Divider, Input, InputLabel, SegmentedControl } from '@/shared/ui';
 
-import { getResponseTimeClass, portResultToCopy } from '../../../lib';
-import type { PortCheckResult } from '../../../model';
+import { getCheckViaLabel, getResponseTimeClass, portResultToCopy } from '../../../lib';
+import type { CheckVia, PortCheckResult } from '../../../model';
 import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
 
 export const PortCheck = ({ onBack }: { onBack: () => void }) => {
@@ -16,6 +24,7 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const [host, setHost] = useState('');
 	const [port, setPort] = useState('');
+	const [checkVia, setCheckVia] = useState<CheckVia>('direct');
 	const [result, setResult] = useState<PortCheckResult | null>(null);
 
 	const [error, setError] = useState<string | null>(null);
@@ -33,6 +42,12 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 
 	const handlePortChange = (value: string) => {
 		setPort(value);
+		setResult(null);
+		setError(null);
+	};
+
+	const handleRouteChange = (nextType: CheckVia) => {
+		setCheckVia(nextType);
 		setResult(null);
 		setError(null);
 	};
@@ -62,10 +77,11 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 		}
 
 		setIsLoading(true);
+		setResult(null);
 		setError(null);
 
 		try {
-			setResult(await networkStore.checkPort(host.trim(), portNumber));
+			setResult(await networkStore.checkPort(host.trim(), portNumber, checkVia));
 		} catch (error) {
 			error instanceof Error ? setError(error.message) : notifyStore.setNotice('Что-то пошло не так', 'error');
 		} finally {
@@ -80,12 +96,14 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 				<div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_144px]">
 					<Input
 						autoComplete="url"
+						disabled={isLoading}
 						id="host"
 						inputMode="url"
 						leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
 						placeholder="example.com или 94.232.42.121"
 						rightIcon={
-							host && (
+							host &&
+							!isLoading && (
 								<IconX
 									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => handleHostChange('')}
@@ -100,13 +118,15 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 					<Input
 						autoComplete="off"
 						className="number-no-spinner"
+						disabled={isLoading}
 						id="port"
 						leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
 						max="65535"
 						min="1"
 						placeholder="443"
 						rightIcon={
-							port && (
+							port &&
+							!isLoading && (
 								<IconX
 									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => handlePortChange('')}
@@ -120,21 +140,32 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 					/>
 				</div>
 				<div className="flex flex-wrap items-center justify-end gap-2">
-					{result && <CopyButton onClick={handleCopy} />}
-					{error && (
+					{error ? (
 						<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
 							<IconAlertCircle className="size-3.5" />
 							<span>{error}</span>
 						</div>
+					) : (
+						<SegmentedControl
+							className="h-7 min-w-36 not-md:ml-auto md:mr-auto"
+							disabled={isLoading}
+							options={[
+								{ value: 'direct', label: 'Direct' },
+								{ value: 'proxy', label: 'Proxy' },
+							]}
+							value={checkVia}
+							onChange={handleRouteChange}
+						/>
 					)}
 					<SubmitButton isLoading={isLoading} title="Проверить порт" />
 				</div>
 			</form>
 			{result && (
 				<div className="flex flex-col">
-					<div className="mb-3 flex items-center gap-2">
+					<div className="flex items-center gap-2">
 						<span className="text-xs text-(--text-secondary)">Результат</span>
-						<Divider />
+						<Divider className="shrink" />
+						<CopyButton onClick={handleCopy} />
 					</div>
 					<div className="flex flex-col gap-0.5">
 						<div className="flex min-w-0 items-center gap-1">
@@ -144,9 +175,12 @@ export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 						<div className="flex items-center gap-1 text-(--text-secondary)">
 							<IconServer className="size-3 shrink-0" />
 							<span className="text-xs tabular-nums">{result.ip}</span>
+							<Divider className="my-auto h-2.5" direction="Y" margX="sm" />
+							<IconRoute className="size-3 shrink-0" />
+							<span className="text-xs">{getCheckViaLabel(result.checkVia)}</span>
 						</div>
 					</div>
-					<div className="my-3 grid shrink-0 grid-cols-3 rounded-lg bg-(--tone-strong) py-2.5">
+					<div className="my-3 grid shrink-0 grid-cols-3 rounded-lg bg-(--tone-strong) py-1.5">
 						<Metric
 							label="Отклик"
 							style={getResponseTimeClass(result.responseTime)}

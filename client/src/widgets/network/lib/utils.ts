@@ -1,4 +1,4 @@
-import type { PortCheckResult, ServiceCheckResult, SslCheckResult } from '../model';
+import type { CheckVia, PortCheckResult, ServiceCheckResult, SslCheckResult } from '../model';
 
 export const getResponseTimeClass = (responseTime: number | null) => {
 	if (responseTime === null) return 'text-(--text-disabled)';
@@ -39,6 +39,7 @@ export const getUptimeClass = (uptime: number | null) => {
 export const serviceResultToCopy = (result: ServiceCheckResult) => {
 	return [
 		`Адрес: ${result.url}`,
+		`Проверка: ${getCheckViaLabel(result.checkVia)}`,
 		result.ip && `IP: ${result.ip}`,
 		`Статус: ${result.status === 'up' ? 'Доступен' : 'Недоступен'}`,
 		`HTTP: ${result.statusCode ?? '–'}`,
@@ -51,6 +52,7 @@ export const serviceResultToCopy = (result: ServiceCheckResult) => {
 export const portResultToCopy = (result: PortCheckResult) => {
 	return [
 		`Хост: ${result.host}`,
+		`Проверка: ${getCheckViaLabel(result.checkVia)}`,
 		`IP: ${result.ip}`,
 		`Порт: ${result.port}`,
 		`Статус: ${result.status === 'open' ? 'Открыт' : 'Закрыт'}`,
@@ -71,3 +73,5 @@ export const sslResultToCopy = (result: SslCheckResult) => {
 		.filter(Boolean)
 		.join('\n');
 };
+
+export const getCheckViaLabel = (checkVia: CheckVia): string => (checkVia === 'proxy' ? 'Proxy (RU)' : 'Direct');

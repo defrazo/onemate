@@ -17,6 +17,7 @@ class PortCheckController extends Controller
                 $service->check(
                     $request->validated('host'),
                     $request->validated('port'),
+                    $request->validated('checkVia') ?? 'direct',
                 ),
             );
         } catch (InvalidArgumentException $exception) {

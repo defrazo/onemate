@@ -12,7 +12,7 @@ import {
 import { useStore } from '@/app/providers';
 import { Button, Input, InputLabel, LengthHint, SegmentedControl, Tooltip } from '@/shared/ui';
 
-import { LIMITS, type MonitoringType } from '../../model';
+import { type CheckVia, LIMITS, type MonitoringType } from '../../model';
 import { ViewHeader } from '.';
 
 export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreated: () => void }) => {
@@ -23,6 +23,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 	const [url, setUrl] = useState('');
 	const [host, setHost] = useState('');
 	const [port, setPort] = useState('');
+	const [checkVia, setCheckVia] = useState<CheckVia>('direct');
 
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +32,11 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 
 	const handleTypeChange = (nextType: MonitoringType) => {
 		setType(nextType);
+		setError(null);
+	};
+
+	const handleRouteChange = (nextType: CheckVia) => {
+		setCheckVia(nextType);
 		setError(null);
 	};
 
@@ -79,8 +85,16 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 		setIsLoading(true);
 
 		try {
-			if (type === 'http') await networkStore.addService({ type: 'http', name: trimmedName, url: trimmedUrl });
-			else await networkStore.addService({ type: 'tcp', name: trimmedName, host: trimmedHost, port: portNumber });
+			if (type === 'http')
+				await networkStore.addService({ type: 'http', name: trimmedName, url: trimmedUrl, checkVia });
+			else
+				await networkStore.addService({
+					type: 'tcp',
+					name: trimmedName,
+					host: trimmedHost,
+					port: portNumber,
+					checkVia,
+				});
 
 			onCreated();
 			notifyStore.setNotice('Сервис успешно добавлен', 'success');
@@ -96,16 +110,18 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 			<ViewHeader icon={IconServer} title="Добавить сервис" onBack={onBack} />
 			<form className="flex flex-col gap-3" onSubmit={handleSubmit}>
 				<div className="flex flex-col gap-1">
-					<label className="text-(--text-secondary) opacity-70" htmlFor="name">
+					<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="name">
 						Название
 					</label>
 					<Input
 						autoComplete="off"
+						disabled={isLoading}
 						id="name"
 						leftIcon={<InputLabel htmlFor="name" icon={IconWorldWww} />}
 						placeholder="Название сервиса"
 						rightIcon={
-							name && (
+							name &&
+							!isLoading && (
 								<IconX
 									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 									onClick={() => setName('')}
@@ -120,12 +136,13 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					<LengthHint max={LIMITS.SERVICE_NAME} value={name} />
 				</div>
 				<div className="flex flex-wrap items-center justify-between gap-2">
-					<span className="text-(--text-secondary) opacity-70">Тип проверки</span>
+					<span className="text-sm text-(--text-secondary) opacity-70">Тип проверки</span>
 					<SegmentedControl
-						className="w-64 not-lg:ml-auto"
+						className="w-44 not-lg:ml-auto lg:w-60"
+						disabled={isLoading}
 						options={[
 							{ value: 'http', label: 'Сайт' },
-							{ value: 'tcp', label: 'Сервер / Порт' },
+							{ value: 'tcp', label: 'Сервер' },
 						]}
 						value={type}
 						onChange={handleTypeChange}
@@ -133,18 +150,20 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 				</div>
 				{type === 'http' ? (
 					<div className="flex flex-col gap-1">
-						<label className="text-(--text-secondary) opacity-70" htmlFor="url">
+						<label className="text-sm text-(--text-secondary) opacity-70" htmlFor="url">
 							Адрес
 						</label>
 						<Input
 							autoComplete="url"
+							disabled={isLoading}
 							id="url"
 							inputMode="url"
 							leftIcon={<InputLabel htmlFor="url" icon={IconLink} />}
 							maxLength={LIMITS.URL}
 							placeholder="https://example.com"
 							rightIcon={
-								url && (
+								url &&
+								!isLoading && (
 									<IconX
 										className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 										onClick={() => {
@@ -165,7 +184,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 					</div>
 				) : (
 					<div className="flex flex-col gap-1">
-						<div className="flex items-center gap-1.5 text-(--text-secondary) opacity-70">
+						<div className="flex items-center gap-1.5 text-sm text-(--text-secondary) opacity-70">
 							<label htmlFor="host">Хост и порт</label>
 							<Tooltip content={tip}>
 								<IconLifebuoy className="hidden size-4 xl:block" />
@@ -174,12 +193,14 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						<div className="grid grid-cols-[minmax(0,1fr)_120px] gap-2">
 							<Input
 								autoComplete="url"
+								disabled={isLoading}
 								id="host"
 								leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
 								maxLength={LIMITS.HOST}
 								placeholder="94.232.42.121"
 								rightIcon={
-									host && (
+									host &&
+									!isLoading && (
 										<IconX
 											className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
 											onClick={() => {
@@ -200,6 +221,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 							<Input
 								autoComplete="off"
 								className="number-no-spinner"
+								disabled={isLoading}
 								id="port"
 								leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
 								max={LIMITS.MAX_PORT}
@@ -216,14 +238,28 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 						</div>
 					</div>
 				)}
-				{error && (
-					<div className="flex items-start gap-1.5 px-1 text-xs text-(--status-error)">
-						<IconAlertCircle className="mt-px size-3.5 shrink-0" />
+				{error ? (
+					<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
+						<IconAlertCircle className="size-3.5" />
 						<span>{error}</span>
+					</div>
+				) : (
+					<div className="flex flex-wrap items-center justify-between gap-2">
+						<span className="text-sm text-(--text-secondary) opacity-70">Маршрут проверки</span>
+						<SegmentedControl
+							className="w-44 not-lg:ml-auto lg:w-60"
+							disabled={isLoading}
+							options={[
+								{ value: 'direct', label: 'Direct' },
+								{ value: 'proxy', label: 'Proxy' },
+							]}
+							value={checkVia}
+							onChange={handleRouteChange}
+						/>
 					</div>
 				)}
 				<Button
-					className="h-9 min-w-36 text-sm md:ml-auto md:h-7"
+					className="mt-3 h-9 min-w-36 text-sm md:ml-auto md:h-7"
 					disabled={isLoading}
 					loading={isLoading}
 					loadingText="Добавляем..."

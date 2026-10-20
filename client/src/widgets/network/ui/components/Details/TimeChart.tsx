@@ -128,7 +128,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="relative h-28 xl:h-21.5 2xl:h-28">
+			<div className="relative h-28 xl:h-21.5 2xl:h-27">
 				<svg
 					className="size-full cursor-crosshair overflow-visible"
 					preserveAspectRatio="none"

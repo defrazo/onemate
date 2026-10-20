@@ -20,7 +20,10 @@ class MonitoredServiceCheckService
         $checkedAt = now();
 
         if ($service->type === 'http') {
-            $result = $this->serviceCheckService->check($service->url);
+            $result = $this->serviceCheckService->check(
+                $service->url,
+                $service->check_via,
+            );
 
             $status = $result['status'];
             $statusCode = $result['statusCode'];
@@ -29,6 +32,7 @@ class MonitoredServiceCheckService
             $result = $this->portCheckService->check(
                 $service->host,
                 $service->port,
+                $service->check_via,
             );
 
             $status = $result['status'] === 'open'

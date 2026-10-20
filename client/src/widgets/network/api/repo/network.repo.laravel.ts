@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
 import type {
+	CheckVia,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
@@ -41,13 +42,13 @@ export class NetworkRepoLaravel implements INetworkRepo {
 		await api.delete(`/network/services/${id}`);
 	}
 
-	async checkService(url: string): Promise<ServiceCheckResult> {
-		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url });
+	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
+		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url, checkVia });
 		return data;
 	}
 
-	async checkPort(host: string, port: number): Promise<PortCheckResult> {
-		const { data } = await api.post<PortCheckResult>('/network/port/check', { host, port });
+	async checkPort(host: string, port: number, checkVia: CheckVia = 'direct'): Promise<PortCheckResult> {
+		const { data } = await api.post<PortCheckResult>('/network/port/check', { host, port, checkVia });
 		return data;
 	}
 

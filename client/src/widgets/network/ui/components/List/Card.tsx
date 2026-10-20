@@ -1,9 +1,9 @@
 import { IconClock, IconServer, IconWorld } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+import { Button, Divider } from '@/shared/ui';
 
-import { getResponseTimeClass } from '../../../lib';
+import { getCheckViaLabel, getResponseTimeClass } from '../../../lib';
 import type { MonitoredService } from '../../../model';
 import { StatusDot } from '..';
 
@@ -51,10 +51,18 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 					</div>
 					{renderStatus()}
 				</div>
-				<div className="flex items-center justify-between text-sm text-(--text-secondary)">
+				<div className="flex items-center justify-between gap-3 text-sm text-(--text-secondary)">
 					<div className="flex max-w-2/3 min-w-0 items-center gap-1">
 						<AddressIcon className="size-3.5 shrink-0" />
 						<span className="mt-px truncate">{address}</span>
+						<Divider
+							className="my-auto hidden h-2.5 transition-opacity group-hover:opacity-100 lg:block xl:opacity-0"
+							direction="Y"
+							margX="xs"
+						/>
+						<span className="mt-px hidden text-xs transition-opacity group-hover:opacity-100 lg:block xl:opacity-0">
+							{getCheckViaLabel(service.checkVia)}
+						</span>
 					</div>
 					{lastCheckedAt && (
 						<div
@@ -62,7 +70,7 @@ export const Card = ({ service, onClick }: { service: MonitoredService; onClick:
 							title="Последняя проверка"
 						>
 							<IconClock className="size-3" />
-							<span className="trim font-mono">{lastCheckedAt}</span>
+							<span className="trim not-md:text-xs">{lastCheckedAt}</span>
 						</div>
 					)}
 				</div>

@@ -33,6 +33,8 @@ class StoreMonitoredServiceRequest extends NetworkRequest
                 'integer',
                 'between:1,65535',
             ],
+
+            'checkVia' => ['sometimes', Rule::in(['direct', 'proxy'])],
         ];
     }
 }

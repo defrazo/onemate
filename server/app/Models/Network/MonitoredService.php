@@ -13,6 +13,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'url',
     'host',
     'port',
+    'check_via',
     'is_active',
     'last_status',
     'last_status_code',

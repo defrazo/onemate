@@ -20,6 +20,8 @@ abstract class NetworkRequest extends FormRequest
             'port.required' => 'Укажите порт',
             'port.integer' => 'Укажите корректный порт',
             'port.between' => 'Порт должен быть от 1 до 65535',
+
+            'checkVia.in' => 'Некорректный способ проверки',
         ];
     }
 }

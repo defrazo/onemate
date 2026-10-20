@@ -2,6 +2,7 @@ import { type Feature, type IUserRoutingPort, type Operation, PermissionService 
 import { PermissionError } from '@/shared/lib/errors';
 
 import type {
+	CheckVia,
 	CreateMonitoredService,
 	INetworkRepo,
 	MonitoredService,
@@ -19,7 +20,7 @@ export class NetworkRepoRouting implements INetworkRepo {
 
 	constructor(private readonly userStore: IUserRoutingPort) {
 		this.realRepo = new NetworkRepoLaravel();
-		this.demoRepo = new NetworkRepoDemo(() => this.userStore.user);
+		this.demoRepo = new NetworkRepoDemo();
 	}
 
 	private getTargetRepo(): INetworkRepo {
@@ -63,14 +64,14 @@ export class NetworkRepoRouting implements INetworkRepo {
 		await this.getTargetRepo().deleteService(id);
 	}
 
-	async checkService(url: string): Promise<ServiceCheckResult> {
+	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.getTargetRepo().checkService(url);
+		return this.getTargetRepo().checkService(url, checkVia);
 	}
 
-	async checkPort(host: string, port: number): Promise<PortCheckResult> {
+	async checkPort(host: string, port: number, checkVia: CheckVia = 'direct'): Promise<PortCheckResult> {
 		this.checkPermission('network', 'use');
-		return this.getTargetRepo().checkPort(host, port);
+		return this.getTargetRepo().checkPort(host, port, checkVia);
 	}
 
 	async checkSsl(host: string): Promise<SslCheckResult> {

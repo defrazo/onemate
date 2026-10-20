@@ -24,7 +24,9 @@ export const Slot = ({ options, value, content, onChange, reverse, className }: 
 		<div
 			className={cn(
 				'flex min-h-0 flex-col gap-3 rounded-xl bg-(--bg-secondary) p-2 lg:p-3',
-				isMobileLandscape ? 'max-h-120 min-h-svh' : 'h-[65svh] md:h-[45svh] lg:h-[35svh] landscape:h-[50svh]',
+				isMobileLandscape
+					? 'max-h-120 min-h-svh'
+					: 'h-[65svh] md:h-[45svh] lg:h-[35svh] md:landscape:h-[55svh] xl:landscape:h-[65svh]',
 				className
 			)}
 		>

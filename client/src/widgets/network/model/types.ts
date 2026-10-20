@@ -2,12 +2,15 @@ export type MonitoringType = 'http' | 'tcp';
 
 export type ServiceStatus = 'up' | 'down';
 
+export type CheckVia = 'direct' | 'proxy';
+
 export type ServiceCheckResult = {
 	url: string;
 	status: ServiceStatus;
 	statusCode: number | null;
 	responseTime: number | null;
 	ip: string | null;
+	checkVia: CheckVia;
 };
 
 export type PortCheckResult = {
@@ -16,6 +19,7 @@ export type PortCheckResult = {
 	status: 'open' | 'closed';
 	responseTime: number | null;
 	ip: string;
+	checkVia: CheckVia;
 };
 
 export type SslCheckResult = {
@@ -32,6 +36,7 @@ type BaseMonitoredService = {
 	id: number;
 	userId: string;
 	name: string;
+	checkVia: CheckVia;
 	isActive: boolean;
 	lastStatus: ServiceStatus | null;
 	lastResponseTime: number | null;
@@ -69,11 +74,11 @@ export type MonitoringHistory = {
 
 /* prettier-ignore*/
 export type CreateMonitoredService =
-	| { type: 'http'; name: string; url: string }
-	| { type: 'tcp'; name: string; host: string; port: number };
+	| { type: 'http'; name: string; url: string, checkVia: CheckVia; }
+	| { type: 'tcp'; name: string; host: string; port: number, checkVia: CheckVia; };
 
 export type UpdateMonitoredService =
-	| { type: 'http'; name?: string; url?: string; isActive?: boolean }
-	| { type: 'tcp'; name?: string; host?: string; port?: number; isActive?: boolean };
+	| { type: 'http'; name?: string; url?: string; checkVia?: CheckVia; isActive?: boolean }
+	| { type: 'tcp'; name?: string; host?: string; port?: number; checkVia?: CheckVia; isActive?: boolean };
 
 export type NetworkView = 'monitoring' | 'tools';

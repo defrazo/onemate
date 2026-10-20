@@ -41,7 +41,7 @@ export const ACL: Record<Role, Capabilities> = {
 		device: { read: true },
 		translator: { use: false },
 		kanban: { read: true, save: true, delete: true },
-		network: { read: true, save: true, delete: true, use: true },
+		network: { read: false, save: false, delete: false, use: true },
 		cloud: { read: true, save: false, delete: false, upload: false, use: false },
 	},
 } satisfies Record<Role, Capabilities>;
