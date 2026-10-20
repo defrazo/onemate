@@ -22,7 +22,7 @@ export const UserMenuButton = () => {
 
 	const handleUserMenuClick = () => {
 		if (isMobile && !isTablet) {
-			modalStore.setModal(<MobileUserMenu />, 'sheet');
+			modalStore.setModal(<MobileUserMenu />);
 			return;
 		}
 

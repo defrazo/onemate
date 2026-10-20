@@ -5,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { Divider, Input, InputLabel } from '@/shared/ui';
 
-import { getResponseTimeClass, getStatusCodeClass, serviceResultToCopy } from '../../../lib';
+import { getResponseTimeClass, getServiceStatusClass, getStatusCodeClass, serviceResultToCopy } from '../../../lib';
 import type { ServiceCheckResult } from '../../../model';
 import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
 
@@ -126,7 +126,7 @@ export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 							style={getStatusCodeClass(result.statusCode)}
 							value={result.statusCode !== null ? String(result.statusCode) : '–'}
 						/>
-						<Metric label="Статус" style={getStatusCodeClass(result.statusCode)} value={statusLabel} />
+						<Metric label="Статус" style={getServiceStatusClass(result.status)} value={statusLabel} />
 					</div>
 				</div>
 			)}

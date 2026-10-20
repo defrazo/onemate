@@ -69,7 +69,7 @@ export const ConflictDialog = () => {
 			</div>
 			<div className="flex h-9 justify-center gap-3 md:h-7 md:justify-end">
 				<Button
-					className="not-md:flex-1"
+					className="not-md:flex-1 not-md:text-sm"
 					disabled={isLoading}
 					variant="danger"
 					onClick={() => void handleResolve('server')}
@@ -77,7 +77,7 @@ export const ConflictDialog = () => {
 					Загрузить с сервера
 				</Button>
 				<Button
-					className="not-md:flex-1"
+					className="not-md:flex-1 not-md:text-sm"
 					disabled={isLoading}
 					variant="accent"
 					onClick={() => void handleResolve('local')}

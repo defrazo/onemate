@@ -6,8 +6,6 @@ import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { PersonalTab } from '../../PersonalTab';
-
 export const AvatarPicker = () => {
 	const { isMobile } = useResponsive();
 
@@ -29,7 +27,7 @@ export const AvatarPicker = () => {
 
 			await userProfileStore.updateAvatar(avatarUrl);
 
-			isMobile ? modalStore.setModal(<PersonalTab />, 'sheet') : modalStore.closeModal();
+			isMobile ? modalStore.goBack() : modalStore.closeModal();
 			notifyStore.setNotice('Аватар обновлен', 'success');
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');

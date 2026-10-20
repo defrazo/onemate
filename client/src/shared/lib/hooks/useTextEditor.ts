@@ -102,6 +102,11 @@ export const useTextEditor = (maxLength: number) => {
 		try {
 			const text = await navigator.clipboard.readText();
 
+			if (text === '') {
+				notifyStore.setNotice('Буфер обмена пуст', 'info');
+				return;
+			}
+
 			if (textarea.value.length - (end - start) + text.length > maxLength) {
 				notifyStore.setNotice(`Максимум ${maxLength} символов`, 'info');
 				return;

@@ -27,7 +27,7 @@ export const MobileUserMenu = observer(() => {
 
 	const openProfileTab = (tab: TabId) => {
 		const Tab = accountSettingsTabs[tab];
-		modalStore.setModal(<Tab />, 'sheet', { back: () => modalStore.setModal(<MobileUserMenu />, 'sheet') });
+		modalStore.pushModal(<Tab />);
 	};
 
 	return (

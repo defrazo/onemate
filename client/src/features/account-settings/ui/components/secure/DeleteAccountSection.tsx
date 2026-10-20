@@ -1,15 +1,17 @@
 import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Button, ConfirmDialog } from '@/shared/ui';
 
 export const DeleteAccountSection = () => {
 	const navigate = useNavigate();
+	const { isMobile } = useResponsive();
 
 	const { modalStore, notifyStore, userStore } = useStore();
 
 	const handleDelete = () => {
-		modalStore.setModal(
+		const dialog = (
 			<ConfirmDialog
 				confirmLabel="Удалить"
 				description="У вас будет 30 дней на восстановление аккаунта. После этого данные будут удалены безвозвратно."
@@ -29,6 +31,8 @@ export const DeleteAccountSection = () => {
 				}}
 			/>
 		);
+
+		isMobile ? modalStore.pushModal(dialog) : modalStore.setModal(dialog);
 	};
 
 	return (

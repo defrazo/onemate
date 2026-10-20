@@ -121,7 +121,7 @@ export const AboutPage = () => {
 								<h3 className="trim font-medium">{title}</h3>
 							</div>
 							<div className="flex items-stretch gap-3">
-								<span className="mx-1 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 md:hidden" />
+								<span className="mr-1 ml-1.5 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 md:hidden" />
 								<p className="not-xl:trim text-sm text-(--text-secondary)">{description}</p>
 							</div>
 						</div>
@@ -171,7 +171,7 @@ export const AboutPage = () => {
 								<h3 className="font-medium">{title}</h3>
 							</div>
 							<div className="flex items-stretch gap-3">
-								<span className="mx-1 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 transition-opacity group-hover:opacity-100 xl:opacity-0" />
+								<span className="mr-1 ml-1.5 w-1 shrink-0 rounded-full bg-(--accent-primary)/70 transition-opacity group-hover:opacity-100 xl:opacity-0" />
 								<p className="trim text-sm text-(--text-secondary)">{description}</p>
 							</div>
 						</div>

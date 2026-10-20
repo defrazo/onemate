@@ -17,7 +17,7 @@ export const Card = observer(({ id }: { id: string }) => {
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-tone group/note flex min-h-20 shrink-0 snap-start rounded-lg border border-(--border-contrast)/15 py-2 pl-2 xl:min-h-24 2xl:min-h-23.5"
+			className="core-tone group/note flex min-h-20 shrink-0 snap-start rounded-lg border border-(--border-contrast)/15 py-2 pl-2 xl:min-h-22 2xl:min-h-23.5"
 			style={{ transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 0 }}
 		>
 			<button

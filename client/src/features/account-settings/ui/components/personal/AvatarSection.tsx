@@ -4,7 +4,6 @@ import { useStore } from '@/app/providers';
 import { useResponsive } from '@/shared/lib/hooks';
 import { Button, Thumbnail } from '@/shared/ui';
 
-import { PersonalTab } from '../../PersonalTab';
 import { AvatarPicker } from '.';
 
 export const AvatarSection = observer(() => {
@@ -12,11 +11,8 @@ export const AvatarSection = observer(() => {
 
 	const { modalStore, userProfileStore } = useStore();
 
-	const handleOpen = () => {
-		modalStore.setModal(<AvatarPicker />, isMobile && !isTablet ? 'sheet' : undefined, {
-			back: () => modalStore.setModal(<PersonalTab />, 'sheet'),
-		});
-	};
+	const handleOpen = () =>
+		isMobile && !isTablet ? modalStore.pushModal(<AvatarPicker />) : modalStore.setModal(<AvatarPicker />);
 
 	return (
 		<div className="flex items-center gap-2 md:w-1/5 md:flex-col">

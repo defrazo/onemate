@@ -3,13 +3,14 @@ import { IconAlertCircle } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { useValidation } from '@/shared/lib/hooks';
+import { useResponsive, useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, PasswordInput } from '@/shared/ui';
 
 import { FormActions } from '..';
 import { PendingEmailDialog } from '.';
 
 export const PrimaryEmail = observer(() => {
+	const { isMobile } = useResponsive();
 	const { checkEmail, checkPassword } = useValidation();
 
 	const { modalStore, notifyStore, userStore } = useStore();
@@ -22,7 +23,8 @@ export const PrimaryEmail = observer(() => {
 	const mainEmailChanged = mainEmail.trim().toLowerCase() !== userStore.email.trim().toLowerCase();
 	const showEmailChange = mainEmailChanged && !userStore.isEmailPending;
 
-	const handlePendingEmail = () => modalStore.setModal(<PendingEmailDialog />);
+	const handlePendingEmail = () =>
+		isMobile ? modalStore.pushModal(<PendingEmailDialog />) : modalStore.setModal(<PendingEmailDialog />);
 
 	const handleCancel = () => {
 		setMainEmail(userStore.email);

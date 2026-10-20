@@ -79,7 +79,7 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 		<div className="flex min-h-0 flex-col gap-3 md:-mt-4 md:w-2xl">
 			<div className="flex min-w-0 flex-col select-none">
 				<div className="flex items-center gap-2">
-					<h2 className="truncate font-semibold xl:text-lg">{file.name}</h2>
+					<h2 className="max-w-2/3 truncate font-semibold xl:text-lg">{file.name}</h2>
 					<Button
 						centerIcon={<IconDownload className="size-5 shrink-0" />}
 						padding="none"

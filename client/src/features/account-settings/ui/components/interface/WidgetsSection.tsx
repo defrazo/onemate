@@ -3,11 +3,14 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { type WidgetId, WIDGETS } from '@/shared/config';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 import { ReplaceWidgetDialog } from '.';
 
 export const WidgetsSection = observer(() => {
+	const { isMobile } = useResponsive();
+
 	const { modalStore, notifyStore, userProfileStore } = useStore();
 
 	const selectedWidgets = userProfileStore.widgets;
@@ -19,22 +22,26 @@ export const WidgetsSection = observer(() => {
 		try {
 			await userProfileStore.replaceWidget(replacedId, targetId);
 
-			modalStore.closeModal();
+			handleClose();
 			notifyStore.setNotice('Виджет успешно заменён', 'success');
 		} catch {
 			notifyStore.setNotice('Не удалось заменить виджет', 'error');
 		}
 	};
 
+	const handleClose = () => (isMobile ? modalStore.goBack() : modalStore.closeModal());
+
 	const changeWidget = (targetId: WidgetId) => {
-		modalStore.setModal(
+		const dialog = (
 			<ReplaceWidgetDialog
 				selected={selectedWidgets}
 				target={targetId}
-				onCancel={() => modalStore.closeModal()}
+				onCancel={handleClose}
 				onReplace={(replacedId) => void replaceWidget(replacedId, targetId)}
 			/>
 		);
+
+		isMobile ? modalStore.pushModal(dialog) : modalStore.setModal(dialog);
 	};
 
 	return (

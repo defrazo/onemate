@@ -209,7 +209,9 @@ const ItemData = ({ icon: Icon, name, size, date, partial }: ItemDataProps) => {
 			</div>
 			{!partial && (
 				<div className="flex min-w-0 flex-1 flex-col">
-					<span className="-mb-0.5 truncate text-sm font-semibold not-xl:max-w-50">{name}</span>
+					<span className="-mb-0.5 max-w-50 truncate text-sm font-semibold xl:max-w-72 2xl:max-w-85">
+						{name}
+					</span>
 					<span className="flex items-center gap-1.5 text-xs text-(--text-secondary)">
 						<span>{formatFileSize(size)}</span>
 						<span className="transition-opacity xl:opacity-0 xl:group-hover/file:opacity-100">·</span>

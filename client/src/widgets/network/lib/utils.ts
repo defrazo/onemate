@@ -16,6 +16,10 @@ export const getStatusCodeClass = (statusCode: number | null) => {
 	return 'text-(--status-error)';
 };
 
+export const getServiceStatusClass = (status: ServiceCheckResult['status']) => {
+	return status === 'up' ? 'text-(--status-success)' : 'text-(--status-error)';
+};
+
 export const getDaysRemaining = (days: number | null) => {
 	if (days === null) return 'text-(--text-disabled)';
 	if (days <= 7) return 'text-(--status-error)';
@@ -58,7 +62,7 @@ export const sslResultToCopy = (result: SslCheckResult) => {
 	return [
 		`Хост: ${result.host}`,
 		`IP: ${result.ip}`,
-		`Статус: ${result.status === 'valid' ? 'Действителен' : 'Недействителен'}`,
+		`Статус: ${result.status === 'valid' ? 'Валиден' : 'Невалиден'}`,
 		result.issuer && `Издатель: ${result.issuer}`,
 		result.validFrom && `Действует с: ${result.validFrom}`,
 		result.validTo && `Действует до: ${result.validTo}`,

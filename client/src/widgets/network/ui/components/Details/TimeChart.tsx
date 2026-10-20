@@ -10,7 +10,7 @@ const HEIGHT = 200;
 
 const PADDING_X = 8;
 const PADDING_TOP = 4;
-const PADDING_BOTTOM = 20;
+const PADDING_BOTTOM = 0;
 
 const PERIOD_HOURS = 24;
 const PERIOD_MS = PERIOD_HOURS * 60 * 60 * 1000;
@@ -128,7 +128,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 
 	return (
 		<div className="flex flex-col">
-			<div className="relative h-28">
+			<div className="relative h-28 xl:h-21.5 2xl:h-28">
 				<svg
 					className="size-full cursor-crosshair overflow-visible"
 					preserveAspectRatio="none"

@@ -1,17 +1,20 @@
 import { IconMailCheck, IconMailForward } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
 export const PendingEmailDialog = () => {
+	const { isMobile } = useResponsive();
+
 	const { modalStore, notifyStore, userStore } = useStore();
 
 	const handleResend = async (): Promise<void> => {
 		try {
 			await userStore.resendPendingEmail();
 
+			isMobile ? modalStore.goBack() : modalStore.closeModal();
 			notifyStore.setNotice('Письмо отправлено повторно', 'success');
-			modalStore.closeModal();
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}
@@ -21,8 +24,8 @@ export const PendingEmailDialog = () => {
 		try {
 			await userStore.cancelPendingEmail();
 
+			isMobile ? modalStore.goBack() : modalStore.closeModal();
 			notifyStore.setNotice('Смена e-mail отменена', 'success');
-			modalStore.closeModal();
 		} catch {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}
@@ -62,7 +65,7 @@ export const PendingEmailDialog = () => {
 					Отправить повторно
 				</Button>
 				<Button variant="danger" onClick={handleCancel}>
-					Отменить смену
+					Прервать
 				</Button>
 			</div>
 		</div>

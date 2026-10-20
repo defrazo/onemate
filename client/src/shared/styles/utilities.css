@@ -3,7 +3,7 @@
 }
 
 @utility core-surface-contrast {
-	@apply rounded-xl border border-(--border-contrast);
+	@apply rounded-xl md:border md:border-(--border-contrast);
 }
 
 @utility core-card {

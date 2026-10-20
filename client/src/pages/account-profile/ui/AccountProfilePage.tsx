@@ -36,8 +36,7 @@ export const AccountProfilePage = () => {
 			modalStore.setModal(
 				<Suspense fallback={null}>
 					<Tab />
-				</Suspense>,
-				'sheet'
+				</Suspense>
 			);
 		else modalStore.closeModal();
 	}, [isMobile, isTablet, Tab, modalStore]);

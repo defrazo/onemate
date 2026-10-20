@@ -46,7 +46,7 @@ export const DeletedAccountPage = observer(() => {
 						<IconClock className="size-4 text-(--text-on-accent)" />
 					</div>
 				</div>
-				<h1 className="text-xl font-semibold xl:text-2xl">Аккаунт ожидает удаления</h1>
+				<h1 className="text-lg font-semibold xl:text-2xl">Аккаунт ожидает удаления</h1>
 				<div className="rounded-lg bg-(--accent-primary-muted) px-2.5 py-1 text-sm text-(--accent-primary)">
 					{userStore.email}
 				</div>

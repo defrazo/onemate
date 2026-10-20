@@ -20,7 +20,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 	const [error, setError] = useState<string | null>(null);
 	const [isLoading, setIsLoading] = useState(false);
 
-	const statusLabel = result?.status === 'valid' ? 'Действителен' : 'Недействителен';
+	const statusLabel = result?.status === 'valid' ? 'Валиден' : 'Невалиден';
 
 	const handleHostChange = (value: string) => {
 		setHost(value);
@@ -106,7 +106,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 							<span className="text-xs tabular-nums">{result.ip}</span>
 						</div>
 					</div>
-					<div className="my-3 grid shrink-0 grid-cols-2 gap-y-3 rounded-lg bg-(--tone-strong) py-2.5 xl:grid-cols-4 xl:gap-y-0">
+					<div className="my-3 grid shrink-0 grid-cols-2 gap-y-1 rounded-lg bg-(--tone-strong) py-2.5 md:gap-y-3 xl:grid-cols-4 xl:gap-y-0">
 						<Metric
 							label="Статус"
 							style={result.status === 'valid' ? 'text-(--status-success)' : 'text-(--status-error)'}
@@ -114,7 +114,7 @@ export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 						/>
 						<Metric
 							label="Издатель"
-							style={getDaysRemaining(result.daysRemaining)}
+							style={`line-clamp-1 ${getDaysRemaining(result.daysRemaining)}`}
 							value={result.issuer ?? '–'}
 						/>
 						<Metric

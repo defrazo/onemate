@@ -33,7 +33,7 @@ export const ModalManager = observer(() => {
 	if (modal.type === 'sheet' || (modal.type === 'auto' && isMobile && !isTablet)) {
 		return (
 			<Suspense fallback={null}>
-				<BottomSheet onBack={modal.back} onClose={onClose}>
+				<BottomSheet onBack={modalStore.canGoBack ? modalStore.goBack : undefined} onClose={onClose}>
 					{modal.content}
 				</BottomSheet>
 			</Suspense>

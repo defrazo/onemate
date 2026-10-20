@@ -10,7 +10,7 @@ export const ExchangeRate = observer(() => {
 
 	return (
 		<div
-			className="group/currency flex h-6 cursor-copy items-center justify-center gap-1 text-xs text-(--text-secondary) lg:gap-2 xl:text-base"
+			className="group/currency flex h-6 cursor-copy items-center justify-center gap-1 text-xs text-(--text-secondary) lg:gap-2 xl:text-sm 2xl:text-base"
 			title="Скопировать курс"
 			onClick={() => copy(currencyStore.exchangeRate, 'Курс обмена скопирован')}
 		>
