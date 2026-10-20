@@ -11,7 +11,7 @@ interface HistoryStateProps {
 
 export const HistoryState = ({ icon: Icon, title, desc, loading }: HistoryStateProps) => {
 	return (
-		<div className="flex min-h-0 flex-1 items-center justify-center">
+		<div className="flex h-full min-h-0 flex-col items-center justify-center gap-2 text-center">
 			<div className="flex flex-col items-center">
 				<div className="mb-1.5 flex size-8 items-center justify-center rounded-lg bg-(--tone) md:size-10">
 					<Icon
@@ -22,7 +22,7 @@ export const HistoryState = ({ icon: Icon, title, desc, loading }: HistoryStateP
 					/>
 				</div>
 				<span className="text-sm text-(--text-secondary)">{title}</span>
-				{desc && <span className="trim text-xs text-(--text-disabled)">{desc}</span>}
+				{desc && <span className="-mt-1 text-xs text-(--text-disabled)">{desc}</span>}
 			</div>
 		</div>
 	);

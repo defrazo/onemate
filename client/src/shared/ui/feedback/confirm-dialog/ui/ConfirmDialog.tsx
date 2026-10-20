@@ -35,7 +35,7 @@ export const ConfirmDialog = ({
 				<IconAlertTriangle className="size-5.5" />
 			</div>
 			<div className="flex h-full flex-col justify-between gap-0.5 select-none">
-				<h2 className="text-lg font-semibold lg:text-xl">{title}</h2>
+				<h2 className="text-lg font-semibold">{title}</h2>
 				<p className="trim text-sm text-(--text-secondary) opacity-60">Подтвердите действие</p>
 			</div>
 		</div>

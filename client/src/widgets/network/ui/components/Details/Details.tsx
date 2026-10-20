@@ -93,8 +93,8 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 	return (
 		<div className="flex h-full min-h-0 flex-col gap-2 md:gap-3">
 			<ViewHeader icon={IconReport} title="Мониторинг сервиса" onBack={onBack} />
-			<div className="flex justify-between">
-				<div className="flex flex-col gap-1 md:gap-0.5">
+			<div className="flex shrink-0 items-start justify-between gap-3">
+				<div className="flex min-w-0 flex-1 flex-col gap-1 md:gap-0.5">
 					<div className="flex items-center gap-0.5">
 						<StatusDot disabled={!service.isActive} status={service.lastStatus} />
 						<span className="mr-1 max-w-32 truncate text-base font-bold lg:max-w-44 lg:text-lg">
@@ -134,7 +134,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 						<span className="text-xs">{getCheckViaLabel(service.checkVia)}</span>
 					</div>
 				</div>
-				<div className="mt-1 flex flex-col gap-1 text-(--text-secondary)">
+				<div className="mt-1 flex shrink-0 flex-col items-end gap-1 text-(--text-secondary)">
 					<span className="text-xs">Последняя проверка:</span>
 					<div className="mx-auto flex items-center gap-1.5">
 						<span className="trim text-xs tabular-nums xl:text-sm">{lastChecked}</span>
@@ -149,7 +149,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					</div>
 				</div>
 			</div>
-			<div className="my-5 grid grid-cols-3 rounded-lg bg-(--tone-strong) py-1.5 xl:my-0.5">
+			<div className="my-1.5 grid shrink-0 grid-cols-3 rounded-lg bg-(--tone-strong) py-1.5">
 				<Metric
 					label="Отклик"
 					style={getResponseTimeClass(service.lastResponseTime)}
@@ -186,12 +186,14 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					value={statusLabel}
 				/>
 			</div>
-			<History
-				history={history}
-				isActive={service.isActive}
-				isError={isHistoryError}
-				isLoading={isHistoryLoading}
-			/>
+			<div className="min-h-0 flex-1">
+				<History
+					history={history}
+					isActive={service.isActive}
+					isError={isHistoryError}
+					isLoading={isHistoryLoading}
+				/>
+			</div>
 		</div>
 	);
 };

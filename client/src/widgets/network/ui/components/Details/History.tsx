@@ -44,8 +44,8 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 	}
 
 	return (
-		<div className="flex min-h-0 flex-1 flex-col justify-between">
-			<div className="relative flex justify-between">
+		<div className="flex h-full min-h-0 flex-col gap-2">
+			<div className="relative flex shrink-0 items-start justify-between gap-2">
 				<div className="flex flex-col gap-0.5 pl-2 text-(--text-secondary)">
 					<div className="flex items-center gap-1">
 						<IconHistory className="size-3" />
@@ -81,7 +81,9 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 					</div>
 				</div>
 			</div>
-			<TimeChart checks={history.checks} />
+			<div className="min-h-0 flex-1">
+				<TimeChart checks={history.checks} />
+			</div>
 		</div>
 	);
 };

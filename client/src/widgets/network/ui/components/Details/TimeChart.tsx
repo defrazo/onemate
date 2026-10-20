@@ -127,8 +127,8 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 	};
 
 	return (
-		<div className="flex flex-col">
-			<div className="relative h-28 xl:h-21.5 2xl:h-27">
+		<div className="flex h-full min-h-0 flex-col">
+			<div className="relative min-h-0 flex-1">
 				<svg
 					className="size-full cursor-crosshair overflow-visible"
 					preserveAspectRatio="none"
@@ -198,7 +198,7 @@ export const TimeChart = ({ checks }: { checks: MonitoringCheck[] }) => {
 				</svg>
 				{hoveredPoint && <ChartTooltip point={hoveredPoint} />}
 			</div>
-			<div className="flex items-center justify-between px-2 pt-1.5 text-[10px] text-(--text-disabled)">
+			<div className="flex shrink-0 items-center justify-between px-2 pt-1.5 text-[10px] text-(--text-disabled)">
 				<span>24 ч</span>
 				<span className="tabular-nums">{checks.length} проверок</span>
 				<span>Сейчас</span>
