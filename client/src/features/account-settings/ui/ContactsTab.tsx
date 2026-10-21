@@ -17,7 +17,7 @@ export const ContactsTab = observer(() => {
 				{!userProfileStore.isLocationReady ? <LoadingState /> : <LocationSection />}
 			</div>
 			<Divider className="mb-1 md:hidden" />
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast) xl:min-h-59">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast) xl:min-h-52.5">
 				<SectionHeader icon={IconMail} title="Почта" />
 				{!userProfileStore.isReady ? (
 					<LoadingState />
