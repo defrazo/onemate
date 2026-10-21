@@ -58,6 +58,10 @@ export class CloudRepoDemo implements ICloudRepo {
 		throw new RestrictedAccess();
 	}
 
+	async deleteMany(): Promise<void> {
+		throw new RestrictedAccess();
+	}
+
 	async share(): Promise<string> {
 		throw new RestrictedAccess();
 	}

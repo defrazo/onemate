@@ -40,6 +40,13 @@ export class CloudStore extends AsyncStore {
 	isSavingText = false;
 
 	uploadProgress = 0;
+	uploadFileIndex = 0;
+	uploadFilesCount = 0;
+	uploadFileName = '';
+	uploadFileSize = 0;
+	uploadLoadedBytes = 0;
+	uploadSpeed = 0;
+	uploadRemaining: number | null = null;
 
 	get usagePercent(): number {
 		if (!this.quotaBytes) return 0;
@@ -158,27 +165,57 @@ export class CloudStore extends AsyncStore {
 		this.setUploading(true);
 		this.setUploadProgress(0);
 
+		runInAction(() => {
+			this.uploadFilesCount = files.length;
+			this.uploadFileIndex = 0;
+		});
+
 		let uploadedBytes = 0;
 
 		try {
-			for (const file of files) {
+			for (const [index, file] of files.entries()) {
 				if (!userId || !this.isCurrentSession(userId, session)) return;
 
-				await this.repo.upload(file, (percent) => {
+				runInAction(() => {
+					this.uploadFileIndex = index + 1;
+					this.uploadFileName = file.name;
+					this.uploadFileSize = file.size;
+					this.uploadLoadedBytes = 0;
+					this.uploadSpeed = 0;
+					this.uploadRemaining = null;
+				});
+
+				await this.repo.upload(file, ({ loaded, speed, remaining }) => {
 					if (!this.isCurrentSession(userId, session)) return;
 
-					const currentBytes = (file.size * percent) / 100;
-					const progress = ((uploadedBytes + currentBytes) / total) * 100;
-
-					this.setUploadProgress(Math.round(progress));
+					runInAction(() => {
+						this.uploadLoadedBytes = loaded;
+						this.uploadSpeed = speed;
+						this.uploadRemaining = remaining;
+						this.uploadProgress = Math.round(((uploadedBytes + loaded) / total) * 100);
+					});
 				});
 
 				uploadedBytes += file.size;
+
+				runInAction(() => {
+					this.uploadLoadedBytes = file.size;
+					this.uploadProgress = Math.round((uploadedBytes / total) * 100);
+				});
 			}
 		} finally {
 			if (this.session === session) {
-				this.setUploading(false);
-				this.setUploadProgress(0);
+				runInAction(() => {
+					this.isUploading = false;
+					this.uploadProgress = 0;
+					this.uploadFileIndex = 0;
+					this.uploadFilesCount = 0;
+					this.uploadFileName = '';
+					this.uploadFileSize = 0;
+					this.uploadLoadedBytes = 0;
+					this.uploadSpeed = 0;
+					this.uploadRemaining = null;
+				});
 
 				if (userId && this.userStore.id === userId) await this.load(userId);
 			}
@@ -209,12 +246,18 @@ export class CloudStore extends AsyncStore {
 		if (!file) return;
 
 		await this.repo.update(id, { isFavorite: !file.isFavorite });
-
 		await this.refresh();
 	}
 
 	async delete(id: string): Promise<void> {
 		await this.repo.delete(id);
+		await this.refresh();
+	}
+
+	async deleteMany(ids: string[]): Promise<void> {
+		if (!ids.length) return;
+
+		await this.repo.deleteMany(ids);
 		await this.refresh();
 	}
 
@@ -454,6 +497,13 @@ export class CloudStore extends AsyncStore {
 			isUploading: observable,
 			isSavingText: observable,
 			uploadProgress: observable,
+			uploadFileIndex: observable,
+			uploadFilesCount: observable,
+			uploadFileName: observable,
+			uploadFileSize: observable,
+			uploadLoadedBytes: observable,
+			uploadSpeed: observable,
+			uploadRemaining: observable,
 
 			usagePercent: computed,
 			availableBytes: computed,

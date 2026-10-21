@@ -1,7 +1,7 @@
 import { type Feature, type IUserRoutingPort, type Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo } from '../../model';
+import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo, UploadProgress } from '../../model';
 import { CloudRepoDemo, CloudRepoLaravel } from '.';
 
 export class CloudRepoRouting implements ICloudRepo {
@@ -34,7 +34,7 @@ export class CloudRepoRouting implements ICloudRepo {
 		return this.getTargetRepo().getPreview(id);
 	}
 
-	async upload(file: File, onProgress: (percent: number) => void): Promise<void> {
+	async upload(file: File, onProgress: (progress: UploadProgress) => void): Promise<void> {
 		this.checkPermission('cloud', 'upload');
 		return this.getTargetRepo().upload(file, onProgress);
 	}
@@ -52,6 +52,11 @@ export class CloudRepoRouting implements ICloudRepo {
 	async delete(id: string): Promise<void> {
 		this.checkPermission('cloud', 'delete');
 		return this.getTargetRepo().delete(id);
+	}
+
+	async deleteMany(ids: string[]): Promise<void> {
+		this.checkPermission('cloud', 'delete');
+		return this.getTargetRepo().deleteMany(ids);
 	}
 
 	async share(id: string): Promise<string> {

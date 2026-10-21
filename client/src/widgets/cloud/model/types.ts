@@ -29,3 +29,10 @@ export interface CloudTextData {
 	text: string;
 	revision: number;
 }
+
+export type UploadProgress = {
+	percent: number;
+	loaded: number;
+	speed: number;
+	remaining: number | null;
+};

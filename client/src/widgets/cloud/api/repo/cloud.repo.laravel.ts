@@ -1,6 +1,6 @@
 import { api } from '@/shared/api';
 
-import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo } from '../../model';
+import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo, UploadProgress } from '../../model';
 
 export class CloudRepoLaravel implements ICloudRepo {
 	async load(): Promise<CloudData> {
@@ -8,15 +8,19 @@ export class CloudRepoLaravel implements ICloudRepo {
 		return data;
 	}
 
-	async upload(file: File, onProgress: (percent: number) => void): Promise<void> {
+	async upload(file: File, onProgress: (progress: UploadProgress) => void): Promise<void> {
 		const formData = new FormData();
 		formData.append('file', file);
 
 		await api.post('/cloud/files', formData, {
+			timeout: 0,
 			onUploadProgress: (event) => {
-				if (!event.total) return;
-
-				onProgress(Math.round((event.loaded / event.total) * 100));
+				onProgress({
+					percent: event.total ? Math.round((event.loaded / event.total) * 100) : 0,
+					loaded: Math.min(event.loaded, file.size),
+					speed: event.rate ?? 0,
+					remaining: event.estimated ?? null,
+				});
 			},
 		});
 	}
@@ -44,6 +48,10 @@ export class CloudRepoLaravel implements ICloudRepo {
 
 	async delete(id: string): Promise<void> {
 		await api.delete(`/cloud/files/${id}`);
+	}
+
+	async deleteMany(ids: string[]): Promise<void> {
+		await api.delete('/cloud/files', { data: { ids } });
 	}
 
 	async share(id: string): Promise<string> {

@@ -148,10 +148,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [CloudController::class, 'index']);
             Route::get('/text', [CloudController::class, 'getText']);
             Route::put('/text', [CloudController::class, 'saveText']);
+
             Route::post('/files', [CloudFileController::class, 'store']);
+            Route::delete('/files', [CloudFileController::class, 'destroyMany']);
+
             Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
             Route::patch('/files/{id}', [CloudFileController::class, 'update']);
             Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);
+
             Route::post('/files/{id}/share', [CloudShareController::class, 'store']);
             Route::delete('/files/{id}/share', [CloudShareController::class, 'destroy']);
         });

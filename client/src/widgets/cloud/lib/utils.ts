@@ -24,3 +24,24 @@ export const getFileNameParts = (filename: string) => {
 
 	return { name: filename.slice(0, lastDot), extension: filename.slice(lastDot) };
 };
+
+export const formatUploadSpeed = (bytesPerSecond: number) => {
+	if (!bytesPerSecond) return '–';
+
+	return `${formatFileSize(bytesPerSecond)}/с`;
+};
+
+export const formatRemainingTime = (seconds: number | null) => {
+	if (seconds === null || !Number.isFinite(seconds)) return '–';
+
+	const total = Math.max(0, Math.ceil(seconds));
+	const minutes = Math.floor(total / 60);
+	const remainingSeconds = total % 60;
+
+	if (minutes === 0) return `${remainingSeconds} сек`;
+	if (minutes < 60) return `${minutes} мин ${remainingSeconds} сек`;
+
+	const hours = Math.floor(minutes / 60);
+
+	return `${hours} ч ${minutes % 60} мин`;
+};
