@@ -95,7 +95,7 @@
 <p align="center">
   <img src="./docs/screenshots/home.webp" alt="Главная страница" width="800">
   <img src="./docs/screenshots/kanban.webp" alt="Kanban" width="800">
-  <img src="./docs/screenshots/setting.webp" alt="Настройки" width="800">
+  <img src="./docs/screenshots/settings.webp" alt="Настройки" width="800">
 </p>
 
 </details>
