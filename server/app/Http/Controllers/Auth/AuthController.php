@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -40,7 +40,7 @@ class AuthController extends Controller
     public function session(Request $request): JsonResponse
     {
         /** @var User|null $user */
-        $user = Auth::guard('web')->user();
+        $user = $request->user('sanctum');
 
         return response()->json([
             'authenticated' => $user !== null,
@@ -142,6 +142,7 @@ class AuthController extends Controller
         if (!$user->hasVerifiedEmail()) {
             return response()->json([
                 'code' => 'EMAIL_NOT_VERIFIED',
+                'email' => $user->email,
             ], 403);
         }
 

@@ -9,11 +9,11 @@ interface ZoomOnHoverprops {
 	className?: string;
 }
 
-const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: ZoomOnHoverprops) => {
+export const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: ZoomOnHoverprops) => {
 	return (
 		<div
 			className={cn(
-				'core-base z-50 rounded-xl transition-transform duration-300 hover:cursor-zoom-in',
+				'z-50 rounded-xl bg-(--bg-secondary) transition-transform duration-300 hover:cursor-zoom-in',
 				className
 			)}
 			style={{ width: '100%', height: 'auto', overflow: 'hidden', transformOrigin: 'top left' }}
@@ -26,5 +26,3 @@ const ZoomOnHover = ({ children, scale = 2, translate = [20, 20], className }: Z
 		</div>
 	);
 };
-
-export default ZoomOnHover;

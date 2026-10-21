@@ -1,16 +1,11 @@
 import { useEffect, useState } from 'react';
+import { IconListNumbers } from '@tabler/icons-react';
 
-import { IconScroll } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
-import { Divider } from '@/shared/ui';
+import { Button } from '@/shared/ui';
 
-interface Section {
-	id: string;
-	title: string;
-}
-
-const TableOfContents = () => {
-	const [sections, setSections] = useState<Section[]>([]);
+export const TableOfContents = () => {
+	const [sections, setSections] = useState<{ id: string; title: string }[]>([]);
 	const [activeId, setActiveId] = useState<string | null>(null);
 
 	useEffect(() => {
@@ -18,7 +13,7 @@ const TableOfContents = () => {
 		setSections(headers.map(({ id, textContent }) => ({ id, title: textContent || 'Без названия' })));
 
 		const handleScroll = () => {
-			if (window.scrollY <= 1) {
+			if (window.scrollY <= 1 && headers.length) {
 				setActiveId(headers[0].id);
 				return;
 			}
@@ -52,36 +47,43 @@ const TableOfContents = () => {
 	}, []);
 
 	return (
-		<nav className="group sticky top-1/2 z-10 hidden self-start xl:flex print:hidden">
+		<nav className="group fixed top-1/2 z-10 hidden -translate-y-1/2 select-none xl:block print:hidden">
 			<div className="relative">
-				<div className="flex cursor-pointer items-center justify-center rounded-full text-(--color-secondary)">
-					<IconScroll className="size-16 opacity-50" />
-				</div>
-				<div className="absolute top-1/2 left-0 z-10 hidden min-w-sm -translate-y-1/2 flex-col gap-1 rounded-xl bg-(--bg-secondary) p-4 whitespace-nowrap shadow group-hover:flex">
-					<h1 className="text-center text-xl font-bold select-none">Навигация</h1>
-					<Divider />
-					{sections.map(({ id, title }) => (
-						<a
-							key={id}
-							className={cn(
-								'rounded-xl px-4 py-2 transition-colors',
-								activeId === id
-									? 'border-l-4 border-(--accent-default) bg-(--bg-tertiary) font-semibold opacity-100 shadow'
-									: 'border-transparent opacity-50 hover:bg-(--bg-tertiary) hover:opacity-100'
-							)}
-							href={`#${id}`}
-							onClick={() =>
-								document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
-							}
-						>
-							{title}
-						</a>
-					))}
-					<Divider />
+				<Button
+					centerIcon={<IconListNumbers className="size-4.5" />}
+					className="size-9 border border-(--border-primary) bg-(--bg-secondary) hover:bg-(--bg-tertiary) hover:text-(--text-primary)"
+					title="Оглавление"
+					variant="iconSurface"
+				/>
+				<div className="invisible absolute top-1/2 left-11 w-72 -translate-y-1/2 rounded-xl border border-(--border-primary) bg-(--bg-secondary) px-2 py-1 opacity-0 shadow-(--shadow-contrast) transition-[opacity,visibility] group-hover:visible group-hover:opacity-100">
+					<div className="px-2.5 pt-1.5 pb-2">
+						<span className="text-xs font-bold tracking-wide text-(--text-disabled)">Оглавление</span>
+					</div>
+					<div className="flex flex-col gap-0.5">
+						{sections.map(({ id, title }) => {
+							const active = activeId === id;
+
+							return (
+								<a
+									key={id}
+									className={cn(
+										'relative rounded-lg px-3 py-2 text-sm transition-colors',
+										active
+											? 'bg-(--bg-tertiary) font-semibold text-(--text-primary)'
+											: 'text-(--text-secondary) hover:bg-(--bg-tertiary)/50 hover:text-(--text-primary)'
+									)}
+									href={`#${id}`}
+								>
+									{active && (
+										<span className="absolute top-1/2 left-0 h-4 w-0.5 -translate-y-1/2 rounded-full bg-(--accent-primary)" />
+									)}
+									<span className="block truncate">{title}</span>
+								</a>
+							);
+						})}
+					</div>
 				</div>
 			</div>
 		</nav>
 	);
 };
-
-export default TableOfContents;

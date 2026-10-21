@@ -2,8 +2,8 @@ type DragType = 'task' | 'column' | null;
 
 export const setupDnD = (
 	board: HTMLElement,
-	onTaskDrop: (taskId: string, targetColumnId: string, newIndex: number) => void,
-	onColumnDrop: (columnId: string, newIndex: number) => void
+	onTaskDrop: (taskId: string, targetColumnId: string) => void,
+	onColumnDrop: (columnId: string, newIdx: number) => void
 ) => {
 	let currentDragType: DragType = null;
 	let draggingElement: HTMLElement | null = null;
@@ -13,10 +13,10 @@ export const setupDnD = (
 
 	const autoScroll = enableAutoScroll(board);
 
-	const onDragStart = (event: DragEvent) => {
+	const onDragStart = (e: DragEvent) => {
 		board.dataset.dragging = 'true';
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		const taskCard = target.closest<HTMLElement>('[data-task-id]');
 		if (taskCard) {
@@ -34,9 +34,9 @@ export const setupDnD = (
 				ghost.remove();
 			});
 
-			event.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
-			event.dataTransfer!.setData('text/plain', taskCard.dataset.id!);
-			event.dataTransfer!.effectAllowed = 'move';
+			e.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
+			e.dataTransfer!.setData('text/plain', taskCard.dataset.id!);
+			e.dataTransfer!.effectAllowed = 'move';
 			return;
 		}
 
@@ -56,47 +56,33 @@ export const setupDnD = (
 				ghost.remove();
 			});
 
-			event.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
-			event.dataTransfer!.setData('text/plain', column.dataset.columnId!);
-			event.dataTransfer!.effectAllowed = 'move';
+			e.dataTransfer!.setDragImage(ghost, rect.width / 2, 0);
+			e.dataTransfer!.setData('text/plain', column.dataset.columnId!);
+			e.dataTransfer!.effectAllowed = 'move';
 			return;
 		}
 
-		event.preventDefault();
+		e.preventDefault();
 	};
 
-	const onDragOver = (event: DragEvent) => {
-		event.preventDefault();
+	const onDragOver = (e: DragEvent) => {
+		e.preventDefault();
 
 		if (!draggingElement || !placeholder) return;
 
-		event.dataTransfer!.dropEffect = 'move';
+		e.dataTransfer!.dropEffect = 'move';
 
-		autoScroll.update(event.clientX, event.clientY);
+		autoScroll.update(e.clientX, e.clientY);
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		if (currentDragType === 'task') {
 			const targetContainer = target.closest<HTMLElement>('[data-tasks-container]');
 			if (!targetContainer) return;
 
-			const targetCard = target.closest<HTMLElement>('[data-task-id]');
+			if (placeholder.parentElement !== targetContainer) targetContainer.append(placeholder);
 
-			if (!targetCard) {
-				if (!targetContainer.contains(placeholder)) targetContainer.appendChild(placeholder!);
-				return;
-			}
-
-			if (targetCard === draggingElement) return;
-
-			const rect = targetCard.getBoundingClientRect();
-			const isAfter = event.clientY > rect.top + rect.height / 2;
-			const referenceNode = isAfter ? targetCard.nextElementSibling : targetCard;
-
-			if (placeholder.nextElementSibling !== referenceNode) {
-				if (isAfter) targetCard.after(placeholder);
-				else targetCard.before(placeholder);
-			}
+			return;
 		}
 
 		if (currentDragType === 'column') {
@@ -107,7 +93,7 @@ export const setupDnD = (
 			if (!targetColumnId || targetColumnId === draggingElement) return;
 
 			const rect = targetColumnId.getBoundingClientRect();
-			const isAfter = event.clientX > rect.left + rect.width / 2;
+			const isAfter = e.clientX > rect.left + rect.width / 2;
 			const referenceNode = isAfter ? targetColumnId.nextElementSibling : targetColumnId;
 
 			if (placeholder.nextElementSibling !== referenceNode) {
@@ -117,26 +103,31 @@ export const setupDnD = (
 		}
 	};
 
-	const onDragDrop = (event: DragEvent) => {
+	const onDragDrop = (e: DragEvent) => {
 		delete board.dataset.dragging;
-		event.preventDefault();
+		e.preventDefault();
 		autoScroll.stop();
 
 		if (!draggingElement || !placeholder) return;
 
 		if (currentDragType === 'task') {
 			const container = placeholder.closest<HTMLElement>('[data-tasks-container]');
-			if (!container) return restore();
 
-			const newIndex = Array.from(container.children).indexOf(placeholder);
-			draggingElement.style.display = '';
-			placeholder.replaceWith(draggingElement);
+			if (!container) {
+				restore();
+				return;
+			}
 
-			const taskId = draggingElement.dataset.taskId!;
-			const targetColumnId = container.dataset.tasksContainer!;
+			const taskId = draggingElement.dataset.taskId;
+			const targetColumnId = container.dataset.tasksContainer;
+			const sourceColumnId = parent?.dataset.tasksContainer;
 
-			cleanup();
-			onTaskDrop(taskId, targetColumnId, newIndex);
+			restore();
+
+			if (!taskId || !targetColumnId || targetColumnId === sourceColumnId) return;
+
+			onTaskDrop(taskId, targetColumnId);
+			return;
 		}
 
 		if (currentDragType === 'column') {
@@ -144,11 +135,11 @@ export const setupDnD = (
 			placeholder.replaceWith(draggingElement);
 
 			const columns = Array.from(board.querySelectorAll<HTMLElement>('[data-column-id]'));
-			const newIndex = columns.indexOf(draggingElement);
+			const newIdx = columns.indexOf(draggingElement);
 			const columnId = draggingElement.dataset.columnId!;
 
 			cleanup();
-			onColumnDrop(columnId, newIndex);
+			onColumnDrop(columnId, newIdx);
 		}
 	};
 
@@ -161,8 +152,9 @@ export const setupDnD = (
 	// === HELPERS ===
 	function createPlaceholder(type: DragType) {
 		const div = document.createElement('div');
-		if (type === 'task') div.className = 'min-h-[175px] animate-pulse bg-(--border-alt)/30';
-		if (type === 'column') div.className = 'h-full max-w-96 min-w-60 flex-1 animate-pulse bg-(--border-alt)/30';
+		if (type === 'task') div.className = 'min-h-40 rounded-md animate-pulse bg-(--border-secondary)/30';
+		if (type === 'column')
+			div.className = 'h-full max-w-96 rounded-md min-w-60 flex-1 animate-pulse bg-(--border-secondary)/30';
 		return div;
 	}
 
@@ -282,29 +274,29 @@ export const enableMouseScroll = (container: HTMLElement) => {
 
 	const MOVE_THRESHOLD = 5;
 
-	const onMouseDown = (event: MouseEvent) => {
-		if (event.button !== 0) return;
+	const onMouseDown = (e: MouseEvent) => {
+		if (e.button !== 0) return;
 		if (container.dataset.dragging) return;
 
-		const target = event.target as HTMLElement;
+		const target = e.target as HTMLElement;
 
 		if (target.closest('button, input, textarea, select, [data-task-id]')) return;
 
 		isDown = true;
 		moved = false;
-		startX = event.pageX;
+		startX = e.pageX;
 		scrollLeft = container.scrollLeft;
 	};
 
-	const onMouseMove = (event: MouseEvent) => {
+	const onMouseMove = (e: MouseEvent) => {
 		if (!isDown || container.dataset.dragging) return;
 
-		const dx = event.pageX - startX;
+		const dx = e.pageX - startX;
 
 		if (!moved && Math.abs(dx) < MOVE_THRESHOLD) return;
 
 		moved = true;
-		event.preventDefault();
+		e.preventDefault();
 		container.scrollLeft = scrollLeft - dx;
 		container.style.cursor = 'grabbing';
 	};

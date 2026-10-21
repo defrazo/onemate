@@ -1,3 +1,3 @@
-export { DeviceActivityStore } from './deviceActivityStore';
-export type { IActivityRepo, IDeviceProvider } from './ports';
-export type { ActivityLog, BrowserInfo, DeviceData } from './types';
+export * from './deviceActivity.store';
+export type * from './ports';
+export type * from './types';

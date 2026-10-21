@@ -1,4 +1,4 @@
-import { createState } from '../model';
+import type { createState } from '../model';
 import { createBoard } from '.';
 
 export const renderKanban = (root: HTMLElement, state: ReturnType<typeof createState>) => {

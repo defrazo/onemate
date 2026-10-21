@@ -1,1 +1,1 @@
-export { default } from './ui';
+export { MobileTabBar } from './ui';

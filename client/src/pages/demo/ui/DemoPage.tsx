@@ -1,0 +1,138 @@
+import { IconChevronDown } from '@tabler/icons-react';
+
+import { APP_NAME } from '@/shared/config';
+import { ArticleSection } from '@/shared/ui';
+
+export const DemoPage = () => (
+	<div className="core-gap flex w-full flex-col">
+		<header className="flex flex-col items-center">
+			<h1 className="cursor-default text-center text-xl leading-tight font-bold md:text-3xl">О демо-режиме</h1>
+			<p className="text-center text-(--text-secondary)">
+				{`Как устроена демонстрационная версия ${APP_NAME} и какие ограничения в ней действуют`}.
+			</p>
+		</header>
+		<article className="core-gap flex flex-col">
+			<ArticleSection first id="about" number={1} title="Что такое демо-режим">
+				<ul className="list-disc pl-4.5">
+					<li>
+						{`Демо-режим позволяет познакомиться с ${APP_NAME} без регистрации. При запуске используется
+						подготовленный демо-аккаунт с демонстрационными данными, на котором можно посмотреть интерфейс и
+						попробовать основные возможности приложения`}
+						.
+					</li>
+					<li>
+						Изменения в демо-режиме не синхронизируются с сервером и сохраняются локально в текущем
+						браузере.
+					</li>
+				</ul>
+			</ArticleSection>
+			<ArticleSection id="storage" number={2} title="Как сохраняются изменения">
+				<ul className="list-disc pl-4.5">
+					<li>
+						Данные, созданные во время демо-сессии, хранятся локально в браузере. Поэтому изменения видны
+						только на текущем устройстве и не переносятся между браузерами или устройствами.
+					</li>
+					<li>
+						После выхода из демо-режима локальные изменения удаляются. Они также могут исчезнуть при очистке
+						данных сайта в браузере.
+					</li>
+				</ul>
+			</ArticleSection>
+			<ArticleSection id="available" number={3} title="Что доступно">
+				<ul className="list-disc pl-4.5">
+					<li>{`Навигация по основным разделам ${APP_NAME} и работа с интерфейсом.`}</li>
+					<li>Создание, редактирование и удаление демонстрационных записей.</li>
+					<li>Задачи, канбан, календарь, заметки и другие основные модули приложения.</li>
+					<li>Инструменты, которые не требуют передачи пользовательских данных сторонним сервисам.</li>
+				</ul>
+			</ArticleSection>
+			<ArticleSection id="limits" number={4} title="Ограничения">
+				<ul className="list-disc pl-4.5">
+					<li>
+						<b>Нет серверной синхронизации.</b> Созданные данные остаются только в текущем браузере.
+					</li>
+					<li>
+						<b>Нет персонального аккаунта.</b> Демо-аккаунт предназначен только для демонстрации и не может
+						использоваться как обычная учётная запись.
+					</li>
+					<li>
+						<b>Некоторые функции отключены.</b> Возможности, которым требуется персональный аккаунт или
+						передача введённых данных сторонним сервисам, могут быть недоступны.
+					</li>
+					<li>
+						<b>Используются демонстрационные данные.</b> В отдельных разделах могут отображаться заранее
+						подготовленные или случайно сгенерированные значения.
+					</li>
+				</ul>
+			</ArticleSection>
+			<ArticleSection id="privacy" number={5} title="Данные и конфиденциальность">
+				<ul className="list-disc pl-4.5">
+					<li>
+						Для использования демо-режима не требуется указывать имя, e-mail, пароль или другие персональные
+						данные. Информацию, которую вы создаёте внутри доступных демо-функций, следует считать временной
+						и не использовать для хранения конфиденциальных сведений.
+					</li>
+					<li>
+						{`Подробнее об обработке данных в ${APP_NAME} можно узнать в`}{' '}
+						<a
+							className="text-(--accent-primary) hover:underline"
+							href="/privacy"
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							Политике конфиденциальности
+						</a>
+						, а правила использования приложения описаны в{' '}
+						<a
+							className="text-(--accent-primary) hover:underline"
+							href="/terms"
+							rel="noopener noreferrer"
+							target="_blank"
+						>
+							Условиях использования
+						</a>
+						.
+					</li>
+				</ul>
+			</ArticleSection>
+			<ArticleSection className="mt-0" id="faq" number={6} title="Частые вопросы">
+				<div className="flex flex-col">
+					<FaqItem
+						answer="В демо-режиме отключены возможности, которым требуется персональный аккаунт или передача введённых данных сторонним сервисам."
+						question="Почему некоторые функции недоступны?"
+					/>
+					<FaqItem
+						answer="Только локально в текущем браузере. При выходе из демо-режима или очистке данных сайта они будут удалены."
+						question="Сохранятся ли мои изменения?"
+					/>
+					<FaqItem
+						answer="Нет. Демо-аккаунт предназначен для знакомства с приложением и не является персональной учётной записью."
+						question="Можно ли использовать демо как обычный аккаунт?"
+					/>
+					<FaqItem
+						answer="Демо-режим для этого не предназначен. Не используйте его для хранения паролей, платёжных данных и другой конфиденциальной информации."
+						question="Можно ли вводить настоящие данные?"
+					/>
+					<FaqItem
+						answer="Часть информации создаётся специально для демонстрации интерфейса и работы соответствующих функций."
+						question="Почему в некоторых разделах отображаются ненастоящие данные?"
+					/>
+					<FaqItem
+						answer={`Сейчас ${APP_NAME} не открыт для публичной регистрации. Демо-режим позволяет познакомиться с доступными возможностями приложения.`}
+						question="Можно ли получить доступ к полной версии?"
+					/>
+				</div>
+			</ArticleSection>
+		</article>
+	</div>
+);
+
+const FaqItem = ({ question, answer }: { question: string; answer: string }) => (
+	<details className="group border-(--border-primary) py-3 not-last:border-b">
+		<summary className="flex cursor-pointer list-none items-center justify-between gap-3 font-semibold transition-colors group-open:text-(--text-primary) hover:text-(--text-primary) [&::-webkit-details-marker]:hidden">
+			<span>{question}</span>
+			<IconChevronDown className="size-4 shrink-0 text-(--text-tertiary) transition-transform duration-200 group-open:rotate-180 group-open:text-(--text-primary)" />
+		</summary>
+		<p className="mt-2 pr-6 text-sm leading-relaxed text-(--text-secondary)">{answer}</p>
+	</details>
+);

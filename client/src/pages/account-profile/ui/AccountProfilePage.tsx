@@ -1,33 +1,51 @@
-import { JSX, useEffect } from 'react';
+import { Suspense, useEffect } from 'react';
 import { useSearchParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
-import { useDeviceType, usePageTitle } from '@/shared/lib/hooks';
-import { ContactsTab, OverviewTab, PersonalTab, SecureTab } from '@/widgets/user-profile';
+import { accountSettingsTabs, isAccountSettingsTab, type TabId } from '@/features/account-settings';
+import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 
-const AccountProfilePage = () => {
+export const AccountProfilePage = () => {
 	usePageTitle('Профиль');
 
+	const { isDesktop, isMobile, isTablet } = useResponsive();
+	const [searchParams, setSearchParams] = useSearchParams();
+
 	const { modalStore } = useStore();
-	const device = useDeviceType();
-	const [searchParams] = useSearchParams();
 
-	const currentTab = searchParams.get('tab') || 'preview';
-	const tabComponents: Record<string, JSX.Element> = {
-		overview: <OverviewTab />,
-		personal: <PersonalTab />,
-		contacts: <ContactsTab />,
-		secure: <SecureTab />,
-	};
+	const tab = searchParams.get('tab');
+	const currentTab: TabId = isAccountSettingsTab(tab) ? tab : 'overview';
 
-	const targetTab = tabComponents[currentTab];
+	const Tab = accountSettingsTabs[currentTab];
 
 	useEffect(() => {
-		if (!targetTab) return;
-		device === 'mobile' ? modalStore.setModal(targetTab, 'sheet') : modalStore.closeModal();
-	}, [device, targetTab, modalStore]);
+		if (isAccountSettingsTab(tab)) return;
 
-	return device !== 'mobile' ? <div className="w-full max-w-2xl">{targetTab}</div> : null;
+		setSearchParams(
+			(prev) => {
+				const params = new URLSearchParams(prev);
+				params.set('tab', 'overview');
+				return params;
+			},
+			{ replace: true }
+		);
+	}, [tab, setSearchParams]);
+
+	useEffect(() => {
+		if (isMobile && !isTablet)
+			modalStore.setModal(
+				<Suspense fallback={null}>
+					<Tab />
+				</Suspense>
+			);
+		else modalStore.closeModal();
+	}, [isMobile, isTablet, Tab, modalStore]);
+
+	return isDesktop || isTablet ? (
+		<div className="w-full max-w-2xl md:pb-3 2xl:pb-4">
+			<Suspense fallback={null}>
+				<Tab />
+			</Suspense>
+		</div>
+	) : null;
 };
-
-export default AccountProfilePage;

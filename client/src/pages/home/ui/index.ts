@@ -1,1 +1,2 @@
-export { default } from './HomePage';
+export { Background } from './components';
+export { HomePage } from './HomePage';

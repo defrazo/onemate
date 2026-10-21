@@ -1,0 +1,49 @@
+<?php
+
+namespace App\Models\User;
+
+use Illuminate\Database\Eloquent\Attributes\Fillable;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+
+#[Fillable([
+    'avatar_url',
+    'first_name',
+    'last_name',
+    'birth_date',
+    'gender',
+    'phones',
+    'additional_emails',
+    'theme',
+    'widgets_sequence',
+    'widgets_slots',
+    'network_notifications_enabled',
+    'kanban_notifications_enabled',
+])]
+class UserProfile extends Model
+{
+    protected $primaryKey = 'user_id';
+
+    public $incrementing = false;
+
+    protected $keyType = 'string';
+
+    protected function casts(): array
+    {
+        return [
+            'birth_date' => 'date:Y-m-d',
+            'phones' => 'array',
+            'additional_emails' => 'array',
+            'widgets_sequence' => 'array',
+            'widgets_slots' => 'array',
+            'network_notifications_enabled' => 'boolean',
+            'kanban_notifications_enabled' => 'boolean',
+            'password_changed_at' => 'datetime',
+        ];
+    }
+
+    public function user(): BelongsTo
+    {
+        return $this->belongsTo(User::class);
+    }
+}

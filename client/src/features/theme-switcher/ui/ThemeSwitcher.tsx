@@ -1,30 +1,24 @@
+import { IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Day, Night } from '@/shared/assets/images';
+import { Button } from '@/shared/ui';
 
-const ThemeSwitcher = () => {
+export const ThemeSwitcher = observer(() => {
 	const { themeStore } = useStore();
 
 	const isDark = themeStore.theme === 'dark';
-	const alt = isDark ? 'Светлая тема' : 'Темная тема';
-	const image = isDark ? Day : Night;
 	const title = isDark ? 'Активировать светлую тему' : 'Активировать темную тему';
-	const handleToogle = () => themeStore.toggleTheme();
+	const style = 'size-5.5 shrink-0 text-(--accent-primary) transition-transform group-hover:scale-115';
 
 	return (
-		<div className="size-7">
-			<img
-				alt={alt}
-				className="cursor-pointer"
-				decoding="async"
-				loading="lazy"
-				src={image}
-				title={title}
-				onClick={handleToogle}
-			/>
-		</div>
+		<Button
+			centerIcon={isDark ? <IconSunFilled className={style} /> : <IconMoonFilled className={style} />}
+			className="group size-9"
+			title={title}
+			type="button"
+			variant="iconSurface"
+			onClick={() => themeStore.toggleTheme()}
+		/>
 	);
-};
-
-export default observer(ThemeSwitcher);
+});

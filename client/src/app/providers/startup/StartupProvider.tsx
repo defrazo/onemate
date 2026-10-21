@@ -1,76 +1,71 @@
-import { useEffect, useRef, useState } from 'react';
-import { observer } from 'mobx-react-lite';
+import { useEffect, useState } from 'react';
+import { IconAlertCircle } from '@tabler/icons-react';
 
-import App from '@/app';
-import { IconWarning } from '@/shared/assets/icons';
-import { PreloaderExt } from '@/shared/ui';
+import { App } from '@/app/App';
+import { APP_NAME } from '@/shared/config';
+import { Button, SplashScreen } from '@/shared/ui';
 
-import StoreProvider, { getRootStore } from '../store';
+import { getRootStore, StoreProvider } from '../store';
 
-interface StartupState {
-	isReady: boolean;
-	error: Error | null;
-	isLoading: boolean;
-}
+const rootStore = getRootStore();
 
-const AppInitializer = observer(() => {
-	const rootStore = getRootStore();
-	const [state, setState] = useState<StartupState>({ isReady: false, error: null, isLoading: true });
-	const initAttempted = useRef<boolean>(false);
+const AppInitializer = () => {
+	const [state, setState] = useState<'loading' | 'ready' | 'error'>(() =>
+		rootStore.initialized ? 'ready' : 'loading'
+	);
+	const [error, setError] = useState<Error | null>(null);
+
+	const initialize = async () => {
+		setState('loading');
+		setError(null);
+
+		try {
+			await rootStore.init();
+			setState('ready');
+		} catch (error) {
+			setError(error instanceof Error ? error : new Error(String(error)));
+			setState('error');
+		}
+	};
 
 	useEffect(() => {
-		if (initAttempted.current || rootStore.initialized) {
-			setState({ isReady: true, error: null, isLoading: false });
-			return;
-		}
+		if (rootStore.initialized) return;
+		void initialize();
+	}, []);
 
-		initAttempted.current = true;
+	if (state === 'loading') return <SplashScreen />;
 
-		(async () => {
-			try {
-				await rootStore.init();
-				setState({ isReady: true, error: null, isLoading: false });
-			} catch (error) {
-				setState({
-					isReady: false,
-					error: error instanceof Error ? error : new Error('Неизвестная ошибка'),
-					isLoading: false,
-				});
-			}
-		})();
-	}, [rootStore]);
-
-	if (state.error) {
+	if (state === 'error') {
 		return (
-			<div className="flex h-full flex-1 flex-col items-center justify-center gap-2">
-				<IconWarning className="size-10 text-(--status-error)" />
-				<h2 className="text-xl font-semibold text-(--status-error)">Ошибка загрузки OneMate</h2>
-				<p className="text-(--color-disabled)">{state.error.message}</p>
-				<button
-					className="cursor-pointer rounded-xl bg-(--accent-default) px-4 py-2 text-(--color-primary) hover:bg-(--accent-hover)"
-					type="button"
-					onClick={() => {
-						initAttempted.current = false;
-						setState({ isReady: false, error: null, isLoading: true });
-					}}
-				>
-					Попробовать снова
-				</button>
+			<div className="flex h-full flex-1 cursor-default items-center justify-center px-4 select-none">
+				<div className="core-surface flex w-full max-w-md flex-col items-center gap-2 bg-(--bg-secondary) p-6 text-center shadow-(--shadow-contrast)">
+					<div className="flex size-10 items-center justify-center rounded-md bg-(--status-error-muted)">
+						<IconAlertCircle className="size-6 text-(--status-error)" />
+					</div>
+					<h2 className="text-xl font-semibold">{`Не удалось загрузить ${APP_NAME}`}</h2>
+					{error?.message && (
+						<div className="w-full rounded-xl bg-(--tone) px-3 py-2.5">
+							<p className="flex flex-col text-xs wrap-break-word">
+								<span>Произошла ошибка при инициализации приложения:</span>
+								<span className="text-(--text-secondary) opacity-50">{error.message}</span>
+							</p>
+						</div>
+					)}
+					<Button className="mt-2 h-7" type="button" variant="accent" onClick={() => void initialize()}>
+						Попробовать снова
+					</Button>
+				</div>
 			</div>
 		);
 	}
 
-	if (state.isLoading || !state.isReady) return <PreloaderExt />;
-
 	return <App />;
-});
+};
 
-const StartupProvider = () => {
+export const StartupProvider = () => {
 	return (
 		<StoreProvider>
 			<AppInitializer />
 		</StoreProvider>
 	);
 };
-
-export default StartupProvider;

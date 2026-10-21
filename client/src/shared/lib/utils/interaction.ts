@@ -1,3 +1,5 @@
+import { APP_PREFIX } from '@/shared/config';
+
 // Сбор данных о браузере
 export const getBrowserInfo = () => {
 	const agent = navigator.userAgent;
@@ -15,4 +17,4 @@ export const getBrowserInfo = () => {
 };
 
 // Возвращает унифицированный ключ для демо-записей в LS
-export const key = (id: string, feature: string) => `onemate_${feature}_demo_${id}`;
+export const key = (id: string, feature: string) => `${APP_PREFIX}_${feature}_demo_${id}`;

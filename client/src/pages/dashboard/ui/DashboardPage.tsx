@@ -1,64 +1,64 @@
-import { useMemo } from 'react';
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { rectSortingStrategy, SortableContext } from '@dnd-kit/sortable';
 import { observer } from 'mobx-react-lite';
 
-import { useDeviceType, useOrientation, usePageTitle } from '@/shared/lib/hooks';
+import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 
-import { widgets } from '../lib';
-import { useDashboard, useTabs } from '../model';
-import { Widget, WidgetPanel } from '.';
+import { useDashboard } from '../model';
+import { Slot, Widget } from './components';
 
-const DashboardPage = () => {
+export const DashboardPage = observer(() => {
 	usePageTitle('Dashboard');
-	const device = useDeviceType();
-	const orientation = useOrientation();
 
-	const { sensors, widgetsOrder, rowIds, handleDragEnd } = useDashboard();
-	const { slots, setSlot, tabsFor, EMPTY } = useTabs();
+	const { isDesktop, isTablet, isMobileLandscape } = useResponsive();
 
-	const widgetById = useMemo(() => new Map(widgets.map(({ id, content }) => [id, content] as const)), []);
-	const slotContent = (id: string | undefined) => (id === EMPTY ? null : (widgetById.get(id ?? '') ?? null));
+	const { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd } = useDashboard();
 
 	return (
 		<>
-			{device === 'desktop' || (device === 'tablet' && orientation === 'landscape') ? (
-				<div className="grid flex-1 grid-cols-1 gap-4 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
+			{isDesktop ? (
+				<div className="core-gap grid min-h-0 flex-1 grid-cols-1 md:grid-cols-2 md:grid-rows-3 lg:grid-cols-3 lg:grid-rows-2">
 					<DndContext
 						collisionDetection={closestCenter}
 						modifiers={[restrictToParentElement]}
 						sensors={sensors}
-						onDragEnd={(e) => handleDragEnd(e)}
+						onDragEnd={handleDragEnd}
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
-							{widgetsOrder.map(({ id, content }) => (
-								<Widget key={id} content={content} id={id} />
+							{widgetsOrder.map((widget) => (
+								<Widget key={widget.id} {...widget} />
 							))}
 						</SortableContext>
 					</DndContext>
 				</div>
-			) : device === 'tablet' ? (
-				<div className="grid grid-cols-2 grid-rows-2 justify-evenly gap-4">
+			) : isTablet ? (
+				<div className="core-gap grid min-h-0 min-w-0 flex-1 grid-cols-2 grid-rows-2 lg:items-center">
 					{slots.map((slot, idx) => (
-						<WidgetPanel
+						<Slot
 							key={idx}
-							content={slotContent(slot)}
+							content={getSlotContent(slot)}
+							options={options}
 							reverse={idx === 2 || idx === 3}
-							tabs={tabsFor()}
 							value={slot}
 							onChange={(value) => setSlot(idx, value)}
 						/>
 					))}
 				</div>
 			) : (
-				<div className="grid grid-cols-1 grid-rows-2 justify-between gap-2">
+				<div
+					className={cn(
+						'core-gap grid w-full grid-cols-1 grid-rows-2 gap-y-3',
+						isMobileLandscape && 'mx-auto max-w-[60svw]'
+					)}
+				>
 					{slots.slice(0, 2).map((slot, idx) => (
-						<WidgetPanel
+						<Slot
 							key={idx}
-							content={slotContent(slot)}
+							content={getSlotContent(slot)}
+							options={options}
 							reverse={idx === 1}
-							tabs={tabsFor()}
 							value={slot}
 							onChange={(value) => setSlot(idx, value)}
 						/>
@@ -67,6 +67,4 @@ const DashboardPage = () => {
 			)}
 		</>
 	);
-};
-
-export default observer(DashboardPage);
+});

@@ -1,48 +1,48 @@
-import { CityRepoRouting, CityStore } from '@/entities/city';
 import { UserRepoRouting, UserStore } from '@/entities/user';
+import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
+import { AuthFormStore, AuthStore } from '@/features/auth';
 import { ActivityRepoRouting, DeviceActivityStore, DeviceProviderRouting } from '@/features/device-activity';
-import { LocationStore } from '@/features/location';
+import { ModalStore } from '@/features/modal';
+import { NotificationRepoRouting, NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
-import { AccountStore } from '@/features/user-account';
-import { AuthFormStore, AuthStore } from '@/features/user-auth';
-import { ModalStore, NotifyStore } from '@/shared/stores';
-import { GenStore } from '@/widgets/generator';
+import { NotifyStore } from '@/features/toast';
+import { CloudRepoRouting, CloudStore } from '@/widgets/cloud';
+import { CurrencyStore } from '@/widgets/currency';
+import { NetworkRepoRouting, NetworkStore } from '@/widgets/network';
 import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
-import { ProfileStore } from '@/widgets/user-profile';
 import { WeatherStore } from '@/widgets/weather';
-import { CurrencyStore } from '@/widgets/сurrency';
 
-import { AllStores, CoreStores } from '.';
+import type { AllStores, CoreStores } from '.';
 
 export class StoreFactory {
 	static createCore(): CoreStores {
-		const notifyStore = new NotifyStore();
-		const modalStore = new ModalStore();
 		const userStore = new UserStore();
 		const userRepo = new UserRepoRouting(userStore);
 		userStore.setRepo(userRepo);
 
-		return { notifyStore, modalStore, userStore };
+		const notifyStore = new NotifyStore();
+		const modalStore = new ModalStore();
+
+		return { userStore, notifyStore, modalStore };
 	}
 
 	static createAllStores(): AllStores {
 		const { userStore, notifyStore, modalStore } = this.createCore();
 
-		// User
-		const userProfileStore = new UserProfileStore(userStore, new ProfileRepoRouting(userStore));
-		const themeStore = new ThemeStore(userStore, userProfileStore);
-		const profileStore = new ProfileStore(userStore, userProfileStore);
+		// Entities
+		const userProfileStore = new UserProfileStore(
+			userStore,
+			new ProfileRepoRouting(userStore),
+			new UserLocationRepoRouting(userStore, 'profile')
+		);
 
-		// Auth
-		const authFormStore = new AuthFormStore();
+		// Features
 		const authStore = new AuthStore(userStore);
-		const accountStore = new AccountStore(authStore, userStore, userProfileStore);
-
-		// Location
-		const cityStore = new CityStore(userStore, new CityRepoRouting(userStore));
-		const locationStore = new LocationStore(userStore, cityStore);
+		const authFormStore = new AuthFormStore();
+		const themeStore = new ThemeStore(userStore, userProfileStore);
+		const notificationStore = new NotificationStore(userStore, new NotificationRepoRouting(userStore));
 		const deviceActivityStore = new DeviceActivityStore(
 			userStore,
 			authStore,
@@ -50,12 +50,13 @@ export class StoreFactory {
 			new DeviceProviderRouting(userStore)
 		);
 
-		// Features
-		const weatherStore = new WeatherStore(userStore, cityStore);
+		// Widgets
+		const networkStore = new NetworkStore(userStore, new NetworkRepoRouting(userStore));
+		const cloudStore = new CloudStore(userStore, new CloudRepoRouting(userStore));
+		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
 		const notesStore = new NotesStore(userStore, new NotesRepoRouting(userStore));
 		const currencyStore = new CurrencyStore(userStore);
 		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore));
-		const genStore = new GenStore();
 
 		return {
 			// Core
@@ -63,27 +64,23 @@ export class StoreFactory {
 			notifyStore,
 			modalStore,
 
-			// User
-			themeStore,
+			// Entities
 			userProfileStore,
-			profileStore,
-
-			// Auth
-			authFormStore,
-			authStore,
-			accountStore,
-
-			// Location
-			cityStore,
-			locationStore,
-			deviceActivityStore,
 
 			// Features
+			authStore,
+			authFormStore,
+			themeStore,
+			notificationStore,
+			deviceActivityStore,
+
+			// Widgets
+			cloudStore,
+			networkStore,
 			weatherStore,
 			notesStore,
 			currencyStore,
 			translatorStore,
-			genStore,
 		};
 	}
 }

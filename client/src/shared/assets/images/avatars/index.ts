@@ -15,21 +15,25 @@ import Avatar13 from './avatar13.webp';
 import Avatar14 from './avatar14.webp';
 import Avatar15 from './avatar15.webp';
 
-export const AVATARS: string[] = [
-	Avatar0,
-	Avatar1,
-	Avatar2,
-	Avatar3,
-	Avatar4,
-	Avatar5,
-	Avatar6,
-	Avatar7,
-	Avatar8,
-	Avatar9,
-	Avatar10,
-	Avatar11,
-	Avatar12,
-	Avatar13,
-	Avatar14,
-	Avatar15,
-];
+export const AVATARS = {
+	avatar0: Avatar0,
+	avatar1: Avatar1,
+	avatar2: Avatar2,
+	avatar3: Avatar3,
+	avatar4: Avatar4,
+	avatar5: Avatar5,
+	avatar6: Avatar6,
+	avatar7: Avatar7,
+	avatar8: Avatar8,
+	avatar9: Avatar9,
+	avatar10: Avatar10,
+	avatar11: Avatar11,
+	avatar12: Avatar12,
+	avatar13: Avatar13,
+	avatar14: Avatar14,
+	avatar15: Avatar15,
+};
+
+export type AvatarId = keyof typeof AVATARS;
+
+export const AVATAR_ENTRIES = Object.entries(AVATARS) as [AvatarId, string][];

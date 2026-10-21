@@ -1,10 +1,9 @@
-import type { ReactNode } from 'react';
 import { createPortal } from 'react-dom';
+import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-import type { Placement } from '../model';
-import { useTooltip } from '../model';
+import { type Placement, useTooltip } from '../model';
 
 interface TooltipProps {
 	content?: ReactNode;
@@ -15,36 +14,41 @@ interface TooltipProps {
 	portalContainer?: Element;
 }
 
-const Tooltip = ({
+const DEFAULT_PLACEMENTS: Placement[] = ['top', 'bottom', 'right', 'left'];
+
+interface TooltipContentProps extends Omit<TooltipProps, 'content'> {
+	content: ReactNode;
+}
+
+const TooltipContent = ({
 	content,
 	className,
 	children,
-	preferredPlacements = ['top', 'bottom', 'right', 'left'],
+	preferredPlacements = DEFAULT_PLACEMENTS,
 	offset = 8,
 	portalContainer,
-}: TooltipProps) => {
-	if (!content) return <>{children}</>;
-
+}: TooltipContentProps) => {
 	const { show, coords, placement, triggerRef, tipRef, setShow } = useTooltip(preferredPlacements, offset, content);
 
 	const tip = (
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 hidden max-w-lg rounded-xl bg-black px-4 py-2 text-sm leading-snug text-(--accent-text) shadow transition-opacity xl:block"
+			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block"
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>
 			<span
 				className={cn(
-					'pointer-events-none absolute block h-2 w-2 rotate-45 bg-black',
+					'pointer-events-none absolute size-2 rotate-45 border-(--border-primary) bg-(--bg-secondary)',
 					(placement === 'top' || placement === 'bottom') && 'left-1/2 -translate-x-1/2',
-					placement === 'top' && '-bottom-1',
-					placement === 'bottom' && '-top-1',
-					placement === 'left' && 'top-1/2 -right-1 -translate-y-1/2',
-					placement === 'right' && 'top-1/2 -left-1 -translate-y-1/2'
+					placement === 'top' && '-bottom-1 border-r border-b',
+					placement === 'bottom' && '-top-1 border-t border-l',
+					placement === 'left' && 'top-1/2 -right-1 -translate-y-1/2 border-t border-r',
+					placement === 'right' && 'top-1/2 -left-1 -translate-y-1/2 border-b border-l'
 				)}
 			/>
+
 			{content}
 		</div>
 	);
@@ -68,4 +72,12 @@ const Tooltip = ({
 	);
 };
 
-export default Tooltip;
+export const Tooltip = ({ content, children, ...props }: TooltipProps) => {
+	if (!content) return <>{children}</>;
+
+	return (
+		<TooltipContent {...props} content={content}>
+			{children}
+		</TooltipContent>
+	);
+};

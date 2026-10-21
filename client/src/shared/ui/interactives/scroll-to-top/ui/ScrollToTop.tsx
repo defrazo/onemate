@@ -1,16 +1,17 @@
 import { useEffect, useState } from 'react';
-import { ArrowUp } from 'lucide-react';
+import { IconChevronUp } from '@tabler/icons-react';
 
-import { useDeviceType } from '@/shared/lib/hooks';
+import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui/inputs';
+import { Button } from '@/shared/ui';
 
 const BASE_BOTTOM = 16;
 
-const ScrollToTop = ({ footerSelector = 'footer' }) => {
-	const [visible, setVisible] = useState<boolean>(false);
-	const [extraBottom, setExtraBottom] = useState<number>(0);
-	const device = useDeviceType();
+export const ScrollToTop = ({ footerSelector = 'footer' }) => {
+	const { isMobile } = useResponsive();
+
+	const [visible, setVisible] = useState(false);
+	const [extraBottom, setExtraBottom] = useState(0);
 
 	useEffect(() => {
 		const onScroll = () => setVisible(window.scrollY > 300);
@@ -46,18 +47,16 @@ const ScrollToTop = ({ footerSelector = 'footer' }) => {
 
 	return (
 		<Button
-			centerIcon={<ArrowUp className="size-6" />}
+			centerIcon={<IconChevronUp className="size-6" />}
 			className={cn(
-				'right-4 z-50 rounded-full p-3 shadow transition-all',
-				device === 'mobile' ? 'hidden' : 'fixed',
+				'right-4 z-50 rounded-full p-3 shadow-(--shadow-contrast) transition-[background-color,opacity]',
+				isMobile ? 'hidden' : 'fixed',
 				visible ? 'opacity-100' : 'pointer-events-none opacity-0'
 			)}
-			size="custom"
+			padding="none"
 			style={{ bottom }}
 			title="Наверх"
 			onClick={scrollToTop}
 		/>
 	);
 };
-
-export default ScrollToTop;

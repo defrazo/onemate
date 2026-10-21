@@ -1,5 +1,4 @@
-import type { UserStore } from '@/entities/user';
-import { PermissionService } from '@/entities/user';
+import { PermissionService, type UserStore } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
 import type {
@@ -32,9 +31,9 @@ export class KanbanRepoRouting implements IKanbanRepo {
 		return this.role === 'demo' ? this.demoRepo : this.realRepo;
 	}
 
-	private checkPermission(operation: 'read' | 'save' | 'delete'): void {
+	private checkPermission(operation: 'read' | 'save' | 'delete') {
 		if (!PermissionService.canPerform(this.role, 'kanban', operation)) {
-			throw new PermissionError(this.role === 'demo' ? 'Недоступно в демо-версии' : 'Недостаточно прав');
+			throw new PermissionError(this.role === 'demo' ? 'Недоступно в демо-режиме' : 'Недостаточно прав');
 		}
 	}
 

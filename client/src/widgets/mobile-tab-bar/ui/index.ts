@@ -1,1 +1,1 @@
-export { default } from './MobileTabBar';
+export { MobileTabBar } from './MobileTabBar';

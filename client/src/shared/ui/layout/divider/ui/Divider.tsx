@@ -3,19 +3,30 @@ import { cn } from '@/shared/lib/utils';
 interface DividerProps {
 	className?: string;
 	variant?: 'default' | 'custom';
-	margY?: 'none' | 'sm' | 'md' | 'lg';
-	margX?: 'none' | 'sm' | 'md' | 'lg';
+	direction?: 'X' | 'Y';
+	margY?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
+	margX?: 'none' | 'xs' | 'sm' | 'md' | 'lg';
 }
 
-const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none' }: DividerProps) => {
-	const base = 'h-px';
-
+export const Divider = ({
+	className,
+	variant = 'default',
+	direction = 'X',
+	margY = 'none',
+	margX = 'none',
+}: DividerProps) => {
 	const variants = {
-		default: 'bg-(--border-color)',
+		default: 'bg-(--border-primary)',
 		custom: '',
 	};
 
+	const directions = {
+		X: 'h-px w-full',
+		Y: 'w-px self-stretch',
+	};
+
 	const marginsY = {
+		xs: 'my-1',
 		sm: 'my-2',
 		md: 'my-4',
 		lg: 'my-6',
@@ -23,6 +34,7 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	};
 
 	const marginsX = {
+		xs: 'mx-1',
 		sm: 'mx-2',
 		md: 'mx-4',
 		lg: 'mx-6',
@@ -30,10 +42,16 @@ const Divider = ({ className, variant = 'default', margY = 'none', margX = 'none
 	};
 
 	return (
-		<div className={cn(marginsY[margY], marginsX[margX], 'w-full')}>
-			<hr className={cn('border-none', base, variants[variant], className)} />
-		</div>
+		<div
+			className={cn(
+				'shrink-0',
+				directions[direction],
+				variants[variant],
+				marginsY[margY],
+				marginsX[margX],
+				className
+			)}
+			role="separator"
+		/>
 	);
 };
-
-export default Divider;

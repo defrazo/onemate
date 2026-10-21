@@ -1,7 +1,9 @@
-export const validateName = (name: string): Promise<boolean> => {
-	if (name.trim().length < 2) return Promise.reject(new Error('Имя должно содержать минимум 2 символа'));
+import type { ValidationResult } from '.';
 
-	if (/[^а-яёА-ЯЁa-zA-Z\s'-]/.test(name)) return Promise.reject(new Error('Имя содержит недопустимые символы'));
+export const validateName = (name: string): ValidationResult => {
+	const normalized = name.trim();
+	if (!normalized) return 'empty';
 
-	return Promise.resolve(true);
+	const nameRegex = /^[а-яёА-ЯЁa-zA-Z '-]{2,}$/;
+	return nameRegex.test(normalized) ? 'valid' : 'invalid';
 };

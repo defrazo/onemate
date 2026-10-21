@@ -1,14 +1,12 @@
-export const validatePhone = (phone: string): Promise<boolean> => {
-	const digitsOnly = phone.replace(/[^\d]/g, '');
+import type { ValidationResult } from '.';
 
-	if (digitsOnly.length < 10) {
-		return Promise.reject(new Error('Номер телефона слишком короткий'));
-	}
+export const validatePhone = (phone: string): ValidationResult => {
+	const normalized = phone.trim();
+	if (!normalized) return 'empty';
 
-	const allowedPattern = /^[\d\s()+-]+$/;
-	if (!allowedPattern.test(phone)) {
-		return Promise.reject(new Error('Телефон может содержать только цифры, пробелы, скобки, дефисы и знак "+"'));
-	}
+	const phoneRegex = /^[\d\s()+-]+$/;
+	if (!phoneRegex.test(normalized)) return 'invalid';
 
-	return Promise.resolve(true);
+	const digitsOnly = normalized.replace(/\D/g, '');
+	return digitsOnly.length >= 10 ? 'valid' : 'invalid';
 };

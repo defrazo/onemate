@@ -1,25 +1,26 @@
-import { BrowserRouter } from 'react-router-dom';
 import { observer } from 'mobx-react-lite';
+import { BrowserRouter } from 'react-router-dom';
 import { Toaster } from 'sonner';
 
-import { useDeviceType } from '@/shared/lib/hooks';
-import { LS_CACHE_UI, storage } from '@/shared/lib/storage';
-import { DemoBanner, ModalManager } from '@/shared/ui';
+import { ModalManager } from '@/features/modal';
+import { DemoBanner } from '@/pages/demo';
+import { useResponsive } from '@/shared/lib/hooks';
 
-import { RouterProvider, useStore } from './providers';
+import { NotificationsProvider, RouterProvider, useStore } from './providers';
 
-const App = () => {
+export const App = observer(() => {
+	const { isDesktop } = useResponsive();
+
 	const { userStore } = useStore();
-	const device = useDeviceType();
 
 	return (
 		<BrowserRouter>
-			{userStore.id && userStore.userRole !== 'user' && !storage.get(LS_CACHE_UI).demo && <DemoBanner />}
-			<RouterProvider />
-			<ModalManager />
-			<Toaster duration={5000} position={device === 'desktop' ? 'bottom-right' : 'top-left'} />
+			<NotificationsProvider>
+				{userStore.id && userStore.userRole === 'demo' && <DemoBanner />}
+				<RouterProvider />
+				<ModalManager />
+				<Toaster duration={5000} position={isDesktop ? 'bottom-right' : 'top-right'} />
+			</NotificationsProvider>
 		</BrowserRouter>
 	);
-};
-
-export default observer(App);
+});

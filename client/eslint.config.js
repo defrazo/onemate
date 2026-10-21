@@ -1,8 +1,10 @@
-import eslintPluginPrettier from 'eslint-plugin-prettier';
-import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
 import typescriptEslintPlugin from '@typescript-eslint/eslint-plugin';
-import eslintPluginReact from 'eslint-plugin-react';
 import typescriptParser from '@typescript-eslint/parser';
+import eslintPluginImport from 'eslint-plugin-import';
+import eslintPluginPrettier from 'eslint-plugin-prettier';
+import eslintPluginReact from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
+import eslintPluginSimpleImportSort from 'eslint-plugin-simple-import-sort';
 
 export default [
 	{
@@ -12,7 +14,6 @@ export default [
 			parserOptions: {
 				ecmaVersion: 'latest',
 				sourceType: 'module',
-				project: './tsconfig.json',
 			},
 			globals: {
 				window: 'readonly',
@@ -23,8 +24,10 @@ export default [
 		plugins: {
 			'@typescript-eslint': typescriptEslintPlugin,
 			prettier: eslintPluginPrettier,
-			'simple-import-sort': eslintPluginSimpleImportSort,
 			react: eslintPluginReact,
+			import: eslintPluginImport,
+			'react-hooks': reactHooks,
+			'simple-import-sort': eslintPluginSimpleImportSort,
 		},
 		settings: {
 			react: {
@@ -32,41 +35,72 @@ export default [
 			},
 		},
 		rules: {
-			'@typescript-eslint/no-unused-vars': ["warn", {
-				"argsIgnorePattern": "^_",
-				"varsIgnorePattern": "^_",
-				"caughtErrorsIgnorePattern": "^_"
-			}],
-			'no-console': 'off',
-			'array-bracket-newline': ['off'],
-			'array-element-newline': ['off'],
-			'prettier/prettier': 'error',
-			'simple-import-sort/imports': [
+			// TypeScript
+			'no-unused-vars': 'off',
+			'@typescript-eslint/no-unused-vars': [
 				'warn',
 				{
-					groups: [['^react', '^@?\\w'], ['^@/'], ['^\\.'], ['\\.s?css$']],
+					argsIgnorePattern: '^_',
+					varsIgnorePattern: '^_',
+					caughtErrorsIgnorePattern: '^_',
 				},
 			],
-			'simple-import-sort/exports': 'warn',
+			'@typescript-eslint/consistent-type-imports': [
+				'error',
+				{
+					prefer: 'type-imports',
+					fixStyle: 'inline-type-imports',
+					disallowTypeAnnotations: false,
+				},
+			],
+
+			// Imports / exports
+			'simple-import-sort/imports': [
+				'error',
+				{
+					groups: [
+						['^\\u0000'],
+						['^react$', '^react-dom', '^@?\\w'],
+						['^@/'],
+						['^\\.'],
+						['^.+\\.(?:css|scss|sass|less)$'],
+					],
+				},
+			],
+			'simple-import-sort/exports': 'error',
+			'import/first': 'error',
+
+			// React
 			'react/jsx-sort-props': [
 				'warn',
 				{
 					callbacksLast: true,
-					shorthandFirst: false,
-					noSortAlphabetically: false,
+					shorthandFirst: true,
 					reservedFirst: true,
+					noSortAlphabetically: false,
 				},
 			],
-		},
-	},
-	{
-		files: ['**/*.css'],
-		plugins: { prettier: eslintPluginPrettier },
-		rules: {
+
+			// React Hooks
+			'react-hooks/rules-of-hooks': 'error',
+			'react-hooks/exhaustive-deps': 'warn',
+
+			// General
+			'no-console': 'off',
+			'no-duplicate-imports': [
+				'error',
+				{
+					allowSeparateTypeImports: true,
+				},
+			],
+			'object-shorthand': ['warn', 'always'],
+			'prefer-const': 'error',
+
+			// Formatting
 			'prettier/prettier': 'error',
-		},
+			},
 	},
 	{
-		ignores: ['dist', 'node_modules','env.d.ts', 'vite.config.ts', 'tailwind.config.js'],
+		ignores: ['dist', 'node_modules', 'env.d.ts', 'tailwind.config.js'],
 	},
 ];

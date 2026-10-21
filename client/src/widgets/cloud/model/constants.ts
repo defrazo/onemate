@@ -1,0 +1,6 @@
+export const CLOUD_LIMITS = {
+	STORAGE_MB: 500,
+	TEXT_LENGTH: 10_000,
+} as const;
+
+export const CLOUD_STORAGE_BYTES = CLOUD_LIMITS.STORAGE_MB * 1024 * 1024;

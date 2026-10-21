@@ -1,1 +1,1 @@
-export { default } from './ZoomOnHover';
+export { ZoomOnHover } from './ZoomOnHover';

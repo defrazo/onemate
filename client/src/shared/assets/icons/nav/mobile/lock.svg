@@ -1,12 +1,0 @@
-<svg
-	fill="currentColor"
-	height="100%"
-	preserveAspectRatio="xMidYMid meet"
-	stroke="currentColor"
-	stroke-width="0"
-	viewBox="0 0 24 24"
-	width="100%"
-	xmlns="http://www.w3.org/2000/svg"
->
-	<path d="M17,9.99V7A5,5,0,0,0,7,7V9.99A4.482,4.482,0,0,0,4.5,14v3A4.507,4.507,0,0,0,9,21.5h6A4.507,4.507,0,0,0,19.5,17V14A4.482,4.482,0,0,0,17,9.99ZM13,16a1,1,0,0,1-2,0V15a1,1,0,0,1,2,0Zm2-6.5H9V7a3,3,0,0,1,6,0Z" />
-</svg>

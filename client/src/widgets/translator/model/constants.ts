@@ -1,0 +1,2 @@
+export const TRANSLATE_DELAY = 1500;
+export const TRANSLATOR_MAX_LENGTH = 500;

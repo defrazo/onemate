@@ -1,3 +1,3 @@
-export { NotesRepoDemo } from './notesRepoDemo';
-export { NotesRepoLaravel } from './notesRepoLaravel';
-export { NotesRepoRouting } from './notesRepoRouting';
+export * from './notes.repo.demo';
+export * from './notes.repo.laravel';
+export * from './notes.repo.routing';

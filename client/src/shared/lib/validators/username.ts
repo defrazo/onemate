@@ -1,13 +1,9 @@
-export const validateUsername = (username: string): Promise<boolean> => {
-	const usernameRegex = /^[a-zA-Z0-9_]{3,}$/;
+import type { ValidationResult } from '.';
 
-	if (!usernameRegex.test(username)) {
-		return Promise.reject(
-			new Error(
-				'Имя пользователя должно содержать минимум 3 символа и включать только латинские буквы, цифры и символ подчеркивания'
-			)
-		);
-	}
+export const validateUsername = (username: string): ValidationResult => {
+	const normalized = username.trim();
+	if (!normalized) return 'empty';
 
-	return Promise.resolve(true);
+	const usernameRegex = /^[a-zA-Z0-9_-]{3,50}$/;
+	return usernameRegex.test(normalized) ? 'valid' : 'invalid';
 };

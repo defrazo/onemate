@@ -3,9 +3,10 @@
 namespace App\Http\Controllers\Kanban;
 
 use App\Http\Controllers\Controller;
-use App\Models\KanbanTask;
+use App\Models\Kanban\KanbanTask;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Validation\Rule;
 
 class KanbanTaskController extends Controller
@@ -49,6 +50,8 @@ class KanbanTaskController extends Controller
             'completed' => ['required', 'boolean'],
         ]);
 
+        $data['description'] ??= '';
+
         $task = $request->user()
             ->kanbanTasks()
             ->create($data);
@@ -70,7 +73,6 @@ class KanbanTaskController extends Controller
                 Rule::exists('kanban_columns', 'id')
                     ->where('user_id', $request->user()->getKey()),
             ],
-
             'title' => ['sometimes', 'required', 'string', 'max:60'],
             'description' => ['sometimes', 'nullable', 'string', 'max:300'],
             'status' => [
@@ -91,6 +93,10 @@ class KanbanTaskController extends Controller
             'completed' => ['sometimes', 'boolean'],
         ]);
 
+        if (array_key_exists('description', $data)) {
+            $data['description'] ??= '';
+        }
+
         $startDate = $data['start_date'] ?? $task->start_date;
         $endDate = array_key_exists('end_date', $data)
             ? $data['end_date']
@@ -99,7 +105,7 @@ class KanbanTaskController extends Controller
         if (
             $startDate &&
             $endDate &&
-            $endDate < $startDate
+            Carbon::parse($endDate)->lt(Carbon::parse($startDate))
         ) {
             return response()->json([
                 'code' => 'INVALID_DATE_RANGE',

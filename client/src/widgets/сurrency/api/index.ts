@@ -1,1 +1,0 @@
-export { fetchRates } from './fetchRates';

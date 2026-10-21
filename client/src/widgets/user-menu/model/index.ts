@@ -1,1 +1,2 @@
-export type { UserButton } from './types';
+export * from './menuItems';
+export type * from './types';

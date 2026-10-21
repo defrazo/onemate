@@ -1,12 +1,15 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 
+import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
-import { ErrorFallback } from '@/shared/ui';
+import { LoadingError } from '@/shared/ui';
 
 import { initKanban } from '.';
 
-const KanbanPage = () => {
+export const KanbanPage = () => {
 	usePageTitle('Kanban');
+
+	const { userStore } = useStore();
 
 	const [loading, setLoading] = useState(true);
 	const [error, setError] = useState(false);
@@ -15,7 +18,7 @@ const KanbanPage = () => {
 	const cleanupRef = useRef<(() => void) | undefined>(undefined);
 	const requestIdRef = useRef(0);
 
-	const init = async () => {
+	const init = useCallback(async () => {
 		const root = kanbanRef.current;
 		if (!root) return;
 
@@ -28,7 +31,7 @@ const KanbanPage = () => {
 		setError(false);
 
 		try {
-			const destroy = await initKanban(root);
+			const destroy = await initKanban(root, userStore);
 
 			if (requestId !== requestIdRef.current) {
 				destroy?.();
@@ -42,7 +45,7 @@ const KanbanPage = () => {
 		} finally {
 			if (requestId === requestIdRef.current) setLoading(false);
 		}
-	};
+	}, [userStore]);
 
 	useEffect(() => {
 		let disposed = false;
@@ -57,7 +60,7 @@ const KanbanPage = () => {
 			cleanupRef.current?.();
 			cleanupRef.current = undefined;
 		};
-	}, []);
+	}, [init]);
 
 	return (
 		<div className="relative size-full">
@@ -65,11 +68,9 @@ const KanbanPage = () => {
 
 			{(loading || error) && (
 				<div className="absolute inset-0 flex items-center justify-center">
-					<ErrorFallback delay={7000} message="Что-то пошло не так..." onRetry={init} />
+					<LoadingError message="Что-то пошло не так..." size="xl" onRetry={init} />
 				</div>
 			)}
 		</div>
 	);
 };
-
-export default KanbanPage;

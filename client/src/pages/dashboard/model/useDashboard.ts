@@ -1,36 +1,60 @@
+import { createElement } from 'react';
 import { type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
 import { useStore } from '@/app/providers';
+import { EMPTY_WIDGET_SLOT, type WidgetId, WIDGETS, type WidgetSlot } from '@/shared/config';
 
-import { widgets } from '../lib';
-import type { WidgetItem } from '.';
+import { type SwitcherOption, type WidgetItem, widgets } from '.';
 
 export const useDashboard = () => {
-	const { userProfileStore: store } = useStore();
 	const sensors = useSensors(useSensor(PointerSensor));
 
-	const handleDragEnd = (event: DragEndEvent) => {
-		const { active, over } = event;
-		if (!over || active.id === over.id) return;
-
-		const activeId = active.id.toString();
-		const overId = over.id.toString();
-
-		const oldIndex = store.widgets.indexOf(activeId);
-		const newIndex = store.widgets.indexOf(overId);
-
-		if (oldIndex === -1 || newIndex === -1) return;
-
-		const newOrder = arrayMove(store.widgets, oldIndex, newIndex);
-		store.updateWidgetSequence(newOrder);
-	};
-
-	const getWidgets = (ids: string[]) =>
-		ids.map((id) => widgets.find((w) => w.id === id)).filter(Boolean) as WidgetItem[];
+	const { userProfileStore: store } = useStore();
 
 	const rowIds = store.widgets;
-	const widgetsOrder = getWidgets(rowIds);
+	const slots = store.slots;
 
-	return { sensors, rowIds, widgetsOrder, handleDragEnd };
+	const widgetMap = new Map<WidgetId, WidgetItem>(widgets.map((widget) => [widget.id, widget]));
+
+	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => rowIds.includes(id)).map(({ id, icon }) => ({
+		value: id,
+		label: createElement(icon, { className: 'size-7', stroke: 2 }),
+	}));
+
+	const widgetsOrder = rowIds
+		.map((id) => widgetMap.get(id))
+		.filter((widget): widget is WidgetItem => widget !== undefined);
+
+	const getSlotContent = (slot: WidgetSlot) => {
+		if (slot === EMPTY_WIDGET_SLOT) return null;
+		return widgetMap.get(slot)?.content ?? null;
+	};
+
+	const setSlot = (idx: number, widgetId: WidgetId) => {
+		const newSlots = [...slots];
+		const conflictIdx = newSlots.indexOf(widgetId);
+
+		if (conflictIdx !== -1 && conflictIdx !== idx) newSlots[conflictIdx] = EMPTY_WIDGET_SLOT;
+		newSlots[idx] = widgetId;
+
+		void store.updateWidgetSlots(newSlots);
+	};
+
+	const handleDragEnd = (e: DragEndEvent) => {
+		const { active, over } = e;
+		if (!over || active.id === over.id) return;
+
+		const activeId = active.id.toString() as WidgetId;
+		const overId = over.id.toString() as WidgetId;
+
+		const oldIdx = rowIds.indexOf(activeId);
+		const newIdx = rowIds.indexOf(overId);
+
+		if (oldIdx === -1 || newIdx === -1) return;
+
+		void store.updateWidgetSequence(arrayMove(rowIds, oldIdx, newIdx));
+	};
+
+	return { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd };
 };

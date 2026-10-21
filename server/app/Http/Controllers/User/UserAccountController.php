@@ -3,11 +3,11 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
-use App\Notifications\AccountDeletionScheduledNotification;
-use App\Notifications\AccountRestoredNotification;
-use App\Notifications\EmailChangedNotification;
-use App\Notifications\PasswordChangedNotification;
+use App\Models\User\User;
+use App\Notifications\User\AccountDeletionScheduledNotification;
+use App\Notifications\User\AccountRestoredNotification;
+use App\Notifications\User\EmailChangedNotification;
+use App\Notifications\user\PasswordChangedNotification;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -17,6 +17,29 @@ use Illuminate\Validation\Rules\Password as PasswordRule;
 
 class UserAccountController extends Controller
 {
+    public function updateUsername(Request $request): JsonResponse
+    {
+        $user = $request->user();
+
+        $validated = $request->validate([
+            'username' => [
+                'required',
+                'string',
+                'min:3',
+                'max:50',
+                Rule::unique('users', 'username')->ignore($user->id),
+            ],
+        ]);
+
+        $user->update([
+            'username' => $validated['username'],
+        ]);
+
+        return response()->json([
+            'user' => $user->fresh(),
+        ]);
+    }
+
     public function updatePassword(Request $request): JsonResponse
     {
         $data = $request->validate([

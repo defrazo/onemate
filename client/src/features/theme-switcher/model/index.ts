@@ -1,2 +1,1 @@
-export { ThemeStore } from './themeStore';
-export type { Theme } from './types';
+export * from './theme.store';

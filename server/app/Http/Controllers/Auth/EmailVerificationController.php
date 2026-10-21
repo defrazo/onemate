@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
-use App\Models\User;
+use App\Models\User\User;
 use Illuminate\Auth\Events\Verified;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class EmailVerificationController extends Controller
 {
@@ -25,6 +26,9 @@ class EmailVerificationController extends Controller
 
             event(new Verified($user));
         }
+
+        Auth::login($user);
+        $request->session()->regenerate();
 
         return response()->json([
             'message' => 'Email verified successfully',

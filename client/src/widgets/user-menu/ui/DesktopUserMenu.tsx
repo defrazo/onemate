@@ -1,88 +1,55 @@
-import { useNavigate } from 'react-router-dom';
+import { IconLogout2 } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
+import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
-import { IconContacts, IconDay, IconLogout, IconMain, IconNight, IconShield, IconUser } from '@/shared/assets/icons';
+import { UserInfo } from '@/entities/user-profile';
 import { Button, Divider } from '@/shared/ui';
 
-import type { UserButton } from '../model';
-import { UserMenuInfo } from '.';
+import { desktopUserLinks } from '../model';
 
-export const DesktopUserMenu = observer(() => {
-	const { authStore, modalStore, themeStore } = useStore();
+export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) => {
 	const navigate = useNavigate();
 
-	const userButtons: UserButton[] = [
-		{
-			id: 'overview',
-			icon: <IconMain className="size-6" />,
-			label: 'Мой профиль',
-		},
-		{
-			id: 'personal',
-			icon: <IconUser className="size-6" />,
-			label: 'Личные данные',
-		},
-		{
-			id: 'contacts',
-			icon: <IconContacts className="size-6" />,
-			label: 'Контактные данные',
-		},
-		{
-			id: 'secure',
-			icon: <IconShield className="size-6" />,
-			label: 'Безопасность',
-		},
-		{
-			id: 'theme',
-			icon: themeStore.theme === 'light' ? <IconDay className="size-6" /> : <IconNight className="size-6" />,
-			action: () => {
-				themeStore.toggleTheme();
-				modalStore.closeModal();
-			},
-			label: (
-				<>
-					Тема оформления:
-					<span className="ml-1 font-semibold">{themeStore.currentTheme}</span>
-				</>
-			),
-		},
-	];
+	const { authStore, modalStore } = useStore();
+
+	const handleNavigate = (to: string) => {
+		modalStore.closeModal();
+		onClose();
+		navigate(to);
+	};
+
+	const handleLogout = async () => {
+		await authStore.logout();
+		modalStore.closeModal();
+		navigate('/');
+	};
 
 	return (
-		<div className="core-border absolute right-2.5 flex w-xs flex-col rounded-t-none! bg-(--bg-secondary) py-2 shadow-[inset_0_16px_6px_-4px_rgba(0,0,0,0.2)]">
-			<UserMenuInfo className="mt-2.5 px-4 py-2" />
-			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
-			{userButtons.map(({ id, label, icon, action }) => {
-				const isThemeToggle = id === 'theme';
-				const handleClick = isThemeToggle
-					? action
-					: () => {
-							modalStore.closeModal();
-							navigate(`/account/profile?tab=${id}`);
-						};
-				return (
+		<div className="core-surface absolute top-full right-0 mt-1 flex w-68 flex-col rounded-lg bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)">
+			<UserInfo className="px-2.5 py-1.5" />
+			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
+			<div className="my-1 flex flex-col gap-1">
+				{desktopUserLinks.map(({ to, icon: Icon, label }) => (
 					<Button
-						key={id}
-						className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
-						leftIcon={icon}
-						variant="mobile"
-						onClick={handleClick}
+						key={to}
+						className="h-8 justify-start bg-transparent"
+						leftIcon={<Icon className="size-4.5" />}
+						padding="sm"
+						variant="tone"
+						onClick={() => handleNavigate(to)}
 					>
 						{label}
 					</Button>
-				);
-			})}
-			<Divider className="mx-2 bg-(--border-color)" margY="sm" />
+				))}
+			</div>
+			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<Button
-				className="h-10 justify-start rounded-none hover:bg-(--accent-hover) hover:text-(--accent-text)"
-				leftIcon={<IconLogout className="size-6" />}
-				variant="mobile"
-				onClick={async () => {
-					await authStore.logout();
-					modalStore.closeModal();
-					navigate('/');
-				}}
+				className="mt-1 h-8 justify-start bg-transparent"
+				leftIcon={<IconLogout2 className="size-4.5" />}
+				padding="sm"
+				variant="tone"
+				onClick={handleLogout}
 			>
 				Выйти
 			</Button>

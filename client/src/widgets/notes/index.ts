@@ -1,4 +1,3 @@
 export { NotesRepoRouting } from './api';
-export type { Note } from './model';
-export { NotesStore } from './model';
-export { default } from './ui';
+export { type Note, NOTES_TIP, NotesStore } from './model';
+export { Notes } from './ui';

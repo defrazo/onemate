@@ -1,0 +1,45 @@
+import { type Icon, IconMoonFilled, IconSunFilled } from '@tabler/icons-react';
+import { observer } from 'mobx-react-lite';
+
+import { useStore } from '@/app/providers';
+import type { Theme } from '@/shared/config';
+import { cn } from '@/shared/lib/utils';
+
+const themes = [
+	{ value: 'light', label: 'Светлая', icon: IconSunFilled },
+	{ value: 'dark', label: 'Тёмная', icon: IconMoonFilled },
+] satisfies { value: Theme; label: string; icon: Icon }[];
+
+export const AppearanceSection = observer(() => {
+	const { userProfileStore } = useStore();
+
+	const handleThemeChange = (theme: Theme) => void userProfileStore.updateTheme(theme);
+
+	return (
+		<section className="flex items-center justify-between select-none">
+			<span className="text-sm text-(--text-secondary) opacity-70">Тема интерфейса</span>
+			<div className="flex w-fit gap-1 rounded-lg bg-(--bg-tertiary) p-1 xl:w-52">
+				{themes.map(({ value, label, icon: Icon }) => {
+					const isActive = userProfileStore.theme === value;
+
+					return (
+						<button
+							key={value}
+							className={cn(
+								'flex h-8 cursor-pointer items-center gap-2 rounded-md px-3 text-sm transition-colors',
+								isActive
+									? 'bg-(--accent-primary) text-(--text-on-accent)'
+									: 'hover:text-(--accent-primary)'
+							)}
+							type="button"
+							onClick={() => handleThemeChange(value)}
+						>
+							<Icon className="size-4" />
+							<span className="trim">{label}</span>
+						</button>
+					);
+				})}
+			</div>
+		</section>
+	);
+});

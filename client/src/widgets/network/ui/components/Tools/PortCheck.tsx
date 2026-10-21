@@ -1,0 +1,204 @@
+import { useState } from 'react';
+import {
+	IconAlertCircle,
+	IconLink,
+	IconNetwork,
+	IconPlugConnected,
+	IconRoute,
+	IconServer,
+	IconX,
+} from '@tabler/icons-react';
+
+import { useStore } from '@/app/providers';
+import { useCopy } from '@/shared/lib/hooks';
+import { Divider, Input, InputLabel, SegmentedControl } from '@/shared/ui';
+
+import { getCheckViaLabel, getResponseTimeClass, portResultToCopy } from '../../../lib';
+import type { CheckVia, PortCheckResult } from '../../../model';
+import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
+
+export const PortCheck = ({ onBack }: { onBack: () => void }) => {
+	const copy = useCopy();
+
+	const { networkStore, notifyStore } = useStore();
+
+	const [host, setHost] = useState('');
+	const [port, setPort] = useState('');
+	const [checkVia, setCheckVia] = useState<CheckVia>('direct');
+	const [result, setResult] = useState<PortCheckResult | null>(null);
+
+	const [error, setError] = useState<string | null>(null);
+	const [isLoading, setIsLoading] = useState(false);
+
+	const portNumber = Number(port);
+
+	const statusLabel = result?.status === 'open' ? 'Порт открыт' : 'Порт закрыт';
+
+	const handleHostChange = (value: string) => {
+		setHost(value);
+		setResult(null);
+		setError(null);
+	};
+
+	const handlePortChange = (value: string) => {
+		setPort(value);
+		setResult(null);
+		setError(null);
+	};
+
+	const handleRouteChange = (nextType: CheckVia) => {
+		setCheckVia(nextType);
+		setResult(null);
+		setError(null);
+	};
+
+	const handleCopy = () => {
+		if (!result) return;
+		copy(portResultToCopy(result), 'Результат скопирован');
+	};
+
+	const handleSubmit = async (e: React.SubmitEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		if (isLoading) return;
+
+		if (!host.trim()) {
+			notifyStore.setNotice('Не указан хост', 'error');
+			return;
+		}
+
+		if (!port.trim()) {
+			notifyStore.setNotice('Не указан порт', 'error');
+			return;
+		}
+
+		if (!Number.isInteger(portNumber) || portNumber < 1 || portNumber > 65535) {
+			notifyStore.setNotice('Порт должен быть числом от 1 до 65535', 'error');
+			return;
+		}
+
+		setIsLoading(true);
+		setResult(null);
+		setError(null);
+
+		try {
+			setResult(await networkStore.checkPort(host.trim(), portNumber, checkVia));
+		} catch (error) {
+			error instanceof Error ? setError(error.message) : notifyStore.setNotice('Что-то пошло не так', 'error');
+		} finally {
+			setIsLoading(false);
+		}
+	};
+
+	return (
+		<div className="core-gap flex h-full min-h-0 flex-col">
+			<ViewHeader icon={IconNetwork} title="Проверка порта" onBack={onBack} />
+			<form className="core-gap flex flex-col" onSubmit={handleSubmit}>
+				<div className="grid grid-cols-1 gap-2 lg:grid-cols-[minmax(0,1fr)_144px]">
+					<Input
+						autoComplete="url"
+						disabled={isLoading}
+						id="host"
+						inputMode="url"
+						leftIcon={<InputLabel htmlFor="host" icon={IconLink} />}
+						placeholder="example.com или 94.232.42.121"
+						rightIcon={
+							host &&
+							!isLoading && (
+								<IconX
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
+									onClick={() => handleHostChange('')}
+								/>
+							)
+						}
+						type="text"
+						value={host}
+						variant="ghost"
+						onChange={(e) => handleHostChange(e.target.value)}
+					/>
+					<Input
+						autoComplete="off"
+						className="number-no-spinner"
+						disabled={isLoading}
+						id="port"
+						leftIcon={<InputLabel htmlFor="port" icon={IconPlugConnected} />}
+						max="65535"
+						min="1"
+						placeholder="443"
+						rightIcon={
+							port &&
+							!isLoading && (
+								<IconX
+									className="mr-1 ml-1.5 size-5 cursor-pointer text-(--text-secondary) opacity-50 transition-[color,opacity] hover:text-(--accent-primary) hover:opacity-100"
+									onClick={() => handlePortChange('')}
+								/>
+							)
+						}
+						type="number"
+						value={port}
+						variant="ghost"
+						onChange={(e) => handlePortChange(e.target.value)}
+					/>
+				</div>
+				<div className="flex flex-wrap items-center justify-end gap-2">
+					{error ? (
+						<div className="flex flex-1 items-center gap-1 text-xs text-(--status-error)">
+							<IconAlertCircle className="size-3.5" />
+							<span>{error}</span>
+						</div>
+					) : (
+						<SegmentedControl
+							className="h-7 min-w-36 not-md:ml-auto md:mr-auto"
+							disabled={isLoading}
+							options={[
+								{ value: 'direct', label: 'Direct' },
+								{ value: 'proxy', label: 'Proxy' },
+							]}
+							value={checkVia}
+							onChange={handleRouteChange}
+						/>
+					)}
+					<SubmitButton isLoading={isLoading} title="Проверить порт" />
+				</div>
+			</form>
+			{result && (
+				<div className="flex flex-col">
+					<div className="flex items-center gap-2">
+						<span className="text-xs text-(--text-secondary)">Результат</span>
+						<Divider className="shrink" />
+						<CopyButton onClick={handleCopy} />
+					</div>
+					<div className="flex flex-col gap-0.5">
+						<div className="flex min-w-0 items-center gap-1">
+							<StatusDot status={result.status === 'open' ? 'up' : 'down'} />
+							<span className="max-w-64 min-w-0 truncate">{result.host}</span>
+						</div>
+						<div className="flex items-center gap-1 text-(--text-secondary)">
+							<IconServer className="size-3 shrink-0" />
+							<span className="text-xs tabular-nums">{result.ip}</span>
+							<Divider className="my-auto h-2.5" direction="Y" margX="sm" />
+							<IconRoute className="size-3 shrink-0" />
+							<span className="text-xs">{getCheckViaLabel(result.checkVia)}</span>
+						</div>
+					</div>
+					<div className="my-3 grid shrink-0 grid-cols-3 rounded-lg bg-(--tone-strong) py-1.5">
+						<Metric
+							label="Отклик"
+							style={getResponseTimeClass(result.responseTime)}
+							value={result.responseTime !== null ? `${result.responseTime} мс` : '–'}
+						/>
+						<Metric
+							label="Порт"
+							style={result.status === 'open' ? 'text-(--status-success)' : 'text-(--status-error)'}
+							value={String(result.port)}
+						/>
+						<Metric
+							label="Статус"
+							style={result.status === 'open' ? 'text-(--status-success)' : 'text-(--status-error)'}
+							value={statusLabel}
+						/>
+					</div>
+				</div>
+			)}
+		</div>
+	);
+};

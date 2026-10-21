@@ -11,7 +11,9 @@ export const initKanban = async (root: HTMLElement, userStore: UserStore) => {
 	const repo = new KanbanRepoRouting(userStore);
 	const state = createState(repo);
 
+	const destroyKanban = renderKanban(root, state);
+
 	await state.loadData();
 
-	return renderKanban(root, state);
+	return destroyKanban;
 };

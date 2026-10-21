@@ -1,7 +1,9 @@
+import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 
 import { routes } from '.';
 
-const RouterProvider = () => useRoutes(routes);
-
-export default RouterProvider;
+export const RouterProvider = () => {
+	const element = useRoutes(routes);
+	return <Suspense fallback={null}>{element}</Suspense>;
+};

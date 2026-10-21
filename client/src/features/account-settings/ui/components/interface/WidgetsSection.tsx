@@ -1,0 +1,86 @@
+import { IconPlus } from '@tabler/icons-react';
+import { observer } from 'mobx-react-lite';
+
+import { useStore } from '@/app/providers';
+import { type WidgetId, WIDGETS } from '@/shared/config';
+import { useResponsive } from '@/shared/lib/hooks';
+import { Button } from '@/shared/ui';
+
+import { ReplaceWidgetDialog } from '.';
+
+export const WidgetsSection = observer(() => {
+	const { isMobile } = useResponsive();
+
+	const { modalStore, notifyStore, userProfileStore } = useStore();
+
+	const selectedWidgets = userProfileStore.widgets;
+
+	const activeWidgets = WIDGETS.filter(({ id }) => selectedWidgets.includes(id));
+	const availableWidgets = WIDGETS.filter(({ id }) => !selectedWidgets.includes(id));
+
+	const replaceWidget = async (replacedId: WidgetId, targetId: WidgetId): Promise<void> => {
+		try {
+			await userProfileStore.replaceWidget(replacedId, targetId);
+
+			handleClose();
+			notifyStore.setNotice('Виджет успешно заменён', 'success');
+		} catch {
+			notifyStore.setNotice('Не удалось заменить виджет', 'error');
+		}
+	};
+
+	const handleClose = () => (isMobile ? modalStore.goBack() : modalStore.closeModal());
+
+	const changeWidget = (targetId: WidgetId) => {
+		const dialog = (
+			<ReplaceWidgetDialog
+				selected={selectedWidgets}
+				target={targetId}
+				onCancel={handleClose}
+				onReplace={(replacedId) => void replaceWidget(replacedId, targetId)}
+			/>
+		);
+
+		isMobile ? modalStore.pushModal(dialog) : modalStore.setModal(dialog);
+	};
+
+	return (
+		<section className="flex flex-col gap-3 select-none">
+			<p className="text-sm text-(--text-secondary) opacity-70">Выберите, какие виджеты отображать в Dashboard</p>
+			<div className="flex flex-col gap-1">
+				<p className="text-xs text-(--text-secondary)">Текущие</p>
+				<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+					{activeWidgets.map(({ id, title, icon: Icon }) => (
+						<div
+							key={id}
+							className="flex h-10 items-center gap-2 rounded-lg border border-(--border-contrast)/15 bg-(--bg-tertiary) px-3 text-sm"
+						>
+							<Icon className="size-5 text-(--accent-primary)" />
+							<span className="trim">{title}</span>
+						</div>
+					))}
+				</div>
+			</div>
+			{availableWidgets.length > 0 && (
+				<div className="flex flex-col gap-1">
+					<p className="text-xs text-(--text-secondary)">Доступные</p>
+					<div className="grid grid-cols-1 gap-2 sm:grid-cols-2 lg:grid-cols-3">
+						{availableWidgets.map(({ id, title, icon: Icon }) => (
+							<Button
+								key={id}
+								className="h-10 bg-(--bg-tertiary) text-sm hover:border-(--accent-primary)/30 hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
+								leftIcon={<Icon className="size-4 text-(--accent-primary)" />}
+								rightIcon={<IconPlus className="size-4" />}
+								title={title}
+								type="button"
+								onClick={() => changeWidget(id)}
+							>
+								<span className="trim mr-auto">{title}</span>
+							</Button>
+						))}
+					</div>
+				</div>
+			)}
+		</section>
+	);
+});

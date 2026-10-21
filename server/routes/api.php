@@ -3,11 +3,19 @@
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\PasswordResetController;
+use App\Http\Controllers\Cloud\CloudController;
+use App\Http\Controllers\Cloud\CloudFileController;
+use App\Http\Controllers\Cloud\CloudShareController;
 use App\Http\Controllers\Kanban\KanbanColumnController;
 use App\Http\Controllers\Kanban\KanbanTaskController;
+use App\Http\Controllers\Network\MonitoredServiceController;
+use App\Http\Controllers\Network\PortCheckController;
+use App\Http\Controllers\Network\ServiceCheckController;
+use App\Http\Controllers\Network\SslCheckController;
+use App\Http\Controllers\Notification\NotificationController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
-use App\Http\Controllers\User\UserCityController;
+use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Http\Middleware\EnsureAccountIsActive;
@@ -20,10 +28,10 @@ Route::post('/invite/verify', [AuthController::class, 'verifyInvite'])
 Route::post('/register', [AuthController::class, 'register'])
     ->middleware('throttle:5,1');
 
-Route::middleware('web')->group(function () {
-    Route::get('/auth/session', [AuthController::class, 'session'])
-        ->middleware('throttle:60,1');
+Route::get('/auth/session', [AuthController::class, 'session'])
+    ->middleware('throttle:60,1');
 
+Route::middleware('web')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])
         ->middleware('throttle:10,1');
 
@@ -38,6 +46,9 @@ Route::post('/reset-password', [PasswordResetController::class, 'resetPassword']
     ->middleware('throttle:5,1');
 
 // Email verification
+Route::post('/email/verify/resend', [EmailVerificationController::class, 'resendVerification'])
+    ->middleware('throttle:3,1');
+
 Route::get('/email/verify/{id}/{hash}', [EmailVerificationController::class, 'verifyEmail'])
     ->middleware(['signed:relative', 'throttle:6,1'])
     ->name('verification.verify');
@@ -46,21 +57,33 @@ Route::get('/user/email/verify/{id}/{hash}', [UserAccountController::class, 'ver
     ->middleware('signed:relative')
     ->name('pending-email.verify');
 
+// Network
+Route::post('/network/service/check', ServiceCheckController::class);
+Route::post('/network/port/check', PortCheckController::class);
+Route::post('/network/ssl/check', SslCheckController::class);
+
+// Cloud
+Route::prefix('cloud/shared')->middleware('throttle:60,1')->group(function () {
+    Route::get('/{token}', [CloudShareController::class, 'show']);
+    Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
+    Route::get('/{token}/download', [CloudShareController::class, 'download']);
+});
+
 // Authenticated all
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
     Route::post('/user/restore', [UserAccountController::class, 'restore'])
-        ->middleware('throttle:3,1');
+        ->middleware('throttle:5,1');
 
     // Active only (not deleted)
     Route::middleware(EnsureAccountIsActive::class)->group(function () {
         // Account
-        Route::patch('/user/email', [UserAccountController::class, 'updateEmail'])
+        Route::patch('/user/username', [UserAccountController::class, 'updateUsername'])
             ->middleware('throttle:5,1');
 
-        Route::post('/email/resend', [EmailVerificationController::class, 'resendVerification'])
-            ->middleware('throttle:3,1');
+        Route::patch('/user/email', [UserAccountController::class, 'updateEmail'])
+            ->middleware('throttle:5,1');
 
         Route::delete('/user/email/pending', [UserAccountController::class, 'cancelPendingEmail']);
 
@@ -80,10 +103,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/user/profile/theme', [UserProfileController::class, 'updateTheme']);
         Route::patch('/user/profile/widgets', [UserProfileController::class, 'updateWidgets']);
 
-        // Weather city
-        Route::get('/user/city', [UserCityController::class, 'show']);
-        Route::put('/user/city', [UserCityController::class, 'update']);
-        Route::delete('/user/city', [UserCityController::class, 'destroy']);
+        // Locations
+        Route::get('/user/location/detect', [UserLocationController::class, 'detect']);
+        Route::get('/user/locations/{type}', [UserLocationController::class, 'show']);
+        Route::put('/user/locations/{type}', [UserLocationController::class, 'update']);
+        Route::delete('/user/locations/{type}', [UserLocationController::class, 'destroy']);
 
         // Activity
         Route::get('/user/activity', [UserAuthLogController::class, 'index']);
@@ -110,5 +134,33 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::patch('/kanban/tasks/{task}', [KanbanTaskController::class, 'update']);
         Route::patch('/kanban/tasks/{task}/position', [KanbanTaskController::class, 'move']);
         Route::delete('/kanban/tasks/{task}', [KanbanTaskController::class, 'destroy']);
+
+        // Network
+        Route::get('/network/services', [MonitoredServiceController::class, 'index']);
+        Route::post('/network/services', [MonitoredServiceController::class, 'store']);
+        Route::patch('/network/services/{service}', [MonitoredServiceController::class, 'update']);
+        Route::delete('/network/services/{service}', [MonitoredServiceController::class, 'destroy']);
+        Route::post('/network/services/{service}/check', [MonitoredServiceController::class, 'check']);
+        Route::get('/network/services/{service}/history', [MonitoredServiceController::class, 'history']);
+
+        // Cloud
+        Route::prefix('cloud')->group(function () {
+            Route::get('/', [CloudController::class, 'index']);
+            Route::get('/text', [CloudController::class, 'getText']);
+            Route::put('/text', [CloudController::class, 'saveText']);
+            Route::post('/files', [CloudFileController::class, 'store']);
+            Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
+            Route::patch('/files/{id}', [CloudFileController::class, 'update']);
+            Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);
+            Route::post('/files/{id}/share', [CloudShareController::class, 'store']);
+            Route::delete('/files/{id}/share', [CloudShareController::class, 'destroy']);
+        });
+
+        // Notifications
+        Route::get('/notifications', [NotificationController::class, 'index']);
+        Route::patch('/notifications/read-all', [NotificationController::class, 'readAll']);
+        Route::patch('/notifications/{notification}/read', [NotificationController::class, 'read']);
+        Route::delete('/notifications', [NotificationController::class, 'destroyAll']);
+        Route::delete('/notifications/{notification}', [NotificationController::class, 'destroy']);
     });
 });

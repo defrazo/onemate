@@ -1,25 +1,19 @@
-import { Printer } from 'lucide-react';
+import { IconPrinter } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-interface PrintButtonProps {
-	className?: string;
-}
-
-const PrintButton = ({ className }: PrintButtonProps) => {
+export const PrintButton = ({ className }: { className?: string }) => {
 	return (
 		<Button
-			centerIcon={<Printer className="size-6" />}
-			className={cn('text-(--color-disabled) hover:text-(--accent-hover) print:hidden', className)}
-			size="custom"
+			centerIcon={<IconPrinter className="size-6" />}
+			className={cn('print:hidden', className)}
+			padding="none"
 			title="Распечатать"
-			variant="mobile"
+			variant="icon"
 			onClick={() => window.print()}
 		>
 			Печать
 		</Button>
 	);
 };
-
-export default PrintButton;

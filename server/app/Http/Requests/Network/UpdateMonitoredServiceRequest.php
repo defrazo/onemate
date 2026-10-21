@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Requests\Network;
+
+use Illuminate\Validation\Rule;
+
+class UpdateMonitoredServiceRequest extends NetworkRequest
+{
+    public function rules(): array
+    {
+        return [
+            'type' => ['required', Rule::in(['http', 'tcp'])],
+            'name' => ['sometimes', 'string', 'max:50'],
+            'url' => ['sometimes', 'string', 'max:2048', 'url:http,https'],
+            'host' => ['sometimes', 'string', 'max:253'],
+            'port' => ['sometimes', 'integer', 'between:1,65535'],
+            'checkVia' => ['sometimes', Rule::in(['direct', 'proxy'])],
+            'isActive' => ['sometimes', 'boolean'],
+        ];
+    }
+}

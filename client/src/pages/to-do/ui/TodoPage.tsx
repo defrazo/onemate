@@ -1,9 +1,7 @@
 import { usePageTitle } from '@/shared/lib/hooks';
-import { UnderConstruction } from '@/shared/ui';
+import { ComingSoon } from '@/shared/ui';
 
-const TodoPage = () => {
+export const TodoPage = () => {
 	usePageTitle('To Do');
-	return <UnderConstruction />;
+	return <ComingSoon />;
 };
-
-export default TodoPage;

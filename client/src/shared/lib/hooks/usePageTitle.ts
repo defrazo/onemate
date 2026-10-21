@@ -9,7 +9,7 @@
 
 import { useEffect } from 'react';
 
-import { APP_NAME } from '../constants';
+import { APP_NAME } from '@/shared/config';
 
 export const usePageTitle = (title?: string) => {
 	useEffect(() => {

@@ -1,8 +1,11 @@
 export { useBodyScrollLock } from './useBodyScrollLock';
 export { useCopy } from './useCopy';
-export { useDebouncedEffect } from './useDebouncedEffect';
 export { useDeviceType } from './useDeviceType';
-export { useModalBack } from './useModalBack';
+export { useEscapeClose } from './useEscapeClose';
 export { useOrientation } from './useOrientation';
+export { useOutsideClick } from './useOutsideClick';
 export { usePageTitle } from './usePageTitle';
 export { useRemainingTime } from './useRemainingTime';
+export { useResponsive } from './useResponsive';
+export { useTextEditor } from './useTextEditor';
+export { useValidation } from './useValidation';

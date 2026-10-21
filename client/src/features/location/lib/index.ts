@@ -1,1 +1,0 @@
-export { regionsDictionary } from './regionsDictionary';

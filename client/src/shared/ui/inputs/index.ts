@@ -1,9 +1,0 @@
-export { default as Button } from './button';
-export { default as Checkbox } from './checkbox';
-export { default as CheckboxBool } from './checkbox-boolean';
-export { default as Input, PhoneInput } from './input';
-export { default as Link } from './link';
-export { default as Radio } from './radiobox';
-export { default as Select } from './select';
-export { default as SelectExt } from './select-extended';
-export { default as Textarea } from './textarea';

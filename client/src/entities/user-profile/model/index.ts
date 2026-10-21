@@ -1,8 +1,4 @@
-export type {
-	IUserProfileAccountPort,
-	IUserProfileProfilePort,
-	IUserProfileRepo,
-	IUserProfileThemePort,
-} from './ports';
-export type { Gender, UserProfile } from './types';
-export { UserProfileStore } from './userProfileStore';
+export * from './defaults';
+export type * from './ports';
+export type * from './types';
+export * from './userProfile.store';

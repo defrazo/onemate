@@ -1,5 +1,4 @@
-import type { TaskPriority, TaskStatus } from '../lib';
-import type { Column, DbColumn, DbTask, Task } from '../model';
+import type { Column, DbColumn, DbTask, Task, TaskPriority, TaskStatus } from '../model';
 
 // === COLUMNS ===
 export const mapColumnFromDb = (db: DbColumn): Column => ({

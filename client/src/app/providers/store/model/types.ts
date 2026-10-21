@@ -1,53 +1,45 @@
-import type { CityStore } from '@/entities/city';
 import type { UserStore } from '@/entities/user';
 import type { UserProfileStore } from '@/entities/user-profile';
+import type { AuthFormStore, AuthStore } from '@/features/auth';
 import type { DeviceActivityStore } from '@/features/device-activity';
-import type { LocationStore } from '@/features/location';
+import type { ModalStore } from '@/features/modal';
+import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
-import type { AccountStore } from '@/features/user-account';
-import type { AuthFormStore, AuthStore } from '@/features/user-auth';
-import type { ModalStore, NotifyStore } from '@/shared/stores';
-import type { GenStore } from '@/widgets/generator';
+import type { NotifyStore } from '@/features/toast';
+import type { CloudStore } from '@/widgets/cloud';
+import type { CurrencyStore } from '@/widgets/currency';
+import type { NetworkStore } from '@/widgets/network';
 import type { NotesStore } from '@/widgets/notes';
 import type { TranslatorStore } from '@/widgets/translator';
-import type { ProfileStore } from '@/widgets/user-profile';
 import type { WeatherStore } from '@/widgets/weather';
-import type { CurrencyStore } from '@/widgets/сurrency';
 
 export type AllStores = {
+	userStore: UserStore;
 	notifyStore: NotifyStore;
 	modalStore: ModalStore;
-	userStore: UserStore;
-
 	userProfileStore: UserProfileStore;
-	themeStore: ThemeStore;
-	profileStore: ProfileStore;
-
-	authFormStore: AuthFormStore;
 	authStore: AuthStore;
-	accountStore: AccountStore;
-
-	cityStore: CityStore;
-	locationStore: LocationStore;
+	authFormStore: AuthFormStore;
+	themeStore: ThemeStore;
+	notificationStore: NotificationStore;
 	deviceActivityStore: DeviceActivityStore;
-
+	cloudStore: CloudStore;
+	networkStore: NetworkStore;
+	weatherStore: WeatherStore;
 	notesStore: NotesStore;
 	currencyStore: CurrencyStore;
-	weatherStore: WeatherStore;
 	translatorStore: TranslatorStore;
-	genStore: GenStore;
 };
 
 export type InitKeys =
 	| 'themeStore'
+	| 'notificationStore'
 	| 'userProfileStore'
-	| 'profileStore'
 	| 'authStore'
-	| 'accountStore'
-	| 'cityStore'
-	| 'locationStore'
 	| 'deviceActivityStore'
 	| 'notesStore'
+	| 'cloudStore'
+	| 'networkStore'
 	| 'weatherStore'
 	| 'currencyStore';
 

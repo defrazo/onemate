@@ -1,79 +1,74 @@
-import errorIcon from '@/shared/assets/icons/system/status/error.svg?raw';
-import infoIcon from '@/shared/assets/icons/system/status/info.svg?raw';
-import successIcon from '@/shared/assets/icons/system/status/success.svg?raw';
 import { cn } from '@/shared/lib/utils';
 
-import { border, layout } from '../ui';
-import { deviceUtils, insertSvg } from '.';
+import { deviceUtils, errorIcon, infoIcon, insertSvg, successIcon } from '../lib';
 
 type NotifyType = 'success' | 'error' | 'info';
-type NotifyConfig = { color: string; icon: string };
 
 const NOTIFY_TYPE = {
 	success: { color: '--status-success', icon: successIcon },
 	error: { color: '--status-error', icon: errorIcon },
 	info: { color: '--status-info', icon: infoIcon },
-} satisfies Record<NotifyType, NotifyConfig>;
+} satisfies Record<NotifyType, { color: string; icon: string }>;
 
-let currentToast: HTMLElement | null = null;
-let currentToastTimeout: number | null = null;
 let removeCurrentToast: (() => void) | null = null;
 
 export const notifier = {
 	setNotice(text: string, type: NotifyType) {
 		removeCurrentToast?.();
 
-		if (currentToastTimeout !== null) {
-			clearTimeout(currentToastTimeout);
-			currentToastTimeout = null;
-		}
-
 		const device = deviceUtils.getDevice();
 		const config = NOTIFY_TYPE[type];
 
+		// === TOAST ===
 		const toast = document.createElement('div');
-
-		const onClick = () => removeToast();
-
-		const removeToast = () => {
-			toast.removeEventListener('click', onClick);
-			toast.remove();
-
-			if (currentToastTimeout !== null) {
-				clearTimeout(currentToastTimeout);
-				currentToastTimeout = null;
-			}
-
-			if (currentToast === toast) currentToast = null;
-			if (removeCurrentToast === removeToast) removeCurrentToast = null;
-		};
-
 		toast.className = cn(
-			layout.blur,
-			border.default,
-			`border-l-(${config.color}) absolute z-40 mb-0.5 flex items-center justify-center gap-2 rounded-xl border-l-4 p-3 shadow-lg select-none md:p-2`,
-			device === 'desktop' ? 'right-6 bottom-4 min-w-52 2xl:min-w-60' : 'top-4 left-4 w-[calc(100dvw-32px)]'
+			'absolute z-60 flex items-center gap-2.5 rounded-xl border border-(--border-primary) bg-(--bg-secondary)/95 px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] backdrop-blur-xl select-none',
+			device === 'desktop' ? 'right-6 bottom-4 min-w-64' : 'top-4 left-4 w-[calc(100dvw-32px)]'
 		);
 
-		toast.addEventListener('click', onClick);
-		currentToast = toast;
-		removeCurrentToast = removeToast;
-
+		// === ICON ===
 		const icon = document.createElement('div');
-		insertSvg(icon, config.icon, `size-8 py-1 text-(${config.color})`);
+		icon.className = `flex size-7 shrink-0 items-center justify-center rounded-md bg-(${config.color})/10 text-(${config.color})`;
 
+		insertSvg(icon, config.icon, 'size-4');
+
+		// === MESSAGE ===
 		const message = document.createElement('span');
 		message.textContent = text;
-		message.className = 'flex-1 pr-2 text-center text-sm';
+		message.className = 'min-w-0 flex-1 text-sm text-(--text-primary)';
 
+		// === LIFECYCLE ===
+		let timeout: number | null = null;
+		let isRemoved = false;
+
+		function removeToast() {
+			if (isRemoved) return;
+			isRemoved = true;
+
+			toast.removeEventListener('click', removeToast);
+
+			if (timeout !== null) {
+				clearTimeout(timeout);
+				timeout = null;
+			}
+
+			toast.remove();
+
+			if (removeCurrentToast === removeToast) removeCurrentToast = null;
+		}
+
+		// === ASSEMBLY ===
 		toast.append(icon, message);
 
 		const root = document.getElementById('root');
-		if (root) root.append(toast);
+		if (!root) return;
 
-		currentToastTimeout = window.setTimeout(() => {
-			removeToast();
-			currentToastTimeout = null;
-		}, 3000);
+		root.append(toast);
+
+		// === EVENTS ===
+		toast.addEventListener('click', removeToast);
+
+		removeCurrentToast = removeToast;
+		timeout = window.setTimeout(removeToast, 3000);
 	},
 };

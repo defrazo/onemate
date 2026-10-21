@@ -1,1 +1,1 @@
-export { NotesRepoRouting } from './repo';
+export * from './repo';

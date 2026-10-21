@@ -1,2 +1,2 @@
-export type { Cache } from './model';
-export { cache, clearCache, readCache, writeCache } from './model';
+export { clearCache, readCache, writeCache } from './api';
+export type { Cache, CachePatch, CacheSection } from './model';

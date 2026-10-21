@@ -1,3 +1,3 @@
-export { fetchIP } from './fetchIP';
-export { DeviceProviderRouting } from './providers';
-export { ActivityRepoRouting } from './repo';
+export * from './providers';
+export * from './repo';
+export * from './utils';

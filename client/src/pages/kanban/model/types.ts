@@ -1,4 +1,4 @@
-import type { ColumnColor, TaskPriority, TaskStatus } from '../lib';
+import type { COLUMN_COLORS, TASK_PRIORITY, TASK_STATUS } from '.';
 
 export type Task = {
 	id: string;
@@ -47,3 +47,22 @@ export type DbColumn = {
 	task_limit: number;
 	position: number;
 };
+
+export type TaskStatusConfig = {
+	label: string;
+	color: string;
+	halo?: boolean;
+};
+
+export type ColumnColor = keyof typeof COLUMN_COLORS;
+
+export type TaskPriority = keyof typeof TASK_PRIORITY;
+
+export type TaskStatus = keyof typeof TASK_STATUS;
+
+export type CreateColumnInput = Omit<Column, 'id'>;
+export type EditColumnInput = Omit<Column, 'id' | 'position'>;
+
+export type CreateTaskInput = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
+export type EditTaskInput = Omit<Task, 'id' | 'columnId' | 'position' | 'createdAt' | 'completed'> &
+	Partial<Pick<Task, 'completed'>>;

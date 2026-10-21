@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\User;
 
 use App\Http\Controllers\Controller;
-use App\Models\UserAuthLog;
+use App\Models\User\UserAuthLog;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 

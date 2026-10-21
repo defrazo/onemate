@@ -1,56 +1,42 @@
 import type { AllStores, InitKeys } from '.';
 
+type LifecycleStore = {
+	init?: () => void;
+	destroy?: () => void;
+};
+
 export class StoreInitializer {
-	private static readonly INIT_ORDER: ReadonlyArray<InitKeys> = [
+	private static readonly REACTIVE_STORES: ReadonlyArray<InitKeys> = [
+		'notificationStore',
 		'themeStore',
 		'userProfileStore',
-		'profileStore',
-		'authStore',
-		'accountStore',
-		'cityStore',
-		'locationStore',
 		'deviceActivityStore',
-		'notesStore',
+		'cloudStore',
+		'networkStore',
 		'weatherStore',
+		'notesStore',
 		'currencyStore',
 	] as const;
 
 	static async initializeStores(stores: AllStores): Promise<void> {
-		for (const name of this.INIT_ORDER) {
-			const store: any = (stores as any)[name];
+		stores.userStore.init();
 
-			if (store?.init) {
-				try {
-					await store.init();
-				} catch (error: any) {
-					console.warn(`Ошибка инициализации ${name}:`, error);
-				}
-			}
+		for (const name of this.REACTIVE_STORES) {
+			const store = stores[name] as LifecycleStore;
+			store.init?.();
 		}
 
-		try {
-			await stores.userStore.init();
-		} catch (error: any) {
-			throw new Error('Ошибка инициализации userStore:', error.message);
-		}
+		await stores.authStore.init();
 	}
 
-	static destroyStores(stores: AllStores): void {
-		for (const name of [...this.INIT_ORDER].reverse()) {
-			const store: any = (stores as any)[name];
-			if (store?.destroy) {
-				try {
-					store.destroy();
-				} catch (e) {
-					console.warn(`Ошибка destroy ${name}:`, e);
-				}
-			}
+	static destroyStores(stores: AllStores) {
+		stores.authStore.destroy?.();
+
+		for (const name of [...this.REACTIVE_STORES].reverse()) {
+			const store = stores[name] as LifecycleStore;
+			store.destroy?.();
 		}
 
-		try {
-			(stores as any).userStore?.destroy?.();
-		} catch (e) {
-			console.warn('Ошибка destroy userStore:', e);
-		}
+		stores.userStore.destroy?.();
 	}
 }

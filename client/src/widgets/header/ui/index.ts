@@ -1,2 +1,1 @@
-export { HeaderLogo } from './HeaderLogo';
-export { default } from './HeaderWidget';
+export { Header } from './Header';

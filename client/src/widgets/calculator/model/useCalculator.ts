@@ -3,123 +3,108 @@ import { useState } from 'react';
 import {
 	backspace,
 	calculateResult,
+	canCalculate,
 	closeBracket,
 	digit,
+	isNumberLike,
 	mathDot,
 	mathOperation,
 	openBracket,
-	percent,
 	plusMinus,
-	sanitizeExpression,
+	stripOuterParens,
 } from '../lib';
-import type { ResultItem } from '.';
+import type { ButtonValue, CalcDigit, ResultItem } from '.';
+
+const isDigit = (value: ButtonValue): value is CalcDigit => /^\d$/.test(value);
+
+const isBinaryOperator = (value: ButtonValue): value is 'plus' | 'minus' | 'multi' | 'divide' | 'percent' => {
+	return value === 'plus' || value === 'minus' || value === 'multi' || value === 'divide' || value === 'percent';
+};
 
 export const useCalculator = () => {
-	const [display, setDisplay] = useState<string>('0');
+	const [display, setDisplay] = useState('0');
 	const [result, setResult] = useState<ResultItem[]>([]);
-	const [isResultShown, setIsResultShown] = useState<boolean>(false);
+	const [isResultShown, setIsResultShown] = useState(false);
 
-	const handleButtonClick = (value: string): void => {
-		if (isResultShown && /[0-9(]/.test(value)) {
+	const clear = () => {
+		setDisplay('0');
+		setIsResultShown(false);
+	};
+
+	const clearHistory = () => {
+		setDisplay('0');
+		setResult([]);
+	};
+
+	const calculate = () => {
+		const expression = display.trim();
+
+		if (!canCalculate(expression)) return;
+
+		const core = stripOuterParens(expression);
+
+		if (isNumberLike(core)) {
+			setDisplay(expression);
+			setIsResultShown(true);
+			return;
+		}
+
+		try {
+			const calculation = calculateResult(expression);
+
+			setResult((prev) => [...prev, calculation]);
+			setDisplay(calculation.result);
+			setIsResultShown(true);
+		} catch {
+			setDisplay('Error');
+			setIsResultShown(false);
+		}
+	};
+
+	const handleButtonClick = (value: ButtonValue) => {
+		if (isResultShown && isDigit(value)) {
 			setDisplay(value);
 			setIsResultShown(false);
 			return;
 		}
 
-		const reset = () => {
-			setDisplay('0');
-			setResult([]);
-		};
+		if (isResultShown) {
+			if (value === 'decimal') {
+				setDisplay('0.');
+				setIsResultShown(false);
+				return;
+			}
 
-		const off = () => {
-			setDisplay('');
-			setResult([]);
-		};
+			if (value === '(') {
+				setDisplay('(');
+				setIsResultShown(false);
+				return;
+			}
 
-		const handlePercent = () => setDisplay((prev) => percent(prev));
-		const handleBackspace = () => setDisplay((prev) => backspace(prev));
-		const handleOpenBracket = () => setDisplay((prev) => openBracket(prev));
-		const handleCloseBracket = () => setDisplay((prev) => closeBracket(prev));
-		const handlePlusMinus = () => setDisplay((prev) => plusMinus(prev));
-		const handleMathDot = () => setDisplay((prev) => mathDot(prev));
-		const handleMathOperation = (value: string) => setDisplay((prev) => mathOperation(prev, value));
-		const handleDigit = (value: string) => setDisplay((prev) => digit(prev, value));
+			if (isBinaryOperator(value)) setIsResultShown(false);
+		}
+
+		if (isDigit(value)) {
+			setDisplay((prev) => digit(prev, value));
+			return;
+		}
 
 		/* prettier-ignore */
 		switch (value) {
-			case 'ON/C': reset(); break;
-			case 'OFF': off(); break;
-			case '%': handlePercent(); break;
-			case '←': handleBackspace(); break;
-			case '(': handleOpenBracket(); break;
-			case ')': handleCloseBracket(); break;
-			case '±': handlePlusMinus(); break;
-			case '.': handleMathDot(); break;
-			case '÷':
-			case '×':
-			case '-':
-			case '+': handleMathOperation(value); break;
-			case '0':
-			case '1':
-			case '2':
-			case '3':
-			case '4':
-			case '5':
-			case '6':
-			case '7':
-			case '8':
-			case '9': handleDigit(value); break;
-			case '=': handleResult(display); break;
-			default: break;
+			case 'C': clear(); break;
+			case 'backspace': setDisplay((prev) => backspace(prev)); break;
+			case '(': setDisplay((prev) => openBracket(prev)); break;
+			case ')': setDisplay((prev) => closeBracket(prev)); break;
+			case 'plusMinus': setDisplay((prev) => plusMinus(prev)); break;
+			case 'decimal': setDisplay((prev) => mathDot(prev)); break;
+			case 'plus':
+			case 'minus':
+			case 'multi':
+			case 'divide':
+			case 'percent': setDisplay((prev) => mathOperation(prev, value)); break;
+			case 'equal': calculate(); break;
 		}
 	};
 
-	const handleResult = (display: string): string => {
-		const expr = sanitizeExpression(display);
-
-		if (!expr) {
-			setDisplay('0');
-			return '0';
-		}
-
-		const isNumberLike = (string: string): boolean => /^-?\d+(?:\.\d+)?$/.test(string);
-		const stripOuterParens = (string: string): string => {
-			let out = string.trim();
-			const balanced = (text: string) => {
-				let counter = 0;
-				for (const char of text) {
-					if (char === '(') counter++;
-					else if (char === ')') {
-						counter--;
-						if (counter < 0) return false;
-					}
-				}
-				return counter === 0;
-			};
-			while (out.startsWith('(') && out.endsWith(')') && balanced(out)) out = out.slice(1, -1).trim();
-
-			return out;
-		};
-
-		const core = stripOuterParens(expr);
-		if (isNumberLike(core)) {
-			setDisplay(expr);
-			return expr;
-		}
-
-		try {
-			const { expression, result } = calculateResult(expr);
-			const safeResult = result ?? 'Error';
-			setResult((prev) => [...prev, { expression, result: safeResult }]);
-			setDisplay(safeResult);
-			setIsResultShown(true);
-			return safeResult;
-		} catch {
-			setDisplay('Error');
-			setIsResultShown(false);
-			return 'Error';
-		}
-	};
-
-	return { handleButtonClick, display, result };
+	return { display, result, clearHistory, handleButtonClick };
 };

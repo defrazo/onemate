@@ -11,13 +11,15 @@ type DeviceType = 'mobile' | 'tablet' | 'desktop';
 
 const getDeviceType = (): DeviceType => {
 	const width = window.innerWidth;
+	const height = window.innerHeight;
 	const ua = navigator.userAgent;
 
 	const isIpad = /iPad/.test(ua) || (ua.includes('Macintosh') && 'ontouchend' in window);
 
 	if (isIpad) return width >= 1280 ? 'desktop' : 'tablet';
-	if (width <= 767) return 'mobile';
+	if (Math.min(width, height) <= 767 && width <= 1023) return 'mobile';
 	if (width <= 1023) return 'tablet';
+
 	return 'desktop';
 };
 

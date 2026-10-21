@@ -1,3 +1,3 @@
-export { CityRepoRouting, fetchCityByCoordinates, fetchCityByIP } from './api';
-export type { City, IBaseCityPort, ICityLocationPort } from './model';
-export { CityStore } from './model';
+export { fetchCityByCoordinates, fetchCityByIP } from './api';
+export { isSameCity } from './lib';
+export { type City, createDefaultCity } from './model';

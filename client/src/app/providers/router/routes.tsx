@@ -1,181 +1,99 @@
+import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 
-import AboutPage from '@/pages/about';
-import DeletedAccountPage from '@/pages/account-deleted';
-import UserProfilePage from '@/pages/account-profile';
-import { ResetPasswordPage, VerifyEmailPage } from '@/pages/auth';
-import DashboardPage from '@/pages/dashboard';
-import DemoInfoPage from '@/pages/demo-info';
-import GeneratorPage from '@/pages/generator';
-import HomePage from '@/pages/home';
-import KanbanPage from '@/pages/kanban';
-import NotFoundPage from '@/pages/not-found';
-import PrivacyPolicyPage from '@/pages/privacy-policy';
-import TermsOfServicePage from '@/pages/terms-of-service';
-import TodoPage from '@/pages/to-do';
-import { Layout, StaticPageLayout } from '@/shared/layouts';
-import { SettingsLeft, SettingsRight } from '@/widgets/generator';
-import { ProfileNav } from '@/widgets/user-profile';
+import { Layout, StaticPageLayout } from '@/app/layouts';
+import { ProfileNav } from '@/features/account-settings';
+import { DemoPage } from '@/pages/demo';
+import { APP_NAME } from '@/shared/config';
 
-import { GuardedRoute } from '.';
+import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
+
+const AboutPage = lazy(() => import('@/pages/about').then((m) => ({ default: m.AboutPage })));
+const AccountProfilePage = lazy(() =>
+	import('@/pages/account-profile').then((m) => ({ default: m.AccountProfilePage }))
+);
+const Background = lazy(() => import('@/pages/home').then((m) => ({ default: m.Background })));
+const DashboardPage = lazy(() => import('@/pages/dashboard').then((m) => ({ default: m.DashboardPage })));
+const DeletedAccountPage = lazy(() =>
+	import('@/pages/account-deleted').then((m) => ({ default: m.DeletedAccountPage }))
+);
+const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
+const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));
+const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
+const PrivacyPage = lazy(() => import('@/pages/privacy').then((m) => ({ default: m.PrivacyPage })));
+const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
+const SharedFilePage = lazy(() => import('@/pages/shared-file').then((m) => ({ default: m.SharedFilePage })));
+const TermsPage = lazy(() => import('@/pages/terms').then((m) => ({ default: m.TermsPage })));
+const TodoPage = lazy(() => import('@/pages/to-do').then((m) => ({ default: m.TodoPage })));
+const VerifyEmailPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.VerifyEmailPage })));
 
 export const routes: RouteObject[] = [
 	{
-		path: '/account/deleted',
-		element: (
-			<GuardedRoute element={<DeletedAccountPage />} redirectIfDeleted={false} redirectIfNotDeleted={true} />
-		),
+		element: <GuardedRoute />,
+		children: [
+			{
+				element: <DeletedAccountRoute />,
+				children: [{ path: '/account/deleted', element: <DeletedAccountPage /> }],
+			},
+			{
+				element: <ActiveAccountRoute />,
+				children: [
+					{
+						element: <Layout hideLeftOnMobile leftSide={<ProfileNav />} />,
+						children: [{ path: '/account/profile', element: <AccountProfilePage /> }],
+					},
+					{
+						element: <Layout fillViewport hideFooter />,
+						children: [{ path: '/dashboard', element: <DashboardPage /> }],
+					},
+					{
+						element: <Layout background={<Background />} />,
+						children: [{ path: '/todo', element: <TodoPage /> }],
+					},
+					{
+						element: <Layout hideFooter />,
+						children: [{ path: '/kanban', element: <KanbanPage /> }],
+					},
+				],
+			},
+		],
 	},
 	{
-		path: '/account/profile',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout hideLeftOnMobile leftSide={<ProfileNav />}>
-						<UserProfilePage />
-					</Layout>
-				}
-			/>
-		),
-	},
-	{
-		path: '/dashboard',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout hideFooter>
-						<DashboardPage />
-					</Layout>
-				}
-			/>
-		),
-	},
-	{
-		path: '/todo',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout>
-						<TodoPage />
-					</Layout>
-				}
-			/>
-		),
-	},
-	{
-		path: '/kanban',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout hideFooter landscapeMode>
-						<KanbanPage />
-					</Layout>
-				}
-			/>
-		),
-	},
-	{
-		path: '/generator',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout
-						hideLeftOnMobile
-						hideRightOnMobile
-						leftSide={<SettingsLeft />}
-						rightSide={<SettingsRight />}
-					>
-						<GeneratorPage />
-					</Layout>
-				}
-				requireAuth={false}
-			/>
-		),
-	},
-	{
-		path: '/',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout>
-						<HomePage />
-					</Layout>
-				}
-				requireAuth={false}
-			/>
-		),
-	},
-	{
-		path: '/about',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout>
-						<AboutPage />
-					</Layout>
-				}
-				requireAuth={false}
-			/>
-		),
-	},
-	{
-		path: '/demo-info',
-		element: (
-			<GuardedRoute
-				element={
-					<StaticPageLayout title="О демо-режиме OneMate">
-						<DemoInfoPage />
-					</StaticPageLayout>
-				}
-				requireAuth={false}
-			/>
-		),
-	},
-	{
-		path: '/terms-of-service',
-		element: (
-			<GuardedRoute
-				element={
-					<StaticPageLayout title="Пользовательское соглашение">
-						<TermsOfServicePage />
-					</StaticPageLayout>
-				}
-				requireAuth={false}
-			/>
-		),
-	},
-	{
-		path: '/privacy-policy',
-		element: (
-			<GuardedRoute
-				element={
-					<StaticPageLayout title="Политика конфиденциальности">
-						<PrivacyPolicyPage />
-					</StaticPageLayout>
-				}
-				requireAuth={false}
-			/>
-		),
+		element: <PublicRoute />,
+		children: [
+			{
+				element: <Layout background={<Background />} />,
+				children: [{ path: '/', element: <HomePage /> }],
+			},
+			{ children: [{ path: '/reset-password', element: <ResetPasswordPage /> }] },
+		],
 	},
 	{
 		path: '/email/verify/:id/:hash',
-		element: <GuardedRoute element={<VerifyEmailPage />} requireAuth={false} />,
+		element: <VerifyEmailPage />,
 	},
 	{
-		path: '/reset-password',
-		element: <GuardedRoute element={<ResetPasswordPage />} requireAuth={false} />,
+		path: '/share/:token',
+		element: <SharedFilePage />,
 	},
 	{
-		path: '*',
-		element: (
-			<GuardedRoute
-				element={
-					<Layout>
-						<NotFoundPage />
-					</Layout>
-				}
-				requireAuth={false}
-			/>
-		),
+		element: <StaticPageLayout title={`О демо-режиме ${APP_NAME}`} />,
+		children: [{ path: '/demo', element: <DemoPage /> }],
+	},
+	{
+		element: <Layout title="О проекте" />,
+		children: [{ path: '/about', element: <AboutPage /> }],
+	},
+	{
+		element: <StaticPageLayout title="Условия использования" />,
+		children: [{ path: '/terms', element: <TermsPage /> }],
+	},
+	{
+		element: <StaticPageLayout title="Политика конфиденциальности" />,
+		children: [{ path: '/privacy', element: <PrivacyPage /> }],
+	},
+	{
+		element: <Layout background={<Background />} />,
+		children: [{ path: '*', element: <NotFoundPage /> }],
 	},
 ];
