@@ -74,7 +74,7 @@ export const FilesFooter = observer(
 				</div>
 				<Button
 					className="h-7 shrink-0 text-xs"
-					disabled={!cloudStore.isReady || cloudStore.isUploading}
+					disabled={!cloudStore.isReady || cloudStore.isUploading || cloudStore.isUpdatingFiles}
 					leftIcon={<IconUpload className="size-4" />}
 					variant="accent"
 					onClick={onUpload}

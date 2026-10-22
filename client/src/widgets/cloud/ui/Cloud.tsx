@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadingState } from '@/shared/ui';
+import { LoadingState, SyncIndicator } from '@/shared/ui';
 
 import { CLOUD_LIMITS, type CloudTab } from '../model';
 import { Clipboard, Files, Toolbar } from './components';
@@ -85,6 +85,7 @@ export const Cloud = observer(() => {
 					)}
 				</>
 			)}
+			{cloudStore.isSyncing && <SyncIndicator />}
 		</div>
 	);
 });

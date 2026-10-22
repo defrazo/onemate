@@ -104,22 +104,24 @@ export const Files = observer(
 					title="Удаление файлов"
 					variant="danger"
 					onCancel={() => modalStore.closeModal()}
-					onConfirm={async () => {
-						try {
-							await cloudStore.deleteMany(ids);
+					onConfirm={() => {
+						modalStore.closeModal();
+						onSelectionCancel();
 
-							modalStore.closeModal();
-							onSelectionCancel();
-							notifyStore.setNotice(
-								`Удалено ${count} ${pluralize(count, 'файл', 'файла', 'файлов')}`,
-								'success'
-							);
-						} catch (error) {
-							notifyStore.setNotice(
-								error instanceof Error ? error.message : 'Не удалось удалить файлы',
-								'error'
-							);
-						}
+						void cloudStore
+							.deleteMany(ids)
+							.then(() => {
+								notifyStore.setNotice(
+									`Удалено ${count} ${pluralize(count, 'файл', 'файла', 'файлов')}`,
+									'success'
+								);
+							})
+							.catch((error) => {
+								notifyStore.setNotice(
+									error instanceof Error ? error.message : 'Не удалось удалить файлы',
+									'error'
+								);
+							});
 					}}
 				/>
 			);

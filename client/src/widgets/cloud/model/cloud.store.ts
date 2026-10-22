@@ -22,6 +22,7 @@ export class CloudStore extends AsyncStore {
 	private isRefreshingText = false;
 
 	files: CloudFile[] = [];
+	isUpdatingFiles = false;
 
 	usedBytes = 0;
 	quotaBytes = CLOUD_STORAGE_BYTES;
@@ -82,6 +83,15 @@ export class CloudStore extends AsyncStore {
 					return Date.parse(b.createdAt) - Date.parse(a.createdAt);
 			}
 		});
+	}
+
+	get isSyncing(): boolean {
+		return (
+			this.isUpdatingFiles ||
+			this.isSavingText ||
+			this.isResolvingTextConflict ||
+			(this.isTextDirty && !this.textSaveError && !this.textConflict)
+		);
 	}
 
 	setSearchQuery(value: string): void {
@@ -237,41 +247,52 @@ export class CloudStore extends AsyncStore {
 		const file = this.files.find((item) => item.id === id);
 		if (!file || file.name === trimmed) return;
 
-		await this.repo.update(id, { name: trimmed });
-		await this.refresh();
+		await this.withFileSync(async () => {
+			await this.repo.update(id, { name: trimmed });
+			await this.refresh();
+		});
 	}
 
 	async toggleFavorite(id: string): Promise<void> {
 		const file = this.files.find((item) => item.id === id);
 		if (!file) return;
 
-		await this.repo.update(id, { isFavorite: !file.isFavorite });
-		await this.refresh();
+		await this.withFileSync(async () => {
+			await this.repo.update(id, { isFavorite: !file.isFavorite });
+			await this.refresh();
+		});
 	}
 
 	async delete(id: string): Promise<void> {
-		await this.repo.delete(id);
-		await this.refresh();
+		await this.withFileSync(async () => {
+			await this.repo.delete(id);
+			await this.refresh();
+		});
 	}
 
 	async deleteMany(ids: string[]): Promise<void> {
 		if (!ids.length) return;
 
-		await this.repo.deleteMany(ids);
-		await this.refresh();
+		await this.withFileSync(async () => {
+			await this.repo.deleteMany(ids);
+			await this.refresh();
+		});
 	}
 
 	async share(id: string): Promise<string> {
-		const url = await this.repo.share(id);
+		return this.withFileSync(async () => {
+			const url = await this.repo.share(id);
+			await this.refresh();
 
-		await this.refresh();
-
-		return url;
+			return url;
+		});
 	}
 
 	async unshare(id: string): Promise<void> {
-		await this.repo.unshare(id);
-		await this.refresh();
+		await this.withFileSync(async () => {
+			await this.repo.unshare(id);
+			await this.refresh();
+		});
 	}
 
 	setText(value: string): void {
@@ -308,14 +329,8 @@ export class CloudStore extends AsyncStore {
 		} finally {
 			if (this.savingPromise === promise) this.savingPromise = null;
 
-			if (
-				this.isCurrentSession(userId, session) &&
-				this.isTextDirty &&
-				!this.textSaveError &&
-				!this.textConflict
-			) {
+			if (this.isCurrentSession(userId, session) && this.isTextDirty && !this.textSaveError && !this.textConflict)
 				this.scheduleTextSave();
-			}
 		}
 	}
 
@@ -470,6 +485,16 @@ export class CloudStore extends AsyncStore {
 		this.isSavingText = value;
 	}
 
+	private async withFileSync<T>(operation: () => Promise<T>): Promise<T> {
+		this.isUpdatingFiles = true;
+
+		try {
+			return await operation();
+		} finally {
+			runInAction(() => (this.isUpdatingFiles = false));
+		}
+	}
+
 	constructor(
 		private readonly userStore: IBaseUserPort,
 		private readonly repo: ICloudRepo
@@ -481,6 +506,7 @@ export class CloudStore extends AsyncStore {
 			'savedText' | 'applyData' | 'applyText' | 'setUploading' | 'setUploadProgress' | 'setSavingText' | 'reset'
 		>(this, {
 			files: observable,
+			isUpdatingFiles: observable,
 			usedBytes: observable,
 			quotaBytes: observable,
 			searchQuery: observable,
@@ -509,6 +535,7 @@ export class CloudStore extends AsyncStore {
 			availableBytes: computed,
 			isTextDirty: computed,
 			visibleFiles: computed,
+			isSyncing: computed,
 
 			setSearchQuery: action,
 			setSortBy: action,
@@ -561,6 +588,7 @@ export class CloudStore extends AsyncStore {
 		this.isRefreshingText = false;
 
 		this.files = [];
+		this.isUpdatingFiles = false;
 		this.usedBytes = 0;
 		this.quotaBytes = CLOUD_STORAGE_BYTES;
 
@@ -579,6 +607,7 @@ export class CloudStore extends AsyncStore {
 		this.isReady = false;
 		this.isUploading = false;
 		this.isSavingText = false;
+		this.savingPromise = null;
 		this.uploadProgress = 0;
 	}
 }

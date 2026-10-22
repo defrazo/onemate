@@ -103,15 +103,18 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 				title="Удаление файла"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
-				onConfirm={async () => {
-					try {
-						await cloudStore.delete(file.id);
+				onConfirm={() => {
+					modalStore.closeModal();
 
-						modalStore.closeModal();
-						notifyStore.setNotice('Файл удалён', 'success');
-					} catch (error) {
-						notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
-					}
+					void cloudStore
+						.delete(file.id)
+						.then(() => notifyStore.setNotice('Файл удалён', 'success'))
+						.catch((error) => {
+							notifyStore.setNotice(
+								error instanceof Error ? error.message : 'Что-то пошло не так',
+								'error'
+							);
+						});
 				}}
 			/>
 		);
