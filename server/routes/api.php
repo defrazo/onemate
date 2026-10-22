@@ -138,6 +138,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Network
         Route::get('/network/services', [MonitoredServiceController::class, 'index']);
         Route::post('/network/services', [MonitoredServiceController::class, 'store']);
+        Route::patch('/network/services/order', [MonitoredServiceController::class, 'reorder']);
+
         Route::patch('/network/services/{service}', [MonitoredServiceController::class, 'update']);
         Route::delete('/network/services/{service}', [MonitoredServiceController::class, 'destroy']);
         Route::post('/network/services/{service}/check', [MonitoredServiceController::class, 'check']);
