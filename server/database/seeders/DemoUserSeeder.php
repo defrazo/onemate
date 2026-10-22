@@ -9,7 +9,7 @@ class DemoUserSeeder extends Seeder
 {
     public function run(): void
     {
-        User::updateOrCreate(
+        $user = User::updateOrCreate(
             [
                 'email' => 'demo@example.com',
             ],
@@ -21,5 +21,7 @@ class DemoUserSeeder extends Seeder
                 'role' => 'demo',
             ],
         );
+
+        $user->profile()->firstOrCreate();
     }
 }
