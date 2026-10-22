@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import { type City, createDefaultCity, fetchCityByIP, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
@@ -11,6 +11,9 @@ import type { CurrentType, ForecastType, View } from '.';
 
 export class WeatherStore extends AsyncStore {
 	private currentLocation: City | null = null;
+
+	isInitialized = false;
+	isRefreshing = false;
 
 	current: CurrentType | null = null;
 	forecast: ForecastType[] = [];
@@ -60,15 +63,20 @@ export class WeatherStore extends AsyncStore {
 
 		if (!userId || !location || this.isLoading) return;
 
-		await this.withLoading(async () => {
-			const weatherData = await this.fetchWeather(location);
+		runInAction(() => (this.isRefreshing = true));
 
-			if (this.userStore.id !== userId) return;
+		try {
+			await this.withLoading(async () => {
+				const weatherData = await this.fetchWeather(location);
 
-			this.applyWeather(weatherData.current, weatherData.forecast);
+				if (this.userStore.id !== userId) return;
 
-			weatherCache.write(userId, weatherData.current, weatherData.forecast);
-		});
+				this.applyWeather(weatherData.current, weatherData.forecast);
+				weatherCache.write(userId, weatherData.current, weatherData.forecast);
+			});
+		} finally {
+			runInAction(() => (this.isRefreshing = false));
+		}
 	}
 
 	private async initialize(userId: string): Promise<void> {
@@ -81,13 +89,16 @@ export class WeatherStore extends AsyncStore {
 			const location = await this.resolveLocation(userId);
 			if (this.userStore.id !== userId) return;
 
+			this.applyLocation(location);
+
 			const weatherData = await this.fetchWeather(location);
 			if (this.userStore.id !== userId) return;
 
-			this.applyLocation(location);
 			this.applyWeather(weatherData.current, weatherData.forecast);
 
 			weatherCache.write(userId, weatherData.current, weatherData.forecast);
+
+			runInAction(() => (this.isInitialized = true));
 		});
 	}
 
@@ -126,6 +137,8 @@ export class WeatherStore extends AsyncStore {
 		super();
 
 		makeObservable<this, 'currentLocation' | 'applyLocation' | 'applyWeather' | 'reset'>(this, {
+			isInitialized: observable,
+			isRefreshing: observable,
 			currentLocation: observable,
 			current: observable,
 			forecast: observable,
@@ -163,6 +176,8 @@ export class WeatherStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.isInitialized = false;
+		this.isRefreshing = false;
 		this.currentLocation = null;
 		this.current = null;
 		this.forecast = [];

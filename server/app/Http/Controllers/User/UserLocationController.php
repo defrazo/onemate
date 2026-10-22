@@ -4,6 +4,7 @@ namespace App\Http\Controllers\User;
 
 use App\Enums\UserLocationType;
 use App\Http\Controllers\Controller;
+use Illuminate\Http\Client\ConnectionException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Http;
@@ -68,44 +69,66 @@ class UserLocationController extends Controller
     {
         $ip = $request->ip();
 
+        $emptyResponse = fn () => response()->json([
+            'ip' => $ip,
+            'location' => null,
+        ]);
+
         $isLocal = in_array($ip, ['127.0.0.1', '::1'], true);
 
         $url = $isLocal
             ? 'https://ipinfo.io/json'
             : "https://ipinfo.io/{$ip}/json";
 
-        $response = Http::get($url, [
-            'token' => config('services.ipinfo.token'),
-        ]);
+        try {
+            $response = Http::connectTimeout(2)
+                ->timeout(3)
+                ->get($url, [
+                    'token' => config('services.ipinfo.token'),
+                ]);
 
-        if ($response->failed()) {
-            return response()->json([
-                'ip' => $ip,
-                'location' => null,
-            ]);
+            if ($response->failed()) {
+                return $emptyResponse();
+            }
+        } catch (ConnectionException $e) {
+            return $emptyResponse();
         }
 
         $data = $response->json();
 
         if (empty($data['loc']) || empty($data['city'])) {
-            return response()->json([
-                'ip' => $ip,
-                'location' => null,
-            ]);
+            return $emptyResponse();
         }
 
-        [$lat, $lon] = array_map('floatval', explode(',', $data['loc']));
+        $coordinates = explode(',', $data['loc']);
 
-        $geoResponse = Http::get('https://nominatim.openstreetmap.org/reverse', [
-            'lat' => $lat,
-            'lon' => $lon,
-            'format' => 'json',
-            'accept-language' => 'ru',
-        ]);
+        if (count($coordinates) !== 2) {
+            return $emptyResponse();
+        }
 
-        $geo = $geoResponse->successful()
-            ? $geoResponse->json()
-            : [];
+        [$lat, $lon] = array_map('floatval', $coordinates);
+
+        $geo = [];
+
+        try {
+            $geoResponse = Http::connectTimeout(2)
+                ->timeout(3)
+                ->withHeaders([
+                    'User-Agent' => 'OneMate/1.0 (https://onemate.letunoff.ru)',
+                ])
+                ->get('https://nominatim.openstreetmap.org/reverse', [
+                    'lat' => $lat,
+                    'lon' => $lon,
+                    'format' => 'json',
+                    'accept-language' => 'ru',
+                ]);
+
+            if ($geoResponse->successful()) {
+                $geo = $geoResponse->json();
+            }
+        } catch (ConnectionException $e) {
+
+        }
 
         $address = $geo['address'] ?? [];
 
@@ -114,24 +137,21 @@ class UserLocationController extends Controller
             ?? $address['town']
             ?? $address['city']
             ?? $address['locality']
-            ?? $data['city']
-            ?? '';
+            ?? $data['city'];
 
         $region = $address['state']
             ?? $address['region']
             ?? $data['region']
             ?? '';
 
-        $country = $address['country']
-            ?? $data['country']
-            ?? '';
+        $country = $address['country_code'] ?? $data['country'] ?? '';
 
         return response()->json([
             'ip' => $data['ip'] ?? $ip,
             'location' => [
                 'name' => $name,
                 'region' => $region,
-                'country' => $country,
+                'country' => strtoupper($country),
                 'lat' => $lat,
                 'lon' => $lon,
             ],
