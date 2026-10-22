@@ -35,7 +35,7 @@ export const HomePage = observer(() => {
 					Всё нужное в одном месте
 				</h1>
 				<p className="mt-2 max-w-xl text-sm text-(--text-secondary) md:text-base">
-					Личное пространство для работы, идей и повседневных инструментов.
+					Личное пространство для работы, идей и повседневных инструментов
 				</p>
 				<Button
 					className="mt-8 h-9"

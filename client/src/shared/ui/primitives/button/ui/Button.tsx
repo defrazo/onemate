@@ -1,10 +1,12 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { type Padding, resolveStyles, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 import { Spinner } from '@/shared/ui';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+	ref?: Ref<HTMLButtonElement>;
+
 	children?: ReactNode;
 	leftIcon?: ReactNode;
 	centerIcon?: ReactNode;
@@ -19,6 +21,7 @@ interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 }
 
 export const Button = ({
+	ref,
 	children,
 	leftIcon,
 	centerIcon,
@@ -49,6 +52,7 @@ export const Button = ({
 	return (
 		<button
 			{...props}
+			ref={ref}
 			aria-pressed={active}
 			className={styles}
 			data-loading={loading || undefined}

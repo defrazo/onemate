@@ -68,6 +68,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 				loading={authStore.isLoading}
 				loadingText="Выполняется сохранение..."
 				type="submit"
+				variant="accent"
 			>
 				Сохранить пароль
 			</Button>

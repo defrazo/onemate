@@ -56,7 +56,7 @@ export const Network = observer(() => {
 	const renderContent = () => {
 		if (view === 'tools') return <Tools onAddService={() => setIsAdding(true)} />;
 
-		if (!networkStore.isReady && networkStore.isLoading) return <LoadingState />;
+		if (!networkStore.isReady && networkStore.isLoading) return <LoadingState size="lg" />;
 
 		if (networkStore.services.length > 0)
 			return <List services={networkStore.services} onOpen={(service) => setActiveId(service.id)} />;
