@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from 'react';
-import { IconAlertHexagon, IconDeviceFloppy, IconRefresh } from '@tabler/icons-react';
+import { IconAlertHexagon, IconCloudPlus, IconRefresh } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -11,7 +11,7 @@ import { ConflictDialog } from '.';
 const SAVED_STATUS_DURATION = 4000;
 
 export const ClipboardToolbar = observer(() => {
-	const { cloudStore, modalStore } = useStore();
+	const { cloudStore, modalStore, notifyStore } = useStore();
 
 	const [showSaved, setShowSaved] = useState(false);
 	const wasSaving = useRef(cloudStore.isSavingText);
@@ -29,6 +29,15 @@ export const ClipboardToolbar = observer(() => {
 					: showSaved
 						? 'Сохранено'
 						: null;
+
+	const handleExport = async (): Promise<void> => {
+		try {
+			await cloudStore.saveTextAsFile();
+			notifyStore.setNotice('Текст сохранён в облако', 'success');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
+		}
+	};
 
 	useEffect(() => {
 		if (isSavingText) {
@@ -54,20 +63,20 @@ export const ClipboardToolbar = observer(() => {
 	return (
 		<>
 			<Button
+				centerIcon={<IconCloudPlus className="size-4" />}
+				className="p-1"
+				disabled={!cloudStore.text.trim() || cloudStore.isUploading}
+				title="Сохранить TXT в облако"
+				variant="iconSurface"
+				onClick={() => void handleExport()}
+			/>
+			<Button
 				centerIcon={<IconRefresh className={cn('size-4', cloudStore.isLoading && 'animate-spin')} />}
 				className="p-1"
 				disabled={cloudStore.isLoading || isTextDirty || isSavingText || !!textConflict}
 				title="Обновить с сервера"
 				variant="iconSurface"
 				onClick={() => void cloudStore.refreshText()}
-			/>
-			<Button
-				centerIcon={<IconDeviceFloppy className="size-4" />}
-				className="p-1"
-				disabled={isSavingText || !isTextDirty || !!textConflict}
-				title="Сохранить"
-				variant="iconSurface"
-				onClick={() => void cloudStore.saveText()}
 			/>
 			{textConflict ? (
 				<Button

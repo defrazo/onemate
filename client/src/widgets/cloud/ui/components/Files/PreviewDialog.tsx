@@ -1,16 +1,16 @@
 import { useEffect, useState } from 'react';
-import { IconDownload, IconFileOff } from '@tabler/icons-react';
+import { IconCopy, IconDownload, IconFileOff } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
+import { useCopy } from '@/shared/lib/hooks';
 import { Button, LoadingState } from '@/shared/ui';
 
 import { getPreviewType } from '../../../lib';
-import type { CloudFile } from '../../../model';
-
-const MAX_PREVIEW_BYTES = 10 * 1024 * 1024;
-const MAX_TEXT_BYTES = 1024 * 1024;
+import { CLOUD_PREVIEW_BYTES, CLOUD_TEXT_PREVIEW_BYTES, type CloudFile } from '../../../model';
 
 export const PreviewDialog = ({ file }: { file: CloudFile }) => {
+	const copy = useCopy();
+
 	const { cloudStore, notifyStore } = useStore();
 
 	const [url, setUrl] = useState<string | null>(null);
@@ -33,7 +33,7 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 
 		const load = async (): Promise<void> => {
 			try {
-				const limit = type === 'text' ? MAX_TEXT_BYTES : MAX_PREVIEW_BYTES;
+				const limit = type === 'text' ? CLOUD_TEXT_PREVIEW_BYTES : CLOUD_PREVIEW_BYTES;
 
 				if (file.size > limit) throw new Error('Файл слишком большой для предпросмотра');
 
@@ -83,9 +83,19 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 					<Button
 						centerIcon={<IconDownload className="size-5 shrink-0" />}
 						padding="none"
+						title="Скачать файл"
 						variant="icon"
 						onClick={() => void handleDownload()}
 					/>
+					{type === 'text' && content !== null && (
+						<Button
+							centerIcon={<IconCopy className="size-5" />}
+							padding="none"
+							title="Копировать текст"
+							variant="icon"
+							onClick={() => copy(content, 'Текст скопирован')}
+						/>
+					)}
 				</div>
 				<p className="text-xs text-(--text-disabled)">Предпросмотр файла</p>
 			</div>
@@ -96,7 +106,7 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 					<img alt={file.name} className="max-h-[65vh] max-w-full object-contain" src={url} />
 				) : type === 'pdf' && url ? (
 					<iframe className="h-[65vh] w-full border-0" src={url} title={file.name} />
-				) : type === 'text' ? (
+				) : type === 'text' && content !== null ? (
 					<textarea
 						readOnly
 						className="h-[55vh] w-full resize-none overflow-auto bg-transparent p-3 font-mono text-sm outline-none"

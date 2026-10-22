@@ -1,4 +1,4 @@
-import { IconChecks, IconUpload } from '@tabler/icons-react';
+import { IconUpload } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -24,11 +24,8 @@ export const FilesFooter = observer(
 			return (
 				<div className="flex items-center justify-between gap-3">
 					<div className="flex min-w-0 items-center gap-2">
-						<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-(--accent-primary-muted)">
-							<IconChecks className="size-4 text-(--accent-primary)" />
-						</div>
 						<div className="flex min-w-0 flex-col gap-0.5">
-							<span className="truncate text-xs font-medium">
+							<span className="truncate text-xs font-medium text-(--accent-primary)">
 								Выбрано {selectedCount} {pluralize(selectedCount, 'файл', 'файла', 'файлов')}
 							</span>
 							<span className="trim pb-0.5 text-[11px] text-(--text-disabled)">

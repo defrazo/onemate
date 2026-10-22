@@ -334,6 +334,30 @@ export class CloudStore extends AsyncStore {
 		}
 	}
 
+	async saveTextAsFile(): Promise<void> {
+		const text = this.text;
+		if (!text.trim()) throw new Error('Текстовый буфер пуст');
+
+		const now = new Date();
+
+		const date = [
+			now.getFullYear(),
+			String(now.getMonth() + 1).padStart(2, '0'),
+			String(now.getDate()).padStart(2, '0'),
+		].join('-');
+
+		const time = [now.getHours(), now.getMinutes(), now.getSeconds()]
+			.map((value) => String(value).padStart(2, '0'))
+			.join('-');
+
+		const name = `Text_${date} ${time}.txt`;
+		const file = new File([text], name, { type: 'text/plain;charset=utf-8' });
+
+		await this.withFileSync(async () => {
+			await this.upload([file]);
+		});
+	}
+
 	async acceptServerText(): Promise<void> {
 		const userId = this.userStore.id;
 		const session = this.session;
