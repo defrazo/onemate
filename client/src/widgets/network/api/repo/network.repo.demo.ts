@@ -38,6 +38,10 @@ export class NetworkRepoDemo implements INetworkRepo {
 		throw new RestrictedAccess();
 	}
 
+	async reorderServices(_ids: number[]): Promise<void> {
+		throw new RestrictedAccess();
+	}
+
 	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
 		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url, checkVia });
 		return data;

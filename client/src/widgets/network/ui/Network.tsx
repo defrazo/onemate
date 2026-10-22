@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadingState, SegmentedControl } from '@/shared/ui';
+import { LoadingState, SegmentedControl, SyncIndicator } from '@/shared/ui';
 
 import type { NetworkView } from '../model';
 import { AddService, Details, Empty, List, Settings, Tools } from './components';
@@ -76,6 +76,7 @@ export const Network = observer(() => {
 				value={view}
 				onChange={setView}
 			/>
+			{networkStore.isReordering && <SyncIndicator />}
 		</div>
 	);
 });

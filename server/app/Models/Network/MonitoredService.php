@@ -2,6 +2,7 @@
 
 namespace App\Models\Network;
 
+use App\Models\User\User;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -15,6 +16,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
     'port',
     'check_via',
     'is_active',
+    'order_idx',
     'last_status',
     'last_status_code',
     'last_response_time',
@@ -27,6 +29,7 @@ class MonitoredService extends Model
         return [
             'port' => 'integer',
             'is_active' => 'boolean',
+            'order_idx' => 'integer',
             'last_status_code' => 'integer',
             'last_response_time' => 'integer',
             'last_checked_at' => 'datetime',

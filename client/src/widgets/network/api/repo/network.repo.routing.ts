@@ -64,6 +64,11 @@ export class NetworkRepoRouting implements INetworkRepo {
 		await this.getTargetRepo().deleteService(id);
 	}
 
+	async reorderServices(ids: number[]): Promise<void> {
+		this.checkPermission('network', 'save');
+		await this.getTargetRepo().reorderServices(ids);
+	}
+
 	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
 		this.checkPermission('network', 'use');
 		return this.getTargetRepo().checkService(url, checkVia);

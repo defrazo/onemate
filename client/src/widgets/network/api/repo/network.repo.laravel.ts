@@ -42,6 +42,10 @@ export class NetworkRepoLaravel implements INetworkRepo {
 		await api.delete(`/network/services/${id}`);
 	}
 
+	async reorderServices(ids: number[]): Promise<void> {
+		await api.patch('/network/services/order', { ids });
+	}
+
 	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
 		const { data } = await api.post<ServiceCheckResult>('/network/service/check', { url, checkVia });
 		return data;

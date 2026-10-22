@@ -38,6 +38,7 @@ type BaseMonitoredService = {
 	name: string;
 	checkVia: CheckVia;
 	isActive: boolean;
+	orderIdx: number;
 	lastStatus: ServiceStatus | null;
 	lastResponseTime: number | null;
 	lastCheckedAt: string | null;
