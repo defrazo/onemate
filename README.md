@@ -5,7 +5,7 @@
 [![Vite](https://img.shields.io/badge/Vite-8.x-646CFF)](#технологический-стек)
 [![Laravel](https://img.shields.io/badge/Laravel-13-FF2D20)](#технологический-стек)
 [![PostgreSQL](https://img.shields.io/badge/PostgreSQL-16-4169E1)](#технологический-стек)
-[![Version](https://img.shields.io/badge/version-2.0.0-e98224)](#)
+[![Version](https://img.shields.io/badge/version-2.1.0-e98224)](#)
 
 <div align="center">
 
