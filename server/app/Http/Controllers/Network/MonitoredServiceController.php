@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Network;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\Network\ReorderMonitoredServicesRequest;
 use App\Http\Requests\Network\StoreMonitoredServiceRequest;
 use App\Http\Requests\Network\UpdateMonitoredServiceRequest;
 use App\Http\Resources\MonitoredServiceResource;
@@ -22,7 +23,9 @@ class MonitoredServiceController extends Controller
     {
         $services = $request->user()
             ->monitoredServices()
-            ->latest()
+            ->orderBy('order_idx')
+            ->orderByDesc('created_at')
+            ->orderByDesc('id')
             ->get();
 
         return MonitoredServiceResource::collection($services);
@@ -68,9 +71,21 @@ class MonitoredServiceController extends Controller
             $attributes['port'] = $data['port'];
         }
 
-        $service = $request->user()
-            ->monitoredServices()
-            ->create($attributes);
+        $service = DB::transaction(function () use ($request, $attributes) {
+            $user = $request->user();
+
+            $user->newQuery()
+                ->whereKey($user->id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $user->monitoredServices()->increment('order_idx');
+
+            return $user->monitoredServices()->create([
+                ...$attributes,
+                'order_idx' => 0,
+            ]);
+        });
 
         return (new MonitoredServiceResource($service->refresh()))
             ->response()
@@ -233,5 +248,32 @@ class MonitoredServiceController extends Controller
         $service->delete();
 
         return response()->json(null, 204);
+    }
+
+    public function reorder(ReorderMonitoredServicesRequest $request): JsonResponse
+    {
+        $ids = $request->validated('ids');
+
+        DB::transaction(function () use ($request, $ids) {
+            $services = $request->user()
+                ->monitoredServices()
+                ->lockForUpdate()
+                ->pluck('id');
+
+            abort_unless(
+                $services->sort()->values()->all() === collect($ids)->sort()->values()->all(),
+                422,
+                'Некорректный список сервисов',
+            );
+
+            foreach ($ids as $index => $id) {
+                DB::table('monitored_services')
+                    ->where('user_id', $request->user()->id)
+                    ->where('id', $id)
+                    ->update(['order_idx' => $index]);
+            }
+        });
+
+        return response()->json(['message' => 'Порядок сохранён']);
     }
 }

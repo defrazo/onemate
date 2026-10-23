@@ -32,7 +32,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 				</Tooltip>
 				<Button
 					centerIcon={<IconGripHorizontal className="size-4" />}
-					className="cursor-grab touch-none pl-4 opacity-0 transition-opacity group-hover:opacity-100"
+					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100"
 					padding="none"
 					title="Переместить"
 					variant="icon"

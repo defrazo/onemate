@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from 'react';
 import {
 	IconAlertCircle,
 	IconCloudDownload,
+	IconCopy,
 	IconDownload,
 	IconFile,
 	IconFileText,
@@ -11,7 +12,8 @@ import {
 } from '@tabler/icons-react';
 import { useParams } from 'react-router-dom';
 
-import { usePageTitle } from '@/shared/lib/hooks';
+import { useStore } from '@/app/providers';
+import { useCopy, usePageTitle } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 import { formatFileSize } from '@/widgets/cloud';
 
@@ -22,10 +24,15 @@ import type { SharedFile } from '../model';
 type Status = 'loading' | 'success' | 'not-found' | 'error';
 type PreviewStatus = 'idle' | 'loading' | 'success' | 'error';
 
+const MAX_TEXT_BYTES = 1024 * 1024;
+
 export const SharedFilePage = () => {
 	usePageTitle('Общий файл');
 
+	const copy = useCopy();
 	const { token } = useParams<{ token: string }>();
+
+	const { notifyStore } = useStore();
 
 	const [status, setStatus] = useState<Status>('loading');
 	const [file, setFile] = useState<SharedFile | null>(null);
@@ -59,6 +66,11 @@ export const SharedFilePage = () => {
 
 		setShowPreview(true);
 
+		if (previewType === 'text' && file && file.size > MAX_TEXT_BYTES) {
+			setPreviewStatus('error');
+			return;
+		}
+
 		if (previewType !== 'text') {
 			setPreviewStatus('loading');
 			return;
@@ -75,8 +87,11 @@ export const SharedFilePage = () => {
 			const response = await fetch(previewUrl, { signal: controller.signal });
 			if (!response.ok) throw new Error('Ошибка предпросмотра');
 
-			const text = await response.text();
+			const blob = await response.blob();
+			if (controller.signal.aborted) return;
+			if (blob.size > MAX_TEXT_BYTES) throw new Error('Файл слишком большой для предпросмотра');
 
+			const text = await blob.text();
 			if (controller.signal.aborted) return;
 
 			setTextPreview(text);
@@ -88,12 +103,48 @@ export const SharedFilePage = () => {
 		}
 	};
 
+	const handleCopyText = async () => {
+		if (!file || previewType !== 'text') return;
+
+		try {
+			if (file.size > MAX_TEXT_BYTES) throw new Error('Файл слишком большой для копирования');
+
+			let text = textPreview;
+
+			if (previewStatus !== 'success') {
+				const response = await fetch(previewUrl);
+				if (!response.ok) throw new Error('Не удалось загрузить текст');
+
+				const blob = await response.blob();
+				if (blob.size > MAX_TEXT_BYTES) throw new Error('Файл слишком большой для копирования');
+
+				text = await blob.text();
+
+				setTextPreview(text);
+				setPreviewStatus('success');
+			}
+
+			copy(text, 'Текст скопирован');
+		} catch (error) {
+			notifyStore.setNotice(error instanceof Error ? error.message : 'Не удалось скопировать текст', 'error');
+		}
+	};
+
 	const handleRetry = () => {
 		closePreview();
 		setPreviewStatus('idle');
 		setTextPreview('');
 		setRetry((current) => current + 1);
 	};
+
+	useEffect(() => {
+		previewController.current?.abort();
+		previewController.current = null;
+
+		setShowPreview(false);
+		setPreviewStatus('idle');
+		setTextPreview('');
+	}, [token]);
 
 	useEffect(() => {
 		if (!token) {
@@ -157,7 +208,7 @@ export const SharedFilePage = () => {
 				{status === 'loading' && (
 					<div className="flex flex-col items-center">
 						<h1 className="text-xl font-semibold">Загружаем файл</h1>
-						<p className="text-center text-sm text-(--text-secondary)">Получаем информацию о файле...</p>
+						<p className="text-center text-sm text-(--text-secondary)">Получаем информацию о файле</p>
 					</div>
 				)}
 				{status === 'not-found' && (
@@ -206,28 +257,42 @@ export const SharedFilePage = () => {
 								<span className="text-xs text-(--text-secondary)">{formatFileSize(file.size)}</span>
 							</div>
 						</div>
-						<div className="flex w-full flex-col gap-2 sm:flex-row">
+						<div className="flex w-full flex-col gap-2 md:flex-row">
 							<a
-								className="flex h-8 w-full items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-opacity hover:opacity-90"
+								className="flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-colors hover:bg-(--accent-primary-hover) xl:max-w-60"
 								href={downloadUrl}
 							>
 								<IconDownload className="size-4" />
 								Скачать файл
 							</a>
-							{previewType && (
-								<Button className="h-8 w-full" variant="ghost" onClick={() => void handlePreview()}>
-									{showPreview ? 'Скрыть просмотр' : 'Предпросмотр'}
-								</Button>
-							)}
+							<div className="flex flex-1 items-center gap-2">
+								{previewType && (
+									<Button
+										className="h-8 min-w-0 flex-1"
+										variant="toneStrong"
+										onClick={() => void handlePreview()}
+									>
+										{showPreview ? 'Скрыть просмотр' : 'Предпросмотр'}
+									</Button>
+								)}
+								{previewType === 'text' && (
+									<Button
+										centerIcon={<IconCopy className="size-4" />}
+										className="size-8 shrink-0"
+										disabled={file.size > MAX_TEXT_BYTES}
+										title="Копировать текст"
+										variant="toneStrong"
+										onClick={() => void handleCopyText()}
+									/>
+								)}
+							</div>
 						</div>
 						{showPreview && (
 							<div className="relative w-full min-w-0 overflow-hidden rounded-xl bg-(--bg-tertiary)">
 								{previewStatus === 'loading' && (
 									<div className="flex h-48 flex-col items-center justify-center gap-3">
 										<IconLoader2 className="size-7 animate-spin text-(--accent-primary)" />
-										<span className="text-sm text-(--text-secondary)">
-											Загружаем предпросмотр...
-										</span>
+										<span className="text-sm text-(--text-secondary)">Загружаем предпросмотр</span>
 									</div>
 								)}
 								{previewStatus === 'error' && (
@@ -267,9 +332,18 @@ export const SharedFilePage = () => {
 									/>
 								)}
 								{previewType === 'text' && previewStatus === 'success' && (
-									<pre className="max-h-96 overflow-auto p-4 text-xs whitespace-pre-wrap select-text">
-										{textPreview}
-									</pre>
+									<div className="relative">
+										<Button
+											centerIcon={<IconCopy className="size-4" />}
+											className="absolute top-2 right-2 z-10 size-8"
+											title="Копировать текст"
+											variant="iconSurface"
+											onClick={() => void handleCopyText()}
+										/>
+										<pre className="max-h-96 overflow-auto p-4 pr-12 text-xs whitespace-pre-wrap select-text">
+											{textPreview}
+										</pre>
+									</div>
 								)}
 							</div>
 						)}

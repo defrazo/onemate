@@ -1,0 +1,15 @@
+/vendor
+/node_modules
+/.git
+/.env
+/.env.*
+/.phpunit.cache
+/coverage
+/tests
+*.log
+
+/storage/app/private/*
+/storage/logs/*
+/storage/framework/cache/*
+/storage/framework/sessions/*
+/storage/framework/views/*

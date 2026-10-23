@@ -1,15 +1,35 @@
-import { useState } from 'react';
-import { type Icon, IconCheck, IconStar, IconStarFilled, IconX } from '@tabler/icons-react';
+import { useEffect, useState } from 'react';
+import {
+	type Icon,
+	IconCheck,
+	IconLink,
+	IconSquare,
+	IconSquareCheck,
+	IconStar,
+	IconStarFilled,
+	IconX,
+} from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useCopy } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 import { Button, ConfirmDialog, Input } from '@/shared/ui';
 
 import { formatFileSize, getFileIcon, getFileNameParts, getPreviewType } from '../../../lib';
 import type { CloudFile } from '../../../model';
-import { ItemActions, PreviewDialog, ShareDialog } from '.';
+import { FilesItemActions, PreviewDialog, ShareDialog } from '.';
 
-export const Item = observer(({ file }: { file: CloudFile }) => {
+interface FilesItem {
+	file: CloudFile;
+	selectionMode: boolean;
+	selected: boolean;
+	onSelect: () => void;
+}
+
+export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: FilesItem) => {
+	const copy = useCopy();
+
 	const { cloudStore, modalStore, notifyStore } = useStore();
 
 	const [isEditing, setIsEditing] = useState(false);
@@ -17,7 +37,9 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 	const [isLoading, setIsLoading] = useState(false);
 
 	const { name: originalName, extension } = getFileNameParts(file.name);
+	const publicUrl = file.publicUrl;
 	const date = new Date(file.createdAt).toLocaleDateString('ru-RU');
+
 	const FileIcon = getFileIcon(file.name);
 	const previewType = getPreviewType(file.name, file.mimeType);
 	const canPreview = previewType !== null;
@@ -81,24 +103,47 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 				title="Удаление файла"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
-				onConfirm={async () => {
-					try {
-						await cloudStore.delete(file.id);
+				onConfirm={() => {
+					modalStore.closeModal();
 
-						modalStore.closeModal();
-						notifyStore.setNotice('Файл удалён', 'success');
-					} catch (error) {
-						notifyStore.setNotice(error instanceof Error ? error.message : 'Что-то пошло не так', 'error');
-					}
+					void cloudStore
+						.delete(file.id)
+						.then(() => notifyStore.setNotice('Файл удалён', 'success'))
+						.catch((error) => {
+							notifyStore.setNotice(
+								error instanceof Error ? error.message : 'Что-то пошло не так',
+								'error'
+							);
+						});
 				}}
 			/>
 		);
 	};
 
+	useEffect(() => {
+		if (selectionMode) setIsEditing(false);
+	}, [selectionMode]);
+
 	return (
-		<div className="group/file flex min-w-0 flex-col gap-2 rounded-lg py-1.5 transition-colors hover:bg-(--tone-hover) xl:px-2">
+		<div
+			className={cn(
+				'group/file flex min-w-0 flex-col gap-2 rounded-lg py-1.5 transition-colors hover:bg-(--tone-hover) xl:px-2',
+				selectionMode && 'cursor-pointer',
+				selectionMode && selected && 'xl:bg-(--tone-hover)'
+			)}
+			onClick={selectionMode ? onSelect : undefined}
+		>
 			<div className="flex min-w-0 items-center gap-2">
-				{isEditing ? (
+				{selectionMode ? (
+					<ItemData
+						selectionMode
+						date={date}
+						icon={FileIcon}
+						name={file.name}
+						selected={selected}
+						size={file.size}
+					/>
+				) : isEditing ? (
 					<div className="flex min-w-0 flex-1 items-center gap-2">
 						<ItemData partial date={date} icon={FileIcon} name={file.name} size={file.size} />
 						<Input
@@ -125,7 +170,7 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 					</div>
 				) : canPreview ? (
 					<Button
-						className="flex-1 gap-2 rounded-md text-left"
+						className="min-w-0 flex-1 gap-2 rounded-md text-left"
 						disabled={isLoading}
 						padding="none"
 						title={file.name}
@@ -139,7 +184,7 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 						<ItemData date={date} icon={FileIcon} name={file.name} size={file.size} />
 					</div>
 				)}
-				{isEditing ? (
+				{selectionMode ? null : isEditing ? (
 					<>
 						<Button
 							centerIcon={<IconCheck className="size-4" />}
@@ -160,10 +205,23 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 					</>
 				) : (
 					<>
+						{publicUrl && (
+							<Button
+								centerIcon={
+									<IconLink className="size-4 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover)" />
+								}
+								className="px-1.5"
+								disabled={isLoading}
+								padding="none"
+								title="Скопировать ссылку"
+								variant="icon"
+								onClick={() => copy(publicUrl, 'Ссылка скопирована')}
+							/>
+						)}
 						<Button
 							centerIcon={
 								file.isFavorite ? (
-									<IconStarFilled className="size-4 text-(--accent-primary)" />
+									<IconStarFilled className="size-4 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover)" />
 								) : (
 									<IconStar className="size-4 transition-opacity xl:opacity-0 xl:group-hover/file:opacity-100" />
 								)
@@ -175,7 +233,7 @@ export const Item = observer(({ file }: { file: CloudFile }) => {
 							variant="icon"
 							onClick={() => void executeAsync(() => cloudStore.toggleFavorite(file.id))}
 						/>
-						<ItemActions
+						<FilesItemActions
 							canPreview={canPreview}
 							disabled={isLoading}
 							onDelete={deleteFile}
@@ -199,19 +257,35 @@ interface ItemDataProps {
 	size: number;
 	date: string;
 	partial?: boolean;
+	selectionMode?: boolean;
+	selected?: boolean;
 }
 
-const ItemData = ({ icon: Icon, name, size, date, partial }: ItemDataProps) => {
+const ItemData = ({
+	icon: Icon,
+	name,
+	size,
+	date,
+	partial,
+	selectionMode = false,
+	selected = false,
+}: ItemDataProps) => {
 	return (
 		<>
 			<div className="flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-(--tone-strong)">
-				<Icon className="size-5 text-(--accent-primary)" />
+				{selectionMode ? (
+					selected ? (
+						<IconSquareCheck className="size-5 text-(--accent-primary)" />
+					) : (
+						<IconSquare className="size-5 text-(--text-secondary) transition-colors group-hover/file:text-(--accent-primary)" />
+					)
+				) : (
+					<Icon className="size-5 text-(--accent-primary)" />
+				)}
 			</div>
 			{!partial && (
 				<div className="flex min-w-0 flex-1 flex-col">
-					<span className="-mb-0.5 max-w-50 truncate text-sm font-semibold xl:max-w-72 2xl:max-w-85">
-						{name}
-					</span>
+					<span className="-mb-0.5 block w-full truncate text-sm font-semibold">{name}</span>
 					<span className="flex items-center gap-1.5 text-xs text-(--text-secondary)">
 						<span>{formatFileSize(size)}</span>
 						<span className="transition-opacity xl:opacity-0 xl:group-hover/file:opacity-100">·</span>

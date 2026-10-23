@@ -170,4 +170,51 @@ class CloudFileController extends Controller
             'message' => 'Файл удалён',
         ]);
     }
+
+    public function destroyMany(Request $request): JsonResponse
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:1', 'max:100'],
+            'ids.*' => ['required', 'uuid', 'distinct'],
+        ]);
+
+        $ids = $data['ids'];
+
+        $files = $request->user()
+            ->cloudFiles()
+            ->whereIn('id', $ids)
+            ->get();
+
+        if ($files->count() !== count($ids)) {
+            throw ValidationException::withMessages([
+                'ids' => 'Некоторые файлы не найдены или недоступны',
+            ]);
+        }
+
+        $disk = Storage::disk(config('cloud.disk'));
+
+        DB::transaction(function () use ($files) {
+            foreach ($files as $file) {
+                $file->delete();
+            }
+        });
+
+        foreach ($files as $file) {
+            try {
+                if ($disk->exists($file->path) && !$disk->delete($file->path)) {
+                    throw new \RuntimeException('Не удалось удалить файл из хранилища');
+                }
+            } catch (\Throwable $exception) {
+                Log::error('Cloud file cleanup failed', [
+                    'file_id' => $file->id,
+                    'path' => $file->path,
+                    'error' => $exception->getMessage(),
+                ]);
+            }
+        }
+
+        return response()->json([
+            'message' => 'Файлы удалены',
+        ]);
+    }
 }

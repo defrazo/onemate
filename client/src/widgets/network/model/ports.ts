@@ -16,6 +16,7 @@ export interface INetworkRepo {
 	checkMonitoredService(id: number): Promise<MonitoredService>;
 	updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService>;
 	deleteService(id: number): Promise<void>;
+	reorderServices(ids: number[]): Promise<void>;
 	checkService(url: string, checkVia?: CheckVia): Promise<ServiceCheckResult>;
 	checkPort(host: string, port: number, checkVia?: CheckVia): Promise<PortCheckResult>;
 	checkSsl(host: string): Promise<SslCheckResult>;

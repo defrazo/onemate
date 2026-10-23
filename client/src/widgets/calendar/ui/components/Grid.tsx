@@ -36,35 +36,40 @@ export const Grid = ({ month, range, selectDay }: GridProps) => {
 					if (!day) return <div key={idx} />;
 
 					const date = getDateInMonth(month, day);
+
 					const today = isToday(date);
 					const inRange = isInRange(date, range);
 					const isStart = Boolean(start && isSameDay(date, start));
 					const isEnd = Boolean(end && isSameDay(date, end));
 
+					const isSelected = isStart || isEnd;
+					const showRange = Boolean(start && end) && (inRange || isSelected) && !(isStart && isEnd);
+
 					return (
 						<div key={idx} className="relative flex min-h-0 items-center justify-center">
-							{inRange && (
+							{showRange && (
 								<div
 									className={cn(
-										'absolute top-1/2 h-7 -translate-y-1/2 bg-(--accent-primary-muted) transition-opacity duration-150',
-										!isStart && !isEnd && 'inset-x-0',
-										isStart && !isEnd && 'right-0 left-1/2',
-										isEnd && !isStart && 'right-1/2 left-0',
-										isStart && isEnd && 'hidden'
+										'absolute top-1/2 h-7 -translate-y-1/2 bg-(--accent-primary-muted)',
+										!isSelected && 'inset-x-0',
+										isStart && 'right-0 left-1/2',
+										isEnd && 'right-1/2 left-0'
 									)}
 								/>
 							)}
 							<button
 								className={cn(
 									'relative z-10 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full font-mono tabular-nums',
-									!inRange && 'hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)',
-									(isStart || isEnd) && 'bg-(--accent-primary) text-(--text-on-accent)'
+									!inRange &&
+										!isSelected &&
+										'hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)',
+									isSelected && 'bg-(--accent-primary) text-(--text-on-accent)'
 								)}
 								type="button"
 								onClick={() => selectDay(day)}
 							>
 								{day}
-								{today && !inRange && (
+								{today && !inRange && !isSelected && (
 									<span className="absolute -bottom-0.5 size-1 rounded-full bg-(--accent-primary)" />
 								)}
 							</button>

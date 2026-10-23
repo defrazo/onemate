@@ -1,186 +1,301 @@
+
 <!doctype html>
 <html lang="ru">
-    <head>
-        <meta charset="UTF-8" />
-        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-        <title>Подтверждение нового e-mail</title>
-    </head>
-    <body
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
+    <title>Подтверждение нового адреса – OneMate</title>
+</head>
+<body style="margin: 0; padding: 0; background-color: #18191b; color: #d7d7d7;">
+    <div
         style="
-            margin: 0;
-            padding: 24px;
-            background-color: #121212;
-            font-family: Inter, Arial, sans-serif;
-            color: #ffffff;
+            display: none;
+            font-size: 1px;
+            line-height: 1px;
+            max-height: 0;
+            max-width: 0;
+            opacity: 0;
+            overflow: hidden;
         "
     >
-        <div style="display: none; max-height: 0; overflow: hidden; opacity: 0">
-            Подтвердите новый адрес электронной почты для завершения изменения
-            e-mail в аккаунте OneMate.
-        </div>
-        <table width="100%" cellpadding="0" cellspacing="0" border="0">
-            <tr>
-                <td align="center">
-                    <table
-                        width="100%"
-                        cellpadding="0"
-                        cellspacing="0"
-                        border="0"
-                        style="
-                            max-width: 560px;
-                            background: #161717;
-                            border: 1px solid #fafafa12;
-                            border-radius: 28px;
-                            padding: 48px 40px;
-                        "
-                    >
-                        <tr>
-                            <td align="center" style="padding-bottom: 24px">
-                                <div
-                                    style="
-                                        font-size: 30px;
-                                        font-weight: 700;
-                                        letter-spacing: -0.04em;
-                                        color: #ffffff;
-                                    "
-                                >
-                                    OneMate
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
+        Подтвердите новый адрес электронной почты, чтобы завершить его изменение в OneMate.
+    </div>
+    <table
+        role="presentation"
+        width="100%"
+        cellpadding="0"
+        cellspacing="0"
+        border="0"
+        bgcolor="#18191b"
+        style="
+            width: 100%;
+            background-color: #18191b;
+            border-collapse: collapse;
+            font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+        "
+    >
+        <tr>
+            <td align="center" style="padding: 32px 16px;">
+                <table
+                    role="presentation"
+                    width="100%"
+                    cellpadding="0"
+                    cellspacing="0"
+                    border="0"
+                    bgcolor="#1e1f22"
+                    style="
+                        width: 100%;
+                        max-width: 560px;
+                        background-color: #1e1f22;
+                        border: 1px solid #39393a;
+                        border-radius: 24px;
+                        border-collapse: separate;
+                    "
+                >
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 40px 28px 28px;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                            "
+                        >
+                            <span
                                 style="
-                                    border-top: 1px solid #fafafa12;
-                                    padding-top: 24px;
-                                "
-                            ></td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
-                                style="
-                                    padding-bottom: 16px;
-                                    font-size: 32px;
+                                    font-size: 30px;
                                     font-weight: 700;
-                                    line-height: 1.2;
-                                    letter-spacing: -0.03em;
-                                    color: #ffffff;
+                                    letter-spacing: -1px;
+                                    color: #d7d7d7;
+                                "
+                            >One</span><span
+                                style="
+                                    font-size: 30px;
+                                    font-weight: 700;
+                                    letter-spacing: -1px;
+                                    color: #e98224;
+                                "
+                            >Mate</span>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 28px;">
+                            <div
+                                style="
+                                    height: 1px;
+                                    background-color: #39393a;
+                                    font-size: 1px;
+                                    line-height: 1px;
+                                "
+                            >&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 32px 28px 0;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                            "
+                        >
+                            <h1
+                                style="
+                                    margin: 0;
+                                    font-size: 28px;
+                                    font-weight: 700;
+                                    line-height: 1.3;
+                                    letter-spacing: -0.5px;
+                                    color: #e5e5e5;
                                 "
                             >
-                                Подтверждение нового e-mail
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
+                                Подтверждение нового адреса
+                            </h1>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 16px 28px 0;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                font-size: 15px;
+                                line-height: 1.7;
+                                color: #a0a0a0;
+                            "
+                        >
+                            Вы запросили изменение адреса электронной почты
+                            в аккаунте OneMate. Подтвердите новый адрес,
+                            чтобы завершить обновление данных.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 28px 28px 0;">
+                            <table
+                                role="presentation"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                            >
+                                <tr>
+                                    <td
+                                        align="center"
+                                        bgcolor="#e98224"
+                                        style="border-radius: 12px;"
+                                    >
+                                        <a
+                                            href="{{ $url }}"
+                                            target="_blank"
+                                            style="
+                                                display: inline-block;
+                                                padding: 14px 28px;
+                                                border-radius: 12px;
+                                                background-color: #e98224;
+                                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                                font-size: 14px;
+                                                font-weight: 700;
+                                                line-height: 1.4;
+                                                color: #18191b;
+                                                text-decoration: none;
+                                            "
+                                        >
+                                            Подтвердить новый адрес
+                                        </a>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td align="center" style="padding: 28px 28px 0;">
+                            <table
+                                role="presentation"
+                                width="100%"
+                                cellpadding="0"
+                                cellspacing="0"
+                                border="0"
+                                bgcolor="#28292c"
                                 style="
-                                    padding-bottom: 32px;
-                                    font-size: 16px;
-                                    line-height: 1.7;
-                                    color: #98a2b3;
+                                    width: 100%;
+                                    background-color: #28292c;
+                                    border-radius: 16px;
                                 "
                             >
-                                Вы запросили изменение e-mail для аккаунта
-                                OneMate. Подтвердите новый e-mail, чтобы
-                                завершить обновление данных аккаунта.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td align="center" style="padding-bottom: 32px">
-                                <a
-                                    href="{{ $url }}"
-                                    style="
-                                        display: inline-block;
-                                        background: #5b5cff;
-                                        color: #ffffff;
-                                        text-decoration: none;
-                                        font-size: 15px;
-                                        font-weight: 600;
-                                        padding: 16px 28px;
-                                        border-radius: 16px;
-                                    "
-                                >
-                                    Подтвердить новый e-mail
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
+                                <tr>
+                                    <td
+                                        align="center"
+                                        style="
+                                            padding: 24px 20px;
+                                            font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                        "
+                                    >
+                                        <div
+                                            style="
+                                                font-size: 24px;
+                                                font-weight: 700;
+                                                line-height: 1.3;
+                                                color: #e98224;
+                                            "
+                                        >
+                                            60 минут
+                                        </div>
+                                        <div
+                                            style="
+                                                padding-top: 8px;
+                                                font-size: 13px;
+                                                line-height: 1.6;
+                                                color: #a0a0a0;
+                                            "
+                                        >
+                                            Срок действия ссылки для подтверждения
+                                            нового адреса
+                                        </div>
+                                    </td>
+                                </tr>
+                            </table>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 28px 28px 36px;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                font-size: 13px;
+                                line-height: 1.7;
+                                color: #929292;
+                            "
+                        >
+                            Если вы не запрашивали изменение почты,
+                            просто проигнорируйте это письмо.
+                            Текущий адрес вашего аккаунта останется прежним.
+                        </td>
+                    </tr>
+                    <tr>
+                        <td style="padding: 0 28px;">
+                            <div
                                 style="
-                                    padding-bottom: 12px;
-                                    font-size: 14px;
-                                    line-height: 1.6;
-                                    color: #667085;
+                                    height: 1px;
+                                    background-color: #39393a;
+                                    font-size: 1px;
+                                    line-height: 1px;
                                 "
-                            >
-                                Ссылка действительна в течение 60 минут.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
+                            >&nbsp;</div>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 24px 28px 0;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                font-size: 12px;
+                                line-height: 1.7;
+                                color: #929292;
+                            "
+                        >
+                            Если кнопка не работает, скопируйте ссылку
+                            и откройте её в браузере:
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 12px 28px 0;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                font-size: 12px;
+                                line-height: 1.7;
+                                overflow-wrap: anywhere;
+                                word-break: break-word;
+                            "
+                        >
+                            <a
+                                href="{{ $url }}"
                                 style="
-                                    padding-bottom: 32px;
-                                    font-size: 14px;
-                                    line-height: 1.6;
-                                    color: #667085;
+                                    color: #e98224;
+                                    text-decoration: none;
                                 "
-                            >
-                                Если вы не запрашивали изменение e-mail, просто
-                                проигнорируйте это письмо. Текущий e-mail
-                                аккаунта останется без изменений.
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
-                                style="
-                                    border-top: 1px solid #fafafa12;
-                                    padding-top: 24px;
-                                "
-                            ></td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
-                                style="
-                                    font-size: 13px;
-                                    line-height: 1.7;
-                                    color: #667085;
-                                    word-break: break-word;
-                                "
-                            >
-                                Если кнопка не работает, скопируйте и откройте
-                                ссылку в браузере:
-                                <br /><br />
-
-                                <a
-                                    href="{{ $url }}"
-                                    style="
-                                        color: #5b5cff;
-                                        text-decoration: none;
-                                    "
-                                >
-                                    {{ $url }}
-                                </a>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td
-                                align="center"
-                                style="
-                                    padding-top: 32px;
-                                    font-size: 12px;
-                                    color: #475467;
-                                "
-                            >
-                                © {{ date('Y') }} OneMate. Все права защищены.
-                            </td>
-                        </tr>
-                    </table>
-                </td>
-            </tr>
-        </table>
-    </body>
+                            >{{ $url }}</a>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td
+                            align="center"
+                            style="
+                                padding: 28px 28px 32px;
+                                font-family: 'Trebuchet MS', Verdana, Arial, sans-serif;
+                                font-size: 12px;
+                                line-height: 1.6;
+                                color: #858585;
+                            "
+                        >
+                            © {{ date('Y') }} OneMate
+                        </td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</body>
 </html>

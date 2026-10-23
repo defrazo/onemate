@@ -5,7 +5,7 @@ import { IconDots, IconDownload, IconEdit, IconEye, IconLink, IconTrash } from '
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-interface ItemActionsProps {
+interface FilesItemActionsProps {
 	disabled?: boolean;
 	canPreview: boolean;
 	onPreview: () => void;
@@ -15,7 +15,7 @@ interface ItemActionsProps {
 	onDelete: () => void;
 }
 
-export const ItemActions = ({
+export const FilesItemActions = ({
 	disabled = false,
 	canPreview,
 	onPreview,
@@ -23,7 +23,7 @@ export const ItemActions = ({
 	onRename,
 	onShare,
 	onDelete,
-}: ItemActionsProps) => {
+}: FilesItemActionsProps) => {
 	const [open, setOpen] = useState(false);
 	const [position, setPosition] = useState<{ top: number; left: number }>({ top: 0, left: 0 });
 

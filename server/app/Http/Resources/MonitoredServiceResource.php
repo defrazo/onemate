@@ -16,6 +16,7 @@ class MonitoredServiceResource extends JsonResource
             'name' => $this->name,
             'checkVia' => $this->check_via,
             'isActive' => $this->is_active,
+            'orderIdx' => $this->order_idx,
             'lastStatus' => $this->last_status,
             'lastResponseTime' => $this->last_response_time,
             'lastCheckedAt' => $this->last_checked_at?->toISOString(),

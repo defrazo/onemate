@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
@@ -9,7 +9,10 @@ import type { INotesRepo, Note } from '.';
 
 export class NotesStore extends AsyncStore {
 	private readonly debouncer = new Debouncer();
+
 	private lastSnapshot = '';
+	private isSaving = false;
+	private generation = 0;
 
 	notes: Note[] = [];
 	draft: Note[] = [];
@@ -30,6 +33,10 @@ export class NotesStore extends AsyncStore {
 
 	private get canDeleteMore(): boolean {
 		return this.draft.length > 1;
+	}
+
+	get isSyncing(): boolean {
+		return this.getDraftSnapshot() !== this.lastSnapshot;
 	}
 
 	openNote(id: string): void {
@@ -109,18 +116,35 @@ export class NotesStore extends AsyncStore {
 	}
 
 	private async syncDraftToServer(userId: string): Promise<void> {
-		if (this.userStore.id !== userId || !this.hasDraftChanged() || this.activeNoteId) return;
+		if (this.userStore.id !== userId || this.isSaving || !this.hasDraftChanged() || this.activeNoteId) return;
 
+		const generation = this.generation;
 		const draft = this.draft.map((note) => ({ ...note }));
+		const snapshot = this.getDraftSnapshot();
+
+		this.isSaving = true;
+
+		let saved = false;
 
 		try {
 			await this.repo.replaceAll(userId, draft);
 
-			if (this.userStore.id !== userId) return;
+			if (this.userStore.id !== userId || this.generation !== generation) return;
+			runInAction(() => (this.lastSnapshot = snapshot));
 
-			this.applyNotes(draft);
-			notesCache.write(userId, draft, false);
-		} catch {}
+			saved = true;
+
+			if (this.getDraftSnapshot() === snapshot) notesCache.write(userId, draft, false);
+		} catch {
+			// Черновик остаётся в кэше
+		} finally {
+			if (this.generation === generation) {
+				this.isSaving = false;
+
+				if (saved && this.userStore.id === userId && this.hasDraftChanged() && !this.activeNoteId)
+					this.scheduleServerUpdate();
+			}
+		}
 	}
 
 	private applyNotes(notes: Note[]): void {
@@ -181,15 +205,20 @@ export class NotesStore extends AsyncStore {
 	) {
 		super();
 
-		makeObservable<this, 'canAddMore' | 'canDeleteMore' | 'reset' | 'applyNotes' | 'applyDirtyDraft'>(this, {
+		makeObservable<
+			this,
+			'canAddMore' | 'canDeleteMore' | 'lastSnapshot' | 'reset' | 'applyNotes' | 'applyDirtyDraft'
+		>(this, {
 			notes: observable,
 			draft: observable,
 			activeNoteId: observable,
+			lastSnapshot: observable,
 
 			activeNote: computed,
 			isReady: computed,
 			canAddMore: computed,
 			canDeleteMore: computed,
+			isSyncing: computed,
 
 			openNote: action,
 			closeNote: action,
@@ -234,6 +263,9 @@ export class NotesStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.generation++;
+		this.isSaving = false;
+
 		this.notes = [];
 		this.draft = [];
 		this.activeNoteId = null;

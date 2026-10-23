@@ -1,4 +1,4 @@
-import { action, makeObservable, observable, reaction } from 'mobx';
+import { action, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
@@ -19,6 +19,7 @@ import type {
 export class NetworkStore extends AsyncStore {
 	services: MonitoredService[] = [];
 	isReady = false;
+	isReordering = false;
 
 	async loadServices(userId: string): Promise<void> {
 		const cached = networkCache.read(userId);
@@ -74,6 +75,30 @@ export class NetworkStore extends AsyncStore {
 		this.persistCache();
 	}
 
+	async updateOrder(services: MonitoredService[]): Promise<void> {
+		if (this.isReordering) return;
+
+		const previous = [...this.services];
+		const next = services.map((service, index) => ({ ...service, orderIdx: index }));
+
+		this.isReordering = true;
+		this.services = next;
+		this.persistCache();
+
+		try {
+			await this.repo.reorderServices(next.map((service) => service.id));
+		} catch (error) {
+			runInAction(() => {
+				this.services = previous;
+				this.persistCache();
+			});
+
+			throw error;
+		} finally {
+			runInAction(() => (this.isReordering = false));
+		}
+	}
+
 	async checkService(url: string, checkVia: CheckVia = 'direct'): Promise<ServiceCheckResult> {
 		return this.repo.checkService(url, checkVia);
 	}
@@ -87,12 +112,12 @@ export class NetworkStore extends AsyncStore {
 	}
 
 	private applyServices(services: MonitoredService[]): void {
-		this.services = services;
+		this.services = [...services].sort((a, b) => (a.orderIdx ?? 0) - (b.orderIdx ?? 0));
 		this.isReady = true;
 	}
 
 	private prependService(service: MonitoredService): void {
-		this.services.unshift(service);
+		this.services = [service, ...this.services.map((current) => ({ ...current, orderIdx: current.orderIdx + 1 }))];
 	}
 
 	private replaceService(service: MonitoredService): void {
@@ -120,7 +145,9 @@ export class NetworkStore extends AsyncStore {
 		makeObservable<this, 'applyServices' | 'prependService' | 'replaceService' | 'removeService' | 'reset'>(this, {
 			services: observable,
 			isReady: observable,
+			isReordering: observable,
 
+			updateOrder: action,
 			applyServices: action,
 			prependService: action,
 			replaceService: action,
@@ -152,5 +179,6 @@ export class NetworkStore extends AsyncStore {
 	protected reset(): void {
 		this.services = [];
 		this.isReady = false;
+		this.isReordering = false;
 	}
 }

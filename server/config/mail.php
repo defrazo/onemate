@@ -18,7 +18,7 @@ return [
 
         'resend' => [
             'transport' => 'resend_custom',
-            'key' => env('RESEND_KEY'),
+            'key' => env('RESEND_API_KEY'),
         ],
 
         'log' => [

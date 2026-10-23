@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { IconReload, IconReport, IconRoute, IconServer, IconSettings, IconWorld } from '@tabler/icons-react';
+import { IconRefresh, IconReport, IconRoute, IconServer, IconSettings, IconWorld } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
@@ -139,7 +139,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					<div className="mx-auto flex items-center gap-1.5">
 						<span className="trim text-xs tabular-nums xl:text-sm">{lastChecked}</span>
 						<Button
-							centerIcon={<IconReload className={cn('size-4', isChecking && 'animate-spin')} />}
+							centerIcon={<IconRefresh className={cn('size-4', isChecking && 'animate-spin')} />}
 							disabled={isChecking}
 							padding="none"
 							title="Проверить сейчас"

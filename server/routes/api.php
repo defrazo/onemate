@@ -138,6 +138,8 @@ Route::middleware('auth:sanctum')->group(function () {
         // Network
         Route::get('/network/services', [MonitoredServiceController::class, 'index']);
         Route::post('/network/services', [MonitoredServiceController::class, 'store']);
+        Route::patch('/network/services/order', [MonitoredServiceController::class, 'reorder']);
+
         Route::patch('/network/services/{service}', [MonitoredServiceController::class, 'update']);
         Route::delete('/network/services/{service}', [MonitoredServiceController::class, 'destroy']);
         Route::post('/network/services/{service}/check', [MonitoredServiceController::class, 'check']);
@@ -148,10 +150,14 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/', [CloudController::class, 'index']);
             Route::get('/text', [CloudController::class, 'getText']);
             Route::put('/text', [CloudController::class, 'saveText']);
+
             Route::post('/files', [CloudFileController::class, 'store']);
+            Route::delete('/files', [CloudFileController::class, 'destroyMany']);
+
             Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
             Route::patch('/files/{id}', [CloudFileController::class, 'update']);
             Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);
+
             Route::post('/files/{id}/share', [CloudShareController::class, 'store']);
             Route::delete('/files/{id}/share', [CloudShareController::class, 'destroy']);
         });

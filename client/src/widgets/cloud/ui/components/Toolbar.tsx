@@ -11,16 +11,33 @@ const CLOUD_TABS = [
 interface ToolbarProps {
 	tab: CloudTab;
 	searchOpen: boolean;
+	selectionMode: boolean;
 	onTabChange: (value: CloudTab) => void;
 	onSearchToggle: () => void;
+	onSelectionToggle: () => void;
+	onRefresh: () => void;
 }
 
-export const Toolbar = ({ tab, searchOpen, onTabChange, onSearchToggle }: ToolbarProps) => {
+export const Toolbar = ({
+	tab,
+	searchOpen,
+	selectionMode,
+	onTabChange,
+	onSearchToggle,
+	onSelectionToggle,
+	onRefresh,
+}: ToolbarProps) => {
 	return (
 		<div className="flex min-w-0 items-center justify-between">
 			<div className="flex min-w-0 items-center gap-2">
 				{tab === 'files' ? (
-					<FilesToolbar searchOpen={searchOpen} onSearchToggle={onSearchToggle} />
+					<FilesToolbar
+						searchOpen={searchOpen}
+						selectionMode={selectionMode}
+						onRefresh={onRefresh}
+						onSearchToggle={onSearchToggle}
+						onSelectionToggle={onSelectionToggle}
+					/>
 				) : (
 					<ClipboardToolbar />
 				)}

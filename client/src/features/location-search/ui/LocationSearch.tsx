@@ -13,6 +13,7 @@ import { Suggestions } from './components';
 
 interface LocationSearchProps {
 	value: City | null;
+	loading?: boolean;
 	showGeolocation?: boolean;
 	onRemove?: () => void;
 	validate?: (city: City) => void | Promise<void>;
@@ -21,14 +22,14 @@ interface LocationSearchProps {
 }
 
 export const LocationSearch = observer(
-	({ value, showGeolocation, onRemove, validate, onSelect, className }: LocationSearchProps) => {
+	({ value, loading = false, showGeolocation, onRemove, validate, onSelect, className }: LocationSearchProps) => {
 		const { notifyStore, userProfileStore } = useStore();
 
 		const [store] = useState(() => new LocationSearchStore());
 
-		const isLoading = !userProfileStore.isReady || store.isLoading;
+		const isLoading = loading || !userProfileStore.isReady || store.isLoading;
 
-		const handleSelect = async (city: City) => {
+		const handleSelect = async (city: City, auto = false) => {
 			const previousCity = value;
 
 			store.selectCity(city);
@@ -37,7 +38,7 @@ export const LocationSearch = observer(
 				if (validate) await validate(city);
 
 				await onSelect(city);
-				notifyStore.setNotice(`Выбран город: ${city.name}`, 'success');
+				notifyStore.setNotice(`${auto ? 'Определено' : 'Выбрано'}: ${city.name}`, 'success');
 			} catch {
 				store.setValue(previousCity);
 				notifyStore.setNotice('Что-то пошло не так', 'error');
@@ -46,10 +47,7 @@ export const LocationSearch = observer(
 
 		const handleGeolocation = async () => {
 			try {
-				const city = await store.detectCityByGeolocation();
-
-				await handleSelect(city);
-				notifyStore.setNotice(`Определен город: ${city.name}`, 'success');
+				await handleSelect(await store.detectCityByGeolocation(), true);
 			} catch {
 				notifyStore.setNotice('Что-то пошло не так', 'error');
 			}

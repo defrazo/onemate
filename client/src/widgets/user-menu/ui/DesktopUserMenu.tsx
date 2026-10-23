@@ -26,7 +26,7 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 	};
 
 	return (
-		<div className="core-surface absolute top-full right-0 mt-1 flex w-68 flex-col rounded-lg bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)">
+		<div className="core-surface absolute top-full right-0 mt-1 flex w-68 flex-col rounded-lg bg-(--bg-secondary) p-1.5 shadow-lg">
 			<UserInfo className="px-2.5 py-1.5" />
 			<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 			<div className="my-1 flex flex-col gap-1">

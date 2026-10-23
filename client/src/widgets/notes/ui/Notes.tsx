@@ -1,9 +1,9 @@
-import { IconLoader2, IconPlus } from '@tabler/icons-react';
+import { IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { pluralize } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+import { Button, SyncIndicator } from '@/shared/ui';
 
 import { Card, Editor, List } from './components';
 
@@ -29,13 +29,7 @@ export const Notes = observer(() => {
 					<span className="trim">{pluralize(notesStore.notes.length, 'заметка', 'заметки', 'заметок')}</span>
 				</div>
 				<Button
-					centerIcon={
-						!notesStore.isLoading ? (
-							<IconPlus className="size-4" />
-						) : (
-							<IconLoader2 className="size-4 animate-spin" />
-						)
-					}
+					centerIcon={<IconPlus className="size-4" />}
 					className="h-6 min-w-22.5 text-sm"
 					disabled={notesStore.isLoading}
 					title="Добавить заметку"
@@ -43,6 +37,7 @@ export const Notes = observer(() => {
 					onClick={handleAdd}
 				/>
 			</div>
+			{notesStore.isSyncing && <SyncIndicator />}
 		</div>
 	);
 });

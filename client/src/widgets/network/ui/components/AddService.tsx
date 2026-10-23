@@ -76,7 +76,7 @@ export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreate
 			}
 
 			if (!Number.isInteger(portNumber) || portNumber < LIMITS.MIN_PORT || portNumber > LIMITS.MAX_PORT) {
-				notifyStore.setNotice(`Порт — от ${LIMITS.MIN_PORT} до ${LIMITS.MAX_PORT}`, 'error');
+				notifyStore.setNotice(`Порт – от ${LIMITS.MIN_PORT} до ${LIMITS.MAX_PORT}`, 'error');
 				return;
 			}
 		}
