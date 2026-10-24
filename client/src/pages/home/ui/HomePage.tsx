@@ -1,8 +1,10 @@
+import { useEffect } from 'react';
 import { IconArrowRight } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 import { useNavigate } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { UserAuth } from '@/features/auth';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button, Link } from '@/shared/ui';
 
@@ -13,7 +15,7 @@ export const HomePage = observer(() => {
 
 	const navigate = useNavigate();
 
-	const { authStore, notifyStore } = useStore();
+	const { authStore, authFormStore, modalStore, notifyStore } = useStore();
 
 	const handleDemo = async () => {
 		try {
@@ -24,6 +26,15 @@ export const HomePage = observer(() => {
 			notifyStore.setNotice('Что-то пошло не так', 'error');
 		}
 	};
+
+	useEffect(() => {
+		const params = new URLSearchParams(window.location.search);
+		if (params.get('oauth') !== 'login' || authStore.isInitializing || authStore.isReady) return;
+
+		authFormStore.reset();
+		authFormStore.switchToLogin();
+		modalStore.setModal(<UserAuth />);
+	}, [authStore.isInitializing, authStore.isReady, authFormStore, modalStore]);
 
 	return (
 		<div className="relative flex min-h-0 flex-1 overflow-hidden pb-44 select-none md:pb-84 lg:pb-114 xl:pb-45 md:landscape:pb-44 xl:landscape:pb-45 2xl:landscape:pb-84">

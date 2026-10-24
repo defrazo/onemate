@@ -28,6 +28,8 @@ services:
     volumes:
       - backend_public:/var/www/html/public
       - onemate_storage:/var/www/html/storage/app
+      - ./docker/passport/oauth-private.key:/var/www/html/storage/oauth-private.key:ro
+      - ./docker/passport/oauth-public.key:/var/www/html/storage/oauth-public.key:ro
     depends_on:
       postgres:
         condition: service_healthy
@@ -112,3 +114,4 @@ volumes:
   onemate_pgdata:
   backend_public:
   onemate_storage:
+  onemate_passport:

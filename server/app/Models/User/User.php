@@ -19,11 +19,13 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Laravel\Passport\HasApiTokens;
 
 #[Fillable(['username', 'email', 'password', 'role', 'privacy_accepted_at'])]
 #[Hidden(['password', 'remember_token'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
+    use HasApiTokens;
     /** @use HasFactory<UserFactory> */
     use HasFactory;
     use HasUuids;

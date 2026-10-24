@@ -13,6 +13,8 @@
 /public/storage
 /storage/*.key
 /storage/pail
+/storage/oauth-private.key
+/storage/oauth-public.key
 
 # Testing
 .phpunit.result.cache

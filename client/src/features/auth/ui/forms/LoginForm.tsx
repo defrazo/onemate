@@ -3,6 +3,7 @@ import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { getOAuthReturnUrl } from '@/pages/auth';
 import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
@@ -20,7 +21,17 @@ export const LoginForm = observer(() => {
 		if (!checkPassword(authFormStore.password)) return;
 
 		try {
-			await authStore.login(authFormStore.login, authFormStore.password);
+			const success = await authStore.login(authFormStore.login, authFormStore.password);
+			if (!success) return;
+
+			if (new URLSearchParams(window.location.search).get('oauth') === 'login') {
+				const returnUrl = await getOAuthReturnUrl();
+
+				if (returnUrl) {
+					window.location.assign(returnUrl);
+					return;
+				}
+			}
 
 			notifyStore.setNotice(`Добро пожаловать, ${userStore.username}`, 'success');
 		} catch (error: unknown) {

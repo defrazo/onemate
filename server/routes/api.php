@@ -2,6 +2,8 @@
 
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
+use App\Http\Controllers\Auth\OAuthAuthorizationController;
+use App\Http\Controllers\Auth\OAuthUserController;
 use App\Http\Controllers\Auth\PasswordResetController;
 use App\Http\Controllers\Cloud\CloudController;
 use App\Http\Controllers\Cloud\CloudFileController;
@@ -13,6 +15,7 @@ use App\Http\Controllers\Network\PortCheckController;
 use App\Http\Controllers\Network\ServiceCheckController;
 use App\Http\Controllers\Network\SslCheckController;
 use App\Http\Controllers\Notification\NotificationController;
+use App\Http\Controllers\User\ConnectedAppsController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
 use App\Http\Controllers\User\UserLocationController;
@@ -37,6 +40,9 @@ Route::middleware('web')->group(function () {
 
     Route::post('/logout', [AuthController::class, 'logout']);
 });
+
+Route::get('/oauth/user', OAuthUserController::class)
+    ->middleware(['auth:api', 'scopes:profile:read']);
 
 // Password
 Route::post('/forgot-password', [PasswordResetController::class, 'forgotPassword'])
@@ -73,6 +79,11 @@ Route::prefix('cloud/shared')->middleware('throttle:60,1')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::get('/user', [AuthController::class, 'user']);
 
+    // OAuth
+    Route::get('/oauth/authorization', [OAuthAuthorizationController::class, 'show'])
+        ->middleware(EnsureAccountIsActive::class);
+    Route::get('/oauth/return-url', [OAuthAuthorizationController::class, 'returnUrl']);
+
     Route::post('/user/restore', [UserAccountController::class, 'restore'])
         ->middleware('throttle:5,1');
 
@@ -96,6 +107,11 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/user', [UserAccountController::class, 'destroy'])
             ->middleware('throttle:3,1');
 
+        // Connected apps
+        Route::get('/user/connected-apps', [ConnectedAppsController::class, 'index']);
+        Route::delete('/user/connected-apps/toolbox', [ConnectedAppsController::class, 'destroy'])
+            ->middleware('throttle:5,1');
+
         // Profile
         Route::get('/user/profile', [UserProfileController::class, 'show']);
         Route::patch('/user/profile', [UserProfileController::class, 'update']);
@@ -111,7 +127,6 @@ Route::middleware('auth:sanctum')->group(function () {
 
         // Activity
         Route::get('/user/activity', [UserAuthLogController::class, 'index']);
-
         Route::post('/user/activity', [UserAuthLogController::class, 'store'])
             ->middleware('throttle:10,1');
 

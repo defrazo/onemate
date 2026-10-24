@@ -15,4 +15,12 @@ return [
     'resend' => [
         'key' => env('RESEND_API_KEY'),
     ],
+
+    'toolbox' => [
+        'url' => env('TOOLBOX_API_URL'),
+        'internal_token' => env('TOOLBOX_INTERNAL_TOKEN'),
+        'client_id' => env('TOOLBOX_OAUTH_CLIENT_ID'),
+        'timeout' => (int) env('TOOLBOX_TIMEOUT', 5),
+        'disconnect_timeout' => (int) env('TOOLBOX_DISCONNECT_TIMEOUT', 30),
+    ],
 ];

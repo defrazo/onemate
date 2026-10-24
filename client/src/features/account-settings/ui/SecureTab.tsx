@@ -1,9 +1,14 @@
-import { IconDevicesPin, IconKey, IconTrashX } from '@tabler/icons-react';
+import { IconApps, IconDevicesPin, IconKey, IconTrashX } from '@tabler/icons-react';
 
 import { Divider } from '@/shared/ui';
 
 import { SectionHeader } from './components';
-import { DeleteAccountSection, DeviceActivitySection, PasswordSection } from './components/secure';
+import {
+	ConnectedAppsSection,
+	DeleteAccountSection,
+	DeviceActivitySection,
+	PasswordSection,
+} from './components/secure';
 
 export const SecureTab = () => {
 	return (
@@ -16,6 +21,11 @@ export const SecureTab = () => {
 			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconDevicesPin} title="Устройства и активность" />
 				<DeviceActivitySection />
+			</div>
+			<Divider className="mb-1 md:hidden" />
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
+				<SectionHeader icon={IconApps} title="Связанные приложения" />
+				<ConnectedAppsSection />
 			</div>
 			<Divider className="mb-1 md:hidden" />
 			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">

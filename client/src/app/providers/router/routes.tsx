@@ -20,6 +20,7 @@ const DeletedAccountPage = lazy(() =>
 const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
 const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));
 const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
+const OAuthAuthorizePage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.OAuthAuthorizePage })));
 const PrivacyPage = lazy(() => import('@/pages/privacy').then((m) => ({ default: m.PrivacyPage })));
 const ResetPasswordPage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.ResetPasswordPage })));
 const SharedFilePage = lazy(() => import('@/pages/shared-file').then((m) => ({ default: m.SharedFilePage })));
@@ -38,6 +39,10 @@ export const routes: RouteObject[] = [
 			{
 				element: <ActiveAccountRoute />,
 				children: [
+					{
+						path: '/auth/authorize',
+						element: <OAuthAuthorizePage />,
+					},
 					{
 						element: <Layout hideLeftOnMobile leftSide={<ProfileNav />} />,
 						children: [{ path: '/account/profile', element: <AccountProfilePage /> }],

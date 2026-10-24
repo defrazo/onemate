@@ -24,3 +24,14 @@ export type PersonalDraft = {
 	birthDay: string;
 	gender: Gender;
 };
+
+export type ConnectedApp = {
+	id: string;
+	name: string;
+	description: string;
+	account_type: 'cloud' | 'local';
+};
+
+export type ConnectedAppsResponse = {
+	apps: ConnectedApp[];
+};

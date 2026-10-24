@@ -7,3 +7,5 @@
 Thumbs.db
 .env.production
 *.tar
+dist
+/docker/passport/*.key
