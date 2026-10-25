@@ -28,12 +28,13 @@ services:
     volumes:
       - backend_public:/var/www/html/public
       - onemate_storage:/var/www/html/storage/app
-      - ./docker/passport/oauth-private.key:/var/www/html/storage/oauth-private.key:ro
-      - ./docker/passport/oauth-public.key:/var/www/html/storage/oauth-public.key:ro
+      - onemate_passport:/var/www/html/storage/passport:ro
     depends_on:
       postgres:
         condition: service_healthy
       public-init:
+        condition: service_completed_successfully
+      passport-init:
         condition: service_completed_successfully
 
   public-init:
@@ -48,6 +49,23 @@ services:
         chown -R www-data:www-data /var/www/html/public
     volumes:
       - backend_public:/var/www/html/public
+
+  passport-init:
+    image: onemate-backend:latest
+    restart: "no"
+    user: root
+    entrypoint: ["/bin/sh", "-c"]
+    command:
+      - |
+        set -e
+        if [ ! -f /var/www/html/storage/passport/oauth-private.key ] || [ ! -f /var/www/html/storage/passport/oauth-public.key ]; then
+          openssl genrsa -out /var/www/html/storage/passport/oauth-private.key 4096
+          openssl rsa -in /var/www/html/storage/passport/oauth-private.key -pubout -out /var/www/html/storage/passport/oauth-public.key
+        fi
+        chown www-data:www-data /var/www/html/storage/passport/oauth-private.key /var/www/html/storage/passport/oauth-public.key
+        chmod 600 /var/www/html/storage/passport/oauth-private.key /var/www/html/storage/passport/oauth-public.key
+    volumes:
+      - onemate_passport:/var/www/html/storage/passport
 
   backend-nginx:
     image: nginx:1.27-alpine
@@ -89,6 +107,7 @@ services:
     command: php artisan queue:work --tries=3 --timeout=40
     volumes:
       - onemate_storage:/var/www/html/storage/app
+      - onemate_passport:/var/www/html/storage/passport:ro
     depends_on:
       backend:
         condition: service_started
@@ -104,6 +123,7 @@ services:
     command: php artisan schedule:work
     volumes:
       - onemate_storage:/var/www/html/storage/app
+      - onemate_passport:/var/www/html/storage/passport:ro
     depends_on:
       backend:
         condition: service_started

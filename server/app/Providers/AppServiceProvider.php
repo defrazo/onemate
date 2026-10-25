@@ -18,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         JsonResource::withoutWrapping();
 
+        Passport::loadKeysFrom(storage_path('passport'));
+
         Passport::tokensCan([
             'profile:read' => 'Просмотр основных данных аккаунта OneMate',
         ]);
