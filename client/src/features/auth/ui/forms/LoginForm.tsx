@@ -3,14 +3,14 @@ import axios from 'axios';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { getOAuthReturnUrl } from '@/pages/auth';
 import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
+import { authApi } from '../../api';
 import { emailCooldown } from '../../model';
 
 export const LoginForm = observer(() => {
-	const { checkLogin, checkPassword } = useValidation();
+	const { checkLogin } = useValidation();
 
 	const { authFormStore, authStore, notifyStore, userStore } = useStore();
 
@@ -18,14 +18,18 @@ export const LoginForm = observer(() => {
 		e.preventDefault();
 
 		if (!checkLogin(authFormStore.login)) return;
-		if (!checkPassword(authFormStore.password)) return;
+
+		if (!authFormStore.password.trim()) {
+			notifyStore.setNotice('Пароль не может быть пустым', 'info');
+			return;
+		}
 
 		try {
 			const success = await authStore.login(authFormStore.login, authFormStore.password);
 			if (!success) return;
 
 			if (new URLSearchParams(window.location.search).get('oauth') === 'login') {
-				const returnUrl = await getOAuthReturnUrl();
+				const returnUrl = await authApi.getOAuthReturnUrl();
 
 				if (returnUrl) {
 					window.location.assign(returnUrl);
