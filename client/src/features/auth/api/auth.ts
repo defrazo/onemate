@@ -5,6 +5,7 @@ import type {
 	AuthSessionResponse,
 	ForgotPasswordPayload,
 	LoginPayload,
+	OAuthAuthorization,
 	RegisterPayload,
 	ResetPasswordPayload,
 	VerifyInviteResponse,
@@ -64,5 +65,15 @@ export const authApi = {
 	async resetPassword(payload: ResetPasswordPayload): Promise<void> {
 		await csrf();
 		await api.post('/reset-password', { ...payload, email: payload.email.trim().toLowerCase() });
+	},
+
+	async getOAuthAuthorization(): Promise<OAuthAuthorization> {
+		const { data } = await api.get<OAuthAuthorization>('/oauth/authorization');
+		return data;
+	},
+
+	async getOAuthReturnUrl(): Promise<string | null> {
+		const { data } = await api.get<{ url: string | null }>('/oauth/return-url');
+		return data.url;
 	},
 };

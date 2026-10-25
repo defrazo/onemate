@@ -38,3 +38,10 @@ export interface ResetPasswordPayload {
 	password: string;
 	password_confirmation: string;
 }
+
+export interface OAuthAuthorization {
+	client: { name: string };
+	scopes: { id: string; description: string }[];
+	authToken: string;
+	csrfToken: string;
+}

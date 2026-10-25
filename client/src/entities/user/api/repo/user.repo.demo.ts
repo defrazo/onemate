@@ -2,7 +2,7 @@ import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { IUserRepo, User } from '../../model';
+import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, User } from '../../model';
 
 export class UserRepoDemo implements IUserRepo {
 	constructor(private readonly getCurrentUser: () => User | null) {}
@@ -52,6 +52,14 @@ export class UserRepoDemo implements IUserRepo {
 	}
 
 	async restoreAccount(): Promise<User> {
+		throw new RestrictedAccess();
+	}
+
+	async getApps(): Promise<ConnectedAppsResponse> {
+		throw new RestrictedAccess();
+	}
+
+	async disconnectApp(_id: string, _accountType: ConnectedApp['account_type']): Promise<void> {
 		throw new RestrictedAccess();
 	}
 }

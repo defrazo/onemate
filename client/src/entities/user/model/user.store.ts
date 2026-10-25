@@ -1,17 +1,21 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
 import { clearCache } from '@/shared/lib/cache';
 import { clearDemoStorage } from '@/shared/lib/storage';
 import { BaseStore } from '@/shared/lib/store';
 
 import { userCache } from '../lib';
-import type { IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort, Role, User } from '.';
+import type { ConnectedApp, IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort, Role, User } from '.';
 
 export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort, IUserRoutingPort {
 	private repo: IUserRepo | null = null;
 
 	user: User | null = null;
 	lastId: string | null = null;
+
+	connectedApps: ConnectedApp[] = [];
+	isConnectedAppsLoading = false;
+	isConnectedAppsLoaded = false;
 
 	get id(): string | null {
 		return this.user?.id ?? null;
@@ -115,11 +119,37 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 		this.setUser(await this.userRepo.verifyPendingEmail(id, hash, params));
 	}
 
+	async loadConnectedApps(force = false): Promise<void> {
+		if (this.isConnectedAppsLoading || (this.isConnectedAppsLoaded && !force)) return;
+
+		this.isConnectedAppsLoading = true;
+
+		try {
+			const { apps } = await this.userRepo.getApps();
+
+			runInAction(() => {
+				this.connectedApps = apps;
+				this.isConnectedAppsLoaded = true;
+			});
+		} finally {
+			runInAction(() => (this.isConnectedAppsLoading = false));
+		}
+	}
+
+	async disconnectApp(id: string, accountType: ConnectedApp['account_type']): Promise<void> {
+		await this.userRepo.disconnectApp(id, accountType);
+
+		runInAction(() => (this.connectedApps = this.connectedApps.filter((app) => app.id !== id)));
+	}
+
 	constructor() {
 		super();
 
 		makeObservable<this, 'reset'>(this, {
 			user: observable,
+			connectedApps: observable,
+			isConnectedAppsLoading: observable,
+			isConnectedAppsLoaded: observable,
 
 			id: computed,
 			username: computed,
@@ -133,6 +163,8 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 			setUser: action,
 			clearSession: action,
 			reset: action,
+			loadConnectedApps: action,
+			disconnectApp: action,
 		});
 	}
 
@@ -144,6 +176,9 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 	protected reset(): void {
 		const userId = this.id ?? this.lastId;
 		this.user = null;
+		this.connectedApps = [];
+		this.isConnectedAppsLoading = false;
+		this.isConnectedAppsLoaded = false;
 
 		if (userId) clearCache(userId);
 	}

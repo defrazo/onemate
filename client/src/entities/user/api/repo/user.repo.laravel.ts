@@ -1,6 +1,6 @@
 import { api } from '@/shared/api';
 
-import type { IUserRepo, User } from '../../model';
+import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, User } from '../../model';
 
 type UserResponse = {
 	user: User;
@@ -18,11 +18,7 @@ export class UserRepoLaravel implements IUserRepo {
 	}
 
 	async updateEmail(email: string, currentPassword: string): Promise<User> {
-		const { data } = await api.patch<UserResponse>('/user/email', {
-			email,
-			current_password: currentPassword,
-		});
-
+		const { data } = await api.patch<UserResponse>('/user/email', { email, current_password: currentPassword });
 		return data.user;
 	}
 
@@ -57,5 +53,14 @@ export class UserRepoLaravel implements IUserRepo {
 	async restoreAccount(): Promise<User> {
 		const { data } = await api.post<UserResponse>('/user/restore');
 		return data.user;
+	}
+
+	async getApps(): Promise<ConnectedAppsResponse> {
+		const { data } = await api.get<ConnectedAppsResponse>('/user/connected-apps');
+		return data;
+	}
+
+	async disconnectApp(id: string, accountType: ConnectedApp['account_type']): Promise<void> {
+		await api.delete(`/user/connected-apps/${id}`, { data: { expected_account_type: accountType } });
 	}
 }

@@ -1,4 +1,4 @@
-import type { Role, User } from '.';
+import type { ConnectedApp, ConnectedAppsResponse, Role, User } from '.';
 
 export interface IBaseUserPort {
 	readonly id: string | null;
@@ -25,4 +25,6 @@ export interface IUserRepo {
 	resendPendingEmail(): Promise<void>;
 	deleteAccount(): Promise<User>;
 	restoreAccount(): Promise<User>;
+	getApps(): Promise<ConnectedAppsResponse>;
+	disconnectApp(id: string, accountType: ConnectedApp['account_type']): Promise<void>;
 }

@@ -2,7 +2,7 @@ import type { Feature, Operation } from '@/entities/user';
 import { PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { IUserRepo, IUserRoutingPort, Role, User } from '../../model';
+import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, IUserRoutingPort, Role, User } from '../../model';
 import { UserRepoDemo, UserRepoLaravel } from '.';
 
 export class UserRepoRouting implements IUserRepo {
@@ -70,5 +70,15 @@ export class UserRepoRouting implements IUserRepo {
 	async restoreAccount(): Promise<User> {
 		this.checkPermission('user', 'save', 'Восстановление аккаунта недоступно в демо-режиме');
 		return this.getTargetRepo().restoreAccount();
+	}
+
+	async getApps(): Promise<ConnectedAppsResponse> {
+		this.checkPermission('user', 'read');
+		return this.getTargetRepo().getApps();
+	}
+
+	async disconnectApp(id: string, accountType: ConnectedApp['account_type']): Promise<void> {
+		this.checkPermission('user', 'save');
+		return this.getTargetRepo().disconnectApp(id, accountType);
 	}
 }

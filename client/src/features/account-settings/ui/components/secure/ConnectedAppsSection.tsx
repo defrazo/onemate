@@ -1,21 +1,18 @@
 import { useEffect, useState } from 'react';
 import { IconPlugConnected, IconPlugConnectedX } from '@tabler/icons-react';
 import axios from 'axios';
+import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import type { ConnectedApp } from '@/entities/user';
 import { useResponsive } from '@/shared/lib/hooks';
 import { Button, ConfirmDialog, LoadingState, NoContent } from '@/shared/ui';
 
-import { disconnectApp, getApps } from '../../../api';
-import type { ConnectedApp } from '../../../model';
-
-export const ConnectedAppsSection = () => {
+export const ConnectedAppsSection = observer(() => {
 	const { isMobile } = useResponsive();
 
-	const { modalStore, notifyStore } = useStore();
+	const { modalStore, notifyStore, userStore } = useStore();
 
-	const [apps, setApps] = useState<ConnectedApp[]>([]);
-	const [isLoading, setIsLoading] = useState(true);
 	const [disconnectingId, setDisconnectingId] = useState<string | null>(null);
 
 	const handleClose = () => (isMobile ? modalStore.goBack() : modalStore.closeModal());
@@ -42,9 +39,8 @@ export const ConnectedAppsSection = () => {
 					setDisconnectingId(app.id);
 
 					try {
-						await disconnectApp(app.id, app.account_type);
+						await userStore.disconnectApp(app.id, app.account_type);
 
-						setApps((prev) => prev.filter(({ id }) => id !== app.id));
 						handleClose();
 						notifyStore.setNotice(
 							isCloud ? `Аккаунт ${app.name} удалён` : `${app.name} отключён`,
@@ -55,8 +51,7 @@ export const ConnectedAppsSection = () => {
 							handleClose();
 
 							try {
-								const { apps } = await getApps();
-								setApps(apps);
+								await userStore.loadConnectedApps(true);
 							} catch {
 								notifyStore.setNotice('Не удалось обновить', 'error');
 								return;
@@ -84,32 +79,16 @@ export const ConnectedAppsSection = () => {
 	};
 
 	useEffect(() => {
-		let active = true;
+		void userStore.loadConnectedApps(true);
+	}, [userStore, notifyStore]);
 
-		const load = async () => {
-			try {
-				const { apps } = await getApps();
-				if (active) setApps(apps);
-			} catch {
-				if (active) notifyStore.setNotice('Ошибка загрузки', 'error');
-			} finally {
-				if (active) setIsLoading(false);
-			}
-		};
-
-		void load();
-
-		return () => {
-			active = false;
-		};
-	}, [notifyStore]);
-
-	if (isLoading) return <LoadingState className="min-h-15" />;
+	if (userStore.isConnectedAppsLoading && !userStore.isConnectedAppsLoaded)
+		return <LoadingState className="min-h-15.5" />;
 
 	return (
 		<section className="flex flex-col gap-2 select-none">
 			<p className="text-sm text-(--text-secondary) opacity-70">Управление приложениями, связанными с OneMate</p>
-			{apps.length === 0 ? (
+			{userStore.connectedApps.length === 0 ? (
 				<NoContent
 					description="Подключённые приложения появятся здесь"
 					icon={IconPlugConnectedX}
@@ -117,7 +96,7 @@ export const ConnectedAppsSection = () => {
 				/>
 			) : (
 				<div className="flex flex-col gap-2">
-					{apps.map((app) => (
+					{userStore.connectedApps.map((app) => (
 						<div key={app.id} className="flex items-center gap-2">
 							<div className="flex size-8 shrink-0 items-center justify-center rounded-md bg-(--status-success-muted)">
 								<IconPlugConnected className="size-5 text-(--status-success)" />
@@ -142,4 +121,4 @@ export const ConnectedAppsSection = () => {
 			)}
 		</section>
 	);
-};
+});

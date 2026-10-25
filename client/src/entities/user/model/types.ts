@@ -18,3 +18,14 @@ export type UserByEmail = {
 	email: string;
 	email_confirmed_at: string;
 };
+
+export type ConnectedApp = {
+	id: string;
+	name: string;
+	description: string;
+	account_type: 'cloud' | 'local';
+};
+
+export type ConnectedAppsResponse = {
+	apps: ConnectedApp[];
+};

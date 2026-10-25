@@ -22,6 +22,7 @@ use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsureNotDemo;
 use Illuminate\Support\Facades\Route;
 
 // Auth
@@ -81,7 +82,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // OAuth
     Route::get('/oauth/authorization', [OAuthAuthorizationController::class, 'show'])
-        ->middleware(EnsureAccountIsActive::class);
+        ->middleware([EnsureAccountIsActive::class, EnsureNotDemo::class]);
     Route::get('/oauth/return-url', [OAuthAuthorizationController::class, 'returnUrl']);
 
     Route::post('/user/restore', [UserAccountController::class, 'restore'])

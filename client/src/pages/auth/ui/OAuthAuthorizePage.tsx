@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { IconAlertCircle, IconCheck, IconLoader2, IconLockFilled, IconShieldCheck } from '@tabler/icons-react';
 
+import { useStore } from '@/app/providers';
+import { authApi, type OAuthAuthorization } from '@/features/auth';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
-
-import { getOAuthAuthorization, type OAuthAuthorization } from '../api';
 
 const submitAuthorization = (authorization: OAuthAuthorization, approved: boolean) => {
 	const form = document.createElement('form');
@@ -35,10 +35,14 @@ const submitAuthorization = (authorization: OAuthAuthorization, approved: boolea
 export const OAuthAuthorizePage = () => {
 	usePageTitle('Подтверждение доступа');
 
+	const { userStore } = useStore();
+
 	const [authorization, setAuthorization] = useState<OAuthAuthorization | null>(null);
 	const [isSubmitting, setIsSubmitting] = useState(false);
 	const [isLoading, setIsLoading] = useState(true);
 	const [isError, setIsError] = useState(false);
+
+	const isDemo = userStore.userRole === 'demo';
 
 	const handleSubmit = (approved: boolean) => {
 		if (!authorization || isSubmitting) return;
@@ -48,11 +52,17 @@ export const OAuthAuthorizePage = () => {
 	};
 
 	useEffect(() => {
+		if (isDemo) {
+			setIsLoading(false);
+			setIsError(true);
+			return;
+		}
+
 		let active = true;
 
 		const load = async () => {
 			try {
-				if (active) setAuthorization(await getOAuthAuthorization());
+				if (active) setAuthorization(await authApi.getOAuthAuthorization());
 			} catch {
 				if (active) setIsError(true);
 			} finally {
@@ -65,7 +75,23 @@ export const OAuthAuthorizePage = () => {
 		return () => {
 			active = false;
 		};
-	}, []);
+	}, [isDemo]);
+
+	if (isDemo) {
+		return (
+			<div className="flex min-h-screen items-center justify-center px-4 select-none">
+				<div className="core-surface core-pad flex w-full max-w-md flex-col items-center bg-(--bg-secondary) px-6 py-8 text-center shadow-(--shadow-contrast)">
+					<div className="mb-3 flex size-16 items-center justify-center rounded-full bg-(--bg-tertiary)">
+						<IconLockFilled className="size-8 text-(--status-warning)" />
+					</div>
+					<h1 className="text-lg font-semibold lg:text-xl">Недоступно в демо-режиме</h1>
+					<p className="text-xs text-(--text-secondary) md:text-sm">
+						Для подключения приложений войдите в обычный аккаунт OneMate
+					</p>
+				</div>
+			</div>
+		);
+	}
 
 	if (isLoading || isError || !authorization) {
 		return (
