@@ -28,7 +28,7 @@ export const Toolbar = ({
 	onRefresh,
 }: ToolbarProps) => {
 	return (
-		<div className="flex min-w-0 items-center justify-between">
+		<div className="flex min-w-0 items-center justify-between gap-3">
 			<div className="flex min-w-0 items-center gap-2">
 				{tab === 'files' ? (
 					<FilesToolbar
@@ -42,7 +42,7 @@ export const Toolbar = ({
 					<ClipboardToolbar />
 				)}
 			</div>
-			<SegmentedControl className="w-44" options={CLOUD_TABS} value={tab} onChange={onTabChange} />
+			<SegmentedControl className="w-36 md:w-44" options={CLOUD_TABS} value={tab} onChange={onTabChange} />
 		</div>
 	);
 };

@@ -110,6 +110,7 @@ export const RegisterForm = observer(() => {
 			<Input
 				autoComplete="off"
 				className="border-(--border-tone)"
+				enterKeyHint="done"
 				id="invite-code"
 				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="invite-code" icon={IconKeyFilled} />}
 				name="invite-code"

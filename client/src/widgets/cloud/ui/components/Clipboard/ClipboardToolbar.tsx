@@ -1,11 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
-import { IconAlertHexagon, IconCloudPlus, IconRefresh } from '@tabler/icons-react';
+import { IconAlertHexagon, IconCloudPlus, IconExternalLink, IconRefresh } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
+import { getExternalUrl } from '../../../lib';
 import { ConflictDialog } from '.';
 
 const SAVED_STATUS_DURATION = 4000;
@@ -29,6 +30,13 @@ export const ClipboardToolbar = observer(() => {
 					: showSaved
 						? 'Сохранено'
 						: null;
+
+	const externalUrl = getExternalUrl(cloudStore.text);
+
+	const handleOpenUrl = (): void => {
+		if (!externalUrl) return;
+		window.open(externalUrl, '_blank', 'noopener,noreferrer');
+	};
 
 	const handleExport = async (): Promise<void> => {
 		try {
@@ -70,6 +78,16 @@ export const ClipboardToolbar = observer(() => {
 				variant="iconSurface"
 				onClick={() => void handleExport()}
 			/>
+			{externalUrl && (
+				<Button
+					centerIcon={<IconExternalLink className="size-4" />}
+					className="p-1"
+					disabled={isResolvingTextConflict}
+					title="Открыть ссылку"
+					variant="iconSurface"
+					onClick={handleOpenUrl}
+				/>
+			)}
 			<Button
 				centerIcon={<IconRefresh className={cn('size-4', cloudStore.isLoading && 'animate-spin')} />}
 				className="p-1"

@@ -24,6 +24,7 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 			<div className="flex-1">
 				<Input
 					className="number-no-spinner border-none bg-transparent px-4 text-right focus-visible:ring-0"
+					enterKeyHint="done"
 					inputMode="decimal"
 					max={MAX_VALUE}
 					min="0"

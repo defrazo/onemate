@@ -20,7 +20,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-surface-contrast core-pad group relative flex max-h-[45svh] min-h-0 min-w-0 flex-col gap-2 bg-(--bg-secondary) shadow-(--shadow-contrast) select-none md:gap-3 2xl:h-full lg:landscape:max-h-[44.5svh] xl:landscape:max-h-[60svh] 2xl:landscape:max-h-[44svh]"
+			className="core-surface-contrast core-pad group relative flex max-h-[45svh] min-h-0 min-w-0 flex-col gap-2 bg-(--bg-secondary) shadow-(--shadow-contrast) select-none md:gap-3 2xl:h-full lg:landscape:max-h-[44.5svh] xl:landscape:max-h-[60svh] 2xl:landscape:max-h-[44svh] lg:landscape:[@media(max-height:600px)]:max-h-[75svh]"
 			style={combinedStyle}
 		>
 			<header className="flex items-center justify-between">

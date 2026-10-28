@@ -66,6 +66,7 @@ export const PasswordSection = observer(() => {
 			<PasswordInput
 				autoComplete="current-password"
 				className={!isOldPasswordValid ? (hasDraft ? 'mt-2 mb-1' : 'mt-2') : 'mt-0'}
+				enterKeyHint="done"
 				id="current-password"
 				leftIcon={null}
 				name="current-password"
@@ -95,6 +96,7 @@ export const PasswordSection = observer(() => {
 					</div>
 					<PasswordInput
 						autoComplete="new-password"
+						enterKeyHint="done"
 						id="password-confirm"
 						leftIcon={null}
 						name="password-confirm"

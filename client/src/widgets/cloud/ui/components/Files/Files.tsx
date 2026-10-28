@@ -23,6 +23,7 @@ export const Files = observer(
 	({ searchOpen, selectionMode, selectedIds, onSearchClose, onSelectionToggle, onSelectionCancel }: FilesProps) => {
 		const { cloudStore, modalStore, notifyStore } = useStore();
 
+		const [isDownloading, setIsDownloading] = useState(false);
 		const [isDragging, setIsDragging] = useState(false);
 
 		const inputRef = useRef<HTMLInputElement>(null);
@@ -91,8 +92,23 @@ export const Files = observer(
 			void uploadFiles(normalizePastedFiles(files));
 		}, canUpload);
 
+		const handleDownloadSelected = async (): Promise<void> => {
+			if (!selectedIds.size || isDownloading) return;
+
+			setIsDownloading(true);
+
+			try {
+				await cloudStore.downloadMany([...selectedIds]);
+				onSelectionCancel();
+			} catch (error) {
+				notifyStore.setNotice(error instanceof Error ? error.message : 'Не удалось скачать файлы', 'error');
+			} finally {
+				setIsDownloading(false);
+			}
+		};
+
 		const handleDeleteSelected = () => {
-			if (!selectedIds.size) return;
+			if (!selectedIds.size || isDownloading) return;
 
 			const ids = [...selectedIds];
 			const count = ids.length;
@@ -160,6 +176,7 @@ export const Files = observer(
 						<Input
 							ref={searchRef}
 							className="h-8 min-w-0 flex-1 text-sm"
+							enterKeyHint="search"
 							id="search"
 							placeholder="Поиск файлов..."
 							value={cloudStore.searchQuery}
@@ -226,11 +243,13 @@ export const Files = observer(
 					)}
 				</div>
 				<FilesFooter
+					isDownloading={isDownloading}
 					selectedCount={selectedIds.size}
 					selectedSize={selectedSize}
 					selectionMode={selectionMode}
 					onCancel={onSelectionCancel}
 					onDelete={handleDeleteSelected}
+					onDownload={() => void handleDownloadSelected()}
 					onUpload={() => inputRef.current?.click()}
 				/>
 			</div>

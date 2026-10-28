@@ -48,13 +48,13 @@ export const MobileUserMenu = observer(() => {
 						<span className="trim w-full text-left">{label}</span>
 					</Button>
 				))}
+				<Divider className="mx-2 bg-(--border-primary)" margY="xs" />
 				{mobileUserMenuLinks.map(({ to, icon: Icon, label }) => (
 					<Button
 						key={to}
 						className="h-10 justify-start text-(--text-secondary) active:bg-(--tone-strong) active:text-(--text-primary)"
 						leftIcon={<Icon className="size-4.5" />}
 						padding="sm"
-						rightIcon={<IconChevronRight className="size-3.5 text-(--text-secondary)" />}
 						variant="custom"
 						onClick={() => handleNavigate(to)}
 					>

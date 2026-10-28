@@ -79,6 +79,7 @@ export const PhonesSection = observer(() => {
 					return (
 						<PhoneInput
 							key={idx}
+							enterKeyHint="done"
 							id={`phone-${idx}`}
 							name={`phone-${idx}`}
 							rightIcon={canRemove && <RemoveButton onClick={() => handleRemove(idx)} />}

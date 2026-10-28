@@ -47,7 +47,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 					</div>
 				</div>
 				{onBack && <BackButton className="absolute top-2 right-2" onClick={onBack} />}
-				<div className="px-3 py-2" {...bind()} style={{ touchAction: 'pan-y' }}>
+				<div className="px-3 pt-2 pb-4" {...bind()} style={{ touchAction: 'pan-y' }}>
 					{children}
 				</div>
 			</div>

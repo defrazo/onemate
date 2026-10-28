@@ -51,6 +51,7 @@ export const ResendEmailForm = observer(() => {
 		<form className="flex w-full max-w-md flex-col gap-3" onSubmit={handleSubmit}>
 			<Input
 				className="border-(--border-tone)"
+				enterKeyHint="done"
 				id="email"
 				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}
 				name="email"

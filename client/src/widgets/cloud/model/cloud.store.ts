@@ -236,6 +236,17 @@ export class CloudStore extends AsyncStore {
 		await this.repo.download(file.id, file.name);
 	}
 
+	async downloadMany(ids: string[]): Promise<void> {
+		await this.withFileSync(async () => {
+			for (const id of ids) {
+				const file = this.files.find((item) => item.id === id);
+				if (!file) continue;
+
+				await this.download(file);
+			}
+		});
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		return this.repo.getPreview(id);
 	}

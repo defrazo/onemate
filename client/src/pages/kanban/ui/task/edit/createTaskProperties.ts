@@ -33,6 +33,8 @@ export const createTaskProperties = ({
 
 	// === PERIOD ===
 	const periodRow = createPropertyRow(calendarIcon, 'Период');
+	periodRow.element.children[1].classList.remove('flex-1');
+	periodRow.content.className = 'ml-auto flex shrink-0 items-center justify-end';
 
 	const periodControl = document.createElement('div');
 	periodControl.className = 'flex min-w-0 flex-col gap-1.5';
