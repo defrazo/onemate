@@ -72,6 +72,7 @@ export const LoginForm = observer(() => {
 				onChange={(e) => authFormStore.setLogin(e.target.value)}
 			/>
 			<PasswordInput
+				enterKeyHint="go"
 				id="password"
 				name="password"
 				placeholder="Пароль"

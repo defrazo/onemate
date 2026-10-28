@@ -52,6 +52,7 @@ export const ResetForm = observer(({ email, token }: { email: string; token: str
 			</div>
 			<PasswordInput
 				autoComplete="new-password"
+				enterKeyHint="done"
 				id="password-confirm"
 				name="password-confirm"
 				placeholder="Подтвердите пароль"

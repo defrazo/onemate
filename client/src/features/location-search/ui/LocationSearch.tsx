@@ -68,6 +68,7 @@ export const LocationSearch = observer(
 					autoComplete="off"
 					className={cn('not-lg:text-base', className)}
 					disabled={!userProfileStore.isReady}
+					enterKeyHint="search"
 					id="location"
 					name="fake-location"
 					placeholder={isLoading ? 'Загрузка города...' : 'Введите город'}

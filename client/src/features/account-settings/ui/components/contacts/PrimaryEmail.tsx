@@ -63,6 +63,7 @@ export const PrimaryEmail = observer(() => {
 			<div className="flex flex-col gap-2">
 				<Input
 					disabled={userStore.isEmailPending}
+					enterKeyHint="done"
 					error={!mainEmail}
 					id="email-main"
 					name="email-main"
@@ -93,6 +94,7 @@ export const PrimaryEmail = observer(() => {
 					<div className="flex flex-col gap-2">
 						<PasswordInput
 							autoComplete="off"
+							enterKeyHint="done"
 							id="email-current-password"
 							leftIcon={null}
 							name="email-current-password"

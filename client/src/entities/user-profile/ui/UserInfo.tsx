@@ -12,9 +12,9 @@ export const UserInfo = observer(({ className }: { className?: string }) => {
 
 	return (
 		<div className={cn('flex items-center gap-3 select-none', className)}>
-			<div className="flex items-center gap-3">
+			<div className="flex min-w-0 items-center gap-3">
 				<UserAvatar className="size-11 shrink-0" />
-				<div className="flex flex-col">
+				<div className="flex min-w-0 flex-col">
 					<div
 						className="cursor-copy truncate font-semibold"
 						onClick={() => copy(userStore.username, 'Имя пользователя скопировано')}
@@ -22,7 +22,7 @@ export const UserInfo = observer(({ className }: { className?: string }) => {
 						{userStore.username}
 					</div>
 					<div
-						className="cursor-copy truncate text-sm text-(--text-secondary) opacity-60"
+						className="min-w-0 cursor-copy truncate text-sm text-(--text-secondary) opacity-60"
 						title={userStore.email}
 						onClick={() => copy(userStore.email, 'E-mail пользователя скопирован')}
 					>

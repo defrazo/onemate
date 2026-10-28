@@ -110,6 +110,7 @@ export const PersonalDataSection = observer(() => {
 				</label>
 				<Input
 					autoComplete="username"
+					enterKeyHint="done"
 					id="username"
 					placeholder="Ваш никнейм"
 					rightIcon={
@@ -127,6 +128,7 @@ export const PersonalDataSection = observer(() => {
 				</label>
 				<Input
 					autoComplete="given-name"
+					enterKeyHint="done"
 					id="firstName"
 					placeholder="Ваше имя"
 					rightIcon={
@@ -145,6 +147,7 @@ export const PersonalDataSection = observer(() => {
 				</label>
 				<Input
 					autoComplete="family-name"
+					enterKeyHint="done"
 					id="lastName"
 					placeholder="Ваша фамилия"
 					rightIcon={

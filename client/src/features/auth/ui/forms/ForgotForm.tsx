@@ -33,6 +33,7 @@ export const ForgotForm = observer(() => {
 			<Input
 				autoComplete="email"
 				className="border-(--border-tone)"
+				enterKeyHint="done"
 				id="email"
 				leftIcon={<InputLabel className="border-(--border-tone)" htmlFor="email" icon={IconMailFilled} />}
 				placeholder="Введите e-mail"
