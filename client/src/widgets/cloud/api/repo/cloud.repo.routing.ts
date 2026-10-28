@@ -34,14 +34,19 @@ export class CloudRepoRouting implements ICloudRepo {
 		return this.getTargetRepo().getPreview(id);
 	}
 
-	async upload(file: File, onProgress: (progress: UploadProgress) => void): Promise<void> {
+	async upload(file: File, onProgress: (progress: UploadProgress) => void, signal?: AbortSignal): Promise<void> {
 		this.checkPermission('cloud', 'upload');
-		return this.getTargetRepo().upload(file, onProgress);
+		return this.getTargetRepo().upload(file, onProgress, signal);
 	}
 
-	async download(id: string, filename: string): Promise<void> {
+	async download(id: string): Promise<void> {
 		this.checkPermission('cloud', 'read');
-		return this.getTargetRepo().download(id, filename);
+		return this.getTargetRepo().download(id);
+	}
+
+	async downloadMany(ids: string[]): Promise<void> {
+		this.checkPermission('cloud', 'read');
+		return this.getTargetRepo().downloadMany(ids);
 	}
 
 	async update(id: string, patch: CloudFilePatch): Promise<void> {

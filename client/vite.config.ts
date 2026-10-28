@@ -13,6 +13,7 @@ export default defineConfig({
 		strictPort: true,
 		proxy: {
 			'/api': { target: 'http://localhost:8000', changeOrigin: true },
+			'/cloud': { target: 'http://localhost:8000', changeOrigin: true },
 			'/sanctum': { target: 'http://localhost:8000', changeOrigin: true },
 			'/oauth': { target: 'http://localhost:8000', changeOrigin: true },
 		},

@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Validation\ValidationException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
+use ZipStream\CompressionMethod;
+use ZipStream\ZipStream;
 
 class CloudFileController extends Controller
 {
@@ -79,8 +81,109 @@ class CloudFileController extends Controller
         abort_unless($disk->exists($file->path), 404);
 
         return $disk->download($file->path, $file->name, [
-            'Content-Type' => 'application/octet-stream',
+            'Content-Type' => $file->mime_type ?: 'application/octet-stream',
             'X-Content-Type-Options' => 'nosniff',
+        ]);
+    }
+
+    public function downloadArchive(Request $request): StreamedResponse
+    {
+        $data = $request->validate([
+            'ids' => ['required', 'array', 'min:2', 'max:100'],
+            'ids.*' => ['required', 'uuid', 'distinct'],
+        ]);
+
+        $ids = $data['ids'];
+
+        $files = $request->user()
+            ->cloudFiles()
+            ->whereIn('id', $ids)
+            ->get()
+            ->keyBy('id');
+
+        if ($files->count() !== count($ids)) {
+            throw ValidationException::withMessages([
+                'ids' => 'Некоторые файлы не найдены или недоступны',
+            ]);
+        }
+
+        $disk = Storage::disk(config('cloud.disk'));
+
+        foreach ($files as $file) {
+            abort_unless($disk->exists($file->path), 404);
+        }
+
+        $reserved = [];
+
+        foreach ($files as $file) {
+            $name = $this->normalizeArchiveFilename($file->name);
+            $reserved[$name] = true;
+        }
+
+        $used = [];
+        $entries = [];
+
+        foreach ($ids as $id) {
+            $file = $files->get($id);
+            $name = $this->normalizeArchiveFilename($file->name);
+
+            if (isset($used[$name])) {
+                $extension = pathinfo($name, PATHINFO_EXTENSION);
+                $basename = pathinfo($name, PATHINFO_FILENAME);
+                $number = 2;
+
+                do {
+                    $candidate = $basename . " ({$number})";
+
+                    if ($extension !== '') {
+                        $candidate .= '.' . $extension;
+                    }
+
+                    $number++;
+                } while (isset($reserved[$candidate]) || isset($used[$candidate]));
+
+                $name = $candidate;
+            }
+
+            $used[$name] = true;
+
+            $entries[] = [
+                'name' => $name,
+                'path' => $file->path,
+            ];
+        }
+
+        $filename = 'Cloud_' . now()->format('Y-m-d H-i-s') . '.zip';
+
+        return response()->streamDownload(function () use ($disk, $entries) {
+            $zip = new ZipStream(
+                sendHttpHeaders: false,
+                defaultCompressionMethod: CompressionMethod::STORE,
+                defaultEnableZeroHeader: true,
+            );
+
+            foreach ($entries as $entry) {
+                $stream = $disk->readStream($entry['path']);
+
+                if ($stream === false) {
+                    throw new \RuntimeException('Не удалось прочитать файл');
+                }
+
+                try {
+                    $zip->addFileFromStream(
+                        fileName: $entry['name'],
+                        stream: $stream,
+                    );
+                } finally {
+                    fclose($stream);
+                }
+            }
+
+            $zip->finish();
+        }, $filename, [
+            'Content-Type' => 'application/zip',
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'private, no-store',
         ]);
     }
 
@@ -216,5 +319,16 @@ class CloudFileController extends Controller
         return response()->json([
             'message' => 'Файлы удалены',
         ]);
+    }
+
+    private function normalizeArchiveFilename(string $name): string
+    {
+        $name = trim(str_replace(['/', '\\'], '_', $name));
+
+        if ($name === '' || $name === '.' || $name === '..') {
+            return 'file';
+        }
+
+        return $name;
     }
 }

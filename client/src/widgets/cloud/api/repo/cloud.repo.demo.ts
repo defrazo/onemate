@@ -38,16 +38,28 @@ export class CloudRepoDemo implements ICloudRepo {
 		throw new RestrictedAccess();
 	}
 
-	async download(id: string, filename: string): Promise<void> {
+	async download(id: string): Promise<void> {
+		const file = CLOUD_DEMO_FILES.find((item) => item.id === id);
+		if (!file) throw new Error('Файл не найден');
+
 		const blob = await this.getPreview(id);
 		const url = URL.createObjectURL(blob);
 
 		const anchor = document.createElement('a');
 		anchor.href = url;
-		anchor.download = filename;
+		anchor.download = file.name;
+
+		document.body.appendChild(anchor);
 		anchor.click();
+		anchor.remove();
 
 		setTimeout(() => URL.revokeObjectURL(url), 1000);
+	}
+
+	async downloadMany(ids: string[]): Promise<void> {
+		for (const id of ids) {
+			await this.download(id);
+		}
 	}
 
 	async update(): Promise<void> {

@@ -93,13 +93,13 @@ export const FilesFooter = observer(
 					</div>
 				</div>
 				<Button
-					className="h-7 shrink-0 text-xs"
-					disabled={!cloudStore.isReady || cloudStore.isUploading || cloudStore.isUpdatingFiles}
-					leftIcon={<IconUpload className="size-4" />}
-					variant="accent"
-					onClick={onUpload}
+					className="h-7 w-26.5 shrink-0 text-xs"
+					disabled={!cloudStore.isUploading && (!cloudStore.isReady || cloudStore.isUpdatingFiles)}
+					leftIcon={!cloudStore.isUploading && <IconUpload className="size-4" />}
+					variant={cloudStore.isUploading ? 'toneStrong' : 'accent'}
+					onClick={cloudStore.isUploading ? () => cloudStore.cancelUpload() : onUpload}
 				>
-					Загрузить
+					{cloudStore.isUploading ? 'Отменить' : 'Загрузить'}
 				</Button>
 			</div>
 		);

@@ -8,12 +8,13 @@ export class CloudRepoLaravel implements ICloudRepo {
 		return data;
 	}
 
-	async upload(file: File, onProgress: (progress: UploadProgress) => void): Promise<void> {
+	async upload(file: File, onProgress: (progress: UploadProgress) => void, signal?: AbortSignal): Promise<void> {
 		const formData = new FormData();
 		formData.append('file', file);
 
 		await api.post('/cloud/files', formData, {
 			timeout: 0,
+			signal,
 			onUploadProgress: (event) => {
 				onProgress({
 					percent: event.total ? Math.round((event.loaded / event.total) * 100) : 0,
@@ -30,16 +31,47 @@ export class CloudRepoLaravel implements ICloudRepo {
 		return data;
 	}
 
-	async download(id: string, filename: string): Promise<void> {
-		const blob = await this.getPreview(id);
-		const url = URL.createObjectURL(blob);
-
+	async download(id: string): Promise<void> {
 		const anchor = document.createElement('a');
-		anchor.href = url;
-		anchor.download = filename;
-		anchor.click();
+		anchor.href = `/cloud/files/${encodeURIComponent(id)}/download`;
 
-		setTimeout(() => URL.revokeObjectURL(url), 1000);
+		document.body.appendChild(anchor);
+		anchor.click();
+		anchor.remove();
+	}
+
+	async downloadMany(ids: string[]): Promise<void> {
+		const response = await fetch('/cloud/csrf-token', {
+			credentials: 'same-origin',
+			headers: { Accept: 'application/json' },
+		});
+
+		if (!response.ok) throw new Error('Не удалось подготовить скачивание');
+
+		const { token } = (await response.json()) as { token: string };
+
+		const form = document.createElement('form');
+		form.method = 'POST';
+		form.action = '/cloud/files/archive';
+		form.style.display = 'none';
+
+		const addField = (name: string, value: string) => {
+			const input = document.createElement('input');
+
+			input.type = 'hidden';
+			input.name = name;
+			input.value = value;
+
+			form.appendChild(input);
+		};
+
+		addField('_token', token);
+
+		for (const id of ids) addField('ids[]', id);
+
+		document.body.appendChild(form);
+		form.submit();
+		form.remove();
 	}
 
 	async update(id: string, patch: CloudFilePatch): Promise<void> {
