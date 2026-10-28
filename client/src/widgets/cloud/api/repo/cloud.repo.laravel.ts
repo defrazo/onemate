@@ -8,12 +8,13 @@ export class CloudRepoLaravel implements ICloudRepo {
 		return data;
 	}
 
-	async upload(file: File, onProgress: (progress: UploadProgress) => void): Promise<void> {
+	async upload(file: File, onProgress: (progress: UploadProgress) => void, signal?: AbortSignal): Promise<void> {
 		const formData = new FormData();
 		formData.append('file', file);
 
 		await api.post('/cloud/files', formData, {
 			timeout: 0,
+			signal,
 			onUploadProgress: (event) => {
 				onProgress({
 					percent: event.total ? Math.round((event.loaded / event.total) * 100) : 0,

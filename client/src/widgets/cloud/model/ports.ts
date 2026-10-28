@@ -3,7 +3,7 @@ import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from '.
 export interface ICloudRepo {
 	load(): Promise<CloudData>;
 	getPreview(id: string): Promise<Blob>;
-	upload(file: File, onProgress: (percent: UploadProgress) => void): Promise<void>;
+	upload(file: File, onProgress: (progress: UploadProgress) => void, signal?: AbortSignal): Promise<void>;
 	download(id: string): Promise<void>;
 	downloadMany(ids: string[]): Promise<void>;
 	update(id: string, patch: CloudFilePatch): Promise<void>;

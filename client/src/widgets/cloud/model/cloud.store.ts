@@ -10,6 +10,7 @@ import { CLOUD_STORAGE_BYTES } from '.';
 const TEXT_SAVE_DELAY = 3000;
 
 export class CloudStore extends AsyncStore {
+	private uploadController: AbortController | null = null;
 	private readonly textDebouncer = new Debouncer();
 
 	private savedText = '';
@@ -171,6 +172,9 @@ export class CloudStore extends AsyncStore {
 
 		const userId = this.userStore.id;
 		const session = this.session;
+		const controller = new AbortController();
+
+		this.uploadController = controller;
 
 		this.setUploading(true);
 		this.setUploadProgress(0);
@@ -184,6 +188,7 @@ export class CloudStore extends AsyncStore {
 
 		try {
 			for (const [index, file] of files.entries()) {
+				if (controller.signal.aborted) break;
 				if (!userId || !this.isCurrentSession(userId, session)) return;
 
 				runInAction(() => {
@@ -195,16 +200,23 @@ export class CloudStore extends AsyncStore {
 					this.uploadRemaining = null;
 				});
 
-				await this.repo.upload(file, ({ loaded, speed, remaining }) => {
-					if (!this.isCurrentSession(userId, session)) return;
+				await this.repo.upload(
+					file,
+					({ loaded, speed, remaining }) => {
+						if (controller.signal.aborted) return;
+						if (!this.isCurrentSession(userId, session)) return;
 
-					runInAction(() => {
-						this.uploadLoadedBytes = loaded;
-						this.uploadSpeed = speed;
-						this.uploadRemaining = remaining;
-						this.uploadProgress = Math.round(((uploadedBytes + loaded) / total) * 100);
-					});
-				});
+						runInAction(() => {
+							this.uploadLoadedBytes = loaded;
+							this.uploadSpeed = speed;
+							this.uploadRemaining = remaining;
+							this.uploadProgress = Math.round(((uploadedBytes + loaded) / total) * 100);
+						});
+					},
+					controller.signal
+				);
+
+				if (controller.signal.aborted) break;
 
 				uploadedBytes += file.size;
 
@@ -213,7 +225,11 @@ export class CloudStore extends AsyncStore {
 					this.uploadProgress = Math.round((uploadedBytes / total) * 100);
 				});
 			}
+		} catch (error) {
+			if (!axios.isCancel(error)) throw error;
 		} finally {
+			if (this.uploadController === controller) this.uploadController = null;
+
 			if (this.session === session) {
 				runInAction(() => {
 					this.isUploading = false;
@@ -230,6 +246,10 @@ export class CloudStore extends AsyncStore {
 				if (userId && this.userStore.id === userId) await this.load(userId);
 			}
 		}
+	}
+
+	cancelUpload(): void {
+		this.uploadController?.abort();
 	}
 
 	async download(file: CloudFile): Promise<void> {
@@ -618,6 +638,9 @@ export class CloudStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.uploadController?.abort();
+		this.uploadController = null;
+
 		this.textDebouncer.cancel();
 
 		this.refreshRequestId++;
