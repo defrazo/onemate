@@ -8,41 +8,64 @@ import { Button, Divider } from '@/shared/ui';
 import { formatFileSize } from '../../../lib';
 
 interface FilesFooterProps {
+	isDownloading: boolean;
 	selectionMode: boolean;
 	selectedCount: number;
 	selectedSize: number;
 	onUpload: () => void;
+	onDownload: () => void;
 	onDelete: () => void;
 	onCancel: () => void;
 }
 
 export const FilesFooter = observer(
-	({ selectionMode, selectedCount, selectedSize, onUpload, onDelete, onCancel }: FilesFooterProps) => {
+	({
+		isDownloading,
+		selectionMode,
+		selectedCount,
+		selectedSize,
+		onUpload,
+		onDownload,
+		onDelete,
+		onCancel,
+	}: FilesFooterProps) => {
 		const { cloudStore } = useStore();
 
 		if (selectionMode) {
 			return (
 				<div className="flex items-center justify-between gap-3">
-					<div className="flex min-w-0 items-center gap-2">
-						<div className="flex min-w-0 flex-col gap-0.5">
-							<span className="truncate text-xs font-medium text-(--accent-primary)">
-								Выбрано {selectedCount} {pluralize(selectedCount, 'файл', 'файла', 'файлов')}
-							</span>
-							<span className="trim pb-0.5 text-[11px] text-(--text-disabled)">
-								Общий размер: {formatFileSize(selectedSize)}
-							</span>
-						</div>
+					<div className="flex min-w-0 flex-col gap-0.5">
+						<span className="truncate text-[10px] font-medium text-(--accent-primary) md:text-xs">
+							{pluralize(selectedCount, 'Выбран', 'Выбрано', 'Выбрано')} {selectedCount}{' '}
+							{pluralize(selectedCount, 'файл', 'файла', 'файлов')}
+						</span>
+						<span className="trim hidden pb-0.5 text-[11px] text-(--text-disabled) md:block">
+							Общий размер: {formatFileSize(selectedSize)}
+						</span>
 					</div>
 					<div className="flex items-center gap-2">
 						<Button
 							className="h-7 text-xs"
-							disabled={selectedCount === 0}
+							disabled={selectedCount === 0 || isDownloading}
+							variant="accent"
+							onClick={onDownload}
+						>
+							{isDownloading ? 'Скачивание' : 'Скачать'}
+						</Button>
+						<Button
+							className="h-7 text-xs"
+							disabled={selectedCount === 0 || isDownloading}
 							variant="danger"
 							onClick={onDelete}
 						>
 							Удалить
 						</Button>
-						<Button className="h-7 text-xs" onClick={onCancel}>
+						<Button
+							className="h-7 border border-(--border-contrast)/15 text-xs"
+							disabled={isDownloading}
+							variant="toneStrong"
+							onClick={onCancel}
+						>
 							Отмена
 						</Button>
 					</div>
