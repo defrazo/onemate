@@ -4,7 +4,9 @@ export const formatFileSize = (bytes: number) => {
 	const units = ['КБ', 'МБ', 'ГБ', 'ТБ'];
 	const index = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)) - 1, units.length - 1);
 
-	return `${(bytes / 1024 ** (index + 1)).toFixed(1)} ${units[index]}`;
+	const size = bytes / 1024 ** (index + 1);
+
+	return `${Number(size.toFixed(1)).toLocaleString('ru-RU')} ${units[index]}`;
 };
 
 export const normalizePastedFiles = (files: File[]): File[] =>
