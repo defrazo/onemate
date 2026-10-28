@@ -4,7 +4,8 @@ export interface ICloudRepo {
 	load(): Promise<CloudData>;
 	getPreview(id: string): Promise<Blob>;
 	upload(file: File, onProgress: (percent: UploadProgress) => void): Promise<void>;
-	download(id: string, filename: string): Promise<void>;
+	download(id: string): Promise<void>;
+	downloadMany(ids: string[]): Promise<void>;
 	update(id: string, patch: CloudFilePatch): Promise<void>;
 	delete(id: string): Promise<void>;
 	deleteMany(ids: string[]): Promise<void>;
