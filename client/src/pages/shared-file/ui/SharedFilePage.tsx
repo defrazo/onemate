@@ -332,18 +332,9 @@ export const SharedFilePage = () => {
 									/>
 								)}
 								{previewType === 'text' && previewStatus === 'success' && (
-									<div className="relative">
-										<Button
-											centerIcon={<IconCopy className="size-4" />}
-											className="absolute top-2 right-2 z-10 size-8"
-											title="Копировать текст"
-											variant="iconSurface"
-											onClick={() => void handleCopyText()}
-										/>
-										<pre className="max-h-96 overflow-auto p-4 pr-12 text-xs whitespace-pre-wrap select-text">
-											{textPreview}
-										</pre>
-									</div>
+									<pre className="max-h-96 min-h-48 overflow-auto p-4 pr-12 text-xs whitespace-pre-wrap select-text">
+										{textPreview}
+									</pre>
 								)}
 							</div>
 						)}
