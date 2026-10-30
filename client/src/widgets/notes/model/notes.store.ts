@@ -13,6 +13,7 @@ export class NotesStore extends AsyncStore {
 	private lastSnapshot = '';
 	private isSaving = false;
 	private generation = 0;
+	private draftVersion = 0;
 
 	notes: Note[] = [];
 	draft: Note[] = [];
@@ -98,9 +99,12 @@ export class NotesStore extends AsyncStore {
 		if (this.isLoading) return;
 
 		await this.withLoading(async () => {
+			const generation = this.generation;
+			const draftVersion = this.draftVersion;
 			const notes = await this.repo.loadAll(userId);
 
-			if (this.userStore.id !== userId) return;
+			if (this.userStore.id !== userId || this.generation !== generation || this.draftVersion !== draftVersion)
+				return;
 
 			const sorted = this.sortNotes(notes);
 			this.applyNotes(sorted);
@@ -169,6 +173,8 @@ export class NotesStore extends AsyncStore {
 	}
 
 	private persistDraft(): void {
+		this.draftVersion++;
+
 		const userId = this.userStore.id;
 		if (!userId) return;
 
