@@ -9,7 +9,8 @@ import { Button, CollectionTabs, ConfirmDialog, InlineEdit, LoadingError, Spinne
 
 import { TodoRepo } from '../api';
 import { TODO_LIMITS, type TodoList, TodoStore } from '../model';
-import { ListCard, ListDialog } from '.';
+import { ListDialog } from '.';
+import { TodoBoard } from './TodoBoard';
 
 export const TodoPage = observer(() => {
 	usePageTitle('To Do');
@@ -227,31 +228,19 @@ export const TodoPage = observer(() => {
 						</div>
 					)}
 					<div className="@container min-h-0 min-w-0 flex-1 overflow-auto pb-3">
-						<div
+						<TodoBoard
 							key={`${userStore.id}:${canvas.id}`}
-							className="core-gap grid min-w-140 grid-cols-2 items-start xl:grid-cols-4 @min-[35rem]:min-w-0 max-xl:@min-[52rem]:grid-cols-3"
-						>
-							{Array.from({ length: TODO_LIMITS.LISTS }, (_, slot) => {
-								const list = canvas.lists.find((entry) => entry.slot === slot);
-								return list ? (
-									<ListCard
-										key={list.id}
-										list={list}
-										store={store}
-										onDelete={() =>
-											confirmDelete(
-												'Удаление списка',
-												`Удалить список «${list.title}» со всеми пунктами?`,
-												() => store.deleteList(list.id)
-											)
-										}
-										onEdit={() => editList(list)}
-									/>
-								) : (
-									<div key={`empty-${slot}`} aria-hidden="true" className="invisible min-h-12" />
-								);
-							})}
-						</div>
+							canvas={canvas}
+							store={store}
+							onDelete={(list) =>
+								confirmDelete(
+									'Удаление списка',
+									`Удалить список «${list.title}» со всеми пунктами?`,
+									() => store.deleteList(list.id)
+								)
+							}
+							onEdit={editList}
+						/>
 					</div>
 				</>
 			)}

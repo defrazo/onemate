@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
+import { useDndContext, useDraggable, useDroppable } from '@dnd-kit/core';
+import { useCombinedRefs } from '@dnd-kit/utilities';
 import { IconChevronDown, IconChevronUp, IconDots, IconEdit, IconPlus, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
@@ -7,15 +9,17 @@ import { Button, Input } from '@/shared/ui';
 
 import { TODO_LIMITS, type TodoList, type TodoStore } from '../model';
 import { ItemRow, LIST_COLORS } from '.';
+import type { ItemDrop } from './TodoBoard';
 
 interface ListCardProps {
 	list: TodoList;
 	store: TodoStore;
+	itemDrop: ItemDrop | null;
 	onEdit: () => void;
 	onDelete: () => void;
 }
 
-export const ListCard = observer(({ list, store, onEdit, onDelete }: ListCardProps) => {
+export const ListCard = observer(({ list, store, itemDrop, onEdit, onDelete }: ListCardProps) => {
 	const [text, setText] = useState('');
 	const [menu, setMenu] = useState(false);
 
@@ -26,6 +30,21 @@ export const ListCard = observer(({ list, store, onEdit, onDelete }: ListCardPro
 	const completed = list.items.filter((item) => item.is_completed).length;
 	const done = list.items.length > 0 && completed === list.items.length;
 	const color = Object.hasOwn(LIST_COLORS, list.color) ? list.color : 'slate';
+	const { active } = useDndContext();
+	const { setNodeRef, setActivatorNodeRef, attributes, listeners, isDragging } = useDraggable({
+		id: `list:${list.id}`,
+		data: { kind: 'list', id: list.id },
+		disabled: store.isLoading,
+	});
+	const { setNodeRef: setDropRef, isOver } = useDroppable({
+		id: `items:${list.id}`,
+		data: { kind: 'items', listId: list.id },
+		disabled: store.isLoading,
+	});
+	const setCardRef = useCombinedRefs(setNodeRef, setDropRef);
+	const targetItems = [...list.items]
+		.filter(({ id }) => id !== active?.data.current?.id)
+		.sort((a, b) => a.position - b.position);
 
 	useEffect(() => {
 		if (!menu) return;
@@ -62,14 +81,23 @@ export const ListCard = observer(({ list, store, onEdit, onDelete }: ListCardPro
 
 	return (
 		<article
+			ref={setCardRef}
 			aria-label={list.title}
 			className={cn(
 				'relative min-w-0 self-start rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors focus-within:z-10 hover:border-(--border-primary)',
-				done && 'bg-(--tone) opacity-60'
+				done && 'bg-(--tone) opacity-60',
+				isDragging && 'opacity-30',
+				active?.data.current?.kind === 'item' && isOver && 'outline-2 outline-(--accent-primary)'
 			)}
 		>
 			<header className="flex min-w-0 items-center gap-2 px-3 py-2">
-				<div className="flex min-w-0 flex-1 items-center gap-2">
+				<div
+					ref={setActivatorNodeRef}
+					className="flex min-w-0 flex-1 cursor-grab touch-none items-center gap-2 active:cursor-grabbing"
+					{...attributes}
+					{...listeners}
+					aria-label={`Переместить список «${list.title}»`}
+				>
 					<span
 						className={cn('h-1 w-3 shrink-0 rounded-full', done && 'opacity-40')}
 						style={{ backgroundColor: `var(--palette-${color})` }}
@@ -151,11 +179,28 @@ export const ListCard = observer(({ list, store, onEdit, onDelete }: ListCardPro
 							{[...list.items]
 								.sort((a, b) => a.position - b.position)
 								.map((item) => (
-									<ItemRow key={item.id} item={item} store={store} />
+									<ItemRow
+										key={item.id}
+										dropBefore={!!itemDrop && targetItems[itemDrop.position]?.id === item.id}
+										item={item}
+										store={store}
+									/>
 								))}
+							{itemDrop?.position === targetItems.length && (
+								<li aria-hidden="true" className="relative h-0">
+									<span className="absolute inset-x-0 -top-1 border-t-2 border-(--accent-primary)" />
+								</li>
+							)}
 						</ul>
 					) : (
-						<p className="py-2 text-sm text-(--text-disabled)">Пока нет пунктов</p>
+						<p
+							className={cn(
+								'py-2 text-sm text-(--text-disabled)',
+								itemDrop && 'border-t-2 border-(--accent-primary)'
+							)}
+						>
+							Пока нет пунктов
+						</p>
 					)}
 					{list.items.length < TODO_LIMITS.ITEMS ? (
 						<form
