@@ -13,7 +13,6 @@ use Illuminate\Support\Facades\DB;
 
 class TodoController extends Controller
 {
-    // Serialize writes per owner, including initialization and capacity checks.
     private function transact(TodoRequest $request, callable $operation, int $status = 200): JsonResponse
     {
         $canvases = DB::transaction(function () use ($request, $operation) {

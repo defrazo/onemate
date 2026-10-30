@@ -13,29 +13,29 @@ class TodoRequest extends FormRequest
 
     public function rules(): array
     {
-        return match ($this->route()->getName()) {
-            'todo.canvas.store' => ['title' => ['required', 'string', 'max:40']],
-            'todo.canvas.update' => ['title' => ['required', 'string', 'max:40']],
-            'todo.list.store' => [
+        return match ($this->route()->getActionMethod()) {
+            'storeCanvas' => ['title' => ['required', 'string', 'max:40']],
+            'updateCanvas' => ['title' => ['required', 'string', 'max:40']],
+            'storeList' => [
                 'title' => ['required', 'string', 'max:60'],
                 'color' => ['sometimes', 'required', 'string', 'max:50'],
             ],
-            'todo.list.update' => [
+            'updateList' => [
                 'title' => ['sometimes', 'required', 'string', 'max:60'],
                 'color' => ['sometimes', 'required', 'string', 'max:50'],
                 'is_collapsed' => ['sometimes', 'required', 'boolean'],
             ],
-            'todo.list.move' => ['slot' => ['required', 'integer', 'between:0,15']],
-            'todo.item.store' => ['text' => ['required', 'string', 'max:100']],
-            'todo.item.update' => [
+            'moveList' => ['slot' => ['required', 'integer', 'between:0,15']],
+            'storeItem' => ['text' => ['required', 'string', 'max:100']],
+            'updateItem' => [
                 'text' => ['sometimes', 'required', 'string', 'max:100'],
                 'is_completed' => ['sometimes', 'required', 'boolean'],
             ],
-            'todo.item.move' => [
+            'moveItem' => [
                 'list_id' => ['required', 'uuid'],
                 'position' => ['required', 'integer', 'between:0,24'],
             ],
-            'todo.list.reorder' => [
+            'reorderItems' => [
                 'item_ids' => ['present', 'array', 'max:25'],
                 'item_ids.*' => ['required', 'uuid', 'distinct'],
             ],
