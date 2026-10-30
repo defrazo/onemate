@@ -6,6 +6,7 @@ use App\Models\Cloud\CloudFile;
 use App\Models\Kanban\KanbanColumn;
 use App\Models\Kanban\KanbanTask;
 use App\Models\Network\MonitoredService;
+use App\Models\Todo\TodoCanvas;
 use App\Notifications\User\ResetPasswordNotification;
 use App\Notifications\User\VerifyEmailNotification;
 use App\Notifications\User\VerifyPendingEmailNotification;
@@ -66,6 +67,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function kanbanColumns(): HasMany
     {
         return $this->hasMany(KanbanColumn::class);
+    }
+
+    public function todoCanvases(): HasMany
+    {
+        return $this->hasMany(TodoCanvas::class);
     }
 
     public function kanbanTasks(): HasMany

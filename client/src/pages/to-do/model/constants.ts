@@ -1,0 +1,10 @@
+export const TODO_LIMITS = {
+	CANVASES: 5,
+	LISTS: 16,
+	ITEMS: 25,
+	CANVAS_TITLE: 40,
+	LIST_TITLE: 60,
+	ITEM_TEXT: 100,
+	MIN_SLOT: 0,
+	MAX_SLOT: 15,
+} as const;

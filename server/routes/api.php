@@ -15,6 +15,7 @@ use App\Http\Controllers\Network\PortCheckController;
 use App\Http\Controllers\Network\ServiceCheckController;
 use App\Http\Controllers\Network\SslCheckController;
 use App\Http\Controllers\Notification\NotificationController;
+use App\Http\Controllers\Todo\TodoController;
 use App\Http\Controllers\User\ConnectedAppsController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
@@ -136,6 +137,23 @@ Route::middleware('auth:sanctum')->group(function () {
         // Notes
         Route::get('/user/notes', [UserNoteController::class, 'index']);
         Route::put('/user/notes', [UserNoteController::class, 'replace']);
+
+        // ToDo
+        Route::get('/todo/canvases', [TodoController::class, 'index']);
+        Route::post('/todo/canvases', [TodoController::class, 'storeCanvas']);
+        Route::patch('/todo/canvases/{canvas}', [TodoController::class, 'updateCanvas']);
+        Route::delete('/todo/canvases/{canvas}', [TodoController::class, 'destroyCanvas']);
+
+        Route::post('/todo/canvases/{canvas}/lists', [TodoController::class, 'storeList']);
+        Route::patch('/todo/lists/{list}', [TodoController::class, 'updateList']);
+        Route::delete('/todo/lists/{list}', [TodoController::class, 'destroyList']);
+        Route::patch('/todo/lists/{list}/slot', [TodoController::class, 'moveList']);
+        Route::patch('/todo/lists/{list}/items/order', [TodoController::class, 'reorderItems']);
+
+        Route::post('/todo/lists/{list}/items', [TodoController::class, 'storeItem']);
+        Route::patch('/todo/items/{item}', [TodoController::class, 'updateItem']);
+        Route::delete('/todo/items/{item}', [TodoController::class, 'destroyItem']);
+        Route::patch('/todo/items/{item}/position', [TodoController::class, 'moveItem']);
 
         // Kanban columns
         Route::get('/kanban/columns', [KanbanColumnController::class, 'index']);
