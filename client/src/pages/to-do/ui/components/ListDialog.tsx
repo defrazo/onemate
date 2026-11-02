@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { IconLayoutGrid, IconListDetails, IconPalette } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import { LIST_COLORS } from '@/entities/todo';
+import { COLOR_PALETTE } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, Input, Select } from '@/shared/ui';
 
@@ -115,7 +115,7 @@ export const ListDialog = ({
 							Цвет
 						</span>
 						<div className="ml-auto flex shrink-0 items-center justify-end gap-1.5">
-							{Object.entries(LIST_COLORS).map(([key, label]) => (
+							{Object.entries(COLOR_PALETTE).map(([key, { label, value }]) => (
 								<button
 									key={key}
 									aria-label={label}
@@ -131,7 +131,7 @@ export const ListDialog = ({
 								>
 									<span
 										className="absolute inset-0.5 rounded-full"
-										style={{ backgroundColor: `var(--palette-${key})` }}
+										style={{ backgroundColor: value }}
 									/>
 								</button>
 							))}

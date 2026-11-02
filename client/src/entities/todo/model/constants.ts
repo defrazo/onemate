@@ -8,14 +8,3 @@ export const TODO_LIMITS = {
 	MIN_SLOT: 0,
 	MAX_SLOT: 15,
 } as const;
-
-export const LIST_COLORS = {
-	slate: 'Серый',
-	rose: 'Розовый',
-	amber: 'Янтарный',
-	emerald: 'Изумрудный',
-	violet: 'Фиолетовый',
-	lime: 'Лаймовый',
-	fuchsia: 'Фуксия',
-	sky: 'Голубой',
-} as const;

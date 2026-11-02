@@ -6,7 +6,8 @@ import { IconListSearch } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LIST_COLORS, TODO_LIMITS, type TodoItem, type TodoList } from '@/entities/todo';
+import { TODO_LIMITS, type TodoItem, type TodoList } from '@/entities/todo';
+import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
@@ -52,7 +53,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 		});
 	};
 
-	const color = Object.hasOwn(LIST_COLORS, list.color) ? list.color : 'slate';
+	const color: PaletteColor = Object.hasOwn(COLOR_PALETTE, list.color) ? (list.color as PaletteColor) : 'slate';
 
 	const itemsById = new Map<string, TodoItem>(list.items.map((item) => [item.id, item]));
 	const originalIds = [...list.items].sort((a, b) => a.position - b.position).map((item) => item.id);
@@ -130,7 +131,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 			ref={setCardRef}
 			aria-label={list.title}
 			className={cn(
-				'relative flex h-full min-w-0 flex-col self-start rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors not-xl:snap-start focus-within:z-10 hover:border-(--border-primary)',
+				'group/list relative flex h-full min-w-0 flex-col self-start rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors not-xl:snap-start focus-within:z-10 hover:border-(--border-primary)',
 				isCompleted && 'bg-(--tone)',
 				isDragging ? 'opacity-30' : isCompleted && 'opacity-60'
 			)}
@@ -144,8 +145,8 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					aria-label={`Переместить список «${list.title}»`}
 				>
 					<span
-						className={cn('ml-0.5 h-1 w-4 shrink-0 rounded-full', isCompleted && 'opacity-40')}
-						style={{ backgroundColor: `var(--palette-${color})` }}
+						className={cn('ml-0.5 h-1 w-3 shrink-0 rounded-full', isCompleted && 'opacity-40')}
+						style={{ backgroundColor: COLOR_PALETTE[color].value }}
 					/>
 					<h2
 						className={cn(
@@ -172,7 +173,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					<div
 						ref={scrollRef}
 						className={cn(
-							'core-scrollbar mx-3 flex min-h-0 flex-1 flex-col gap-1 overflow-y-auto rounded-md pr-0.5 not-xl:scrollbar-none xl:overscroll-contain',
+							'mx-3 flex min-h-0 flex-1 scrollbar-none flex-col gap-1 overflow-y-auto rounded-md xl:overscroll-contain',
 							isEmpty && 'justify-center'
 						)}
 					>
