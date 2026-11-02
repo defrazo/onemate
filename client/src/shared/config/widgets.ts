@@ -7,6 +7,7 @@ import {
 	IconCloudPin,
 	IconCloudUpload,
 	IconLanguage,
+	IconListCheck,
 	IconNote,
 } from '@tabler/icons-react';
 
@@ -25,6 +26,7 @@ export const WIDGETS = [
 	{ id: 'translator', title: 'Переводчик', icon: IconLanguage },
 	{ id: 'network', title: 'Сеть', icon: IconActivityHeartbeat },
 	{ id: 'cloud', title: 'Облако', icon: IconCloudUpload },
+	{ id: 'todo', title: 'Задачи', icon: IconListCheck },
 ] as const satisfies readonly WidgetConfig[];
 
 export type WidgetId = (typeof WIDGETS)[number]['id'];
