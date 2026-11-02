@@ -22,18 +22,14 @@ export const ListContent = observer(({ list }: { list: TodoList }) => {
 		});
 	};
 
-	const handleActionsToggle = (id: string): void => {
-		setActiveActionsId((prev) => (prev === id ? null : id));
-	};
+	const handleActionsToggle = (id: string) => setActiveActionsId((prev) => (prev === id ? null : id));
 
-	const handleActionsClose = (): void => {
-		setActiveActionsId(null);
-	};
+	const handleActionsClose = () => setActiveActionsId(null);
 
 	useEffect(() => {
 		if (!activeActionsId) return;
 
-		const handlePointerDown = (event: PointerEvent): void => {
+		const handlePointerDown = (event: PointerEvent) => {
 			const target = event.target;
 			if (!(target instanceof Node)) return;
 
@@ -51,10 +47,7 @@ export const ListContent = observer(({ list }: { list: TodoList }) => {
 
 	return (
 		<>
-			<div
-				ref={scrollRef}
-				className="core-scrollbar min-h-0 flex-1 overflow-y-auto overscroll-contain not-xl:scrollbar-none"
-			>
+			<div ref={scrollRef} className="min-h-0 flex-1 scrollbar-none overflow-y-auto overscroll-contain">
 				{list.items.length ? (
 					<ul ref={listRef} className="flex shrink-0 flex-col gap-0.5">
 						{items.map((item) => (

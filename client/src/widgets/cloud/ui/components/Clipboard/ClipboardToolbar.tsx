@@ -33,7 +33,7 @@ export const ClipboardToolbar = observer(() => {
 
 	const externalUrl = getExternalUrl(cloudStore.text);
 
-	const handleOpenUrl = (): void => {
+	const handleOpenUrl = () => {
 		if (!externalUrl) return;
 		window.open(externalUrl, '_blank', 'noopener,noreferrer');
 	};

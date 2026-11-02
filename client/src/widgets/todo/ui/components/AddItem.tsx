@@ -40,12 +40,12 @@ export const AddItem = observer(({ list, onAdded }: { list: TodoList; onAdded?: 
 		}
 	};
 
-	const handleClose = (): void => {
+	const handleClose = () => {
 		setAdding(false);
 		setText('');
 	};
 
-	const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>): void => {
+	const handleSubmit = (event: React.SubmitEvent<HTMLFormElement>) => {
 		event.preventDefault();
 		void handleAdd();
 	};
@@ -57,7 +57,7 @@ export const AddItem = observer(({ list, onAdded }: { list: TodoList; onAdded?: 
 	useEffect(() => {
 		if (!adding || submitting) return;
 
-		const handlePointerDown = (event: PointerEvent): void => {
+		const handlePointerDown = (event: PointerEvent) => {
 			if (containerRef.current?.contains(event.target as Node)) return;
 			handleClose();
 		};

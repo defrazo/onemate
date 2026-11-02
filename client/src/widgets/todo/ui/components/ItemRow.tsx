@@ -20,22 +20,22 @@ export const ItemRow = observer(({ item, actionsOpen, onActionsClose, onActionsT
 
 	const { todoStore } = useStore();
 
-	const [editing, setEditing] = useState(false);
-	const [draft, setDraft] = useState(item.text);
+	const [isEditing, setIsEditing] = useState(false);
+	const [draftText, setDraftText] = useState(item.text);
 
-	const handleEdit = (): void => {
+	const handleEdit = () => {
 		onActionsClose();
-		setDraft(item.text);
-		setEditing(true);
+		setDraftText(item.text);
+		setIsEditing(true);
 	};
 
 	const handleCancel = () => {
-		setEditing(false);
-		setDraft(item.text);
+		setIsEditing(false);
+		setDraftText(item.text);
 	};
 
 	const handleSave = async () => {
-		const text = draft.trim();
+		const text = draftText.trim();
 		if (!text || todoStore.isLoading) return;
 
 		if (text === item.text) {
@@ -44,10 +44,10 @@ export const ItemRow = observer(({ item, actionsOpen, onActionsClose, onActionsT
 		}
 
 		const success = await todoStore.updateItem(item.id, { text });
-		if (success) setEditing(false);
+		if (success) setIsEditing(false);
 	};
 
-	const handleDelete = (): void => {
+	const handleDelete = () => {
 		onActionsClose();
 		void todoStore.deleteItem(item.id);
 	};
@@ -56,11 +56,11 @@ export const ItemRow = observer(({ item, actionsOpen, onActionsClose, onActionsT
 		<li
 			className={cn(
 				'group/item flex min-w-0 items-center gap-2 rounded-lg py-px xl:px-2',
-				!editing && 'py-1 transition-colors hover:bg-(--tone-hover)'
+				!isEditing && 'py-1 transition-colors hover:bg-(--tone-hover)'
 			)}
 			data-item-id={item.id}
 		>
-			{editing ? (
+			{isEditing ? (
 				<>
 					<Input
 						autoFocus
@@ -68,8 +68,8 @@ export const ItemRow = observer(({ item, actionsOpen, onActionsClose, onActionsT
 						className="min-w-0 flex-1 py-0.5 text-sm"
 						disabled={todoStore.isLoading}
 						maxLength={TODO_LIMITS.ITEM_TEXT}
-						value={draft}
-						onChange={(event) => setDraft(event.target.value)}
+						value={draftText}
+						onChange={(event) => setDraftText(event.target.value)}
 						onKeyDown={(event) => {
 							if (event.nativeEvent.isComposing) return;
 							if (event.key === 'Enter') {
@@ -80,7 +80,7 @@ export const ItemRow = observer(({ item, actionsOpen, onActionsClose, onActionsT
 						}}
 					/>
 					<ConfirmActions
-						confirmDisabled={!draft.trim()}
+						confirmDisabled={!draftText.trim()}
 						disabled={todoStore.isLoading}
 						onCancel={handleCancel}
 						onConfirm={() => void handleSave()}

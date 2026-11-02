@@ -85,8 +85,9 @@ export const ItemRow = observer(
 			<li
 				ref={setNodeRef}
 				className={cn(
-					'group/item min-h-6.5 flex-col gap-2',
+					'group/item min-h-6.5 items-center gap-2',
 					hidden ? 'pointer-events-none absolute' : 'relative flex',
+					!isEditing && 'rounded-lg py-0.5 transition-colors hover:bg-(--tone-hover) xl:px-2',
 					placeholder &&
 						'rounded-md border border-dashed border-(--accent-primary) bg-(--accent-primary-muted)',
 					(hidden || (isDragging && !placeholder)) && 'opacity-0'
@@ -95,115 +96,113 @@ export const ItemRow = observer(
 				data-todo-list={listId}
 				style={{ transform: CSS.Transform.toString(transform), transition }}
 			>
-				<div className={cn(placeholder && 'invisible')}>
-					<div className="flex min-w-0 items-center">
-						{isEditing ? (
-							<div className="flex min-w-0 flex-1 items-center gap-2">
-								<Input
-									autoFocus
-									aria-label="Текст пункта"
-									className="min-w-0 flex-1 bg-transparent py-0 text-sm"
-									disabled={todoStore.isLoading}
-									maxLength={TODO_LIMITS.ITEM_TEXT}
-									value={draftText}
-									onChange={(event) => setDraftText(event.target.value)}
-									onKeyDown={(event) => {
-										if (event.nativeEvent.isComposing) return;
+				<div className={cn('flex min-w-0 flex-1 items-center gap-2', placeholder && 'invisible')}>
+					{isEditing ? (
+						<>
+							<Input
+								autoFocus
+								aria-label="Текст пункта"
+								className="min-w-0 flex-1 py-0 text-sm"
+								disabled={todoStore.isLoading}
+								maxLength={TODO_LIMITS.ITEM_TEXT}
+								value={draftText}
+								onChange={(event) => setDraftText(event.target.value)}
+								onKeyDown={(event) => {
+									if (event.nativeEvent.isComposing) return;
 
-										if (event.key === 'Enter') {
-											event.preventDefault();
-											event.stopPropagation();
-											void handleSaveEdit();
-										}
+									if (event.key === 'Enter') {
+										event.preventDefault();
+										event.stopPropagation();
+										void handleSaveEdit();
+									}
 
-										if (event.key === 'Escape') {
-											event.preventDefault();
-											event.stopPropagation();
-											handleCancelEdit();
-										}
-									}}
-								/>
-								<ConfirmActions
-									confirmDisabled={!draftText.trim()}
-									confirmLabel="Сохранить"
-									disabled={todoStore.isLoading}
-									onCancel={handleCancelEdit}
-									onConfirm={() => void handleSaveEdit()}
-								/>
-							</div>
-						) : (
-							<>
-								<Checkbox
-									aria-label={`Выполнено: ${item.text}`}
-									checked={item.is_completed}
-									className="shrink-0"
-									disabled={todoStore.isLoading}
-									size={isMobile ? 'lg' : 'md'}
-									onChange={(checked) => void todoStore.setItemCompleted(item.id, checked)}
-								/>
-								<span
-									ref={setActivatorNodeRef}
-									className={cn(
-										'trim mx-2 min-w-0 flex-1 cursor-grab touch-pan-y text-sm leading-3.5 break-all select-none active:cursor-grabbing',
-										item.is_completed && 'text-(--text-disabled) line-through',
-										todoStore.isLoading && 'cursor-default'
-									)}
-									{...attributes}
-									{...listeners}
-									aria-label={`Переместить пункт «${item.text}»`}
-								>
-									{item.text}
-								</span>
-								<div className="flex shrink-0 items-center gap-3 md:gap-2 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within/item:opacity-100 [@media(hover:hover)]:group-hover/item:opacity-100">
-									{isMobile && !actionsOpen && (
+									if (event.key === 'Escape') {
+										event.preventDefault();
+										event.stopPropagation();
+										handleCancelEdit();
+									}
+								}}
+							/>
+							<ConfirmActions
+								confirmDisabled={!draftText.trim()}
+								confirmLabel="Сохранить"
+								disabled={todoStore.isLoading}
+								onCancel={handleCancelEdit}
+								onConfirm={() => void handleSaveEdit()}
+							/>
+						</>
+					) : (
+						<>
+							<Checkbox
+								aria-label={`Выполнено: ${item.text}`}
+								checked={item.is_completed}
+								className="shrink-0"
+								disabled={todoStore.isLoading}
+								size={isMobile ? 'lg' : 'md'}
+								onChange={(checked) => void todoStore.setItemCompleted(item.id, checked)}
+							/>
+							<span
+								ref={setActivatorNodeRef}
+								className={cn(
+									'min-w-0 flex-1 cursor-grab touch-pan-y text-sm leading-3.5 break-all select-none active:cursor-grabbing',
+									item.is_completed && 'text-(--text-disabled) line-through',
+									todoStore.isLoading && 'cursor-default'
+								)}
+								{...attributes}
+								{...listeners}
+								aria-label={`Переместить пункт «${item.text}»`}
+							>
+								{item.text}
+							</span>
+							<div className="flex shrink-0 items-center gap-3 md:gap-2 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-focus-within/item:opacity-100 [@media(hover:hover)]:group-hover/item:opacity-100">
+								{isMobile && !actionsOpen && (
+									<Button
+										aria-expanded={actionsOpen}
+										aria-label={`Действия с пунктом «${item.text}»`}
+										centerIcon={<IconDots className="size-5 opacity-70" />}
+										disabled={todoStore.isLoading}
+										padding="none"
+										variant="icon"
+										onClick={onActionsToggle}
+									/>
+								)}
+								{(!isMobile || actionsOpen) && (
+									<>
 										<Button
-											aria-expanded={actionsOpen}
-											aria-label={`Действия с пунктом «${item.text}»`}
-											centerIcon={<IconDots className="size-5 opacity-70" />}
+											aria-label={`Редактировать «${item.text}»`}
+											centerIcon={<IconPencil className="size-6 xl:size-4" />}
 											disabled={todoStore.isLoading}
 											padding="none"
+											title="Редактировать"
 											variant="icon"
-											onClick={onActionsToggle}
+											onClick={() => {
+												onActionsClose?.();
+												handleEdit();
+											}}
 										/>
-									)}
-									{(!isMobile || actionsOpen) && (
-										<>
-											<Button
-												aria-label={`Редактировать «${item.text}»`}
-												centerIcon={<IconPencil className="size-6 xl:size-4" />}
-												disabled={todoStore.isLoading}
-												padding="none"
-												title="Редактировать"
-												variant="icon"
-												onClick={() => {
-													onActionsClose?.();
-													handleEdit();
-												}}
-											/>
-											<Button
-												aria-label={`Удалить «${item.text}»`}
-												centerIcon={
-													isMobile ? (
-														<IconTrash className="size-6" />
-													) : (
-														<IconX className="size-4" />
-													)
-												}
-												disabled={todoStore.isLoading}
-												padding="none"
-												title="Удалить"
-												variant="icon"
-												onClick={() => {
-													onActionsClose?.();
-													void todoStore.deleteItem(item.id);
-												}}
-											/>
-										</>
-									)}
-								</div>
-							</>
-						)}
-					</div>
+										<Button
+											aria-label={`Удалить «${item.text}»`}
+											centerIcon={
+												isMobile ? (
+													<IconTrash className="size-6" />
+												) : (
+													<IconX className="size-4" />
+												)
+											}
+											disabled={todoStore.isLoading}
+											padding="none"
+											title="Удалить"
+											variant="icon"
+											onClick={() => {
+												onActionsClose?.();
+												void todoStore.deleteItem(item.id);
+											}}
+										/>
+									</>
+								)}
+							</div>
+						</>
+					)}
 				</div>
 			</li>
 		);

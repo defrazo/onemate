@@ -10,7 +10,7 @@ import { Button, ConfirmDialog, LoadingError, NoContent, SyncIndicator, Workspac
 import { Board, ListDialog } from './components';
 
 export const TodoPage = observer(() => {
-	usePageTitle('To Do');
+	usePageTitle('ToDo');
 
 	const { modalStore, todoStore, userStore } = useStore();
 
@@ -46,7 +46,7 @@ export const TodoPage = observer(() => {
 		return success && active.current && userStore.id === userId;
 	};
 
-	const handleSelectCanvas = (id: string): void => {
+	const handleSelectCanvas = (id: string) => {
 		todoStore.setSelectedCanvas(id);
 		setEditingId(undefined);
 		setValidation(null);
@@ -69,7 +69,7 @@ export const TodoPage = observer(() => {
 			/>
 		);
 
-	const handleStartRename = (id: string): void => {
+	const handleStartRename = (id: string) => {
 		const target = todoStore.canvases.find((entry) => entry.id === id);
 		if (!target) return;
 
@@ -92,12 +92,12 @@ export const TodoPage = observer(() => {
 		}
 	};
 
-	const handleCancelRename = (): void => {
+	const handleCancelRename = () => {
 		setEditingId(undefined);
 		setValidation(null);
 	};
 
-	const handleDeleteCanvas = (id: string): void => {
+	const handleDeleteCanvas = (id: string) => {
 		if (todoStore.canvases.length <= 1) return;
 
 		const target = todoStore.canvases.find((entry) => entry.id === id);
@@ -106,7 +106,7 @@ export const TodoPage = observer(() => {
 		openDeleteDialog('Удаление холста', `Удалить холст «${target.title}»?`, () => todoStore.deleteCanvas(id));
 	};
 
-	const handleDeleteList = (list: TodoList): void => {
+	const handleDeleteList = (list: TodoList) => {
 		openDeleteDialog('Удаление списка', `Удалить список «${list.title}»?`, () => todoStore.deleteList(list.id));
 	};
 
@@ -144,7 +144,7 @@ export const TodoPage = observer(() => {
 		);
 	};
 
-	const openDeleteDialog = (title: string, description: string, operation: () => Promise<boolean>): void => {
+	const openDeleteDialog = (title: string, description: string, operation: () => Promise<boolean>) => {
 		openModal(
 			<ConfirmDialog
 				confirmLabel="Удалить"
@@ -177,6 +177,7 @@ export const TodoPage = observer(() => {
 				editingId={editingId}
 				items={todoStore.canvases}
 				label="Холсты ToDo"
+				maxItems={TODO_LIMITS.CANVASES}
 				maxTitleLength={TODO_LIMITS.CANVAS_TITLE}
 				saving={todoStore.isLoading}
 				onCreate={handleCreateCanvas}

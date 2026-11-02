@@ -17,6 +17,7 @@ interface WorkspaceTabsProps {
 	disabled?: boolean;
 	saving?: boolean;
 	maxTitleLength?: number;
+	maxItems: number;
 	createLabel?: string;
 	onSelect: (id: string) => void;
 	onCreate: () => void;
@@ -38,6 +39,7 @@ export const WorkspaceTabs = ({
 	disabled = false,
 	saving = false,
 	maxTitleLength,
+	maxItems,
 	createLabel = 'Добавить',
 	onSelect,
 	onCreate,
@@ -68,7 +70,7 @@ export const WorkspaceTabs = ({
 
 	return (
 		<nav aria-label={label} className="flex h-10 min-w-0 scrollbar-none items-center gap-3 overflow-x-auto">
-			{items.map(({ id, title }) => {
+			{items.map(({ id, title }, idx) => {
 				const active = activeId === id;
 				const editing = editingId === id;
 
@@ -89,7 +91,7 @@ export const WorkspaceTabs = ({
 										key={id}
 										autoFocus
 										aria-label={`Переименовать «${title}»`}
-										className="min-w-0 bg-transparent py-1 pl-3 text-sm"
+										className="min-w-0 py-1 pl-3 text-sm"
 										disabled={editDisabled}
 										id={`Переименовать «${title}»`}
 										maxLength={maxTitleLength}
@@ -111,8 +113,8 @@ export const WorkspaceTabs = ({
 										active={active}
 										aria-current={active ? 'page' : undefined}
 										className={cn(
-											'min-w-0 flex-1 justify-start truncate text-sm',
-											active ? 'font-semibold' : 'font-medium'
+											'min-w-0 flex-1 justify-start truncate text-sm font-semibold',
+											active ? 'text-(--text-primary)' : 'text-(--text-secondary)'
 										)}
 										disabled={disabled}
 										padding="none"
@@ -143,7 +145,7 @@ export const WorkspaceTabs = ({
 								/>
 							)}
 						</div>
-						<div className="h-5 w-px shrink-0 bg-(--border-tone)/70" />
+						{idx < maxItems - 1 && <div className="h-5 w-px shrink-0 bg-(--border-tone)/70" />}
 					</Fragment>
 				);
 			})}
