@@ -10,7 +10,6 @@ interface ConfirmActionsProps {
 	confirmDisabled?: boolean;
 	cancelDisabled?: boolean;
 	loading?: boolean;
-	size?: 'sm' | 'md';
 	className?: string;
 	onConfirm: () => void;
 	onCancel: () => void;
@@ -23,7 +22,6 @@ export const ConfirmActions = ({
 	confirmDisabled = false,
 	cancelDisabled = false,
 	loading = false,
-	size = 'md',
 	className,
 	onConfirm,
 	onCancel,
@@ -34,7 +32,7 @@ export const ConfirmActions = ({
 		<div className={cn('flex shrink-0 items-center gap-2', className)}>
 			<Button
 				aria-label={confirmLabel}
-				centerIcon={<IconCheck className={cn(size === 'sm' ? 'size-3.5' : 'size-4')} />}
+				centerIcon={<IconCheck className="size-6 md:size-5 xl:size-4" />}
 				disabled={isDisabled || confirmDisabled}
 				padding="none"
 				title={confirmLabel}
@@ -43,7 +41,7 @@ export const ConfirmActions = ({
 			/>
 			<Button
 				aria-label={cancelLabel}
-				centerIcon={<IconX className={cn(size === 'sm' ? 'size-3.5' : 'size-4')} />}
+				centerIcon={<IconX className="size-6 md:size-5 xl:size-4" />}
 				disabled={isDisabled || cancelDisabled}
 				padding="none"
 				title={cancelLabel}

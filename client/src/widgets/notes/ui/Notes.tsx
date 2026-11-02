@@ -12,7 +12,8 @@ export const Notes = observer(() => {
 
 	const handleAdd = () => {
 		try {
-			notesStore.addNote();
+			const id = notesStore.addNote();
+			notesStore.openNote(id);
 		} catch {
 			notifyStore.setNotice('Не удалось добавить заметку', 'error');
 		}

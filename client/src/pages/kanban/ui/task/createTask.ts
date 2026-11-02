@@ -38,11 +38,12 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 
 	// === TIMESTAMP ===
 	const timestamp = document.createElement('div');
-	timestamp.className = 'mt-auto flex items-center justify-between gap-2 px-3 pb-3 text-xs text-(--text-disabled)';
+	timestamp.className =
+		'mt-auto flex min-h-7 items-center justify-between gap-2 px-3 pb-3 text-xs text-(--text-disabled)';
 
 	const formatShortDate = (value: string): string => {
-		const date = new Date(value);
-		return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+		const [, month, day] = value.slice(0, 10).split('-');
+		return `${day}.${month}`;
 	};
 
 	const createDateLabel = (icon: string, date: string, title: string) => {
@@ -61,17 +62,19 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		return element;
 	};
 
-	timestamp.append(createDateLabel(calendarIcon, task.startDate, `Начало периода: ${task.startDate}`));
+	if (task.startDate)
+		timestamp.append(createDateLabel(calendarIcon, task.startDate, `Начало периода: ${task.startDate}`));
 
 	if (task.endDate) {
 		const deadline = createDateLabel(calendarDueIcon, task.endDate, `Срок выполнения: ${task.endDate}`);
-		deadline.classList.add('shrink-0');
+		deadline.classList.add('ml-auto', 'shrink-0');
 
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
 		const dueDate = new Date(`${task.endDate.slice(0, 10)}T00:00:00`);
 		const isOverdue = !task.completed && dueDate < today;
+
 		if (isOverdue) deadline.classList.add('line-through', 'decoration-(--text-tertiary)');
 
 		timestamp.append(deadline);

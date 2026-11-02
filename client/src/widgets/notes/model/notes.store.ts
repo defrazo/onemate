@@ -62,7 +62,7 @@ export class NotesStore extends AsyncStore {
 		this.scheduleServerUpdate();
 	}
 
-	addNote(): void {
+	addNote(): string {
 		if (!this.canAddMore) throw new Error('Максимум 50 заметок');
 
 		const maxOrder = this.draft.length ? Math.max(...this.draft.map((note) => note.order_idx)) + 1 : 0;
@@ -72,6 +72,8 @@ export class NotesStore extends AsyncStore {
 		this.draft = this.normalizeOrder([note, ...this.draft]);
 		this.commitDraft();
 		this.scheduleServerUpdate();
+
+		return note.id;
 	}
 
 	removeNote(id: string): void {

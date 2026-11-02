@@ -7,9 +7,9 @@ type ViewTaskProps = {
 	initial: {
 		title: string;
 		description?: string;
-		status: TaskStatus;
-		priority: TaskPriority;
-		startDate: string;
+		status: TaskStatus | null;
+		priority: TaskPriority | null;
+		startDate: string | null;
 		endDate: string | null;
 		completed: boolean;
 		created: string;

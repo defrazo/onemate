@@ -5,9 +5,9 @@ export type Task = {
 	columnId: string;
 	title: string;
 	description: string;
-	status: TaskStatus;
-	priority: TaskPriority;
-	startDate: string;
+	status: TaskStatus | null;
+	priority: TaskPriority | null;
+	startDate: string | null;
 	endDate: string | null;
 	completed: boolean;
 	position: number;
@@ -21,9 +21,9 @@ export type DbTask = {
 	column_id: string;
 	title: string;
 	description: string;
-	status: TaskStatus;
-	priority: TaskPriority;
-	start_date: string;
+	status: TaskStatus | null;
+	priority: TaskPriority | null;
+	start_date: string | null;
 	end_date: string | null;
 	completed: boolean;
 	position: number;

@@ -31,8 +31,9 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		'core-gap scrollbar-none flex flex-1 flex-col xl:max-h-[calc(100vh-155px)] xl:overflow-y-auto';
 
 	// === ACTION FUNCTIONS ===
+
 	function onAddTask(columnId: string, taskLimit: number) {
-		const today = new Date().toISOString().split('T')[0];
+		const today = new Date().toLocaleDateString('sv-SE');
 
 		editTaskModal?.close();
 
@@ -47,18 +48,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 				endDate: null,
 			},
 			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				state.addTask(
-					columnId,
-					title,
-					description,
-					status,
-					priority,
-					startDate || today,
-					endDate || null,
-					false,
-					taskLimit
-				);
-
+				state.addTask(columnId, title, description, status, priority, startDate, endDate, false, taskLimit);
 				editTaskModal = null;
 			},
 		});

@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils';
 
 import { chevronDownIcon, insertSvg } from '../../lib';
 
-type SelectValue = string | number;
+type SelectValue = string | number | null;
 
 type SelectItem<T extends SelectValue> = { value: T; label: string; color?: string };
 
@@ -18,7 +18,7 @@ type CreateSelectOptions<T extends SelectValue> = {
 
 export const createSelect = <T extends SelectValue = number>(options: CreateSelectOptions<T> = {}) => {
 	const items = createItems(options);
-	const initialValue = options.initialValue ?? getItemValue(items[0]);
+	const initialValue = options.initialValue !== undefined ? options.initialValue : getItemValue(items[0]);
 
 	let currentValue = initialValue;
 

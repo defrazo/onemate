@@ -53,7 +53,7 @@ export const List = ({ options, value, onSelect, openUpwards, align, clearable, 
 					<li key={option.value} aria-selected={selected} className="not-last:mb-0.5" role="option">
 						<button
 							className={cn(
-								'relative flex w-full cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-(--tone-strong)',
+								'relative flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-(--tone-strong)',
 								selected && 'bg-(--accent-primary-muted) text-(--accent-primary)',
 								option.disabled && 'cursor-not-allowed opacity-40',
 								alignments[align]
@@ -71,11 +71,13 @@ export const List = ({ options, value, onSelect, openUpwards, align, clearable, 
 									src={option.icon}
 								/>
 							)}
-							<span className="font-semibold">{option.label}</span>
-							{option.key && (
-								<span className="truncate text-xs text-(--text-disabled)">{option.key}</span>
-							)}
-							{selected && <IconCheck className="absolute right-2 size-4" />}
+							<span className="min-w-0 truncate font-semibold" title={option.label}>
+								{option.label}
+							</span>
+							<span className="max-w-24 shrink-0 truncate text-xs text-(--text-disabled)">
+								{option.key}
+							</span>
+							{selected && <IconCheck className="ml-auto size-4 shrink-0" />}
 						</button>
 					</li>
 				);

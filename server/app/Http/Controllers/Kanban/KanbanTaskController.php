@@ -35,17 +35,17 @@ class KanbanTaskController extends Controller
             'title' => ['required', 'string', 'max:60'],
             'description' => ['nullable', 'string', 'max:300'],
             'status' => [
-                'required',
+                'nullable',
                 'string',
                 Rule::in(['active', 'paused', 'waiting']),
             ],
             'priority' => [
-                'required',
+                'nullable',
                 'string',
                 Rule::in(['low', 'medium', 'high']),
             ],
             'position' => ['required', 'numeric'],
-            'start_date' => ['required', 'date'],
+            'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
             'completed' => ['required', 'boolean'],
         ]);
@@ -77,18 +77,18 @@ class KanbanTaskController extends Controller
             'description' => ['sometimes', 'nullable', 'string', 'max:300'],
             'status' => [
                 'sometimes',
-                'required',
+                'nullable',
                 'string',
                 Rule::in(['active', 'paused', 'waiting']),
             ],
             'priority' => [
                 'sometimes',
-                'required',
+                'nullable',
                 'string',
                 Rule::in(['low', 'medium', 'high']),
             ],
             'position' => ['sometimes', 'numeric'],
-            'start_date' => ['sometimes', 'required', 'date'],
+            'start_date' => ['sometimes', 'nullable', 'date'],
             'end_date' => ['sometimes', 'nullable', 'date'],
             'completed' => ['sometimes', 'boolean'],
         ]);
@@ -97,7 +97,10 @@ class KanbanTaskController extends Controller
             $data['description'] ??= '';
         }
 
-        $startDate = $data['start_date'] ?? $task->start_date;
+        $startDate = array_key_exists('start_date', $data)
+            ? $data['start_date']
+            : $task->start_date;
+
         $endDate = array_key_exists('end_date', $data)
             ? $data['end_date']
             : $task->end_date;

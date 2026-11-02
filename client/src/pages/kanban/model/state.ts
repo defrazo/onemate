@@ -244,9 +244,9 @@ export const createState = (repo: IKanbanRepo) => {
 		columnId: string,
 		title: string,
 		description: string,
-		status: TaskStatus,
-		priority: TaskPriority,
-		startDate: string,
+		status: TaskStatus | null,
+		priority: TaskPriority | null,
+		startDate: string | null,
 		endDate: string | null,
 		completed: boolean,
 		taskLimit: number
@@ -294,9 +294,9 @@ export const createState = (repo: IKanbanRepo) => {
 		id: string,
 		title: string,
 		description: string,
-		status: TaskStatus,
-		priority: TaskPriority,
-		startDate: string,
+		status: TaskStatus | null,
+		priority: TaskPriority | null,
+		startDate: string | null,
 		endDate: string | null,
 		completed?: boolean
 	) => {

@@ -8,17 +8,17 @@ type EditTaskProps = {
 	initial: {
 		title: string;
 		description?: string;
-		status: TaskStatus;
-		priority: TaskPriority;
-		startDate: string;
+		status: TaskStatus | null;
+		priority: TaskPriority | null;
+		startDate: string | null;
 		endDate: string | null;
 	};
 	onSubmit: (
 		title: string,
 		description: string,
-		status: TaskStatus,
-		priority: TaskPriority,
-		startDate: string,
+		status: TaskStatus | null,
+		priority: TaskPriority | null,
+		startDate: string | null,
 		endDate: string | null
 	) => void;
 };
