@@ -24,11 +24,12 @@ class TodoRequest extends FormRequest
                 'title' => ['sometimes', 'required', 'string', 'max:60'],
                 'color' => ['sometimes', 'required', 'string', 'max:50'],
                 'is_collapsed' => ['sometimes', 'required', 'boolean'],
+                'canvas_id' => ['sometimes', 'required', 'uuid'],
             ],
             'moveList' => ['slot' => ['required', 'integer', 'between:0,15']],
-            'storeItem' => ['text' => ['required', 'string', 'max:100']],
+            'storeItem' => ['text' => ['required', 'string', 'max:50']],
             'updateItem' => [
-                'text' => ['sometimes', 'required', 'string', 'max:100'],
+                'text' => ['sometimes', 'required', 'string', 'max:50'],
                 'is_completed' => ['sometimes', 'required', 'boolean'],
             ],
             'moveItem' => [

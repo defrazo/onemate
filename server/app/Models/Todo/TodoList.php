@@ -8,7 +8,7 @@ use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 
-#[Fillable(['title', 'color', 'slot', 'is_collapsed'])]
+#[Fillable(['canvas_id', 'title', 'color', 'slot', 'is_collapsed'])]
 class TodoList extends Model
 {
     use HasUuids;

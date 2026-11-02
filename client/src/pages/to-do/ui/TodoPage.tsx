@@ -1,24 +1,19 @@
 import { type ReactNode, useEffect, useRef, useState } from 'react';
-import { IconPlus } from '@tabler/icons-react';
+import { IconLayoutGrid, IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LS_PREFIX } from '@/shared/config';
+import { TODO_LIMITS, type TodoList } from '@/entities/todo';
 import { usePageTitle } from '@/shared/lib/hooks';
-import { Button, CollectionTabs, ConfirmDialog, InlineEdit, LoadingError, Spinner } from '@/shared/ui';
+import { Button, ConfirmDialog, LoadingError, NoContent, SyncIndicator, WorkspaceTabs } from '@/shared/ui';
 
-import { TodoRepo } from '../api';
-import { TODO_LIMITS, type TodoList, TodoStore } from '../model';
-import { ListDialog } from '.';
-import { TodoBoard } from './TodoBoard';
+import { Board, ListDialog } from './components';
 
 export const TodoPage = observer(() => {
 	usePageTitle('To Do');
 
-	const { userStore, modalStore } = useStore();
-	const [store] = useState(() => new TodoStore(new TodoRepo(), userStore));
+	const { modalStore, todoStore, userStore } = useStore();
 
-	const [selected, setSelected] = useState<{ userId: string | null; id: string } | null>(null);
 	const [editingId, setEditingId] = useState<string>();
 	const [draft, setDraft] = useState('');
 	const [validation, setValidation] = useState<string | null>(null);
@@ -28,219 +23,213 @@ export const TodoPage = observer(() => {
 
 	useEffect(() => {
 		active.current = true;
-		store.init();
+
 		return () => {
 			active.current = false;
-			store.destroy();
 			if (ownedModal.current && modalStore.modal?.content === ownedModal.current) modalStore.closeModal();
 		};
-	}, [store, modalStore]);
+	}, [modalStore, todoStore]);
 
-	const storageKey = `${LS_PREFIX}todo_canvas_${userStore.id}`;
-	let remembered: string | null = null;
-	try {
-		remembered = localStorage.getItem(storageKey);
-	} catch {
-		/* Storage may be unavailable. */
-	}
-	const requestedId = selected?.userId === userStore.id ? selected.id : remembered;
-	const canvas =
-		store.canvases.find(({ id }) => id === requestedId) ??
-		store.canvases.find(({ title }) => title === 'Общее') ??
-		store.canvases[0];
+	const canvas = todoStore.activeCanvas;
 
-	const select = (id: string) => {
-		setSelected({ userId: userStore.id, id });
-		setEditingId(undefined);
-		setValidation(null);
-		try {
-			localStorage.setItem(storageKey, id);
-		} catch {
-			/* Keep selection in memory. */
-		}
-	};
-
-	const open = (content: ReactNode) => {
+	const openModal = (content: ReactNode) => {
 		ownedModal.current = content;
 		modalStore.setModal(content);
 	};
 
-	const save = async (operation: () => Promise<void>) => {
-		if (store.isLoading) return false;
+	const handleSave = async (operation: () => Promise<boolean>): Promise<boolean> => {
+		if (todoStore.isLoading) return false;
+
 		const userId = userStore.id;
-		await operation();
-		return active.current && userStore.id === userId && !store.error;
+		const success = await operation();
+
+		return success && active.current && userStore.id === userId;
 	};
 
-	const createCanvas = () =>
-		open(
+	const handleSelectCanvas = (id: string): void => {
+		todoStore.setSelectedCanvas(id);
+		setEditingId(undefined);
+		setValidation(null);
+	};
+
+	const handleCreateCanvas = () =>
+		openModal(
 			<ListDialog
 				maxLength={TODO_LIMITS.CANVAS_TITLE}
+				mode="canvas"
 				title="Новый холст"
-				withColor={false}
 				onClose={modalStore.closeModal}
 				onSubmit={async (title) => {
-					const ids = new Set(store.canvases.map((entry) => entry.id));
-					if (!(await save(() => store.createCanvas(title)))) return false;
-					const created = store.canvases.find((entry) => !ids.has(entry.id));
-					if (created) select(created.id);
+					const ids = new Set(todoStore.canvases.map((entry) => entry.id));
+					if (!(await handleSave(() => todoStore.createCanvas(title)))) return false;
+					const created = todoStore.canvases.find((entry) => !ids.has(entry.id));
+					if (created) handleSelectCanvas(created.id);
 					return true;
 				}}
 			/>
 		);
 
-	const editList = (list?: TodoList) => {
-		if (!canvas) return;
-		open(
-			<ListDialog
-				initialColor={list?.color}
-				initialTitle={list?.title}
-				title={list ? 'Редактировать список' : 'Новый список'}
-				onClose={modalStore.closeModal}
-				onSubmit={(title, color) =>
-					save(() =>
-						list ? store.updateList(list.id, { title, color }) : store.createList(canvas.id, title, color)
-					)
-				}
-			/>
-		);
+	const handleStartRename = (id: string): void => {
+		const target = todoStore.canvases.find((entry) => entry.id === id);
+		if (!target) return;
+
+		setDraft(target.title);
+		setEditingId(id);
+		setValidation(null);
 	};
 
-	const confirmDelete = (title: string, description: string, operation: () => Promise<void>) =>
-		open(
-			<ConfirmDialog
-				confirmLabel="Удалить"
-				description={description}
-				title={title}
-				variant="danger"
-				onCancel={modalStore.closeModal}
-				onConfirm={() => {
-					if (store.isLoading) return;
-					modalStore.closeModal();
-					void operation();
-				}}
-			/>
-		);
-
-	const rename = async () => {
-		if (!editingId || store.isLoading) return;
+	const handleRenameCanvas = async () => {
+		if (!editingId || todoStore.isLoading) return;
 
 		if (!draft.trim()) {
 			setValidation('Введите название холста');
 			return;
 		}
 
-		if (await save(() => store.renameCanvas(editingId, draft.trim()))) {
+		if (await handleSave(() => todoStore.renameCanvas(editingId, draft.trim()))) {
 			setEditingId(undefined);
 			setValidation(null);
 		}
 	};
 
-	if (!canvas && !store.error)
-		return <LoadingError message="Что-то пошло не так..." size="xl" onRetry={() => store.reload()} />;
+	const handleCancelRename = (): void => {
+		setEditingId(undefined);
+		setValidation(null);
+	};
+
+	const handleDeleteCanvas = (id: string): void => {
+		if (todoStore.canvases.length <= 1) return;
+
+		const target = todoStore.canvases.find((entry) => entry.id === id);
+		if (!target) return;
+
+		openDeleteDialog('Удаление холста', `Удалить холст «${target.title}»?`, () => todoStore.deleteCanvas(id));
+	};
+
+	const handleDeleteList = (list: TodoList): void => {
+		openDeleteDialog('Удаление списка', `Удалить список «${list.title}»?`, () => todoStore.deleteList(list.id));
+	};
+
+	const openListDialog = (list?: TodoList) => {
+		if (!canvas) return;
+
+		openModal(
+			<ListDialog
+				canvasId={list ? canvas.id : undefined}
+				canvases={todoStore.canvases.map((entry) => ({
+					id: entry.id,
+					title: entry.title,
+					disabled: entry.id !== canvas.id && entry.lists.length >= TODO_LIMITS.LISTS,
+				}))}
+				initialColor={list?.color}
+				initialTitle={list?.title}
+				maxLength={TODO_LIMITS.LIST_TITLE}
+				mode="list"
+				title={list ? 'Редактировать список' : 'Новый список'}
+				onClose={modalStore.closeModal}
+				onSubmit={(title, color, targetCanvasId) =>
+					handleSave(() =>
+						list
+							? todoStore.updateList(list.id, {
+									title,
+									color,
+									...(targetCanvasId && targetCanvasId !== canvas.id
+										? { canvas_id: targetCanvasId }
+										: {}),
+								})
+							: todoStore.createList(canvas.id, title, color)
+					)
+				}
+			/>
+		);
+	};
+
+	const openDeleteDialog = (title: string, description: string, operation: () => Promise<boolean>): void => {
+		openModal(
+			<ConfirmDialog
+				confirmLabel="Удалить"
+				description={description}
+				title={title}
+				variant="danger"
+				onCancel={modalStore.closeModal}
+				onConfirm={async () => {
+					if (todoStore.isLoading) return;
+
+					const success = await handleSave(operation);
+					if (success) modalStore.closeModal();
+				}}
+			/>
+		);
+	};
+
+	if (!todoStore.isReady)
+		return <LoadingError message="Что-то пошло не так..." size="xl" onRetry={() => void todoStore.reload()} />;
 
 	return (
 		<section className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">
-			<CollectionTabs
+			<WorkspaceTabs
 				activeId={canvas?.id}
-				canCreate={store.canvases.length < TODO_LIMITS.CANVASES}
-				canDelete={store.canvases.length > 1}
-				disabled={store.isLoading}
+				canCreate={todoStore.canvases.length < TODO_LIMITS.CANVASES}
+				canDelete={todoStore.canvases.length > 1}
+				createLabel="Добавить холст"
+				disabled={todoStore.isLoading}
+				editValue={draft}
 				editingId={editingId}
-				editor={
-					<InlineEdit
-						label="Название холста"
-						maxLength={TODO_LIMITS.CANVAS_TITLE}
-						saving={store.isLoading}
-						value={draft}
-						onCancel={() => {
-							setEditingId(undefined);
-							setValidation(null);
-						}}
-						onChange={setDraft}
-						onConfirm={() => void rename()}
-					/>
-				}
-				items={store.canvases}
+				items={todoStore.canvases}
 				label="Холсты ToDo"
-				onCreate={createCanvas}
-				onDelete={(id) => {
-					if (store.canvases.length <= 1) return;
-					const target = store.canvases.find((entry) => entry.id === id);
-					confirmDelete(
-						'Удаление холста',
-						`Удалить холст «${target?.title}» со всеми списками и пунктами?`,
-						() => store.deleteCanvas(id)
-					);
-				}}
-				onRename={(id) => {
-					setDraft(store.canvases.find((entry) => entry.id === id)?.title ?? '');
-					setEditingId(id);
-					setValidation(null);
-				}}
-				onSelect={select}
+				maxTitleLength={TODO_LIMITS.CANVAS_TITLE}
+				saving={todoStore.isLoading}
+				onCreate={handleCreateCanvas}
+				onDelete={handleDeleteCanvas}
+				onEditCancel={handleCancelRename}
+				onEditChange={setDraft}
+				onEditConfirm={() => void handleRenameCanvas()}
+				onRename={handleStartRename}
+				onSelect={handleSelectCanvas}
 			/>
 			{validation && (
 				<p className="text-sm text-(--status-error)" role="alert">
 					{validation}
 				</p>
 			)}
-			{store.error && (
-				<div
-					className="flex items-center justify-between gap-3 rounded-lg bg-(--status-error-muted) p-3 text-sm text-(--status-error)"
-					role="alert"
-				>
-					<span>{store.error}</span>
-					<Button disabled={store.isLoading} onClick={() => void store.reload()}>
-						Обновить
-					</Button>
-				</div>
-			)}
 			{canvas && (
 				<>
 					<div className="flex items-center justify-between gap-3">
-						<div className="flex items-center gap-2 text-sm text-(--text-secondary)">
-							<span>
+						<div className="flex cursor-default items-center gap-3">
+							<div className="flex items-center justify-center rounded-lg bg-(--accent-primary-muted) px-3 py-1.5 text-sm text-(--accent-primary) select-none">
 								{canvas.lists.length} / {TODO_LIMITS.LISTS} списков
-							</span>
-							{store.isLoading && (
-								<span aria-label="Сохранение" role="status">
-									<Spinner className="size-4 border-2" />
-								</span>
-							)}
+							</div>
+							{todoStore.isLoading && <SyncIndicator className="static bg-transparent" />}
 						</div>
-						<Button
-							className="text-sm"
-							disabled={store.isLoading || canvas.lists.length >= TODO_LIMITS.LISTS}
-							leftIcon={<IconPlus className="size-4" />}
-							variant="accent"
-							onClick={() => editList()}
-						>
-							Добавить список
-						</Button>
+						{canvas.lists.length < TODO_LIMITS.LISTS && (
+							<Button
+								className="h-8 text-sm"
+								disabled={todoStore.isLoading || canvas.lists.length >= TODO_LIMITS.LISTS}
+								leftIcon={<IconPlus className="size-4" />}
+								variant="accent"
+								onClick={() => openListDialog()}
+							>
+								Добавить список
+							</Button>
+						)}
 					</div>
-					{canvas.lists.length === 0 && (
-						<div className="rounded-lg border border-dashed border-(--border-primary) p-6 text-center">
-							<p className="font-semibold">Холст пуст</p>
-							<p className="mt-1 text-sm text-(--text-secondary)">
-								Добавьте список, чтобы начать планирование
-							</p>
-						</div>
-					)}
-					<div className="@container min-h-0 min-w-0 flex-1 overflow-auto pb-3">
-						<TodoBoard
-							key={`${userStore.id}:${canvas.id}`}
-							canvas={canvas}
-							store={store}
-							onDelete={(list) =>
-								confirmDelete(
-									'Удаление списка',
-									`Удалить список «${list.title}» со всеми пунктами?`,
-									() => store.deleteList(list.id)
-								)
-							}
-							onEdit={editList}
-						/>
+					<div className="@container flex min-h-0 min-w-0 flex-1 flex-col overflow-auto">
+						{canvas.lists.length === 0 ? (
+							<div className="flex min-h-0 flex-1 items-center justify-center">
+								<NoContent
+									description="Добавьте список, чтобы начать планирование"
+									icon={IconLayoutGrid}
+									title="Холст пуст"
+								/>
+							</div>
+						) : (
+							<Board
+								key={`${userStore.id}:${canvas.id}`}
+								canvas={canvas}
+								onDelete={handleDeleteList}
+								onEdit={openListDialog}
+							/>
+						)}
 					</div>
 				</>
 			)}

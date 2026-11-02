@@ -15,6 +15,7 @@ export class StoreInitializer {
 		'networkStore',
 		'weatherStore',
 		'notesStore',
+		'todoStore',
 		'currencyStore',
 	] as const;
 

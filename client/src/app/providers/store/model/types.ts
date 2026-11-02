@@ -1,3 +1,4 @@
+import type { TodoStore } from '@/entities/todo';
 import type { UserStore } from '@/entities/user';
 import type { UserProfileStore } from '@/entities/user-profile';
 import type { AuthFormStore, AuthStore } from '@/features/auth';
@@ -27,6 +28,7 @@ export type AllStores = {
 	networkStore: NetworkStore;
 	weatherStore: WeatherStore;
 	notesStore: NotesStore;
+	todoStore: TodoStore;
 	currencyStore: CurrencyStore;
 	translatorStore: TranslatorStore;
 };
@@ -37,10 +39,11 @@ export type InitKeys =
 	| 'userProfileStore'
 	| 'authStore'
 	| 'deviceActivityStore'
-	| 'notesStore'
 	| 'cloudStore'
 	| 'networkStore'
 	| 'weatherStore'
+	| 'notesStore'
+	| 'todoStore'
 	| 'currencyStore';
 
 export interface CoreStores {
