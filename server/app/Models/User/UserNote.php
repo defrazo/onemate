@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Concerns\HasUuids;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
-#[Fillable(['text', 'order_idx'])]
+#[Fillable(['text', 'color', 'order_idx'])]
 class UserNote extends Model
 {
     use HasUuids;

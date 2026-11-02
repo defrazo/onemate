@@ -19,6 +19,7 @@ export class NotesRepoLaravel implements INotesRepo {
 			id: generateUUID(),
 			user_id: id,
 			text: note.text,
+			color: note.color,
 			order_idx: idx,
 			created_at: now,
 			updated_at: now,
@@ -31,7 +32,7 @@ export class NotesRepoLaravel implements INotesRepo {
 
 	async replaceAll(_id: string, notes: Note[]): Promise<void> {
 		await api.put('/user/notes', {
-			notes: notes.map((note, idx) => ({ id: note.id, text: note.text, order_idx: idx })),
+			notes: notes.map((note, idx) => ({ id: note.id, text: note.text, color: note.color, order_idx: idx })),
 		});
 	}
 }

@@ -3,10 +3,11 @@ import { CSS } from '@dnd-kit/utilities';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import type { PaletteColor } from '@/shared/config';
 
 import { CardActions } from '.';
 
-export const Card = observer(({ id }: { id: string }) => {
+export const Card = observer(({ id, color }: { id: string; color: PaletteColor }) => {
 	const { attributes, listeners, transform, transition, isDragging, setNodeRef } = useSortable({ id });
 
 	const { notesStore } = useStore();
@@ -29,7 +30,7 @@ export const Card = observer(({ id }: { id: string }) => {
 					{note.text || 'Пустая заметка'}
 				</p>
 			</button>
-			<CardActions attributes={attributes} id={id} listeners={listeners} text={note.text} />
+			<CardActions attributes={attributes} color={color} id={id} listeners={listeners} text={note.text} />
 		</div>
 	);
 });

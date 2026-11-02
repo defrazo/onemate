@@ -2,7 +2,7 @@ import { action, computed, makeObservable, observable, reaction, runInAction } f
 
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
-import { generateUUID } from '@/shared/lib/utils';
+import { generateUUID, getRandomPaletteColor } from '@/shared/lib/utils';
 
 import { notesCache } from '../lib';
 import type { INotesRepo, Note } from '.';
@@ -67,7 +67,14 @@ export class NotesStore extends AsyncStore {
 
 		const maxOrder = this.draft.length ? Math.max(...this.draft.map((note) => note.order_idx)) + 1 : 0;
 		const now = new Date().toISOString();
-		const note: Note = { id: generateUUID(), text: '', order_idx: maxOrder, created_at: now, updated_at: now };
+		const note: Note = {
+			id: generateUUID(),
+			text: '',
+			color: getRandomPaletteColor(),
+			order_idx: maxOrder,
+			created_at: now,
+			updated_at: now,
+		};
 
 		this.draft = this.normalizeOrder([note, ...this.draft]);
 		this.commitDraft();
@@ -196,7 +203,7 @@ export class NotesStore extends AsyncStore {
 	}
 
 	private getDraftSnapshot(): string {
-		return JSON.stringify(this.draft.map(({ id, text, order_idx }) => ({ id, text, order_idx })));
+		return JSON.stringify(this.draft.map(({ id, text, color, order_idx }) => ({ id, text, color, order_idx })));
 	}
 
 	private updateSnapshot(): void {
