@@ -6,12 +6,14 @@ import { createColumnDetails, createColumnProperties } from '.';
 type EditColumnProps = {
 	mode: 'create' | 'edit';
 	initial: { columnTitle: string; color: ColumnColor | undefined; limit: number | null };
-	onSubmit: (columnTitle: string, color: ColumnColor, limit: number) => void;
+	onSubmit: (columnTitle: string, color: ColumnColor, limit: number | null) => void;
 	onDelete?: () => void;
 };
 
 export const editColumn = (options: EditColumnProps) => {
 	let isClosed = false;
+	let confirmModal: ReturnType<typeof createConfirmDialog> | null = null;
+	let deleteButton: HTMLButtonElement | undefined;
 
 	// === DIALOG ===
 	const icon = createSvg(settingsIcon, 'size-5');
@@ -20,7 +22,7 @@ export const editColumn = (options: EditColumnProps) => {
 		overlay,
 		container,
 		close: closeDialog,
-	} = createDialog(options.mode === 'create' ? 'Добавление колонки' : 'Настройки колонки', icon);
+	} = createDialog(options.mode === 'create' ? 'Добавление колонки' : 'Настройки колонки', icon, cleanup);
 
 	// === FORM ===
 	const form = document.createElement('form');
@@ -52,7 +54,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 	// === DELETE ===
 	if (options.mode === 'edit' && options.onDelete) {
-		const deleteButton = createButton({
+		deleteButton = createButton({
 			text: 'Удалить',
 			variant: 'danger',
 			className: 'mr-auto',
@@ -83,6 +85,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 	// === ACTION FUNCTIONS ===
 	function handleSubmit() {
+		if (isClosed) return;
 		const title = fields.getTitle();
 		const { color, limit } = properties.getValue();
 
@@ -96,7 +99,7 @@ export const editColumn = (options: EditColumnProps) => {
 	}
 
 	function handleDelete() {
-		if (!options.onDelete) return;
+		if (isClosed || !options.onDelete) return;
 
 		const content = document.createElement('span');
 		content.append('Вы уверены, что хотите удалить колонку ');
@@ -107,7 +110,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 		content.append(columnTitle, '?');
 
-		const confirmModal = createConfirmDialog({
+		confirmModal = createConfirmDialog({
 			title: 'Удаление колонки',
 			content,
 			icon: createSvg(deleteIcon, 'size-5'),
@@ -115,7 +118,7 @@ export const editColumn = (options: EditColumnProps) => {
 			onConfirm: () => options.onDelete?.(),
 		});
 
-		close();
+		closeDialog();
 
 		document.body.append(confirmModal.element);
 	}
@@ -128,18 +131,21 @@ export const editColumn = (options: EditColumnProps) => {
 
 	// === LIFECYCLE ===
 	function cleanup() {
+		if (isClosed) return;
+		isClosed = true;
+
 		form.removeEventListener('submit', onSubmit);
 		overlay.removeEventListener('keydown', onKeyDown);
+		cancelButton.removeEventListener('click', close);
+		deleteButton?.removeEventListener('click', handleDelete);
 
 		fields.destroy();
 		properties.destroy();
 	}
 
 	function close() {
-		if (isClosed) return;
-		isClosed = true;
-
-		cleanup();
+		confirmModal?.close();
+		confirmModal = null;
 		closeDialog();
 	}
 

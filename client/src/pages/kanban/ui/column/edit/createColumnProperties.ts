@@ -14,7 +14,7 @@ export const createColumnProperties = ({
 	onChange,
 }: CreateColumnPropertiesProps) => {
 	let selectedColor: ColumnColor = initialColor ?? 'slate';
-	let selectedLimit = initialLimit ?? 10;
+	let selectedLimit: number | null = initialLimit;
 
 	const paletteListeners: Array<{ button: HTMLButtonElement; handler: () => void }> = [];
 
@@ -26,7 +26,7 @@ export const createColumnProperties = ({
 	const limitRow = createPropertyRow(limitIcon, 'Лимит задач');
 
 	const limitSelect = createSelect({
-		initialValue: selectedLimit,
+		initialValue: selectedLimit ?? 10,
 		min: 1,
 		max: 15,
 		direction: 'up',
@@ -88,7 +88,7 @@ export const createColumnProperties = ({
 		});
 	}
 
-	function getValue(): { color: ColumnColor; limit: number } {
+	function getValue(): { color: ColumnColor; limit: number | null } {
 		return { color: selectedColor, limit: selectedLimit };
 	}
 

@@ -33,7 +33,7 @@ export const editTask = (options: EditTaskProps) => {
 		overlay,
 		container,
 		close: closeDialog,
-	} = createDialog(options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи', icon);
+	} = createDialog(options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи', icon, cleanup);
 
 	// === FORM ===
 	const form = document.createElement('form');
@@ -104,6 +104,8 @@ export const editTask = (options: EditTaskProps) => {
 	}
 
 	function handleSubmit() {
+		if (isClosed) return;
+
 		const data = getFormData();
 
 		if (!data.title) return;
@@ -133,18 +135,18 @@ export const editTask = (options: EditTaskProps) => {
 
 	// === LIFECYCLE ===
 	function cleanup() {
+		if (isClosed) return;
+		isClosed = true;
+
 		form.removeEventListener('submit', onSubmit);
 		overlay.removeEventListener('keydown', onKeyDown);
+		cancelButton.removeEventListener('click', close);
 
 		mainFields.destroy();
 		properties.destroy();
 	}
 
 	function close() {
-		if (isClosed) return;
-		isClosed = true;
-
-		cleanup();
 		closeDialog();
 	}
 

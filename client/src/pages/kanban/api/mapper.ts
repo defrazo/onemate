@@ -1,4 +1,13 @@
-import type { Column, DbColumn, DbTask, Task } from '../model';
+import type {
+	Column,
+	DbColumn,
+	DbKanbanBoard,
+	DbKanbanSnapshot,
+	DbTask,
+	KanbanBoard,
+	KanbanSnapshot,
+	Task,
+} from '../model';
 
 // === COLUMNS ===
 export const mapColumnFromDb = (db: DbColumn): Column => ({
@@ -52,3 +61,18 @@ export const mapTaskToDb = (task: Partial<Task>): Partial<DbTask> => {
 
 	return map;
 };
+
+export const mapBoardFromDb = (db: DbKanbanBoard): KanbanBoard => ({
+	id: db.id,
+	ownerId: db.owner_id,
+	title: db.title,
+	revision: db.revision,
+	createdAt: db.created_at,
+	updatedAt: db.updated_at,
+});
+
+export const mapSnapshotFromDb = (db: DbKanbanSnapshot): KanbanSnapshot => ({
+	board: mapBoardFromDb(db.board),
+	columns: db.columns.map(mapColumnFromDb),
+	tasks: db.tasks.map(mapTaskFromDb),
+});

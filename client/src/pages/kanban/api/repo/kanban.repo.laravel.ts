@@ -1,85 +1,100 @@
 import { api } from '@/shared/api';
 
 import type {
-	Column,
 	CreateColumnInput,
 	CreateTaskInput,
-	DbColumn,
-	DbTask,
-	EditColumnInput,
-	EditTaskInput,
+	DbKanbanBoards,
+	DbKanbanSnapshot,
+	DeletedKanbanBoard,
 	IKanbanRepo,
-	Task,
+	KanbanBoards,
+	KanbanSnapshot,
 } from '../../model';
-import { mapColumnFromDb, mapColumnToDb, mapTaskFromDb, mapTaskToDb } from '..';
-
-type ColumnResponse = {
-	column: DbColumn;
-};
-
-type ColumnsResponse = {
-	columns: DbColumn[];
-};
-
-type TaskResponse = {
-	task: DbTask;
-};
-
-type TasksResponse = {
-	tasks: DbTask[];
-};
+import { mapBoardFromDb, mapColumnToDb, mapSnapshotFromDb, mapTaskToDb, rethrowKanbanError } from '..';
 
 export class KanbanRepoLaravel implements IKanbanRepo {
-	async fetchColumns(): Promise<Column[]> {
-		const { data } = await api.get<ColumnsResponse>('/kanban/columns');
-		return data.columns.map(mapColumnFromDb);
+	async fetchBoards(): Promise<KanbanBoards> {
+		const { data } = await api.get<DbKanbanBoards>('/kanban/boards');
+		return { boards: data.boards.map(mapBoardFromDb) };
 	}
 
-	async addColumn(column: CreateColumnInput): Promise<Column> {
-		const { data } = await api.post<ColumnResponse>('/kanban/columns', mapColumnToDb(column));
-		return mapColumnFromDb(data.column);
+	initialize(): Promise<KanbanSnapshot> {
+		return this.snapshot(api.post('/kanban/boards/initialize'));
 	}
 
-	async editColumn(id: string, column: EditColumnInput): Promise<Column> {
-		const { data } = await api.patch<ColumnResponse>(`/kanban/columns/${id}`, mapColumnToDb(column));
-		return mapColumnFromDb(data.column);
+	fetchBoard(boardId: string): Promise<KanbanSnapshot> {
+		return this.snapshot(api.get(`/kanban/boards/${boardId}`));
 	}
 
-	async deleteColumn(id: string): Promise<void> {
-		await api.delete(`/kanban/columns/${id}`);
+	createBoard(title: string): Promise<KanbanSnapshot> {
+		return this.snapshot(api.post('/kanban/boards', { title }));
 	}
 
-	async moveColumn(id: string, newPosition: number): Promise<Column> {
-		const { data } = await api.patch<ColumnResponse>(`/kanban/columns/${id}/position`, {
-			position: newPosition,
-		});
-		return mapColumnFromDb(data.column);
+	renameBoard(boardId: string, revision: number, title: string): Promise<KanbanSnapshot> {
+		return this.snapshot(api.patch(`/kanban/boards/${boardId}`, { title, revision }));
 	}
 
-	async fetchTasks(): Promise<Task[]> {
-		const { data } = await api.get<TasksResponse>('/kanban/tasks');
-		return data.tasks.map(mapTaskFromDb);
+	async deleteBoard(boardId: string, revision: number): Promise<DeletedKanbanBoard> {
+		try {
+			const { data } = await api.delete<DeletedKanbanBoard>(`/kanban/boards/${boardId}`, { data: { revision } });
+			return data;
+		} catch (error: unknown) {
+			return rethrowKanbanError(error);
+		}
 	}
 
-	async addTask(task: CreateTaskInput): Promise<Task> {
-		const { data } = await api.post<TaskResponse>('/kanban/tasks', mapTaskToDb(task));
-		return mapTaskFromDb(data.task);
+	addColumn(boardId: string, revision: number, column: CreateColumnInput): Promise<KanbanSnapshot> {
+		return this.snapshot(api.post(`/kanban/boards/${boardId}/columns`, { ...mapColumnToDb(column), revision }));
 	}
 
-	async editTask(id: string, task: EditTaskInput): Promise<Task> {
-		const { data } = await api.patch<TaskResponse>(`/kanban/tasks/${id}`, mapTaskToDb(task));
-		return mapTaskFromDb(data.task);
-	}
-
-	async deleteTask(id: string): Promise<void> {
-		await api.delete(`/kanban/tasks/${id}`);
-	}
-
-	async moveTask(id: string, columnId: string, position: number, updatedAt: string | null): Promise<Task> {
-		const { data } = await api.patch<TaskResponse>(
-			`/kanban/tasks/${id}/position`,
-			mapTaskToDb({ columnId, position, updatedAt })
+	editColumn(
+		boardId: string,
+		revision: number,
+		id: string,
+		column: Partial<CreateColumnInput>
+	): Promise<KanbanSnapshot> {
+		return this.snapshot(
+			api.patch(`/kanban/boards/${boardId}/columns/${id}`, { ...mapColumnToDb(column), revision })
 		);
-		return mapTaskFromDb(data.task);
+	}
+
+	deleteColumn(boardId: string, revision: number, id: string): Promise<KanbanSnapshot> {
+		return this.snapshot(api.delete(`/kanban/boards/${boardId}/columns/${id}`, { data: { revision } }));
+	}
+
+	reorderColumns(boardId: string, revision: number, columnIds: string[]): Promise<KanbanSnapshot> {
+		return this.snapshot(api.patch(`/kanban/boards/${boardId}/columns/order`, { column_ids: columnIds, revision }));
+	}
+
+	addTask(boardId: string, revision: number, task: CreateTaskInput): Promise<KanbanSnapshot> {
+		return this.snapshot(api.post(`/kanban/boards/${boardId}/tasks`, { ...mapTaskToDb(task), revision }));
+	}
+
+	editTask(boardId: string, revision: number, id: string, task: Partial<CreateTaskInput>): Promise<KanbanSnapshot> {
+		return this.snapshot(api.patch(`/kanban/boards/${boardId}/tasks/${id}`, { ...mapTaskToDb(task), revision }));
+	}
+
+	deleteTask(boardId: string, revision: number, id: string): Promise<KanbanSnapshot> {
+		return this.snapshot(api.delete(`/kanban/boards/${boardId}/tasks/${id}`, { data: { revision } }));
+	}
+
+	moveTask(
+		boardId: string,
+		revision: number,
+		id: string,
+		columnId: string,
+		position: number
+	): Promise<KanbanSnapshot> {
+		return this.snapshot(
+			api.patch(`/kanban/boards/${boardId}/tasks/${id}/move`, { column_id: columnId, position, revision })
+		);
+	}
+
+	private async snapshot(request: Promise<{ data: DbKanbanSnapshot }>): Promise<KanbanSnapshot> {
+		try {
+			return mapSnapshotFromDb((await request).data);
+		} catch (error: unknown) {
+			return rethrowKanbanError(error);
+		}
 	}
 }

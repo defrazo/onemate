@@ -1,15 +1,7 @@
 import { PermissionService, type UserStore } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type {
-	Column,
-	CreateColumnInput,
-	CreateTaskInput,
-	EditColumnInput,
-	EditTaskInput,
-	IKanbanRepo,
-	Task,
-} from '../../model';
+import type { CreateColumnInput, CreateTaskInput, IKanbanRepo } from '../../model';
 import { KanbanRepoDemo, KanbanRepoLaravel } from '.';
 
 export type Role = 'user' | 'demo';
@@ -37,53 +29,73 @@ export class KanbanRepoRouting implements IKanbanRepo {
 		}
 	}
 
-	async fetchColumns(): Promise<Column[]> {
+	async fetchBoards() {
 		this.checkPermission('read');
-		return this.getTargetRepo().fetchColumns();
+		return this.getTargetRepo().fetchBoards();
 	}
 
-	async addColumn(column: CreateColumnInput): Promise<Column> {
-		this.checkPermission('save');
-		return this.getTargetRepo().addColumn(column);
-	}
-
-	async editColumn(id: string, column: EditColumnInput): Promise<Column> {
-		this.checkPermission('save');
-		return this.getTargetRepo().editColumn(id, column);
-	}
-
-	async deleteColumn(id: string): Promise<void> {
-		this.checkPermission('delete');
-		return this.getTargetRepo().deleteColumn(id);
-	}
-
-	async moveColumn(id: string, newPosition: number): Promise<Column> {
-		this.checkPermission('save');
-		return this.getTargetRepo().moveColumn(id, newPosition);
-	}
-
-	async fetchTasks(): Promise<Task[]> {
+	async initialize() {
 		this.checkPermission('read');
-		return this.getTargetRepo().fetchTasks();
+		return this.getTargetRepo().initialize();
 	}
 
-	async addTask(task: CreateTaskInput): Promise<Task> {
+	async fetchBoard(boardId: string) {
+		this.checkPermission('read');
+		return this.getTargetRepo().fetchBoard(boardId);
+	}
+
+	async createBoard(title: string) {
 		this.checkPermission('save');
-		return this.getTargetRepo().addTask(task);
+		return this.getTargetRepo().createBoard(title);
 	}
 
-	async editTask(id: string, task: EditTaskInput): Promise<Task> {
+	async renameBoard(boardId: string, revision: number, title: string) {
 		this.checkPermission('save');
-		return this.getTargetRepo().editTask(id, task);
+		return this.getTargetRepo().renameBoard(boardId, revision, title);
 	}
 
-	async deleteTask(id: string): Promise<void> {
+	async deleteBoard(boardId: string, revision: number) {
 		this.checkPermission('delete');
-		return this.getTargetRepo().deleteTask(id);
+		return this.getTargetRepo().deleteBoard(boardId, revision);
 	}
 
-	async moveTask(id: string, columnId: string, position: number, updatedAt: string | null): Promise<Task> {
+	async addColumn(boardId: string, revision: number, column: CreateColumnInput) {
 		this.checkPermission('save');
-		return this.getTargetRepo().moveTask(id, columnId, position, updatedAt);
+		return this.getTargetRepo().addColumn(boardId, revision, column);
+	}
+
+	async editColumn(boardId: string, revision: number, id: string, column: Partial<CreateColumnInput>) {
+		this.checkPermission('save');
+		return this.getTargetRepo().editColumn(boardId, revision, id, column);
+	}
+
+	async deleteColumn(boardId: string, revision: number, id: string) {
+		this.checkPermission('delete');
+		return this.getTargetRepo().deleteColumn(boardId, revision, id);
+	}
+
+	async reorderColumns(boardId: string, revision: number, columnIds: string[]) {
+		this.checkPermission('save');
+		return this.getTargetRepo().reorderColumns(boardId, revision, columnIds);
+	}
+
+	async addTask(boardId: string, revision: number, task: CreateTaskInput) {
+		this.checkPermission('save');
+		return this.getTargetRepo().addTask(boardId, revision, task);
+	}
+
+	async editTask(boardId: string, revision: number, id: string, task: Partial<CreateTaskInput>) {
+		this.checkPermission('save');
+		return this.getTargetRepo().editTask(boardId, revision, id, task);
+	}
+
+	async deleteTask(boardId: string, revision: number, id: string) {
+		this.checkPermission('delete');
+		return this.getTargetRepo().deleteTask(boardId, revision, id);
+	}
+
+	async moveTask(boardId: string, revision: number, id: string, columnId: string, position: number) {
+		this.checkPermission('save');
+		return this.getTargetRepo().moveTask(boardId, revision, id, columnId, position);
 	}
 }

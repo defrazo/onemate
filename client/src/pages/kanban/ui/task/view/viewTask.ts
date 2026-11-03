@@ -26,7 +26,7 @@ export const viewTask = (options: ViewTaskProps) => {
 	// === DIALOG ===
 	const icon = createSvg(viewIcon, 'size-5');
 
-	const { overlay, container, close: closeDialog } = createDialog('Детали задачи', icon);
+	const { overlay, container, close: closeDialog } = createDialog('Детали задачи', icon, cleanup);
 
 	// === DETAILS ===
 	const details = createTaskDetails({ title: options.initial.title, description: options.initial.description });
@@ -65,25 +65,36 @@ export const viewTask = (options: ViewTaskProps) => {
 
 	// === ACTION FUNCTIONS ===
 	function handleAction() {
-		options.onSubmit(!isCompleted);
+		if (isClosed) return;
+
 		close();
+		options.onSubmit(!isCompleted);
 	}
 
 	async function handleCopy(): Promise<void> {
+		if (isClosed) return;
+
 		try {
 			await navigator.clipboard.writeText(formatTaskSummary(options.initial));
+
+			if (isClosed) return;
 			notifier.setNotice('Скопировано в буфер обмена', 'success');
 		} catch {
+			if (isClosed) return;
 			notifier.setNotice('Что-то пошло не так', 'error');
 		}
 	}
 
 	// === LIFECYCLE ===
-	function close() {
+	function cleanup() {
 		if (isClosed) return;
 		isClosed = true;
 
 		copyButton.removeEventListener('click', handleCopy);
+		actionButton.removeEventListener('click', handleAction);
+	}
+
+	function close() {
 		closeDialog();
 	}
 

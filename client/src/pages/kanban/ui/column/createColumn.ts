@@ -31,8 +31,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		'core-gap scrollbar-none flex flex-1 flex-col xl:max-h-[calc(100vh-155px)] xl:overflow-y-auto';
 
 	// === ACTION FUNCTIONS ===
-
-	function onAddTask(columnId: string, taskLimit: number) {
+	function onAddTask(columnId: string, taskLimit: number | null) {
 		const today = new Date().toLocaleDateString('sv-SE');
 
 		editTaskModal?.close();
@@ -56,7 +55,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		document.body.append(editTaskModal.element);
 	}
 
-	function onEditColumn(id: string, columnTitle: string, color: ColumnColor, limit: number) {
+	function onEditColumn(id: string, columnTitle: string, color: ColumnColor, limit: number | null) {
 		editColumnModal?.close();
 
 		editColumnModal = editColumn({

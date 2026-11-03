@@ -1,3 +1,4 @@
+export * from './boardCache';
 export * from './device';
 export * from './formatTaskSummary';
 export * from './icons';

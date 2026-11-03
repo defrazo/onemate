@@ -3,6 +3,7 @@
 namespace App\Models\User;
 
 use App\Models\Cloud\CloudFile;
+use App\Models\Kanban\KanbanBoard;
 use App\Models\Kanban\KanbanColumn;
 use App\Models\Kanban\KanbanTask;
 use App\Models\Network\MonitoredService;
@@ -67,6 +68,11 @@ class User extends Authenticatable implements MustVerifyEmail
     public function kanbanColumns(): HasMany
     {
         return $this->hasMany(KanbanColumn::class);
+    }
+
+    public function ownedKanbanBoards(): HasMany
+    {
+        return $this->hasMany(KanbanBoard::class, 'owner_id');
     }
 
     public function todoCanvases(): HasMany

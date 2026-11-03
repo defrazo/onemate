@@ -28,6 +28,13 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 		'flex h-[39px] w-5.5 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-dashed border-(--border-primary) p-0 px-2 py-1 transition-colors hover:border-transparent hover:bg-(--accent-primary-hover) hover:text-(--text-on-accent) xl:h-[43px]';
 	insertSvg(addColumnButton, addIcon, 'size-4 shrink-0');
 
+	// === EMPTY BOARD ===
+	const emptyBoard = document.createElement('button');
+	emptyBoard.type = 'button';
+	emptyBoard.className =
+		'flex min-h-40 w-full cursor-pointer flex-col items-center justify-center gap-2 rounded-xl border border-dashed border-(--border-primary) text-(--text-secondary) transition-colors hover:bg-(--bg-secondary)';
+	emptyBoard.textContent = 'Добавить первую колонку';
+
 	// === RENDER COLUMNS ===
 	function renderColumns(columns: Column[], tasks: Task[]) {
 		const actualColumns = new Set(columns.map((column) => column.id));
@@ -44,15 +51,21 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 			if (!instance) {
 				instance = createColumn(column, state);
 				columnInstances.set(column.id, instance);
-				columnsContainer.append(instance.element);
 			}
 
 			instance.update(column, tasksCount);
+			columnsContainer.append(instance.element);
 		}
 
-		columnsContainer.append(addColumnButton);
+		columnsContainer.append(addColumnButton, emptyBoard);
 
-		addColumnButton.classList.toggle('hidden', columns.length === 0 || columns.length >= LIMITS.MAX_COLUMNS);
+		const isEmpty = columns.length === 0;
+
+		addColumnButton.classList.toggle('hidden', isEmpty || columns.length >= LIMITS.MAX_COLUMNS);
+		emptyBoard.classList.toggle(
+			'hidden',
+			!isEmpty || state.getBoardState().loading || state.getBoardState().loadError
+		);
 	}
 
 	// === RENDER TASKS ===
@@ -124,6 +137,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === EVENTS ===
 	addColumnButton.addEventListener('click', onAddColumn);
+	emptyBoard.addEventListener('click', onAddColumn);
 
 	const destroyDnD = setupDnD(
 		board,
@@ -134,6 +148,13 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	const destroyMouseScroll = enableMouseScroll(board);
 
 	// === SUBSCRIPTIONS ===
+	const unsubscribeBoards = state.subscribeBoards(() => {
+		const { loading, loadError } = state.getBoardState();
+		const isEmpty = state.getColumns().length === 0;
+
+		emptyBoard.classList.toggle('hidden', loading || loadError || !isEmpty);
+	});
+
 	const unsubscribeColumns = state.subscribeColumns((columns) => renderColumns(columns, lastTasks));
 
 	const unsubscribeTasks = state.subscribeTasks((tasks) => {
@@ -148,6 +169,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 		if (isDestroyed) return;
 		isDestroyed = true;
 
+		unsubscribeBoards();
 		unsubscribeTasks();
 		unsubscribeColumns();
 
@@ -155,6 +177,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 		destroyMouseScroll();
 
 		addColumnButton.removeEventListener('click', onAddColumn);
+		emptyBoard.removeEventListener('click', onAddColumn);
 
 		columnModal?.close();
 		columnModal = null;

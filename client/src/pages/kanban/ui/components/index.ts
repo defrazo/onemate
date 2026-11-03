@@ -1,3 +1,4 @@
+export { createBoardDialog } from './createBoardDialog';
 export { createButton } from './createButton';
 export { createCloseButton } from './createCloseButton';
 export { createConfirmDialog } from './createConfirmDialog';
