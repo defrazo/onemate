@@ -15,7 +15,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
-import { useTextEditor } from '@/shared/lib/hooks';
+import { useOutsideClick, useTextEditor } from '@/shared/lib/hooks';
 import { cn, fullDate } from '@/shared/lib/utils';
 import { BackButton, Divider, EditorAction, Textarea } from '@/shared/ui';
 
@@ -32,14 +32,16 @@ export const Editor = observer(({ color, onColorChange }: EditorProps) => {
 
 	const [paletteOpen, setPaletteOpen] = useState(false);
 
+	const paletteRef = useOutsideClick<HTMLDivElement>(() => setPaletteOpen(false));
+
 	const note = notesStore.activeNote;
 	if (!note) return null;
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
-			<div className="flex shrink-0 flex-wrap items-center justify-between border-b border-(--border-primary) pb-2">
-				<BackButton title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
-				<div className="ml-auto flex items-center justify-end md:gap-1">
+			<div className="flex shrink-0 flex-col gap-2 border-b border-(--border-primary) pb-2 xl:flex-row xl:items-center xl:justify-between">
+				<BackButton className="mr-auto" title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
+				<div className="flex items-center justify-between md:gap-1 xl:ml-auto xl:justify-end">
 					<EditorAction
 						icon={feedback === 'undo' ? IconCheck : IconArrowBackUp}
 						title="Отменить"
@@ -85,7 +87,10 @@ export const Editor = observer(({ color, onColorChange }: EditorProps) => {
 							/>
 						</button>
 						{paletteOpen && (
-							<div className="absolute top-full right-0 z-30 mt-0.5 grid w-max grid-cols-4 gap-2 rounded-lg border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-lg">
+							<div
+								ref={paletteRef}
+								className="absolute top-full right-0 z-30 mt-0.5 grid w-max grid-cols-4 gap-2 rounded-lg border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-lg"
+							>
 								{Object.entries(COLOR_PALETTE).map(([key, config]) => (
 									<button
 										key={key}

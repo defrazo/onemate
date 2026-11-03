@@ -26,9 +26,9 @@ export const FilesToolbar = observer(
 					active={cloudStore.favoritesOnly}
 					centerIcon={
 						cloudStore.favoritesOnly ? (
-							<IconStarFilled className="size-4 text-(--accent-primary)" />
+							<IconStarFilled className="size-5 text-(--accent-primary) xl:size-4" />
 						) : (
-							<IconStar className="size-4" />
+							<IconStar className="size-5 xl:size-4" />
 						)
 					}
 					className="p-1 aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
@@ -38,7 +38,7 @@ export const FilesToolbar = observer(
 				/>
 				<Button
 					active={searchOpen}
-					centerIcon={<IconSearch className="size-4" />}
+					centerIcon={<IconSearch className="size-5 xl:size-4" />}
 					className="p-1"
 					title={searchOpen ? 'Закрыть поиск' : 'Поиск файлов'}
 					variant="iconSurface"
@@ -46,7 +46,9 @@ export const FilesToolbar = observer(
 				/>
 				<Button
 					active={selectionMode}
-					centerIcon={<IconCheckbox className={cn('size-4', selectionMode && 'text-(--accent-primary)')} />}
+					centerIcon={
+						<IconCheckbox className={cn('size-5 xl:size-4', selectionMode && 'text-(--accent-primary)')} />
+					}
 					className="p-1 aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
 					disabled={!cloudStore.files.length}
 					title={selectionMode ? 'Отменить выбор' : 'Выбрать файлы'}
@@ -54,7 +56,9 @@ export const FilesToolbar = observer(
 					onClick={onSelectionToggle}
 				/>
 				<Button
-					centerIcon={<IconRefresh className={cn('size-4', cloudStore.isLoading && 'animate-spin')} />}
+					centerIcon={
+						<IconRefresh className={cn('size-5 xl:size-4', cloudStore.isLoading && 'animate-spin')} />
+					}
 					className="p-1"
 					disabled={cloudStore.isLoading}
 					title="Обновить файлы"

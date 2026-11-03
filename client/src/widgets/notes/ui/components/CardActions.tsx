@@ -61,7 +61,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners }:
 				/>
 			</div>
 			<Button
-				centerIcon={<IconCopy className="size-4" />}
+				centerIcon={<IconCopy className="size-5 xl:size-4" />}
 				className="transition-[color,opacity] xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Скопировать"
@@ -75,7 +75,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners }:
 				}}
 			/>
 			<Button
-				centerIcon={<IconTrash className="size-4" />}
+				centerIcon={<IconTrash className="size-5 xl:size-4" />}
 				className="transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Удалить заметку"

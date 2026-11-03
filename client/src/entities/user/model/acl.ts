@@ -34,7 +34,7 @@ export const ACL: Record<Role, Capabilities> = {
 		cloud: { read: true, save: true, delete: true, upload: true, use: true },
 	},
 	demo: {
-		user: { read: false, save: true, delete: true },
+		user: { read: false, save: false, delete: false },
 		profile: { read: true, save: true, delete: false, configure: false },
 		location: { read: true, save: true, delete: true },
 		notes: { read: true, save: true },

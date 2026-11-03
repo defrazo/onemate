@@ -12,7 +12,6 @@ import {
 	IconPointFilled,
 	IconRadar,
 	IconRoute,
-	IconServer,
 	IconSparkles,
 	IconStack2,
 	IconTargetArrow,
@@ -48,7 +47,6 @@ const technologies = [
 	{ icon: IconAnalyze, title: 'MobX', description: 'Реактивность' },
 	{ icon: IconBrandLaravel, title: 'Laravel', description: 'Backend и API' },
 	{ icon: IconDatabase, title: 'PostgreSQL', description: 'Хранение данных' },
-	{ icon: IconServer, title: 'Redis', description: 'Сессии и очереди' },
 	{ icon: IconBrandDocker, title: 'Docker', description: 'Контейнеризация' },
 ];
 

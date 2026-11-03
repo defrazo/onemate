@@ -77,7 +77,7 @@ export const ListActions = ({ title, hide, disabled = false, onEdit, onDelete, o
 	}, [open]);
 
 	return (
-		<div className="relative shrink-0">
+		<div className="relative shrink-0 opacity-100 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover/list:opacity-100">
 			<Button
 				ref={triggerRef}
 				aria-expanded={open}

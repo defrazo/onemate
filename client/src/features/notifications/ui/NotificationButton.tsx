@@ -18,7 +18,7 @@ export const NotificationButton = observer(() => {
 	const buttonRef = useOutsideClick<HTMLDivElement>(() => setIsOpen(false));
 
 	return (
-		<div ref={buttonRef} className="relative">
+		<div ref={buttonRef} className="relative not-md:mr-2">
 			<Button
 				active={isOpen}
 				centerIcon={<IconBell className="size-5.5 xl:size-5" />}

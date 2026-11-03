@@ -5,7 +5,7 @@ export const createTaskMeta = ({ created, updated }: { created: string; updated:
 	element.className = 'mt-2 flex flex-wrap items-center justify-center gap-x-2 gap-y-1 select-none';
 
 	const createdItem = document.createElement('span');
-	createdItem.textContent = `Создано ${fullDate(created)}`;
+	createdItem.textContent = `Создано ${fullDate(created, true)}`;
 	createdItem.className = 'trim text-xs text-(--text-secondary) opacity-70';
 
 	element.append(createdItem);
@@ -16,7 +16,7 @@ export const createTaskMeta = ({ created, updated }: { created: string; updated:
 		separator.className = 'trim text-sm text-(--text-secondary) opacity-70';
 
 		const updatedItem = document.createElement('span');
-		updatedItem.textContent = `Изменено ${fullDate(updated)}`;
+		updatedItem.textContent = `Изменено ${fullDate(updated, true)}`;
 		updatedItem.className = 'trim text-xs text-(--text-secondary) opacity-70';
 
 		element.append(separator, updatedItem);

@@ -18,7 +18,7 @@ export const variants: Record<Component, Record<string, string>> = {
 			'hover:bg-(--tone-strong-hover) focus:text-(--text-primary)'
 		),
 		accent: cn(
-			'rounded-lg bg-(--accent-primary) text-(--text-on-accent)/85',
+			'rounded-lg bg-(--accent-primary) text-(--text-on-accent)/85 disabled:text-(--text-primary)',
 			'hover:bg-(--accent-primary-hover)',
 			'disabled:not-data-loading:bg-(--bg-tertiary)'
 		),

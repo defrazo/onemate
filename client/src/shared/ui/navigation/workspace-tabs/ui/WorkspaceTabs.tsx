@@ -79,7 +79,7 @@ export const WorkspaceTabs = ({
 						<div
 							key={id}
 							className={cn(
-								'group/tab relative ml-1 flex h-8 max-w-60 shrink-0 items-center gap-2',
+								'group/tab relative ml-1 flex h-8 max-w-60 shrink-0 items-center gap-3 xl:gap-2',
 								active && 'text-(--text-primary)',
 								!active && 'text-(--text-secondary) hover:text-(--text-primary)',
 								editing && 'pr-1.5 pl-0'
@@ -91,7 +91,7 @@ export const WorkspaceTabs = ({
 										key={id}
 										autoFocus
 										aria-label={`Переименовать «${title}»`}
-										className="min-w-0 py-1 pl-3 text-sm"
+										className="min-w-0 border border-(--border-contrast)/15 py-1 pl-3 text-sm"
 										disabled={editDisabled}
 										id={`Переименовать «${title}»`}
 										maxLength={maxTitleLength}

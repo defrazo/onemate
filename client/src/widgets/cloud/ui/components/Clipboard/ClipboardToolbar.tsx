@@ -71,7 +71,7 @@ export const ClipboardToolbar = observer(() => {
 	return (
 		<>
 			<Button
-				centerIcon={<IconCloudPlus className="size-4" />}
+				centerIcon={<IconCloudPlus className="size-5 xl:size-4" />}
 				className="p-1"
 				disabled={!cloudStore.text.trim() || cloudStore.isUploading}
 				title="Сохранить TXT в облако"
@@ -80,7 +80,7 @@ export const ClipboardToolbar = observer(() => {
 			/>
 			{externalUrl && (
 				<Button
-					centerIcon={<IconExternalLink className="size-4" />}
+					centerIcon={<IconExternalLink className="size-5 xl:size-4" />}
 					className="p-1"
 					disabled={isResolvingTextConflict}
 					title="Открыть ссылку"
@@ -89,7 +89,7 @@ export const ClipboardToolbar = observer(() => {
 				/>
 			)}
 			<Button
-				centerIcon={<IconRefresh className={cn('size-4', cloudStore.isLoading && 'animate-spin')} />}
+				centerIcon={<IconRefresh className={cn('size-5 xl:size-4', cloudStore.isLoading && 'animate-spin')} />}
 				className="p-1"
 				disabled={cloudStore.isLoading || isTextDirty || isSavingText || !!textConflict}
 				title="Обновить с сервера"

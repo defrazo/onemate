@@ -70,14 +70,14 @@ export const AddItem = observer(({ list, onAdded }: { list: TodoList; onAdded?: 
 	}, [adding, submitting]);
 
 	if (limitReached)
-		return <p className="shrink-0 text-xs text-(--text-disabled)">Максимум {TODO_LIMITS.ITEMS} пунктов</p>;
+		return <p className="shrink-0 text-xs text-(--text-tertiary)">Максимум {TODO_LIMITS.ITEMS} пунктов</p>;
 
 	if (!adding) {
 		return (
 			<Button
-				className="h-6.5 justify-start rounded-md p-1 text-sm text-(--text-disabled) not-xl:min-h-7.5 hover:text-(--text-primary)"
+				className="h-6.5 justify-start rounded-md p-1 text-sm text-(--text-secondary) not-xl:min-h-7.5 hover:text-(--accent-primary)"
 				disabled={isDisabled}
-				leftIcon={<IconPlus className="size-4 shrink-0" />}
+				leftIcon={<IconPlus className="-mr-0.5 mb-px size-3.5 shrink-0" />}
 				padding="none"
 				variant="custom"
 				onClick={() => setAdding(true)}

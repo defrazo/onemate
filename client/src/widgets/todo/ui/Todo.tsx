@@ -14,7 +14,7 @@ export const Todo = observer(() => {
 	if (!userStore.id) return <LoadingState />;
 
 	if (!todoStore.isReady)
-		return <LoadingError message="Что-то пошло не так..." size="xl" onRetry={() => void todoStore.reload()} />;
+		return <LoadingError message="Что-то пошло не так..." size="lg" onRetry={() => void todoStore.reload()} />;
 
 	if (!list)
 		return (

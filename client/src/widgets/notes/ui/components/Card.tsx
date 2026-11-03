@@ -26,7 +26,7 @@ export const Card = observer(({ id, color }: { id: string; color: PaletteColor }
 				type="button"
 				onClick={() => notesStore.openNote(id)}
 			>
-				<p className="line-clamp-3 text-sm text-(--text-primary) 2xl:line-clamp-4">
+				<p className="line-clamp-3 text-sm leading-4.5 whitespace-pre-wrap text-(--text-primary) xl:line-clamp-4">
 					{note.text || 'Пустая заметка'}
 				</p>
 			</button>

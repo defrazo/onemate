@@ -2,7 +2,7 @@
 	/* Текст */
 	--text-primary: #d7d7d7;
 	--text-secondary: #a0a0a0;
-	--text-tertiary: #687286;
+	--text-tertiary: #808080;
 	--text-disabled: #666666;
 	--text-on-accent: #ffffff;
 
@@ -57,7 +57,7 @@
 	--priority-medium: #58d889;
 	--priority-high: #fa6961;
 
-	/* Палитра (Kanban) */
+	/* Палитра */
 	--palette-slate: #94a3b8;
 	--palette-rose: #fb7185;
 	--palette-amber: #fbbf24;
@@ -127,7 +127,7 @@
 	--priority-medium: #319c58;
 	--priority-high: #d94d48;
 
-	/* Палитра (Kanban) */
+	/* Палитра */
 	--palette-slate: #94a3b8;
 	--palette-rose: #fb7185;
 	--palette-amber: #f59e0b;

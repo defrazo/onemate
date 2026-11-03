@@ -60,7 +60,7 @@ export const HomePage = observer(() => {
 					Открыть демо
 				</Button>
 				<Link
-					className="mt-2 font-mono text-xs text-(--text-secondary) hover:text-(--accent-primary-hover)"
+					className="mt-3 font-mono text-sm text-(--text-secondary) hover:text-(--accent-primary-hover) md:text-xs"
 					padding="none"
 					to="/demo"
 					variant="custom"

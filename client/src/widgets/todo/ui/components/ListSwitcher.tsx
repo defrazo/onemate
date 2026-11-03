@@ -18,7 +18,7 @@ export const ListSwitcher = ({ canvases, value, disabled, onChange }: ListSwitch
 
 	return (
 		<div className="flex min-w-0 items-center gap-2">
-			<span className="shrink-0 text-sm text-(--text-disabled)">{isMobile ? 'Список:' : 'Текущий список:'}</span>
+			<span className="shrink-0 text-sm text-(--text-secondary)">{isMobile ? 'Список:' : 'Текущий список:'}</span>
 			<div className="min-w-0 flex-1">
 				<Select
 					align="start"

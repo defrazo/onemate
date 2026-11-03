@@ -16,14 +16,14 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const taskCard = document.createElement('div');
 	taskCard.dataset.taskId = task.id;
 	taskCard.className =
-		'group/task flex min-h-40 min-w-0 flex-col gap-2 rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors select-none hover:border-(--border-primary)';
+		'group/task flex min-h-32.5 min-w-0 flex-col gap-1.5 rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors select-none hover:border-(--border-primary)';
 
 	// === TASK HEADER ===
 	const taskHeader = createTaskHeader({ task, onView: onViewTask, onEdit: onEditTask, onDelete: onDeleteTask });
 
 	// === TASK CONTENT ===
 	const taskContent = document.createElement('div');
-	taskContent.className = cn('flex flex-1 flex-col gap-2 px-3', task.completed && 'opacity-30');
+	taskContent.className = cn('flex min-h-0 flex-1 flex-col gap-1 px-3', task.completed && 'opacity-30');
 
 	// task meta
 	const taskMeta = createTaskMeta(task);
@@ -31,15 +31,14 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	// task description
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
-	taskDescription.className =
-		'line-clamp-3 overflow-hidden text-sm leading-4.5 text-ellipsis text-(--text-secondary)';
+	taskDescription.className = 'line-clamp-2 overflow-hidden text-xs text-sm text-ellipsis text-(--text-secondary)';
 
 	taskContent.append(taskMeta.element, taskDescription);
 
 	// === TIMESTAMP ===
 	const timestamp = document.createElement('div');
 	timestamp.className =
-		'mt-auto flex min-h-7 items-center justify-between gap-2 px-3 pb-3 text-xs text-(--text-disabled)';
+		'mt-auto flex min-h-6.5 items-center justify-between px-3 pb-3 text-xs text-(--text-tertiary)';
 
 	const formatShortDate = (value: string): string => {
 		const [, month, day] = value.slice(0, 10).split('-');

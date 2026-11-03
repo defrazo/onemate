@@ -57,7 +57,7 @@ export const viewTask = (options: ViewTaskProps) => {
 	copyButton.type = 'button';
 	copyButton.textContent = 'Копировать в буфер';
 	copyButton.className =
-		'mx-auto cursor-pointer text-xs text-(--text-secondary) transition-colors select-none hover:text-(--text-primary)';
+		'mx-auto cursor-pointer text-sm text-(--text-secondary) transition-colors select-none hover:text-(--text-primary) md:text-xs';
 
 	copyButton.addEventListener('click', handleCopy);
 

@@ -102,7 +102,7 @@ export const ItemRow = observer(
 							<Input
 								autoFocus
 								aria-label="Текст пункта"
-								className="min-w-0 flex-1 py-0 text-sm"
+								className="min-w-0 flex-1 border border-(--border-contrast)/15 py-0 text-sm"
 								disabled={todoStore.isLoading}
 								maxLength={TODO_LIMITS.ITEM_TEXT}
 								value={draftText}

@@ -49,7 +49,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 				<div className="pointer-events-auto flex h-full items-end gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
-							centerIcon={<IconX className="size-4 hover:text-(--status-error)" stroke={3} />}
+							centerIcon={<IconX className="size-5 hover:text-(--status-error) xl:size-4" stroke={3} />}
 							disabled={!text}
 							padding="none"
 							title="Очистить"
@@ -58,7 +58,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 						/>
 					)}
 					<Button
-						centerIcon={<IconCopy className="size-4" />}
+						centerIcon={<IconCopy className="size-5 xl:size-4" />}
 						disabled={!text}
 						padding="none"
 						title={isSource ? 'Скопировать оригинал' : 'Скопировать перевод'}

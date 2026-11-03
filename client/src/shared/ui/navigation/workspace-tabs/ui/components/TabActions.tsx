@@ -91,7 +91,7 @@ export const TabActions = ({ title, disabled = false, canDelete, className, onRe
 					aria-expanded={open}
 					aria-haspopup="true"
 					aria-label={`Действия с «${title}»`}
-					centerIcon={<IconDots className="size-4" />}
+					centerIcon={<IconDots className="size-5 xl:size-4" />}
 					disabled={disabled}
 					padding="none"
 					title="Действия"

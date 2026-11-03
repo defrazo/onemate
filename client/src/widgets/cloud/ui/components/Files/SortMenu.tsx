@@ -51,7 +51,7 @@ export const SortMenu = observer(() => {
 			<Button
 				aria-expanded={isOpen}
 				aria-haspopup="menu"
-				centerIcon={<IconArrowsSort className="size-4" />}
+				centerIcon={<IconArrowsSort className="size-5 xl:size-4" />}
 				className="p-1"
 				disabled={cloudStore.isLoading}
 				title="Сортировать файлы"

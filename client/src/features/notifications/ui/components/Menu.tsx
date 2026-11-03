@@ -39,7 +39,7 @@ export const Menu = observer(() => {
 				<div className="flex items-center gap-1">
 					{store.unreadCount > 0 && (
 						<Button
-							className="rounded-md text-xs text-(--text-secondary) hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)"
+							className="rounded-md text-sm text-(--text-secondary) hover:bg-(--accent-primary-muted) hover:text-(--accent-primary) xl:text-xs"
 							padding="sm"
 							type="button"
 							variant="custom"
@@ -50,7 +50,7 @@ export const Menu = observer(() => {
 					)}
 					{store.notifications.length > 0 && (
 						<Button
-							centerIcon={<IconTrash className="size-4" />}
+							centerIcon={<IconTrash className="size-5 xl:size-4" />}
 							className="hover:text-(--status-error)"
 							padding="none"
 							title="Удалить все"

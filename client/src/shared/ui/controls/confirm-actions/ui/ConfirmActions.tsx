@@ -29,7 +29,7 @@ export const ConfirmActions = ({
 	const isDisabled = disabled || loading;
 
 	return (
-		<div className={cn('flex shrink-0 items-center gap-2', className)}>
+		<div className={cn('flex shrink-0 items-center gap-3 xl:gap-2', className)}>
 			<Button
 				aria-label={confirmLabel}
 				centerIcon={<IconCheck className="size-6 md:size-5 xl:size-4" />}

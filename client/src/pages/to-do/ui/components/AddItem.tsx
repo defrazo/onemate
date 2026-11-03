@@ -64,7 +64,7 @@ export const AddItem = ({
 
 	if (limitReached) {
 		return (
-			<p className="text-xs text-(--text-disabled) select-none">
+			<p className="text-xs text-(--text-tertiary) select-none">
 				{limit !== undefined ? `Максимум ${limit} пунктов` : 'Достигнут лимит пунктов'}
 			</p>
 		);
@@ -75,9 +75,9 @@ export const AddItem = ({
 
 		return (
 			<Button
-				className="h-6.5 rounded-md p-1 text-sm text-(--text-disabled) not-xl:min-h-7.5 hover:text-(--text-primary)"
+				className="h-6.5 rounded-md p-1 text-sm text-(--text-secondary) not-xl:min-h-7.5 hover:text-(--accent-primary)"
 				disabled={isDisabled}
-				leftIcon={<IconPlus className="size-4 shrink-0" />}
+				leftIcon={<IconPlus className="-mr-0.5 mb-px size-3.5 shrink-0" />}
 				padding="none"
 				variant="custom"
 				onClick={onActivate}

@@ -172,7 +172,7 @@ export const Files = observer(
 				onDrop={handleDrop}
 			>
 				{searchOpen && (
-					<div className="flex min-w-0 items-center gap-2 xl:ml-2">
+					<div className="flex min-w-0 items-center gap-1 xl:ml-2">
 						<Input
 							ref={searchRef}
 							className="h-8 min-w-0 flex-1 text-sm"
@@ -187,7 +187,7 @@ export const Files = observer(
 							}}
 						/>
 						<Button
-							centerIcon={<IconX className="size-4" />}
+							centerIcon={<IconX className="size-5 xl:size-4" />}
 							className="p-1.5"
 							title="Закрыть поиск"
 							variant="icon"
