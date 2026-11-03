@@ -9,6 +9,7 @@ import { currencyCache, currencyIcons, currencyNames, sortCodesByPopularity } fr
 import { createDefaultCurrencies, type Currency, type CurrencyOption, type RatesList, type RatesResponse } from '.';
 
 export class CurrencyStore extends AsyncStore {
+	private initialized = false;
 	private rates: RatesResponse | null = null;
 
 	currencies: Currency[] = createDefaultCurrencies();
@@ -94,6 +95,11 @@ export class CurrencyStore extends AsyncStore {
 		);
 	}
 
+	ensureLoaded(): Promise<void> {
+		if (this.initialized || this.isLoading) return Promise.resolve();
+		return this.loadRates();
+	}
+
 	selectCurrency(selectedCode: string, type: 'base' | 'target') {
 		const base = this.currencies[0];
 		const target = this.currencies[1];
@@ -144,20 +150,24 @@ export class CurrencyStore extends AsyncStore {
 		const cached = currencyCache.read();
 
 		if (cached) {
-			this.applyRates(cached.rates);
+			if (!this.isReady) this.applyRates(cached.rates);
 
-			if (currencyCache.isFresh(cached)) return;
+			if (currencyCache.isFresh(cached)) {
+				this.initialized = true;
+				return;
+			}
 		}
 
 		if (this.isLoading) return;
 
 		await this.withLoading(async () => {
 			const rates = await fetchRates();
-
-			if (!rates) return;
+			if (!rates) throw new Error('Не удалось загрузить курсы валют');
 
 			this.applyRates(rates);
 			currencyCache.write(rates);
+
+			this.initialized = true;
 		});
 	}
 
@@ -232,19 +242,14 @@ export class CurrencyStore extends AsyncStore {
 			reaction(
 				() => this.userStore.id,
 				(id) => {
-					if (!id) {
-						this.reset();
-						return;
-					}
-
-					void this.loadRates();
-				},
-				{ fireImmediately: true }
+					if (!id) this.reset();
+				}
 			)
 		);
 	}
 
 	protected reset(): void {
+		this.initialized = false;
 		this.rates = null;
 		this.currencies = createDefaultCurrencies();
 	}

@@ -1,14 +1,21 @@
+import { useCallback, useEffect } from 'react';
 import { IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { pluralize } from '@/shared/lib/utils';
-import { Button, SyncIndicator } from '@/shared/ui';
+import { Button, LoadingError, SyncIndicator } from '@/shared/ui';
 
 import { Card, Editor, List } from './components';
 
 export const Notes = observer(() => {
 	const { notesStore, notifyStore } = useStore();
+
+	const handleLoad = useCallback(() => {
+		void notesStore.ensureLoaded().catch(() => notifyStore.setNotice('Не удалось загрузить заметки', 'error'));
+	}, [notesStore, notifyStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
 
 	const handleAdd = () => {
 		try {
@@ -18,6 +25,8 @@ export const Notes = observer(() => {
 			notifyStore.setNotice('Не удалось добавить заметку', 'error');
 		}
 	};
+
+	if (!notesStore.isReady) return <LoadingError error={!!notesStore.error} size="lg" onRetry={handleLoad} />;
 
 	if (notesStore.activeNote) {
 		const note = notesStore.activeNote;

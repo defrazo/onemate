@@ -1,20 +1,22 @@
+import { useCallback, useEffect } from 'react';
 import { IconListSearch } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Link, LoadingError, LoadingState, NoContent, SyncIndicator } from '@/shared/ui';
+import { Link, LoadingError, NoContent, SyncIndicator } from '@/shared/ui';
 
 import { ListContent, ListSwitcher } from './components';
 
 export const Todo = observer(() => {
-	const { userStore, todoStore } = useStore();
+	const { todoStore } = useStore();
 
 	const list = todoStore.activeList;
 
-	if (!userStore.id) return <LoadingState />;
+	const handleLoad = useCallback(() => void todoStore.ensureLoaded(), [todoStore]);
 
-	if (!todoStore.isReady)
-		return <LoadingError message="Что-то пошло не так..." size="lg" onRetry={() => void todoStore.reload()} />;
+	useEffect(() => handleLoad(), [handleLoad]);
+
+	if (!todoStore.isReady) return <LoadingError error={!todoStore.isLoading} size="lg" onRetry={handleLoad} />;
 
 	if (!list)
 		return (

@@ -1,4 +1,4 @@
-import { type ReactNode, useEffect, useRef, useState } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef, useState } from 'react';
 import { IconLayoutGrid, IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
@@ -20,6 +20,10 @@ export const TodoPage = observer(() => {
 
 	const ownedModal = useRef<ReactNode>(null);
 	const active = useRef(false);
+
+	const handleLoad = useCallback(() => void todoStore.ensureLoaded(), [todoStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
 
 	useEffect(() => {
 		active.current = true;
@@ -162,8 +166,7 @@ export const TodoPage = observer(() => {
 		);
 	};
 
-	if (!todoStore.isReady)
-		return <LoadingError message="Что-то пошло не так..." size="xl" onRetry={() => void todoStore.reload()} />;
+	if (!todoStore.isReady) return <LoadingError error={!todoStore.isLoading} size="lg" onRetry={handleLoad} />;
 
 	return (
 		<section className="flex min-h-0 min-w-0 flex-1 flex-col gap-4">

@@ -38,6 +38,11 @@ export class TodoStore extends BaseStore {
 		return lists.find(({ id }) => id === this.selectedListId) ?? lists[0];
 	}
 
+	ensureLoaded(): Promise<void> {
+		if (this.isReady || this.isLoading) return Promise.resolve();
+		return this.reload();
+	}
+
 	setSelectedCanvas(id: string): void {
 		const userId = this.userStore.id;
 		if (!userId || !this.canvases.some((canvas) => canvas.id === id)) return;
@@ -167,6 +172,7 @@ export class TodoStore extends BaseStore {
 	private handleBroadcast = (event: MessageEvent<{ type: string; userId: string }>): void => {
 		if (event.data?.type !== 'updated') return;
 		if (!this.userStore.id || event.data.userId !== this.userStore.id) return;
+		if (!this.isReady) return;
 
 		void this.reload();
 	};
@@ -206,18 +212,15 @@ export class TodoStore extends BaseStore {
 				() => this.userStore.id,
 				(userId) => {
 					this.reset();
+					if (!userId) return;
 
-					if (userId) {
-						const selectedCanvasId = todoCache.readSelectedCanvasId(userId);
-						const selectedListId = todoCache.readSelectedListId(userId);
+					const selectedCanvasId = todoCache.readSelectedCanvasId(userId);
+					const selectedListId = todoCache.readSelectedListId(userId);
 
-						runInAction(() => {
-							this.selectedCanvasId = selectedCanvasId;
-							this.selectedListId = selectedListId;
-						});
-
-						void this.reload();
-					}
+					runInAction(() => {
+						this.selectedCanvasId = selectedCanvasId;
+						this.selectedListId = selectedListId;
+					});
 				},
 				{ fireImmediately: true }
 			)

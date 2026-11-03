@@ -1,3 +1,4 @@
+import { useCallback, useEffect } from 'react';
 import {
 	IconClock,
 	IconCopy,
@@ -12,12 +13,20 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { fullDate } from '@/shared/lib/utils';
-import { Button, Divider, LoadingState, NoContent, Tooltip } from '@/shared/ui';
+import { Button, Divider, LoadingError, LoadingState, NoContent, Tooltip } from '@/shared/ui';
 
 export const DeviceActivitySection = observer(() => {
 	const copy = useCopy();
 
 	const { deviceActivityStore: store, notifyStore } = useStore();
+
+	const handleLoad = useCallback(() => {
+		void store
+			.ensureLoaded()
+			.catch(() => notifyStore.setNotice('Не удалось загрузить историю активности', 'error'));
+	}, [store, notifyStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
 
 	const handleCopySession = () => {
 		const activity = store.currentActivity;
@@ -73,6 +82,7 @@ export const DeviceActivitySection = observer(() => {
 										<span className="text-sm text-(--text-disabled)">Текущая сессия</span>
 										<Button
 											centerIcon={<IconCopy className="size-4" />}
+											disabled={!store.currentActivity}
 											padding="none"
 											type="button"
 											variant="icon"
@@ -100,6 +110,7 @@ export const DeviceActivitySection = observer(() => {
 							</div>
 							<Button
 								className="mr-4 hidden flex-1 border border-(--border-contrast)/15 text-xs active:scale-90 xl:block"
+								disabled={!store.currentActivity}
 								padding="sm"
 								type="button"
 								variant="tone"
@@ -129,6 +140,7 @@ export const DeviceActivitySection = observer(() => {
 					<h3 className="text-xs font-medium text-(--text-secondary)">История</h3>
 					<Button
 						className="text-xs text-(--text-secondary) transition-[color,opacity] group-hover:opacity-100 hover:text-(--danger) xl:opacity-0"
+						disabled={!store.isHistoryReady || store.isLoading}
 						padding="none"
 						variant="custom"
 						onClick={handleClearActivity}
@@ -136,8 +148,8 @@ export const DeviceActivitySection = observer(() => {
 						Очистить
 					</Button>
 				</div>
-				{!store.isReady ? (
-					<LoadingState />
+				{!store.isHistoryReady ? (
+					<LoadingError error={!!store.error} size="lg" onRetry={handleLoad} />
 				) : (
 					<div className="core-scrollbar max-h-23 overflow-y-auto overscroll-contain">
 						<div className="flex flex-col gap-1">

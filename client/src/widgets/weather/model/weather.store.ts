@@ -10,6 +10,8 @@ import { weatherCache } from '../lib';
 import type { CurrentType, ForecastType, View } from '.';
 
 export class WeatherStore extends AsyncStore {
+	private initializing: Promise<void> | null = null;
+	private generation = 0;
 	private currentLocation: City | null = null;
 
 	isInitialized = false;
@@ -29,6 +31,25 @@ export class WeatherStore extends AsyncStore {
 
 	get locationName(): string {
 		return this.currentLocation?.name ?? '';
+	}
+
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.isInitialized) return Promise.resolve();
+
+		if (this.initializing) return this.initializing;
+
+		const promise = this.initialize(userId);
+
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
 	}
 
 	setView(view: View): void {
@@ -80,22 +101,22 @@ export class WeatherStore extends AsyncStore {
 	}
 
 	private async initialize(userId: string): Promise<void> {
-		if (this.isLoading) return;
+		const generation = this.generation;
+		const isActual = () => this.userStore.id === userId && this.generation === generation;
 
 		const cached = weatherCache.read(userId);
-		if (cached && this.userStore.id === userId) this.applyWeather(cached.current, cached.forecast);
+		if (cached && isActual()) this.applyWeather(cached.current, cached.forecast);
 
 		await this.withLoading(async () => {
 			const location = await this.resolveLocation(userId);
-			if (this.userStore.id !== userId) return;
+			if (!isActual()) return;
 
 			this.applyLocation(location);
 
 			const weatherData = await this.fetchWeather(location);
-			if (this.userStore.id !== userId) return;
+			if (!isActual()) return;
 
 			this.applyWeather(weatherData.current, weatherData.forecast);
-
 			weatherCache.write(userId, weatherData.current, weatherData.forecast);
 
 			runInAction(() => (this.isInitialized = true));
@@ -162,25 +183,22 @@ export class WeatherStore extends AsyncStore {
 		this.track(
 			reaction(
 				() => this.userStore.id,
-				(userId) => {
-					if (!userId) {
-						this.reset();
-						return;
-					}
-
-					void this.initialize(userId);
-				},
-				{ fireImmediately: true }
+				() => this.reset()
 			)
 		);
 	}
 
 	protected reset(): void {
+		this.initializing = null;
+		this.generation++;
+
 		this.isInitialized = false;
 		this.isRefreshing = false;
 		this.currentLocation = null;
 		this.current = null;
 		this.forecast = [];
 		this.view = 'current';
+
+		this.setError(null);
 	}
 }

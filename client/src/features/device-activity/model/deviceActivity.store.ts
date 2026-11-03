@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
 import type { IAuthDevicePort } from '@/features/auth';
@@ -9,10 +9,14 @@ import { key } from '@/shared/lib/utils';
 import type { ActivityLog, DeviceData, IActivityRepo, IDeviceProvider } from '.';
 
 export class DeviceActivityStore extends AsyncStore {
+	private initializing: Promise<void> | null = null;
+	private generation = 0;
 	private lastProcessedAuthTime = 0;
+	private pendingAuthTime = 0;
 
 	activityLog: ActivityLog[] = [];
 	deviceInfo: DeviceData | null = null;
+	isHistoryReady = false;
 
 	get isReady(): boolean {
 		return this.deviceInfo !== null;
@@ -42,38 +46,76 @@ export class DeviceActivityStore extends AsyncStore {
 		return this.activityLog[0] ?? null;
 	}
 
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.isHistoryReady) return Promise.resolve();
+
+		if (this.initializing) return this.initializing;
+
+		const generation = this.generation;
+
+		const promise = this.withLoading(async () => {
+			const activityLog = await this.repo.loadActivityLog(userId);
+
+			if (!this.isCurrentSession(userId, generation)) return;
+
+			runInAction(() => {
+				this.applyActivityLog(activityLog);
+				this.isHistoryReady = true;
+			});
+		});
+
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
+	}
+
 	async deleteLogAuth(): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId || this.isLoading) return;
 
+		const generation = this.generation;
+
 		await this.withLoading(async () => {
 			await this.repo.deleteActivityLog(userId);
+
+			if (!this.isCurrentSession(userId, generation)) return;
+
 			this.applyActivityLog([]);
 		});
 	}
 
-	private async load(userId: string): Promise<void> {
-		if (this.isLoading) return;
+	private async loadDeviceInfo(userId: string): Promise<void> {
+		const generation = this.generation;
+		const deviceInfo = await this.provider.getDeviceData();
 
-		await this.withLoading(async () => {
-			const [deviceInfo, activityLog] = await Promise.all([
-				this.provider.getDeviceData(),
-				this.repo.loadActivityLog(userId),
-			]);
+		if (!this.isCurrentSession(userId, generation)) return;
 
-			this.applyDeviceInfo(deviceInfo);
-			this.applyActivityLog(activityLog);
-		});
+		this.applyDeviceInfo(deviceInfo);
 	}
 
 	private async logAuthOnce(userId: string, authTime: number): Promise<void> {
 		const deviceInfo = this.deviceInfo;
+		const generation = this.generation;
 
-		if (!deviceInfo || this.isLoading || authTime <= this.lastProcessedAuthTime) return;
+		if (
+			!deviceInfo ||
+			!this.isCurrentSession(userId, generation) ||
+			authTime <= this.lastProcessedAuthTime ||
+			authTime === this.pendingAuthTime
+		) {
+			return;
+		}
 
-		this.lastProcessedAuthTime = authTime;
+		this.pendingAuthTime = authTime;
 
-		await this.withLoading(async () => {
+		try {
 			await this.repo.saveActivityLog(userId, {
 				ip_address: deviceInfo.ip,
 				city: deviceInfo.city,
@@ -82,9 +124,19 @@ export class DeviceActivityStore extends AsyncStore {
 				is_mobile: deviceInfo.isMobile,
 			});
 
-			const activityLog = await this.repo.loadActivityLog(userId);
-			this.applyActivityLog(activityLog);
-		});
+			if (!this.isCurrentSession(userId, generation)) return;
+
+			runInAction(() => {
+				this.lastProcessedAuthTime = authTime;
+				this.isHistoryReady = false;
+			});
+		} finally {
+			if (this.isCurrentSession(userId, generation)) this.pendingAuthTime = 0;
+		}
+	}
+
+	private isCurrentSession(userId: string, generation: number): boolean {
+		return this.userStore.id === userId && this.generation === generation;
 	}
 
 	private applyDeviceInfo(deviceInfo: DeviceData): void {
@@ -106,6 +158,7 @@ export class DeviceActivityStore extends AsyncStore {
 		makeObservable<this, 'applyDeviceInfo' | 'applyActivityLog' | 'reset'>(this, {
 			activityLog: observable,
 			deviceInfo: observable,
+			isHistoryReady: observable,
 
 			isReady: computed,
 			ip: computed,
@@ -129,12 +182,10 @@ export class DeviceActivityStore extends AsyncStore {
 			reaction(
 				() => this.userStore.id,
 				(userId) => {
-					if (!userId) {
-						this.reset();
-						return;
-					}
+					this.reset();
+					if (!userId) return;
 
-					void this.load(userId);
+					void this.loadDeviceInfo(userId).catch(() => {});
 				},
 				{ fireImmediately: true }
 			)
@@ -148,21 +199,19 @@ export class DeviceActivityStore extends AsyncStore {
 						this.authStore.isReady,
 						this.deviceInfo !== null,
 						this.userStore.id,
-						this.isLoading,
 					] as const,
-				([authTime, isAuthReady, hasDeviceInfo, userId, isLoading]) => {
+				([authTime, isAuthReady, hasDeviceInfo, userId]) => {
 					if (
 						authTime <= 0 ||
 						authTime <= this.lastProcessedAuthTime ||
 						!isAuthReady ||
 						!hasDeviceInfo ||
-						!userId ||
-						isLoading
+						!userId
 					) {
 						return;
 					}
 
-					void this.logAuthOnce(userId, authTime);
+					void this.logAuthOnce(userId, authTime).catch(() => {});
 				},
 				{ fireImmediately: true }
 			)
@@ -170,9 +219,17 @@ export class DeviceActivityStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.generation++;
+		this.initializing = null;
+
 		this.deviceInfo = null;
 		this.activityLog = [];
+		this.isHistoryReady = false;
+
 		this.lastProcessedAuthTime = 0;
+		this.pendingAuthTime = 0;
+
+		this.setError(null);
 
 		if (this.userStore.lastId) storage.remove(key(this.userStore.lastId, 'activity'));
 	}
