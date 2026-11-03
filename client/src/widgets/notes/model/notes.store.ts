@@ -9,7 +9,6 @@ import type { INotesRepo, Note } from '.';
 
 export class NotesStore extends AsyncStore {
 	private readonly debouncer = new Debouncer();
-
 	private initializing: Promise<void> | null = null;
 	private loaded = false;
 
