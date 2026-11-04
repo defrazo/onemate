@@ -61,11 +61,8 @@ export type TaskPriority = keyof typeof TASK_PRIORITY;
 export type TaskStatus = keyof typeof TASK_STATUS;
 
 export type CreateColumnInput = Omit<Column, 'id'>;
-export type EditColumnInput = Omit<Column, 'id' | 'position'>;
 
 export type CreateTaskInput = Omit<Task, 'id' | 'createdAt' | 'updatedAt'>;
-export type EditTaskInput = Omit<Task, 'id' | 'columnId' | 'position' | 'createdAt' | 'completed'> &
-	Partial<Pick<Task, 'completed'>>;
 
 export type KanbanBoard = {
 	id: string;

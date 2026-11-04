@@ -1,4 +1,5 @@
 import { useCallback, useEffect, useReducer, useRef, useState } from 'react';
+import { reaction } from 'mobx';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
@@ -67,8 +68,15 @@ export const KanbanPage = () => {
 
 	useEffect(() => {
 		void initialize();
+		const stopSessionWatch = reaction(
+			() => `${userStore.userRole}:${userStore.id ?? ''}`,
+			() => {
+				if (userStore.id) void initialize();
+			}
+		);
 
 		return () => {
+			stopSessionWatch();
 			requestIdRef.current += 1;
 
 			boardDialogRef.current?.close();
@@ -82,7 +90,7 @@ export const KanbanPage = () => {
 
 			instanceRef.current = null;
 		};
-	}, [initialize]);
+	}, [initialize, userStore]);
 
 	// === STATE ===
 	const instance = instanceRef.current;
@@ -94,6 +102,14 @@ export const KanbanPage = () => {
 	// === BOARD SELECTION ===
 	const selectBoard = (id: string) => {
 		if (!instance) return;
+
+		if (
+			editingId &&
+			draft !== instance.state.getBoardState().boards.find((board) => board.id === editingId)?.title
+		) {
+			notifier.setNotice('Сохраните или отмените переименование', 'info');
+			return;
+		}
 
 		setEditingId(undefined);
 
@@ -176,27 +192,36 @@ export const KanbanPage = () => {
 	return (
 		<section className="flex size-full min-h-0 min-w-0 flex-col gap-4">
 			{view && (
-				<WorkspaceTabs
-					activeId={view.activeBoardId ?? undefined}
-					canCreate={view.canCreateBoard && !loading}
-					canDelete={view.canDeleteBoard}
-					createLabel="Добавить доску"
-					disabled={isLoading || view.savingBoard || error}
-					editValue={draft}
-					editingId={editingId}
-					items={view.boards}
-					label="Доски Kanban"
-					maxItems={LIMITS.MAX_BOARDS}
-					maxTitleLength={LIMITS.BOARD_TITLE}
-					saving={view.savingBoard}
-					onCreate={openCreateDialog}
-					onDelete={openDeleteDialog}
-					onEditCancel={cancelRename}
-					onEditChange={setDraft}
-					onEditConfirm={() => void confirmRename()}
-					onRename={startRename}
-					onSelect={selectBoard}
-				/>
+				<div className="flex min-w-0 items-center gap-3">
+					<div className="min-w-0 flex-1">
+						<WorkspaceTabs
+							activeId={view.activeBoardId ?? undefined}
+							canCreate={view.canCreateBoard && !loading}
+							canDelete={view.canDeleteBoard}
+							createLabel="Добавить доску"
+							disabled={isLoading || view.savingBoard || error}
+							editValue={draft}
+							editingId={editingId}
+							items={view.boards}
+							label="Доски Kanban"
+							maxItems={LIMITS.MAX_BOARDS}
+							maxTitleLength={LIMITS.BOARD_TITLE}
+							saving={view.savingBoard}
+							onCreate={openCreateDialog}
+							onDelete={openDeleteDialog}
+							onEditCancel={cancelRename}
+							onEditChange={setDraft}
+							onEditConfirm={() => void confirmRename()}
+							onRename={startRename}
+							onSelect={selectBoard}
+						/>
+					</div>
+					{!view.conflict && (
+						<Button disabled={isLoading || view.savingBoard || error} onClick={() => void reloadBoard()}>
+							Обновить доску
+						</Button>
+					)}
+				</div>
 			)}
 			{view?.conflict && (
 				<div className="flex items-center justify-between gap-3 text-sm text-(--status-error)" role="alert">

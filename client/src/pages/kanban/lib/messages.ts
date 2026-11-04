@@ -8,7 +8,6 @@ export const MESSAGES = {
 		updateTitleLimit: 'Слишком длинный заголовок',
 		deleted: 'Колонка удалена',
 		deleteError: 'Не удалось удалить колонку',
-		deleteLimit: 'Достигнут минимум колонок',
 		moveError: 'Не удалось переместить колонку',
 	},
 	tasks: {

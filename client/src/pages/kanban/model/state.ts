@@ -1,5 +1,7 @@
+import { isAxiosError } from 'axios';
+
 import { BoardRevisionConflictError } from '../api';
-import { boardCache, MESSAGES, notifier, now } from '../lib';
+import { MESSAGES, notifier, now } from '../lib';
 import type { Column, ColumnColor, IKanbanRepo, KanbanBoard, KanbanSnapshot, Task, TaskPriority, TaskStatus } from '.';
 import { LIMITS } from '.';
 
@@ -25,24 +27,10 @@ export const createState = (repo: IKanbanRepo) => {
 	let loadError = false;
 	let conflict: { boardId: string; currentRevision: number } | null = null;
 	let generation = 0;
-	let selectionIntent = 0;
-	let writeVersion = 0;
-
 	const queues = new Map<string, Promise<void>>();
-	const cached = boardCache.get();
-	const snapshots = new Map<string, KanbanSnapshot>(cached?.snapshots ?? []);
-
-	if (cached) {
-		boards = cached.boards.map((board) => ({ ...board }));
-		activeBoardId = cached.activeBoardId;
-	}
-
-	const saveCache = () => {
-		if (destroyed || !activeBoardId || conflict) return;
-		if (!snapshots.has(activeBoardId)) return;
-
-		boardCache.set(boards, activeBoardId, snapshots);
-	};
+	const snapshots = new Map<string, KanbanSnapshot>();
+	const conflicts = new Map<string, { boardId: string; currentRevision: number }>();
+	const editors = new Set<() => void>();
 	const boardListeners = new Set<() => void>();
 
 	// === BOARDS ===
@@ -54,6 +42,7 @@ export const createState = (repo: IKanbanRepo) => {
 		switching,
 		savingBoard,
 		loadError,
+		hasOpenEditor: editors.size > 0,
 		canCreateBoard: boards.length < LIMITS.MAX_BOARDS,
 		canDeleteBoard: boards.length > 1,
 		conflict: conflict ? { ...conflict } : null,
@@ -76,52 +65,187 @@ export const createState = (repo: IKanbanRepo) => {
 	// === WRITES ===
 	type WriteContext = { boardId: string; revision: number; current: () => boolean };
 
-	const enqueue = (operation: (context: WriteContext) => Promise<void>) => {
+	const enqueue = (
+		operation: (context: WriteContext) => Promise<boolean | void>,
+		boardId = activeBoardId
+	): Promise<boolean> => {
 		const token = generation;
-		const boardId = activeBoardId;
 
-		if (destroyed || loading || !boardId || conflict || revision === null) return Promise.resolve();
+		if (destroyed || loading || !boardId || conflicts.has(boardId)) return Promise.resolve(false);
 
-		writeVersion++;
-
-		const current = () => !destroyed && token === generation && activeBoardId === boardId;
+		const current = () => !destroyed && token === generation && boards.some((board) => board.id === boardId);
 
 		const pending = (queues.get(boardId) ?? Promise.resolve()).then(async () => {
-			if (!current() || loading || conflict || revision === null) return;
-			await operation({ boardId, revision, current });
-		});
+			if (!current() || loading || conflicts.has(boardId)) return false;
 
+			const latest = snapshots.get(boardId);
+
+			if (boardId === activeBoardId && latest && latest.board.revision > (revision ?? -1))
+				applySnapshot(latest, current, true);
+
+			if (!current()) return false;
+
+			const currentRevision =
+				boardId === activeBoardId
+					? revision
+					: (latest?.board.revision ?? boards.find((board) => board.id === boardId)?.revision);
+
+			if (currentRevision === null || currentRevision === undefined) return false;
+			return (await operation({ boardId, revision: currentRevision, current })) === true;
+		});
 		queues.set(
 			boardId,
-			pending.catch(() => {})
+			pending.then(
+				() => {},
+				() => {}
+			)
 		);
-
 		return pending;
 	};
 
-	const recordConflict = (error: unknown) => {
-		if (error instanceof BoardRevisionConflictError && activeBoardId) {
-			conflict = { boardId: activeBoardId, currentRevision: error.currentRevision };
+	const registerEditor = (close: () => void) => {
+		if (destroyed) {
+			close();
+			return () => {};
+		}
+
+		editors.add(close);
+		notifyBoards();
+
+		return () => {
+			editors.delete(close);
+			notifyBoards();
+		};
+	};
+
+	const closeEditors = () => {
+		for (const close of [...editors]) close();
+		editors.clear();
+	};
+
+	const recordConflict = (error: unknown, boardId = activeBoardId) => {
+		if (error instanceof BoardRevisionConflictError && boardId) {
+			const value = { boardId, currentRevision: error.currentRevision };
+			conflicts.set(boardId, value);
+
+			if (activeBoardId === boardId) conflict = value;
 			notifyBoards();
 		}
 	};
 
-	const applySnapshot = (snapshot: KanbanSnapshot, current: () => boolean) => {
-		if (!current() || snapshot.board.id !== activeBoardId) return;
+	const discardUnavailable = (error: unknown, boardId = activeBoardId) => {
+		if (destroyed || !isAxiosError(error) || ![403, 404].includes(error.response?.status ?? 0)) return false;
+
+		if (!boardId) {
+			generation++;
+			closeEditors();
+			snapshots.clear();
+			conflicts.clear();
+			boards = [];
+			columns = [];
+			tasks = [];
+			revision = null;
+			activeBoardId = null;
+			conflict = null;
+			loading = false;
+			switching = false;
+			loadError = true;
+			notifyColumns();
+			notifyTasks();
+			notifyBoards();
+			return true;
+		}
+
+		snapshots.delete(boardId);
+		conflicts.delete(boardId);
+
+		boards = boards.filter((board) => board.id !== boardId);
+
+		if (activeBoardId === boardId) {
+			generation++;
+			closeEditors();
+			columns = [];
+			tasks = [];
+			revision = null;
+			activeBoardId = null;
+			conflict = null;
+			loading = false;
+			switching = false;
+			loadError = true;
+			notifyColumns();
+			notifyTasks();
+		}
+
+		notifyBoards();
+
+		return true;
+	};
+
+	const receiveWrite = async (context: WriteContext, request: Promise<KanbanSnapshot>) => {
+		try {
+			const snapshot = await request;
+
+			if (
+				!destroyed &&
+				snapshot.board.id === context.boardId &&
+				boards.some((board) => board.id === context.boardId) &&
+				snapshot.board.revision >= (snapshots.get(context.boardId)?.board.revision ?? -1)
+			) {
+				snapshots.set(context.boardId, structuredClone(snapshot));
+				boards = boards.map((board) => (board.id === context.boardId ? { ...snapshot.board } : board));
+				if (
+					!context.current() &&
+					activeBoardId === context.boardId &&
+					!loading &&
+					snapshot.board.revision > (revision ?? -1)
+				) {
+					const token = generation;
+					applySnapshot(
+						snapshot,
+						() => !destroyed && generation === token && activeBoardId === context.boardId,
+						true
+					);
+				}
+			}
+			return snapshot;
+		} catch (error: unknown) {
+			discardUnavailable(error, context.boardId);
+			throw error;
+		}
+	};
+
+	const applySnapshot = (snapshot: KanbanSnapshot, current: () => boolean, cached = false) => {
+		if (!current()) return;
+
+		const id = snapshot.board.id;
+		const known = snapshots.get(id);
+
+		if (known && snapshot.board.revision < known.board.revision) {
+			if (id === activeBoardId && revision === null) applySnapshot(known, current, true);
+			return;
+		}
+
+		boards = boards.map((board) => (board.id === id ? { ...snapshot.board } : board));
+		snapshots.set(id, structuredClone(snapshot));
+
+		if (!cached) conflicts.delete(id);
+
+		if (id !== activeBoardId) {
+			notifyBoards();
+			return;
+		}
 
 		columns = snapshot.columns.map((column) => ({ ...column }));
 		tasks = snapshot.tasks.map((task) => ({ ...task }));
 		revision = snapshot.board.revision;
-		conflict = null;
-
-		boards = boards.map((board) => (board.id === snapshot.board.id ? { ...snapshot.board } : board));
-		snapshots.set(snapshot.board.id, structuredClone(snapshot));
-		saveCache();
+		conflict = conflicts.get(id) ?? null;
 
 		notifyColumns();
+
 		if (!current()) return;
 
 		notifyTasks();
+
 		if (current()) notifyBoards();
 	};
 
@@ -147,8 +271,6 @@ export const createState = (repo: IKanbanRepo) => {
 		});
 	};
 
-	const fetchColumns = () => reloadBoard();
-
 	const addColumn = (title: string, color: ColumnColor, taskLimit: number | null) =>
 		enqueue(async (context) => {
 			if (!context.current()) return;
@@ -169,20 +291,22 @@ export const createState = (repo: IKanbanRepo) => {
 				const position =
 					columns.length > 0 ? Math.max(...columns.map((column) => column.position)) + 1000 : 1000;
 
-				const result = await repo.addColumn(context.boardId, context.revision, {
-					title,
-					color,
-					taskLimit,
-					position,
-				});
+				const result = await receiveWrite(
+					context,
+					repo.addColumn(context.boardId, context.revision, { title, color, taskLimit, position })
+				);
 
 				if (!context.current()) return;
 
 				applySnapshot(result, context.current);
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.columns.addError, 'error');
@@ -208,13 +332,20 @@ export const createState = (repo: IKanbanRepo) => {
 				if (!context.current()) return;
 
 				applySnapshot(
-					await repo.editColumn(context.boardId, context.revision, id, { title, color, taskLimit }),
+					await receiveWrite(
+						context,
+						repo.editColumn(context.boardId, context.revision, id, { title, color, taskLimit })
+					),
 					context.current
 				);
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.columns.updateError, 'error');
@@ -229,25 +360,27 @@ export const createState = (repo: IKanbanRepo) => {
 			const snapshot = columns.map((column) => ({ ...column }));
 
 			try {
-				if (columns.length <= LIMITS.MIN_COLUMNS) {
-					notifier.setNotice(MESSAGES.columns.deleteLimit, 'info');
-					return;
-				}
-
 				columns = columns.filter((column) => column.id !== id);
 
 				notifyColumns();
 				if (!context.current()) return;
 
-				applySnapshot(await repo.deleteColumn(context.boardId, context.revision, id), context.current);
+				applySnapshot(
+					await receiveWrite(context, repo.deleteColumn(context.boardId, context.revision, id)),
+					context.current
+				);
 
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.columns.deleted, 'success');
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.columns.deleteError, 'error');
@@ -289,17 +422,24 @@ export const createState = (repo: IKanbanRepo) => {
 				if (!context.current()) return;
 
 				applySnapshot(
-					await repo.reorderColumns(
-						context.boardId,
-						context.revision,
-						columns.map((item) => item.id)
+					await receiveWrite(
+						context,
+						repo.reorderColumns(
+							context.boardId,
+							context.revision,
+							columns.map((item) => item.id)
+						)
 					),
 					context.current
 				);
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.columns.moveError, 'error');
@@ -339,8 +479,6 @@ export const createState = (repo: IKanbanRepo) => {
 		});
 	};
 
-	const fetchTasks = () => reloadBoard();
-
 	const addTask = (
 		columnId: string,
 		title: string,
@@ -349,8 +487,7 @@ export const createState = (repo: IKanbanRepo) => {
 		priority: TaskPriority | null,
 		startDate: string | null,
 		endDate: string | null,
-		completed: boolean,
-		_taskLimit: number | null
+		completed: boolean
 	) =>
 		enqueue(async (context) => {
 			if (!context.current()) return;
@@ -377,25 +514,32 @@ export const createState = (repo: IKanbanRepo) => {
 				const position =
 					columnTasks.length > 0 ? Math.max(...columnTasks.map((task) => task.position)) + 1000 : 1000;
 
-				const result = await repo.addTask(context.boardId, context.revision, {
-					columnId,
-					title,
-					description,
-					status,
-					priority,
-					startDate,
-					endDate,
-					completed,
-					position,
-				});
+				const result = await receiveWrite(
+					context,
+					repo.addTask(context.boardId, context.revision, {
+						columnId,
+						title,
+						description,
+						status,
+						priority,
+						startDate,
+						endDate,
+						completed,
+						position,
+					})
+				);
 
 				if (!context.current()) return;
 
 				applySnapshot(result, context.current);
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.tasks.addError, 'error');
@@ -442,11 +586,19 @@ export const createState = (repo: IKanbanRepo) => {
 				notifyTasks();
 				if (!context.current()) return;
 
-				applySnapshot(await repo.editTask(context.boardId, context.revision, id, changes), context.current);
+				applySnapshot(
+					await receiveWrite(context, repo.editTask(context.boardId, context.revision, id, changes)),
+					context.current
+				);
+
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.tasks.updateError, 'error');
@@ -466,15 +618,22 @@ export const createState = (repo: IKanbanRepo) => {
 				notifyTasks();
 				if (!context.current()) return;
 
-				applySnapshot(await repo.deleteTask(context.boardId, context.revision, id), context.current);
+				applySnapshot(
+					await receiveWrite(context, repo.deleteTask(context.boardId, context.revision, id)),
+					context.current
+				);
 
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.tasks.deleted, 'success');
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.tasks.deleteError, 'error');
@@ -519,13 +678,21 @@ export const createState = (repo: IKanbanRepo) => {
 				if (!context.current()) return;
 
 				applySnapshot(
-					await repo.moveTask(context.boardId, context.revision, id, newColumnId, position),
+					await receiveWrite(
+						context,
+						repo.moveTask(context.boardId, context.revision, id, newColumnId, position)
+					),
 					context.current
 				);
+
+				return context.current();
 			} catch (error: unknown) {
 				if (!context.current()) return;
 
-				recordConflict(error);
+				if (discardUnavailable(error, context.boardId)) return false;
+
+				recordConflict(error, context.boardId);
+
 				if (!context.current()) return;
 
 				notifier.setNotice(MESSAGES.tasks.moveError, 'error');
@@ -553,7 +720,7 @@ export const createState = (repo: IKanbanRepo) => {
 		revision = null;
 		loading = true;
 		loadError = false;
-		conflict = conflict?.boardId === boardId ? conflict : null;
+		conflict = boardId ? (conflicts.get(boardId) ?? null) : null;
 		isMovingTask = false;
 		isMovingColumn = false;
 
@@ -577,78 +744,40 @@ export const createState = (repo: IKanbanRepo) => {
 		notifyBoards();
 	};
 
-	const selectBoard = async (boardId: string) => {
-		if (destroyed || (activeBoardId === boardId && !loadError && !conflict)) return;
+	const canLeaveEditor = () => {
+		if (editors.size === 0) return true;
 
-		const intent = ++selectionIntent;
-		const previousId = activeBoardId;
+		notifier.setNotice('Сохраните или закройте открытую форму перед переключением доски', 'info');
 
-		if (previousId) await queues.get(previousId);
-		if (destroyed || intent !== selectionIntent) return;
-
-		const cached = snapshots.get(boardId);
-
-		if (!cached) {
-			const current = beginLoad(boardId);
-
-			try {
-				applySnapshot(await repo.fetchBoard(boardId), current);
-			} catch (error: unknown) {
-				if (current()) {
-					loadError = true;
-					throw error;
-				}
-			} finally {
-				finishLoad(current);
-			}
-
-			return;
-		}
-
-		const token = ++generation;
-
-		activeBoardId = boardId;
-		loading = false;
-		switching = false;
-		loadError = false;
-		conflict = null;
-		isMovingTask = false;
-		isMovingColumn = false;
-
-		const current = () => !destroyed && token === generation && activeBoardId === boardId;
-
-		applySnapshot(cached, current);
-
-		const version = writeVersion;
-
-		try {
-			const snapshot = await repo.fetchBoard(boardId);
-
-			if (!current() || version !== writeVersion || conflict) return;
-			if (snapshot.board.revision <= (revision ?? -1)) return;
-
-			applySnapshot(snapshot, current);
-		} catch {
-			if (current()) notifier.setNotice('Не удалось проверить актуальность доски', 'error');
-		}
+		return false;
 	};
 
-	const reloadBoard = async () => {
-		if (!activeBoardId) return loadData();
-
-		const boardId = activeBoardId;
-
-		++selectionIntent;
-		await queues.get(boardId);
-
-		if (destroyed || activeBoardId !== boardId) return;
+	const selectBoard = async (boardId: string) => {
+		if (destroyed || (activeBoardId === boardId && !loadError) || !canLeaveEditor()) return;
 
 		const current = beginLoad(boardId);
 
+		const cached = snapshots.get(boardId);
+		if (cached) {
+			applySnapshot(cached, current, true);
+			finishLoad(current);
+			return;
+		}
+
 		try {
+			const pending = queues.get(boardId);
+
+			if (pending) await pending;
+
+			if (!current()) return;
+
 			applySnapshot(await repo.fetchBoard(boardId), current);
 		} catch (error: unknown) {
-			if (current()) {
+			const wasCurrent = current();
+
+			discardUnavailable(error, boardId);
+
+			if (wasCurrent) {
 				loadError = true;
 				throw error;
 			}
@@ -656,117 +785,64 @@ export const createState = (repo: IKanbanRepo) => {
 			finishLoad(current);
 		}
 	};
-
-	const preloadBoards = async (current: () => boolean) => {
-		const missing = boards.filter((board) => !snapshots.has(board.id));
-
-		await Promise.all(
-			missing.map(async (board) => {
-				try {
-					const snapshot = await repo.fetchBoard(board.id);
-
-					if (!current()) return;
-					if (!boards.some((item) => item.id === board.id)) return;
-
-					snapshots.set(board.id, structuredClone(snapshot));
-					saveCache();
-				} catch {}
-			})
-		);
-	};
-
-	const loadData = async () => {
+	const reloadBoard = async () => {
 		if (destroyed) return;
+		if (!activeBoardId) return loadData();
 
-		const intent = ++selectionIntent;
-		const cachedSnapshot = activeBoardId ? snapshots.get(activeBoardId) : null;
+		const boardId = activeBoardId;
 
-		if (cachedSnapshot) {
-			const token = ++generation;
-			const current = () => !destroyed && token === generation && intent === selectionIntent;
+		const current = beginLoad(boardId);
 
-			loading = false;
-			switching = false;
-			loadError = false;
+		try {
+			await queues.get(boardId);
 
-			applySnapshot(cachedSnapshot, current);
+			if (current()) applySnapshot(await repo.fetchBoard(boardId), current);
+		} catch (error: unknown) {
+			const wasCurrent = current();
 
-			void (async () => {
-				try {
-					const result = await repo.fetchBoards();
-					if (!current()) return;
+			discardUnavailable(error, boardId);
 
-					boards = result.boards.map((board) => ({ ...board }));
-
-					const ids = new Set(boards.map((board) => board.id));
-
-					for (const id of snapshots.keys()) {
-						if (!ids.has(id)) snapshots.delete(id);
-					}
-
-					if (!activeBoardId || !ids.has(activeBoardId)) {
-						const nextId = boards[0]?.id;
-
-						if (nextId) await selectBoard(nextId);
-						else await loadDataWithoutCache();
-
-						return;
-					}
-
-					notifyBoards();
-
-					const boardId = activeBoardId;
-					const version = writeVersion;
-					const snapshot = await repo.fetchBoard(boardId);
-
-					if (!current() || boardId !== activeBoardId || version !== writeVersion) return;
-
-					if (snapshot.board.revision > (revision ?? -1)) {
-						applySnapshot(snapshot, current);
-						saveCache();
-					}
-
-					saveCache();
-					void preloadBoards(current);
-				} catch {
-					if (current()) notifier.setNotice('Не удалось проверить актуальность досок', 'error');
-				}
-			})();
-
-			return;
+			if (wasCurrent) {
+				loadError = true;
+				throw error;
+			}
+		} finally {
+			finishLoad(current);
 		}
-
-		await loadDataWithoutCache();
 	};
-
-	const loadDataWithoutCache = async () => {
-		if (destroyed) return;
+	const loadData = async () => {
+		if (destroyed || !canLeaveEditor()) return;
 
 		const current = beginLoad(null);
+		let requestedBoardId: string | null = null;
 
 		try {
 			const result = await repo.fetchBoards();
+
 			if (!current()) return;
 
 			boards = result.boards.map((board) => ({ ...board }));
+			const ids = new Set(boards.map((board) => board.id));
 
-			let snapshot: KanbanSnapshot;
+			for (const id of snapshots.keys()) if (!ids.has(id)) snapshots.delete(id);
 
-			if (boards.length === 0) {
-				snapshot = await repo.initialize();
-				if (!current()) return;
+			requestedBoardId = boards[0]?.id ?? null;
 
-				boards = [{ ...snapshot.board }];
-			} else snapshot = await repo.fetchBoard(boards[0].id);
+			if (requestedBoardId) await queues.get(requestedBoardId);
 
 			if (!current()) return;
 
+			const snapshot = requestedBoardId ? await repo.fetchBoard(requestedBoardId) : await repo.initialize();
+
+			if (!current()) return;
+
+			if (!boards.length) boards = [{ ...snapshot.board }];
+
 			activeBoardId = snapshot.board.id;
 			applySnapshot(snapshot, current);
-
-			void preloadBoards(current);
 		} catch (error: unknown) {
 			if (current()) {
+				discardUnavailable(error, requestedBoardId);
 				loadError = true;
 				throw error;
 			}
@@ -776,7 +852,10 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	// === BOARD ===
-	const runBoardOperation = async (operation: (context: WriteContext) => Promise<boolean>): Promise<boolean> => {
+	const runBoardOperation = async (
+		operation: (context: WriteContext) => Promise<boolean>,
+		boardId = activeBoardId
+	): Promise<boolean> => {
 		if (destroyed || savingBoard || loading || conflict || revision === null) return false;
 
 		savingBoard = true;
@@ -791,7 +870,8 @@ export const createState = (repo: IKanbanRepo) => {
 				} catch (error: unknown) {
 					if (!context.current()) return;
 
-					recordConflict(error);
+					if (discardUnavailable(error, context.boardId)) return;
+					recordConflict(error, context.boardId);
 
 					if (context.current()) {
 						notifier.setNotice(
@@ -804,7 +884,7 @@ export const createState = (repo: IKanbanRepo) => {
 						);
 					}
 				}
-			});
+			}, boardId);
 		} finally {
 			savingBoard = false;
 			notifyBoards();
@@ -814,10 +894,7 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	const validBoardTitle = (title: string) => {
-		if (!title || [...title].length > LIMITS.BOARD_TITLE) {
-			throw new Error('Название: от 1 до 30 символов');
-		}
-
+		if (!title || [...title].length > LIMITS.BOARD_TITLE) throw new Error('Название: от 1 до 30 символов');
 		return true;
 	};
 
@@ -825,7 +902,8 @@ export const createState = (repo: IKanbanRepo) => {
 		runBoardOperation(async (context) => {
 			title = title.trim();
 
-			if (!validBoardTitle(title) || boards.length >= LIMITS.MAX_BOARDS) throw new Error('Нельзя создать доску');
+			if (!canLeaveEditor() || !validBoardTitle(title) || boards.length >= LIMITS.MAX_BOARDS)
+				throw new Error('Нельзя создать доску');
 
 			const snapshot = await repo.createBoard(title);
 			if (!context.current()) return false;
@@ -840,121 +918,52 @@ export const createState = (repo: IKanbanRepo) => {
 			return current();
 		});
 
-	const renameBoard = async (id: string, title: string): Promise<boolean> => {
-		if (destroyed || savingBoard || loading || conflict) return false;
-
-		const target = boards.find((board) => board.id === id);
-		if (!target) return false;
-
-		savingBoard = true;
-		writeVersion++;
-		notifyBoards();
-
-		try {
+	const renameBoard = (id: string, title: string) =>
+		runBoardOperation(async (context) => {
 			title = title.trim();
 			validBoardTitle(title);
 
-			await queues.get(id);
+			const snapshot = await receiveWrite(context, repo.renameBoard(id, context.revision, title));
 
-			if (destroyed) return false;
+			if (!context.current()) return false;
 
-			const board = boards.find((item) => item.id === id);
-			if (!board) return false;
+			applySnapshot(snapshot, context.current);
 
-			const boardRevision = id === activeBoardId ? revision : board.revision;
-			if (boardRevision === null) return false;
-
-			const snapshot = await repo.renameBoard(id, boardRevision, title);
-
-			if (destroyed) return false;
-
-			boards = boards.map((item) => (item.id === id ? { ...snapshot.board } : item));
-
-			const cached = snapshots.get(id);
-
-			if (cached) snapshots.set(id, { ...cached, board: { ...snapshot.board } });
-
-			if (activeBoardId === id) revision = snapshot.board.revision;
-
-			saveCache();
-			notifyBoards();
 			return true;
-		} catch (error: unknown) {
-			if (destroyed) return false;
+		}, id);
 
-			if (error instanceof BoardRevisionConflictError) {
-				if (activeBoardId === id) recordConflict(error);
-
-				notifier.setNotice('Доска изменилась. Обновите данные', 'error');
-			} else {
-				notifier.setNotice(error instanceof Error ? error.message : 'Не удалось переименовать доску', 'error');
-			}
-
+	const deleteBoard = async (id: string) => {
+		if (editors.size && activeBoardId === id) {
+			canLeaveEditor();
 			return false;
-		} finally {
-			savingBoard = false;
-
-			if (!destroyed) notifyBoards();
 		}
-	};
 
-	const deleteBoard = async (id: string): Promise<boolean> => {
-		if (destroyed || savingBoard || loading || conflict || boards.length <= 1) return false;
+		let deleted = false;
 
-		const target = boards.find((board) => board.id === id);
-		if (!target) return false;
+		const success = await runBoardOperation(async (context) => {
+			if (boards.length <= 1) return false;
 
-		savingBoard = true;
-		writeVersion++;
-		notifyBoards();
-
-		try {
-			await queues.get(id);
+			await repo.deleteBoard(id, context.revision);
 
 			if (destroyed) return false;
 
-			const board = boards.find((item) => item.id === id);
-			if (!board) return false;
-
-			const boardRevision = id === activeBoardId ? revision : board.revision;
-			if (boardRevision === null) return false;
-
-			await repo.deleteBoard(id, boardRevision);
-
-			if (destroyed) return false;
-
-			boards = boards.filter((item) => item.id !== id);
+			boards = boards.filter((board) => board.id !== id);
 			snapshots.delete(id);
-			queues.delete(id);
+			conflicts.delete(id);
+			deleted = activeBoardId === id;
 
-			if (activeBoardId === id) {
-				try {
-					await selectBoard(boards[0].id);
-				} catch {
-					if (!destroyed) notifier.setNotice('Не удалось загрузить доску', 'error');
-				}
-			} else {
-				notifyBoards();
+			notifyBoards();
+
+			return true;
+		}, id);
+		if (success && deleted && !destroyed) {
+			try {
+				await selectBoard(boards[0].id);
+			} catch {
+				if (!destroyed) notifier.setNotice('Не удалось загрузить доску', 'error');
 			}
-
-			return !destroyed;
-		} catch (error: unknown) {
-			if (destroyed) return false;
-
-			if (error instanceof BoardRevisionConflictError) {
-				if (activeBoardId === id) recordConflict(error);
-
-				notifier.setNotice('Доска изменилась. Обновите данные', 'error');
-			} else {
-				notifier.setNotice(error instanceof Error ? error.message : 'Не удалось удалить доску', 'error');
-			}
-
-			return false;
-		} finally {
-			savingBoard = false;
-
-			if (!destroyed) notifyBoards();
 		}
+		return success;
 	};
 
 	// === CLEANUP ===
@@ -963,8 +972,15 @@ export const createState = (repo: IKanbanRepo) => {
 
 		destroyed = true;
 		generation++;
-		selectionIntent++;
+		closeEditors();
+		conflicts.clear();
+		columns = [];
+		tasks = [];
+		boards = [];
+		activeBoardId = null;
+		revision = null;
 
+		for (const listener of boardListeners) listener();
 		boardListeners.clear();
 		columnListeners.clear();
 		taskListeners.clear();
@@ -975,6 +991,7 @@ export const createState = (repo: IKanbanRepo) => {
 
 	return {
 		destroy,
+		registerEditor,
 		loadData,
 		createBoard,
 		renameBoard,
@@ -983,9 +1000,6 @@ export const createState = (repo: IKanbanRepo) => {
 		reloadBoard,
 		getBoardState,
 		subscribeBoards,
-
-		fetchColumns,
-		fetchTasks,
 
 		addColumn,
 		editColumn,

@@ -117,8 +117,15 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	function onEditTask() {
 		editTaskModal?.close();
 
+		let release = () => {};
+
 		editTaskModal = editTask({
 			mode: 'edit',
+			onClose: () => {
+				editTaskModal = null;
+				release();
+			},
+			onRefresh: () => state.reloadBoard(),
 			initial: {
 				title: task.title,
 				description: task.description,
@@ -128,11 +135,11 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				endDate: task.endDate,
 			},
 			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				state.editTask(task.id, title, description, status, priority, startDate, endDate);
-				editTaskModal = null;
+				return state.editTask(task.id, title, description, status, priority, startDate, endDate);
 			},
 		});
 
+		release = state.registerEditor(editTaskModal.close);
 		document.body.append(editTaskModal.element);
 	}
 

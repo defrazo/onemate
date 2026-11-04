@@ -3,6 +3,7 @@
 namespace App\Services\Kanban;
 
 use App\Models\Kanban\KanbanTask;
+use App\Models\User\User;
 use App\Notifications\Kanban\TaskOverdueNotification;
 use Illuminate\Support\Facades\DB;
 
@@ -20,12 +21,32 @@ class OverdueTaskService
                 $query->whereNull('overdue_notified_date')
                     ->orWhereColumn('overdue_notified_date', '!=', 'end_date');
             })
-            ->select('id')
+            ->select('id', 'user_id')
             ->chunkById(100, function ($tasks) use ($today) {
                 foreach ($tasks as $task) {
                     DB::transaction(function () use ($task, $today) {
+                        $user = User::query()->whereKey($task->user_id)->lockForUpdate()->first();
+
+                        if ($user === null) {
+                            return;
+                        }
+
+                        $board = $user->ownedKanbanBoards()
+                            ->whereHas('columns', function ($columns) use ($user, $task) {
+                                $columns->where('user_id', $user->id)
+                                    ->whereHas('tasks', fn ($tasks) => $tasks->whereKey($task->id)->where('user_id', $user->id));
+                            })
+                            ->lockForUpdate()
+                            ->first();
+
+                        if ($board === null) {
+                            return;
+                        }
+
                         $currentTask = KanbanTask::query()
                             ->whereKey($task->id)
+                            ->where('user_id', $user->id)
+                            ->whereHas('column', fn ($column) => $column->where('board_id', $board->id)->where('user_id', $user->id))
                             ->lockForUpdate()
                             ->first();
 
@@ -42,12 +63,6 @@ class OverdueTaskService
                             return;
                         }
 
-                        $user = $currentTask->user;
-
-                        if ($user === null) {
-                            return;
-                        }
-
                         $kanbanNotificationsEnabled = $user->profile?->kanban_notifications_enabled ?? true;
 
                         if (!$kanbanNotificationsEnabled) {
@@ -58,9 +73,9 @@ class OverdueTaskService
                             new TaskOverdueNotification($currentTask),
                         );
 
-                        $currentTask->forceFill([
-                            'overdue_notified_date' => $currentTask->end_date,
-                        ])->save();
+                        DB::table('kanban_tasks')->where('id', $currentTask->id)->update([
+                            'overdue_notified_date' => $currentTask->end_date->toDateString(),
+                        ]);
                     });
                 }
             });

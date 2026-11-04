@@ -1,4 +1,4 @@
-import { createSvg, deleteIcon, settingsIcon } from '../../../lib';
+import { createSvg, deleteIcon, notifier, settingsIcon } from '../../../lib';
 import { type ColumnColor, LIMITS } from '../../../model';
 import { createButton, createConfirmDialog, createDialog } from '../../components';
 import { createColumnDetails, createColumnProperties } from '.';
@@ -6,12 +6,18 @@ import { createColumnDetails, createColumnProperties } from '.';
 type EditColumnProps = {
 	mode: 'create' | 'edit';
 	initial: { columnTitle: string; color: ColumnColor | undefined; limit: number | null };
-	onSubmit: (columnTitle: string, color: ColumnColor, limit: number | null) => void;
+	onSubmit: (
+		columnTitle: string,
+		color: ColumnColor,
+		limit: number | null
+	) => void | boolean | Promise<void | boolean>;
+	onClose?: () => void;
 	onDelete?: () => void;
 };
 
 export const editColumn = (options: EditColumnProps) => {
 	let isClosed = false;
+	let saving = false;
 	let confirmModal: ReturnType<typeof createConfirmDialog> | null = null;
 	let deleteButton: HTMLButtonElement | undefined;
 
@@ -84,8 +90,9 @@ export const editColumn = (options: EditColumnProps) => {
 	overlay.addEventListener('keydown', onKeyDown);
 
 	// === ACTION FUNCTIONS ===
-	function handleSubmit() {
-		if (isClosed) return;
+	async function handleSubmit() {
+		if (isClosed || saving) return;
+
 		const title = fields.getTitle();
 		const { color, limit } = properties.getValue();
 
@@ -93,9 +100,23 @@ export const editColumn = (options: EditColumnProps) => {
 
 		if (title.length > LIMITS.COLUMN_TITLE) return;
 
-		options.onSubmit(title, color, limit);
+		saving = true;
+		form.inert = true;
 
-		close();
+		updateSubmitState();
+
+		try {
+			if ((await options.onSubmit(title, color, limit)) !== false && !isClosed) close();
+		} catch {
+			if (!isClosed) notifier.setNotice('Не удалось сохранить колонку', 'error');
+		} finally {
+			saving = false;
+
+			if (!isClosed) {
+				form.inert = false;
+				updateSubmitState();
+			}
+		}
 	}
 
 	function handleDelete() {
@@ -125,8 +146,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 	function updateSubmitState() {
 		const title = fields.getTitle();
-
-		submitButton.disabled = !title || title.length > LIMITS.COLUMN_TITLE;
+		submitButton.disabled = saving || !title || title.length > LIMITS.COLUMN_TITLE;
 	}
 
 	// === LIFECYCLE ===
@@ -141,6 +161,7 @@ export const editColumn = (options: EditColumnProps) => {
 
 		fields.destroy();
 		properties.destroy();
+		options.onClose?.();
 	}
 
 	function close() {

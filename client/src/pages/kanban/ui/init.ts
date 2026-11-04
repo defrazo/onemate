@@ -1,3 +1,5 @@
+import { reaction } from 'mobx';
+
 import type { UserStore } from '@/entities/user';
 
 import { KanbanRepoRouting } from '../api';
@@ -13,18 +15,25 @@ export const initKanban = (root: HTMLElement, userStore: UserStore) => {
 	const destroyKanban = renderKanban(root, state);
 
 	let destroyed = false;
+	let stopSessionWatch = () => {};
 
 	const destroy = () => {
 		if (destroyed) return;
 
 		destroyed = true;
+		stopSessionWatch();
 		state.destroy();
 		destroyKanban();
 	};
 
+	stopSessionWatch = reaction(() => `${userStore.userRole}:${userStore.id ?? ''}`, destroy);
+
 	const ready = state.loadData().catch((error: unknown) => {
-		destroy();
-		throw error;
+		try {
+			destroy();
+		} finally {
+			throw error;
+		}
 	});
 
 	return { destroy, ready, state };

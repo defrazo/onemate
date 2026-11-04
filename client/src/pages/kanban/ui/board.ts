@@ -6,6 +6,7 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;
 
 	let lastTasks: Task[] = [];
+	let deferredRender = false;
 	let columnModal: ReturnType<typeof editColumn> | null = null;
 
 	const columnInstances = new Map<string, ReturnType<typeof createColumn>>();
@@ -37,6 +38,11 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === RENDER COLUMNS ===
 	function renderColumns(columns: Column[], tasks: Task[]) {
+		if (state.getBoardState().hasOpenEditor) {
+			deferredRender = true;
+			return;
+		}
+
 		const actualColumns = new Set(columns.map((column) => column.id));
 
 		for (const columnId of columnInstances.keys()) {
@@ -70,6 +76,11 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === RENDER TASKS ===
 	function renderTasks(tasks: Task[]) {
+		if (state.getBoardState().hasOpenEditor) {
+			deferredRender = true;
+			return;
+		}
+
 		for (const taskId of [...taskInstances.keys()]) {
 			destroyTaskInstance(taskId);
 		}
@@ -93,15 +104,19 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 	function onAddColumn() {
 		columnModal?.close();
 
+		let release = () => {};
+
 		columnModal = editColumn({
 			mode: 'create',
 			initial: { columnTitle: '', limit: 10, color: 'slate' },
-			onSubmit: (columnTitle, color, limit) => {
-				state.addColumn(columnTitle, color, limit);
+			onClose: () => {
 				columnModal = null;
+				release();
 			},
+			onSubmit: (columnTitle, color, limit) => state.addColumn(columnTitle, color, limit),
 		});
 
+		release = state.registerEditor(columnModal.close);
 		document.body.append(columnModal.element);
 	}
 
@@ -149,7 +164,15 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === SUBSCRIPTIONS ===
 	const unsubscribeBoards = state.subscribeBoards(() => {
-		const { loading, loadError } = state.getBoardState();
+		const { loading, loadError, hasOpenEditor } = state.getBoardState();
+
+		if (deferredRender && !hasOpenEditor) {
+			deferredRender = false;
+			lastTasks = state.getTasks();
+			renderColumns(state.getColumns(), lastTasks);
+			renderTasks(lastTasks);
+		}
+
 		const isEmpty = state.getColumns().length === 0;
 
 		emptyBoard.classList.toggle('hidden', loading || loadError || !isEmpty);

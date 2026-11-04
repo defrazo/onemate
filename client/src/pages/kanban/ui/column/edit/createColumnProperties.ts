@@ -1,3 +1,8 @@
+import { createElement } from 'react';
+import { createRoot } from 'react-dom/client';
+
+import { Switch } from '@/shared/ui';
+
 import { limitIcon, paletteIcon } from '../../../lib';
 import { COLUMN_COLORS, type ColumnColor } from '../../../model';
 import { createPropertyRow, createSelect } from '../../components';
@@ -15,6 +20,7 @@ export const createColumnProperties = ({
 }: CreateColumnPropertiesProps) => {
 	let selectedColor: ColumnColor = initialColor ?? 'slate';
 	let selectedLimit: number | null = initialLimit;
+	let lastNumericLimit = initialLimit ?? 10;
 
 	const paletteListeners: Array<{ button: HTMLButtonElement; handler: () => void }> = [];
 
@@ -25,19 +31,52 @@ export const createColumnProperties = ({
 	// === LIMIT ===
 	const limitRow = createPropertyRow(limitIcon, 'Лимит задач');
 
-	const limitSelect = createSelect({
-		initialValue: selectedLimit ?? 10,
-		min: 1,
-		max: 15,
+	const limitOptions: { value: number; label: string }[] = Array.from({ length: 15 }, (_, index) => ({
+		value: index + 1,
+		label: String(index + 1),
+	}));
+
+	if (!limitOptions.some((option) => option.value === lastNumericLimit))
+		limitOptions.push({ value: lastNumericLimit, label: String(lastNumericLimit) });
+
+	const limitSelect = createSelect<number>({
+		initialValue: lastNumericLimit,
+		items: limitOptions,
 		direction: 'up',
 		className: 'w-24',
 		onChange: (value) => {
-			selectedLimit = value;
+			lastNumericLimit = value;
+			if (selectedLimit !== null) selectedLimit = value;
 			onChange();
 		},
 	});
 
-	limitRow.content.append(limitSelect.element);
+	const unlimitedLabel = document.createElement('span');
+	unlimitedLabel.textContent = 'Без лимита';
+	unlimitedLabel.className = 'text-sm text-(--text-secondary)';
+	const switchContainer = document.createElement('div');
+	switchContainer.setAttribute('role', 'group');
+	switchContainer.setAttribute('aria-label', 'Лимит задач');
+	const switchRoot = createRoot(switchContainer);
+	limitRow.content.classList.add('gap-2');
+	limitRow.content.append(unlimitedLabel, limitSelect.element, switchContainer);
+
+	function updateLimitControls() {
+		const enabled = selectedLimit !== null;
+		unlimitedLabel.classList.toggle('hidden', enabled);
+		limitSelect.element.classList.toggle('hidden', !enabled);
+		switchRoot.render(
+			createElement(Switch, {
+				checked: enabled,
+				onCheckedChange: (checked) => {
+					selectedLimit = checked ? lastNumericLimit : null;
+					updateLimitControls();
+					onChange();
+				},
+			})
+		);
+	}
+	updateLimitControls();
 
 	// === COLOR ===
 	const colorRow = createPropertyRow(paletteIcon, 'Цвет');
@@ -94,6 +133,7 @@ export const createColumnProperties = ({
 
 	// === LIFECYCLE ===
 	function destroy() {
+		switchRoot.unmount();
 		limitSelect.destroy();
 
 		paletteListeners.forEach(({ button, handler }) => button.removeEventListener('click', handler));

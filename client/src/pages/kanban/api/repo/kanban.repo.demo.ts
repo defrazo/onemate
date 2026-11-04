@@ -16,7 +16,7 @@ export class KanbanRepoDemo implements IKanbanRepo {
 	private boards: KanbanSnapshot[] = [];
 
 	constructor() {
-		this.createSnapshot('Моя доска');
+		this.createSnapshot('Общее', true);
 	}
 
 	async fetchBoards(): Promise<KanbanBoards> {
@@ -24,7 +24,7 @@ export class KanbanRepoDemo implements IKanbanRepo {
 	}
 
 	async initialize(): Promise<KanbanSnapshot> {
-		return this.boards.length ? structuredClone(this.boards[0]) : this.createSnapshot('Моя доска', true);
+		return this.boards.length ? structuredClone(this.boards[0]) : this.createSnapshot('Общее', true);
 	}
 
 	async fetchBoard(boardId: string): Promise<KanbanSnapshot> {
@@ -69,9 +69,6 @@ export class KanbanRepoDemo implements IKanbanRepo {
 	deleteColumn(boardId: string, revision: number, id: string): Promise<KanbanSnapshot> {
 		return this.updateSnapshot(boardId, revision, (snapshot) => {
 			this.findColumn(snapshot, id);
-
-			if (snapshot.columns.length <= LIMITS.MIN_COLUMNS)
-				throw new Error(`На доске должно оставаться минимум ${LIMITS.MIN_COLUMNS} колонки`);
 
 			snapshot.columns = snapshot.columns.filter((column) => column.id !== id);
 			snapshot.tasks = snapshot.tasks.filter((task) => task.columnId !== id);
