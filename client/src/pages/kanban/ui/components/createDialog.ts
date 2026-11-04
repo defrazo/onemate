@@ -1,7 +1,12 @@
 import { createCloseButton, createOverlay } from '.';
 
-export const createDialog = (text: string, icon?: SVGElement) => {
-	const { overlay, close } = createOverlay();
+export const createDialog = (text: string, icon?: SVGElement, onClose?: () => void) => {
+	const { overlay, close } = createOverlay({
+		onClose: () => {
+			closeButton.removeEventListener('click', close);
+			onClose?.();
+		},
+	});
 
 	// === CONTAINER ===
 	const container = document.createElement('div');

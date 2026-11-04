@@ -5,7 +5,7 @@ import type { createState, Task } from '../../model';
 import { createConfirmDialog } from '../components';
 import { createTaskHeader, createTaskMeta, editTask, viewTask } from '.';
 
-export const createTaskCard = (task: Task, state: ReturnType<typeof createState>) => {
+export const createTask = (task: Task, state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;
 
 	let viewTaskModal: ReturnType<typeof viewTask> | null = null;
@@ -16,14 +16,14 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	const taskCard = document.createElement('div');
 	taskCard.dataset.taskId = task.id;
 	taskCard.className =
-		'group/task flex min-h-40 min-w-0 flex-col gap-2 rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors select-none hover:border-(--border-primary)';
+		'group/task flex min-h-32.5 min-w-0 flex-col gap-1.5 rounded-lg border border-transparent bg-(--bg-secondary) shadow-(--shadow-contrast) transition-colors select-none hover:border-(--border-primary)';
 
 	// === TASK HEADER ===
 	const taskHeader = createTaskHeader({ task, onView: onViewTask, onEdit: onEditTask, onDelete: onDeleteTask });
 
 	// === TASK CONTENT ===
 	const taskContent = document.createElement('div');
-	taskContent.className = cn('flex flex-1 flex-col gap-2 px-3', task.completed && 'opacity-30');
+	taskContent.className = cn('flex min-h-0 flex-1 flex-col gap-1 px-3', task.completed && 'opacity-30');
 
 	// task meta
 	const taskMeta = createTaskMeta(task);
@@ -31,18 +31,18 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	// task description
 	const taskDescription = document.createElement('p');
 	taskDescription.textContent = task.description;
-	taskDescription.className =
-		'line-clamp-3 overflow-hidden text-sm leading-4.5 text-ellipsis text-(--text-secondary)';
+	taskDescription.className = 'line-clamp-2 overflow-hidden text-xs text-sm text-ellipsis text-(--text-secondary)';
 
 	taskContent.append(taskMeta.element, taskDescription);
 
 	// === TIMESTAMP ===
 	const timestamp = document.createElement('div');
-	timestamp.className = 'mt-auto flex items-center justify-between gap-2 px-3 pb-3 text-xs text-(--text-disabled)';
+	timestamp.className =
+		'mt-auto flex min-h-6.5 items-center justify-between px-3 pb-3 text-xs text-(--text-tertiary)';
 
 	const formatShortDate = (value: string): string => {
-		const date = new Date(value);
-		return date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit' });
+		const [, month, day] = value.slice(0, 10).split('-');
+		return `${day}.${month}`;
 	};
 
 	const createDateLabel = (icon: string, date: string, title: string) => {
@@ -61,17 +61,19 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 		return element;
 	};
 
-	timestamp.append(createDateLabel(calendarIcon, task.startDate, `Начало периода: ${task.startDate}`));
+	if (task.startDate)
+		timestamp.append(createDateLabel(calendarIcon, task.startDate, `Начало периода: ${task.startDate}`));
 
 	if (task.endDate) {
 		const deadline = createDateLabel(calendarDueIcon, task.endDate, `Срок выполнения: ${task.endDate}`);
-		deadline.classList.add('shrink-0');
+		deadline.classList.add('ml-auto', 'shrink-0');
 
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
 		const dueDate = new Date(`${task.endDate.slice(0, 10)}T00:00:00`);
 		const isOverdue = !task.completed && dueDate < today;
+
 		if (isOverdue) deadline.classList.add('line-through', 'decoration-(--text-tertiary)');
 
 		timestamp.append(deadline);
@@ -115,8 +117,14 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 	function onEditTask() {
 		editTaskModal?.close();
 
+		let release = () => {};
+
 		editTaskModal = editTask({
 			mode: 'edit',
+			onClose: () => {
+				editTaskModal = null;
+				release();
+			},
 			initial: {
 				title: task.title,
 				description: task.description,
@@ -126,11 +134,11 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				endDate: task.endDate,
 			},
 			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				state.editTask(task.id, title, description, status, priority, startDate, endDate);
-				editTaskModal = null;
+				return state.editTask(task.id, title, description, status, priority, startDate, endDate);
 			},
 		});
 
+		release = state.registerEditor(editTaskModal.close);
 		document.body.append(editTaskModal.element);
 	}
 

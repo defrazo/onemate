@@ -54,7 +54,7 @@ export const Clipboard = observer(() => {
 				<div className="hidden h-6.5 items-center rounded-md bg-(--accent-primary-muted) px-2 text-xs text-nowrap text-(--accent-primary) tabular-nums lg:flex">
 					{store.text.length} / {CLOUD_LIMITS.TEXT_LENGTH} зн.
 				</div>
-				<div className="ml-auto flex items-center md:gap-1">
+				<div className="flex items-center not-lg:flex-1 not-lg:justify-between md:gap-1 lg:ml-auto">
 					<EditorAction
 						icon={feedback === 'undo' ? IconCheck : IconArrowBackUp}
 						title="Отменить"

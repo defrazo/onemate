@@ -20,7 +20,7 @@ export const createConfirmDialog = ({
 	let isClosed = false;
 
 	// === DIALOG ===
-	const { overlay, container, close: closeDialog } = createDialog(title, icon);
+	const { overlay, container, close: closeDialog } = createDialog(title, icon, cleanup);
 
 	// === MESSAGE ===
 	const message = document.createElement('div');
@@ -40,15 +40,22 @@ export const createConfirmDialog = ({
 
 	// === ACTION FUNCTIONS ===
 	function handleConfirm() {
-		onConfirm();
+		if (isClosed) return;
+
 		close();
+		onConfirm();
 	}
 
 	// === LIFECYCLE ===
-	function close() {
+	function cleanup() {
 		if (isClosed) return;
 		isClosed = true;
 
+		confirmButton.removeEventListener('click', handleConfirm);
+		cancelButton.removeEventListener('click', close);
+	}
+
+	function close() {
 		closeDialog();
 	}
 

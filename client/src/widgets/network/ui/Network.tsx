@@ -1,19 +1,26 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
+import { IconCloudOff } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadingState, SegmentedControl, SyncIndicator } from '@/shared/ui';
+import { Button, LoadingError, NoContent, SegmentedControl, SyncIndicator } from '@/shared/ui';
 
 import type { NetworkView } from '../model';
-import { AddService, Details, Empty, List, Settings, Tools } from './components';
+import { AddService, Details, List, Settings, Tools } from './components';
 
 export const Network = observer(() => {
-	const { networkStore } = useStore();
+	const { networkStore, notifyStore } = useStore();
 
 	const [view, setView] = useState<NetworkView>('monitoring');
 	const [activeId, setActiveId] = useState<number | null>(null);
 	const [isAdding, setIsAdding] = useState(false);
 	const [isSettingsOpen, setIsSettingsOpen] = useState(false);
+
+	const handleLoad = useCallback(() => {
+		void networkStore.ensureLoaded().catch(() => notifyStore.setNotice('Не удалось загрузить мониторинг', 'error'));
+	}, [networkStore, notifyStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
 
 	const activeService =
 		activeId !== null ? (networkStore.services.find((service) => service.id === activeId) ?? null) : null;
@@ -56,12 +63,26 @@ export const Network = observer(() => {
 	const renderContent = () => {
 		if (view === 'tools') return <Tools onAddService={() => setIsAdding(true)} />;
 
-		if (!networkStore.isReady && networkStore.isLoading) return <LoadingState size="lg" />;
+		if (!networkStore.isReady) return <LoadingError error={!!networkStore.error} size="lg" onRetry={handleLoad} />;
 
 		if (networkStore.services.length > 0)
 			return <List services={networkStore.services} onOpen={(service) => setActiveId(service.id)} />;
 
-		return <Empty onAdd={() => setIsAdding(true)} />;
+		return (
+			<NoContent
+				description="Добавьте сайт или сервис, чтобы следить за его доступностью"
+				icon={IconCloudOff}
+				title="Нет сервисов"
+			>
+				<Button
+					className="h-6 rounded-md text-xs"
+					disabled={networkStore.isLoading}
+					onClick={() => setIsAdding(true)}
+				>
+					Добавить
+				</Button>
+			</NoContent>
+		);
 	};
 
 	return (

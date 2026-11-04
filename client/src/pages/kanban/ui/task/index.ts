@@ -1,4 +1,4 @@
-export { createTaskCard } from './createTask';
+export { createTask } from './createTask';
 export { createTaskHeader } from './createTaskHeader';
 export { createTaskMenu } from './createTaskMenu';
 export { createTaskMeta } from './createTaskMeta';

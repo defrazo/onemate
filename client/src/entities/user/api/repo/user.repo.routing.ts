@@ -1,8 +1,16 @@
-import type { Feature, Operation } from '@/entities/user';
-import { PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, IUserRoutingPort, Role, User } from '../../model';
+import type {
+	ConnectedApp,
+	ConnectedAppsResponse,
+	Feature,
+	IUserRepo,
+	IUserRoutingPort,
+	Operation,
+	Role,
+	User,
+} from '../../model';
+import { PermissionService } from '../../model';
 import { UserRepoDemo, UserRepoLaravel } from '.';
 
 export class UserRepoRouting implements IUserRepo {
@@ -63,12 +71,12 @@ export class UserRepoRouting implements IUserRepo {
 	}
 
 	async deleteAccount(): Promise<User> {
-		this.checkPermission('user', 'delete', 'Удаление аккаунта недоступно в демо-режиме');
+		this.checkPermission('user', 'delete');
 		return this.getTargetRepo().deleteAccount();
 	}
 
 	async restoreAccount(): Promise<User> {
-		this.checkPermission('user', 'save', 'Восстановление аккаунта недоступно в демо-режиме');
+		this.checkPermission('user', 'save');
 		return this.getTargetRepo().restoreAccount();
 	}
 

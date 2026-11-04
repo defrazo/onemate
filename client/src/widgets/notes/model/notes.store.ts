@@ -2,13 +2,15 @@ import { action, computed, makeObservable, observable, reaction, runInAction } f
 
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
-import { generateUUID } from '@/shared/lib/utils';
+import { generateUUID, getRandomPaletteColor } from '@/shared/lib/utils';
 
 import { notesCache } from '../lib';
 import type { INotesRepo, Note } from '.';
 
 export class NotesStore extends AsyncStore {
 	private readonly debouncer = new Debouncer();
+	private initializing: Promise<void> | null = null;
+	private loaded = false;
 
 	private lastSnapshot = '';
 	private isSaving = false;
@@ -20,7 +22,7 @@ export class NotesStore extends AsyncStore {
 	activeNoteId: string | null = null;
 
 	get isReady(): boolean {
-		return this.notes.length > 0;
+		return this.loaded;
 	}
 
 	get activeNote(): Note | null {
@@ -38,6 +40,24 @@ export class NotesStore extends AsyncStore {
 
 	get isSyncing(): boolean {
 		return this.getDraftSnapshot() !== this.lastSnapshot;
+	}
+
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.loaded) return Promise.resolve();
+
+		if (this.initializing) return this.initializing;
+
+		const promise = this.loadNotes(userId);
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
 	}
 
 	openNote(id: string): void {
@@ -62,16 +82,25 @@ export class NotesStore extends AsyncStore {
 		this.scheduleServerUpdate();
 	}
 
-	addNote(): void {
+	addNote(): string {
 		if (!this.canAddMore) throw new Error('Максимум 50 заметок');
 
 		const maxOrder = this.draft.length ? Math.max(...this.draft.map((note) => note.order_idx)) + 1 : 0;
 		const now = new Date().toISOString();
-		const note: Note = { id: generateUUID(), text: '', order_idx: maxOrder, created_at: now, updated_at: now };
+		const note: Note = {
+			id: generateUUID(),
+			text: '',
+			color: getRandomPaletteColor(),
+			order_idx: maxOrder,
+			created_at: now,
+			updated_at: now,
+		};
 
 		this.draft = this.normalizeOrder([note, ...this.draft]);
 		this.commitDraft();
 		this.scheduleServerUpdate();
+
+		return note.id;
 	}
 
 	removeNote(id: string): void {
@@ -82,24 +111,26 @@ export class NotesStore extends AsyncStore {
 		this.scheduleServerUpdate();
 	}
 
-	async loadNotes(userId: string): Promise<void> {
+	private async loadNotes(userId: string): Promise<void> {
+		const generation = this.generation;
 		const cached = notesCache.read(userId);
 
 		if (cached?.dirty) {
 			const sorted = this.sortNotes(cached.notes);
 
-			this.applyDirtyDraft(sorted);
-			this.scheduleServerUpdate();
+			runInAction(() => {
+				this.applyDirtyDraft(sorted);
+				this.loaded = true;
+			});
 
+			this.scheduleServerUpdate();
 			return;
 		}
 
-		if (cached) this.applyNotes(this.sortNotes(cached.notes));
-
-		if (this.isLoading) return;
+		if (cached && this.userStore.id === userId && this.generation === generation)
+			this.applyNotes(this.sortNotes(cached.notes));
 
 		await this.withLoading(async () => {
-			const generation = this.generation;
 			const draftVersion = this.draftVersion;
 			const notes = await this.repo.loadAll(userId);
 
@@ -107,7 +138,12 @@ export class NotesStore extends AsyncStore {
 				return;
 
 			const sorted = this.sortNotes(notes);
-			this.applyNotes(sorted);
+
+			runInAction(() => {
+				this.applyNotes(sorted);
+				this.loaded = true;
+			});
+
 			notesCache.write(userId, sorted, false);
 		});
 	}
@@ -140,7 +176,6 @@ export class NotesStore extends AsyncStore {
 
 			if (this.getDraftSnapshot() === snapshot) notesCache.write(userId, draft, false);
 		} catch {
-			// Черновик остаётся в кэше
 		} finally {
 			if (this.generation === generation) {
 				this.isSaving = false;
@@ -194,7 +229,7 @@ export class NotesStore extends AsyncStore {
 	}
 
 	private getDraftSnapshot(): string {
-		return JSON.stringify(this.draft.map(({ id, text, order_idx }) => ({ id, text, order_idx })));
+		return JSON.stringify(this.draft.map(({ id, text, color, order_idx }) => ({ id, text, color, order_idx })));
 	}
 
 	private updateSnapshot(): void {
@@ -213,8 +248,9 @@ export class NotesStore extends AsyncStore {
 
 		makeObservable<
 			this,
-			'canAddMore' | 'canDeleteMore' | 'lastSnapshot' | 'reset' | 'applyNotes' | 'applyDirtyDraft'
+			'loaded' | 'canAddMore' | 'canDeleteMore' | 'lastSnapshot' | 'reset' | 'applyNotes' | 'applyDirtyDraft'
 		>(this, {
+			loaded: observable,
 			notes: observable,
 			draft: observable,
 			activeNoteId: observable,
@@ -255,13 +291,15 @@ export class NotesStore extends AsyncStore {
 		this.track(
 			reaction(
 				() => this.userStore.id,
-				(id) => {
-					if (!id) {
-						this.reset();
-						return;
-					}
+				(userId) => {
+					this.reset();
+					if (!userId) return;
 
-					void this.loadNotes(id);
+					const cached = notesCache.read(userId);
+					if (cached?.dirty) {
+						this.applyDirtyDraft(this.sortNotes(cached.notes));
+						this.scheduleServerUpdate();
+					}
 				},
 				{ fireImmediately: true }
 			)
@@ -270,6 +308,8 @@ export class NotesStore extends AsyncStore {
 
 	protected reset(): void {
 		this.generation++;
+		this.initializing = null;
+		this.loaded = false;
 		this.isSaving = false;
 
 		this.notes = [];
@@ -278,5 +318,6 @@ export class NotesStore extends AsyncStore {
 		this.lastSnapshot = '';
 
 		this.debouncer.cancel();
+		this.setError(null);
 	}
 }

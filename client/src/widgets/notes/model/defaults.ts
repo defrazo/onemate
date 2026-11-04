@@ -1,8 +1,10 @@
+import { getRandomPaletteColor } from '@/shared/lib/utils';
+
 import type { Note } from '.';
 
 type NoteTemplate = Omit<Note, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
 
-const DEFAULT_NOTES: NoteTemplate[] = [
+const DEFAULT_NOTES: Omit<NoteTemplate, 'color'>[] = [
 	{ text: 'Добро пожаловать! Это твоя первая заметка – можешь отредактировать или удалить ее.', order_idx: 0 },
 	{
 		text: 'Иногда полезно просто сесть и выписать мысли. Даже если они кажутся бессмысленными – в процессе часто приходит что-то дельное.',
@@ -18,4 +20,5 @@ const DEFAULT_NOTES: NoteTemplate[] = [
 	},
 ];
 
-export const createDefaultNotes = (): NoteTemplate[] => DEFAULT_NOTES.map((n) => ({ ...n }));
+export const createDefaultNotes = (): NoteTemplate[] =>
+	DEFAULT_NOTES.map((note) => ({ ...note, color: getRandomPaletteColor() }));

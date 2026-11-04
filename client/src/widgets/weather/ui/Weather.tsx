@@ -1,15 +1,24 @@
+import { useCallback, useEffect } from 'react';
 import { IconRefresh } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { LocationSearch } from '@/features/location-search';
 import { cn } from '@/shared/lib/utils';
-import { Button, LoadingState, SegmentedControl } from '@/shared/ui';
+import { Button, LoadingError, SegmentedControl } from '@/shared/ui';
 
 import { Current, Forecast } from './components';
 
 export const Weather = observer(() => {
 	const { notifyStore, weatherStore } = useStore();
+
+	const handleLoad = useCallback(() => {
+		void weatherStore.ensureLoaded().catch(() => notifyStore.setNotice('Не удалось загрузить погоду', 'error'));
+	}, [weatherStore, notifyStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
+
+	if (!weatherStore.isReady) return <LoadingError error={!!weatherStore.error} size="lg" onRetry={handleLoad} />;
 
 	return (
 		<div className="flex h-full min-h-0 flex-col">
@@ -19,13 +28,7 @@ export const Weather = observer(() => {
 				value={weatherStore.location}
 				onSelect={(city) => weatherStore.setLocation(city)}
 			/>
-			{!weatherStore.isReady ? (
-				<LoadingState size="lg" />
-			) : weatherStore.view === 'current' ? (
-				<Current />
-			) : (
-				<Forecast />
-			)}
+			{weatherStore.view === 'current' ? <Current /> : <Forecast />}
 			<div className="flex items-center">
 				<SegmentedControl
 					className="-mr-4 ml-auto w-60 shrink-0"

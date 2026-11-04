@@ -14,7 +14,7 @@ export const createColumnProperties = ({
 	onChange,
 }: CreateColumnPropertiesProps) => {
 	let selectedColor: ColumnColor = initialColor ?? 'slate';
-	let selectedLimit = initialLimit ?? 10;
+	let selectedLimit: number | null = initialLimit;
 
 	const paletteListeners: Array<{ button: HTMLButtonElement; handler: () => void }> = [];
 
@@ -25,12 +25,19 @@ export const createColumnProperties = ({
 	// === LIMIT ===
 	const limitRow = createPropertyRow(limitIcon, 'Лимит задач');
 
-	const limitSelect = createSelect({
-		initialValue: selectedLimit,
-		min: 1,
-		max: 15,
+	const limitOptions: { value: number | null; label: string }[] = [
+		{ value: null, label: 'Не задан' },
+		...Array.from({ length: 15 }, (_, index) => ({ value: index + 1, label: String(index + 1) })),
+	];
+
+	if (initialLimit !== null && !limitOptions.some((option) => option.value === initialLimit))
+		limitOptions.push({ value: initialLimit, label: String(initialLimit) });
+
+	const limitSelect = createSelect<number | null>({
+		initialValue: initialLimit,
+		items: limitOptions,
 		direction: 'up',
-		className: 'w-24',
+		className: 'w-32',
 		onChange: (value) => {
 			selectedLimit = value;
 			onChange();
@@ -62,7 +69,6 @@ export const createColumnProperties = ({
 		const handler = () => selectColor(columnColor);
 
 		button.addEventListener('click', handler);
-
 		paletteListeners.push({ button, handler });
 
 		button.append(dot);
@@ -74,7 +80,6 @@ export const createColumnProperties = ({
 	// === ACTION FUNCTIONS ===
 	function selectColor(color: ColumnColor) {
 		selectedColor = color;
-
 		updatePalette();
 		onChange();
 	}
@@ -82,13 +87,14 @@ export const createColumnProperties = ({
 	function updatePalette() {
 		paletteListeners.forEach(({ button }) => {
 			const selected = button.dataset.color === selectedColor;
+
 			button.classList.toggle('border-(--tone-strong-hover)', selected);
 			button.classList.toggle('border-transparent', !selected);
 			button.classList.toggle('scale-110', selected);
 		});
 	}
 
-	function getValue(): { color: ColumnColor; limit: number } {
+	function getValue(): { color: ColumnColor; limit: number | null } {
 		return { color: selectedColor, limit: selectedLimit };
 	}
 

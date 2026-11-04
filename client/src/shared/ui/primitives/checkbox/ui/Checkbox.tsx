@@ -11,10 +11,17 @@ interface CheckboxProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'siz
 	label?: string;
 	labelSide?: 'left' | 'right';
 
+	size?: 'sm' | 'md' | 'lg';
 	error?: boolean;
 
 	variant?: keyof typeof variants.checkbox;
 }
+
+const sizes = {
+	sm: 'size-4',
+	md: 'size-5',
+	lg: 'size-6',
+};
 
 export const Checkbox = ({
 	checked,
@@ -23,6 +30,7 @@ export const Checkbox = ({
 	label,
 	labelSide = 'right',
 
+	size = 'md',
 	error = false,
 
 	variant = 'default',
@@ -41,7 +49,7 @@ export const Checkbox = ({
 	return (
 		<label
 			className={cn(
-				'group flex w-fit items-center gap-2 select-none',
+				'group/checkbox flex w-fit items-center gap-2 select-none',
 				labelSide === 'left' && 'flex-row-reverse',
 				disabled ? 'cursor-not-allowed' : 'cursor-pointer',
 				className
@@ -59,14 +67,15 @@ export const Checkbox = ({
 			<Icon
 				className={cn(
 					styles,
-					'size-5 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary-hover)',
-					'peer-disabled:opacity-50 peer-disabled:group-hover:text-current',
+					sizes[size],
+					'text-(--text-secondary) transition-colors group-hover/checkbox:text-(--accent-primary-hover)',
+					'peer-disabled:opacity-50 peer-disabled:group-hover/checkbox:text-current',
 					'peer-focus-visible:outline-2 peer-focus-visible:outline-offset-2 peer-focus-visible:outline-(--accent-primary)',
 					'peer-aria-invalid:text-(--status-error)'
 				)}
 			/>
 			{label && (
-				<span className="transition-colors group-hover:text-(--accent-primary-hover) peer-disabled:opacity-50 peer-disabled:group-hover:text-current">
+				<span className="transition-colors group-hover/checkbox:text-(--accent-primary-hover) peer-disabled:opacity-50 peer-disabled:group-hover/checkbox:text-current">
 					{label}
 				</span>
 			)}

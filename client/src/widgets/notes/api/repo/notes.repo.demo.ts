@@ -1,9 +1,10 @@
+import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 import { generateUUID, key } from '@/shared/lib/utils';
 
 import { createDefaultNotes, type INotesRepo, type Note } from '../../model';
 
-type DefaultNote = Partial<Pick<Note, 'text' | 'order_idx' | 'id' | 'created_at' | 'updated_at'>>;
+type DefaultNote = Partial<Pick<Note, 'text' | 'color' | 'order_idx' | 'id' | 'created_at' | 'updated_at'>>;
 type NormalizeOptions = { touchUpdated?: boolean };
 
 export class NotesRepoDemo implements INotesRepo {
@@ -29,9 +30,10 @@ export class NotesRepoDemo implements INotesRepo {
 	private normalizeNotes(raw: DefaultNote[] | Note[], opts: NormalizeOptions = {}): Note[] {
 		const now = new Date().toISOString();
 
-		return raw.map(({ id, text, order_idx, created_at, updated_at }, idx) => ({
+		return raw.map(({ id, text, color, order_idx, created_at, updated_at }, idx) => ({
 			id: id ?? generateUUID(),
 			text: text ?? '',
+			color: this.normalizeColor(color),
 			order_idx: Number.isFinite(order_idx) ? order_idx! : idx,
 			created_at: created_at ?? now,
 			updated_at: opts.touchUpdated ? now : (updated_at ?? now),
@@ -40,5 +42,9 @@ export class NotesRepoDemo implements INotesRepo {
 
 	private sortNotes(notes: Note[]): Note[] {
 		return [...notes].sort((a, b) => a.order_idx - b.order_idx || a.id.localeCompare(b.id));
+	}
+
+	private normalizeColor(color: unknown): PaletteColor {
+		return typeof color === 'string' && Object.hasOwn(COLOR_PALETTE, color) ? (color as PaletteColor) : 'slate';
 	}
 }

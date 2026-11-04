@@ -52,7 +52,7 @@ export const routes: RouteObject[] = [
 						children: [{ path: '/dashboard', element: <DashboardPage /> }],
 					},
 					{
-						element: <Layout background={<Background />} />,
+						element: <Layout hideFooter />,
 						children: [{ path: '/todo', element: <TodoPage /> }],
 					},
 					{

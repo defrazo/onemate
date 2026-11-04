@@ -1,36 +1,31 @@
-import { useEffect, useState } from 'react';
-import { IconCloudOff } from '@tabler/icons-react';
+import { IconWifiOff } from '@tabler/icons-react';
 
 import { Button } from '@/shared/ui';
 
 import { LoadingState, type SpinnerSize } from '.';
 
 interface LoadingErrorProps {
+	error?: boolean | null;
 	message?: string;
 	size?: SpinnerSize;
 	onRetry: () => void;
 }
 
-export const LoadingError = ({ message, size, onRetry }: LoadingErrorProps) => {
-	const [failed, setFailed] = useState(false);
-
-	useEffect(() => {
-		const timer = setTimeout(() => setFailed(true), 10000);
-		return () => clearTimeout(timer);
-	}, []);
-
-	if (!failed) return <LoadingState size={size} />;
+export const LoadingError = ({ error, message, size, onRetry }: LoadingErrorProps) => {
+	if (!error) return <LoadingState size={size} />;
 
 	return (
-		<div className="flex flex-col items-center justify-center gap-0.5 text-center">
-			<div className="mb-1 flex size-16 items-center justify-center rounded-2xl bg-(--accent-primary-muted)">
-				<IconCloudOff className="size-8 text-(--accent-primary)" stroke={1.8} />
+		<div className="flex h-full flex-1 flex-col items-center justify-center py-3 text-center">
+			<div className="mb-3 flex size-13 shrink-0 items-center justify-center rounded-xl bg-(--status-error-muted)">
+				<IconWifiOff className="size-6 text-(--status-error)" stroke={1.8} />
 			</div>
-			<div className="flex flex-col">
-				<span className="text-(--text-secondary)">{message || 'Не удалось загрузить данные'}</span>
-				<span className="trim text-sm text-(--text-disabled)">Проверьте соединение и попробуйте снова</span>
-			</div>
-			<Button className="mt-3 h-7" onClick={onRetry}>
+			<span className="text-sm font-medium text-(--text-secondary)">
+				{message || 'Не удалось загрузить данные'}
+			</span>
+			<span className="trim mt-1 rounded-md text-xs text-(--text-disabled)">
+				Проверьте соединение и попробуйте снова
+			</span>
+			<Button className="mt-3 h-7 text-sm" onClick={onRetry}>
 				Повторить
 			</Button>
 		</div>

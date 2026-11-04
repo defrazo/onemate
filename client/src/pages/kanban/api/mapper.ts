@@ -1,4 +1,13 @@
-import type { Column, DbColumn, DbTask, Task, TaskPriority, TaskStatus } from '../model';
+import type {
+	Column,
+	DbColumn,
+	DbKanbanBoard,
+	DbKanbanSnapshot,
+	DbTask,
+	KanbanBoard,
+	KanbanSnapshot,
+	Task,
+} from '../model';
 
 // === COLUMNS ===
 export const mapColumnFromDb = (db: DbColumn): Column => ({
@@ -26,11 +35,11 @@ export const mapTaskFromDb = (db: DbTask): Task => ({
 	columnId: db.column_id,
 	title: db.title,
 	description: db.description,
-	status: db.status as TaskStatus,
-	priority: db.priority as TaskPriority,
+	status: db.status,
+	priority: db.priority,
 	position: db.position,
 	startDate: db.start_date,
-	endDate: db.end_date ?? null,
+	endDate: db.end_date,
 	completed: db.completed,
 	createdAt: db.created_at,
 	updatedAt: db.updated_at ?? null,
@@ -52,3 +61,18 @@ export const mapTaskToDb = (task: Partial<Task>): Partial<DbTask> => {
 
 	return map;
 };
+
+export const mapBoardFromDb = (db: DbKanbanBoard): KanbanBoard => ({
+	id: db.id,
+	ownerId: db.owner_id,
+	title: db.title,
+	revision: db.revision,
+	createdAt: db.created_at,
+	updatedAt: db.updated_at,
+});
+
+export const mapSnapshotFromDb = (db: DbKanbanSnapshot): KanbanSnapshot => ({
+	board: mapBoardFromDb(db.board),
+	columns: db.columns.map(mapColumnFromDb),
+	tasks: db.tasks.map(mapTaskFromDb),
+});

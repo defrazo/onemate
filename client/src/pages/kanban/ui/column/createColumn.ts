@@ -20,7 +20,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		column,
 		tasksCount: 0,
 		isMoving: state.isMovingColumn,
-		onAdd: () => onAddTask(currentColumn.id, currentColumn.taskLimit),
+		onAdd: () => onAddTask(currentColumn.id),
 		onEdit: () => onEditColumn(currentColumn.id, currentColumn.title, currentColumn.color, currentColumn.taskLimit),
 	});
 
@@ -31,13 +31,19 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 		'core-gap scrollbar-none flex flex-1 flex-col xl:max-h-[calc(100vh-155px)] xl:overflow-y-auto';
 
 	// === ACTION FUNCTIONS ===
-	function onAddTask(columnId: string, taskLimit: number) {
-		const today = new Date().toISOString().split('T')[0];
+	function onAddTask(columnId: string) {
+		const today = new Date().toLocaleDateString('sv-SE');
 
 		editTaskModal?.close();
 
+		let release = () => {};
+
 		editTaskModal = editTask({
 			mode: 'create',
+			onClose: () => {
+				editTaskModal = null;
+				release();
+			},
 			initial: {
 				title: '',
 				description: '',
@@ -47,34 +53,25 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 				endDate: null,
 			},
 			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				state.addTask(
-					columnId,
-					title,
-					description,
-					status,
-					priority,
-					startDate || today,
-					endDate || null,
-					false,
-					taskLimit
-				);
-
-				editTaskModal = null;
+				return state.addTask(columnId, title, description, status, priority, startDate, endDate, false);
 			},
 		});
 
+		release = state.registerEditor(editTaskModal.close);
 		document.body.append(editTaskModal.element);
 	}
 
-	function onEditColumn(id: string, columnTitle: string, color: ColumnColor, limit: number) {
+	function onEditColumn(id: string, columnTitle: string, color: ColumnColor, limit: number | null) {
 		editColumnModal?.close();
+
+		let release = () => {};
 
 		editColumnModal = editColumn({
 			mode: 'edit',
+			onClose: () => release(),
 			initial: { columnTitle, color, limit },
 			onSubmit: (columnTitle, color, limit) => {
-				state.editColumn(id, columnTitle, color, limit);
-				editColumnModal = null;
+				return state.editColumn(id, columnTitle, color, limit);
 			},
 			onDelete: () => {
 				state.deleteColumn(id);
@@ -82,6 +79,7 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 			},
 		});
 
+		release = state.registerEditor(editColumnModal.close);
 		document.body.append(editColumnModal.element);
 	}
 

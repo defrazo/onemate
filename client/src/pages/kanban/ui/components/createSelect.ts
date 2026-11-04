@@ -2,7 +2,7 @@ import { cn } from '@/shared/lib/utils';
 
 import { chevronDownIcon, insertSvg } from '../../lib';
 
-type SelectValue = string | number;
+type SelectValue = string | number | null;
 
 type SelectItem<T extends SelectValue> = { value: T; label: string; color?: string };
 
@@ -17,8 +17,10 @@ type CreateSelectOptions<T extends SelectValue> = {
 };
 
 export const createSelect = <T extends SelectValue = number>(options: CreateSelectOptions<T> = {}) => {
+	let destroyed = false;
+
 	const items = createItems(options);
-	const initialValue = options.initialValue ?? getItemValue(items[0]);
+	const initialValue = options.initialValue !== undefined ? options.initialValue : getItemValue(items[0]);
 
 	let currentValue = initialValue;
 
@@ -159,6 +161,10 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 
 	// === LIFECYCLE ===
 	function destroy() {
+		if (destroyed) return;
+		destroyed = true;
+
+		close();
 		selected.removeEventListener('click', onSelectedClick);
 		document.removeEventListener('click', onDocumentClick);
 

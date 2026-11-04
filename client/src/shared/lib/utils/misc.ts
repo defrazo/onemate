@@ -1,3 +1,5 @@
+import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
+
 // Генерирует случайный UUID
 export const generateUUID = () => {
 	if (crypto && crypto.randomUUID) return crypto.randomUUID();
@@ -26,26 +28,8 @@ export const pluralize = (count: number, one: string, few: string, many: string)
 	return many;
 };
 
-// Делает дату относительной
-interface DateOffsetOptions {
-	days?: number;
-	hours?: number;
-	minutes?: number;
-	withTime?: boolean;
-}
-
-export const dateOffset = ({ days = 0, hours = 0, minutes = 0, withTime = false }: DateOffsetOptions = {}) => {
-	const date = new Date();
-
-	date.setDate(date.getDate() + days);
-	date.setHours(date.getHours() + hours);
-	date.setMinutes(date.getMinutes() + minutes);
-
-	if (withTime) return date.toISOString();
-
-	const year = date.getFullYear();
-	const month = String(date.getMonth() + 1).padStart(2, '0');
-	const day = String(date.getDate()).padStart(2, '0');
-
-	return `${year}-${month}-${day}`;
+// Генерирует случайный цвет
+export const getRandomPaletteColor = (): PaletteColor => {
+	const colors = Object.keys(COLOR_PALETTE) as PaletteColor[];
+	return colors[Math.floor(Math.random() * colors.length)];
 };

@@ -18,7 +18,7 @@ export const createDatePicker = ({
 	// === CONTAINER ===
 	const container = document.createElement('div');
 	container.className = cn(
-		'relative flex min-h-8.5 min-w-0 items-center rounded-md border border-(--tone-strong) bg-(--tone) px-2.5 py-2 text-center text-sm text-(--text-primary) transition-colors',
+		'relative flex min-h-8.5 min-w-0 items-center gap-1.5 rounded-md border border-(--tone-strong) bg-(--tone) p-2 text-center text-sm text-(--text-primary) transition-colors',
 		!readonly && 'cursor-pointer hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover)',
 		className
 	);
@@ -26,7 +26,7 @@ export const createDatePicker = ({
 	// === ICON ===
 	const icon = document.createElement('span');
 	icon.className = 'flex size-3.5 shrink-0 items-center justify-center text-(--text-disabled)';
-	insertSvg(icon, dateIcon, 'size-3.5');
+	insertSvg(icon, dateIcon, 'size-3');
 
 	// === DISPLAY ===
 	const display = document.createElement('span');
@@ -35,13 +35,22 @@ export const createDatePicker = ({
 
 	// === INPUT ===
 	const input = document.createElement('input');
-	input.id = `date-${value}`;
 	input.type = 'date';
 	input.value = value ?? '';
 	input.readOnly = readonly;
 	input.className = cn(
 		'absolute inset-0 size-full opacity-0',
 		readonly ? 'pointer-events-none cursor-default' : 'cursor-pointer'
+	);
+
+	// === CLEAR BUTTON ===
+	const clearButton = document.createElement('button');
+	clearButton.type = 'button';
+	clearButton.title = 'Очистить дату';
+	clearButton.textContent = '×';
+	clearButton.className = cn(
+		'relative z-10 flex size-4 shrink-0 cursor-pointer items-center justify-center rounded text-(--text-disabled) hover:text-(--accent-primary)',
+		(!value || readonly) && 'hidden'
 	);
 
 	// === ACTION FUNCTIONS ===
@@ -52,11 +61,12 @@ export const createDatePicker = ({
 	function updateDisplay() {
 		display.textContent = formatDate(input.value);
 		display.classList.toggle('text-(--text-disabled)', !input.value);
+		clearButton.classList.toggle('hidden', !input.value || readonly);
 	}
 
 	// === EVENTS ===
-	function onContainerClick() {
-		if (readonly) return;
+	function onContainerClick(e: MouseEvent) {
+		if (readonly || clearButton.contains(e.target as Node)) return;
 
 		input.showPicker?.();
 	}
@@ -66,9 +76,18 @@ export const createDatePicker = ({
 		onChange?.(input.value);
 	}
 
+	function onClearClick(e: MouseEvent) {
+		e.stopPropagation();
+
+		input.value = '';
+		updateDisplay();
+		onChange?.('');
+	}
+
 	if (!readonly) {
 		container.addEventListener('click', onContainerClick);
 		input.addEventListener('change', onInputChange);
+		clearButton.addEventListener('click', onClearClick);
 	}
 
 	// === LIFECYCLE ===
@@ -77,16 +96,18 @@ export const createDatePicker = ({
 
 		container.removeEventListener('click', onContainerClick);
 		input.removeEventListener('change', onInputChange);
+		clearButton.removeEventListener('click', onClearClick);
 	}
 
 	// === ASSEMBLY ===
-	container.append(icon, display, input);
+	container.append(icon, display, input, clearButton);
 
 	return { element: container, getValue, destroy };
 };
 
 function formatDate(value: string | null): string {
 	if (!value) return 'дд.мм.гггг';
+
 	const [year, month, day] = value.split('-');
 	return `${day}.${month}.${year}`;
 }

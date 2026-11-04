@@ -14,6 +14,7 @@ export class RootStore implements AllStores {
 	public readonly networkStore: AllStores['networkStore'];
 	public readonly weatherStore: AllStores['weatherStore'];
 	public readonly notesStore: AllStores['notesStore'];
+	public readonly todoStore: AllStores['todoStore'];
 	public readonly currencyStore: AllStores['currencyStore'];
 	public readonly translatorStore: AllStores['translatorStore'];
 
@@ -37,6 +38,7 @@ export class RootStore implements AllStores {
 		this.networkStore = allStores.networkStore;
 		this.weatherStore = allStores.weatherStore;
 		this.notesStore = allStores.notesStore;
+		this.todoStore = allStores.todoStore;
 		this.currencyStore = allStores.currencyStore;
 		this.translatorStore = allStores.translatorStore;
 	}

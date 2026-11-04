@@ -102,7 +102,7 @@ export const FilesItemActions = ({
 		<>
 			<div ref={buttonRef} className="shrink-0">
 				<Button
-					centerIcon={<IconDots className="size-4" />}
+					centerIcon={<IconDots className="size-5 xl:size-4" />}
 					disabled={disabled}
 					padding="none"
 					title="Действия с файлом"
@@ -125,12 +125,15 @@ export const FilesItemActions = ({
 
 									<Button
 										className={cn(
-											'w-full justify-start text-sm hover:bg-(--tone-strong-hover)',
+											'w-full justify-start text-base hover:bg-(--tone-strong-hover) xl:text-sm',
 											danger && 'text-(--status-error)'
 										)}
 										leftIcon={
 											<Icon
-												className={cn('size-4 shrink-0', !danger && 'text-(--text-secondary)')}
+												className={cn(
+													'size-5 shrink-0 xl:size-4',
+													!danger && 'text-(--text-secondary)'
+												)}
 											/>
 										}
 										variant="custom"

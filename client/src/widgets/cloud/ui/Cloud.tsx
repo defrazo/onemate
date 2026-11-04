@@ -1,8 +1,8 @@
-import { useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { LoadingState, SyncIndicator } from '@/shared/ui';
+import { LoadingError, SyncIndicator } from '@/shared/ui';
 
 import { CLOUD_LIMITS, type CloudTab } from '../model';
 import { Clipboard, Files, Toolbar } from './components';
@@ -15,6 +15,12 @@ export const Cloud = observer(() => {
 
 	const [selectionMode, setSelectionMode] = useState(false);
 	const [selectedIds, setSelectedIds] = useState<Set<string>>(() => new Set());
+
+	const handleLoad = useCallback(() => {
+		void cloudStore.ensureLoaded().catch(() => notifyStore.setNotice('Не удалось загрузить облако', 'error'));
+	}, [cloudStore, notifyStore]);
+
+	useEffect(() => handleLoad(), [handleLoad]);
 
 	const handleTabChange = (value: CloudTab) => {
 		if (value === tab) return;
@@ -56,34 +62,30 @@ export const Cloud = observer(() => {
 		});
 	};
 
+	if (!cloudStore.isReady) return <LoadingError error={!!cloudStore.error} size="lg" onRetry={handleLoad} />;
+
 	return (
 		<div className="flex min-h-0 flex-1 flex-col gap-2">
-			{!cloudStore.isReady ? (
-				<LoadingState size="lg" />
+			<Toolbar
+				searchOpen={searchOpen}
+				selectionMode={selectionMode}
+				tab={tab}
+				onRefresh={handleRefresh}
+				onSearchToggle={() => setSearchOpen((prev) => !prev)}
+				onSelectionToggle={toggleSelectionMode}
+				onTabChange={handleTabChange}
+			/>
+			{tab === 'files' ? (
+				<Files
+					searchOpen={searchOpen}
+					selectedIds={selectedIds}
+					selectionMode={selectionMode}
+					onSearchClose={() => setSearchOpen(false)}
+					onSelectionCancel={cancelSelection}
+					onSelectionToggle={toggleFileSelection}
+				/>
 			) : (
-				<>
-					<Toolbar
-						searchOpen={searchOpen}
-						selectionMode={selectionMode}
-						tab={tab}
-						onRefresh={handleRefresh}
-						onSearchToggle={() => setSearchOpen((prev) => !prev)}
-						onSelectionToggle={toggleSelectionMode}
-						onTabChange={handleTabChange}
-					/>
-					{tab === 'files' ? (
-						<Files
-							searchOpen={searchOpen}
-							selectedIds={selectedIds}
-							selectionMode={selectionMode}
-							onSearchClose={() => setSearchOpen(false)}
-							onSelectionCancel={cancelSelection}
-							onSelectionToggle={toggleFileSelection}
-						/>
-					) : (
-						<Clipboard />
-					)}
-				</>
+				<Clipboard />
 			)}
 			{cloudStore.isSyncing && <SyncIndicator />}
 		</div>

@@ -1,7 +1,8 @@
 import type { TaskStatusConfig } from '.';
 
 export const LIMITS = {
-	MIN_COLUMNS: 3,
+	MAX_BOARDS: 10,
+	BOARD_TITLE: 30,
 	MAX_COLUMNS: 6,
 	COLUMN_TITLE: 20,
 	TASK_TITLE: 60,

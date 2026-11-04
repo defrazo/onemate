@@ -12,7 +12,7 @@ interface EditorActionProps {
 
 export const EditorAction = ({ icon: Icon, title, disabled, loading, onClick }: EditorActionProps) => (
 	<Button
-		centerIcon={<Icon className="size-4.5" />}
+		centerIcon={<Icon className="size-5 xl:size-4.5" />}
 		className="size-8 lg:size-6.5"
 		disabled={disabled}
 		loading={loading}

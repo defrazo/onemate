@@ -17,20 +17,41 @@ import type {
 } from '.';
 
 export class NetworkStore extends AsyncStore {
+	private initializing: Promise<void> | null = null;
+	private generation = 0;
+
 	services: MonitoredService[] = [];
 	isReady = false;
 	isReordering = false;
 
-	async loadServices(userId: string): Promise<void> {
-		const cached = networkCache.read(userId);
-		if (cached) this.applyServices(cached.services);
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.isReady) return Promise.resolve();
 
-		if (this.isLoading) return;
+		if (this.initializing) return this.initializing;
+
+		const promise = this.loadServices(userId);
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
+	}
+
+	private async loadServices(userId: string): Promise<void> {
+		const generation = this.generation;
+		const cached = networkCache.read(userId);
+
+		if (cached && this.userStore.id === userId) this.applyServices(cached.services);
 
 		await this.withLoading(async () => {
 			const services = await this.repo.loadServices();
 
-			if (this.userStore.id !== userId) return;
+			if (this.userStore.id !== userId || this.generation !== generation) return;
 
 			this.applyServices(services);
 			networkCache.write(userId, services);
@@ -163,22 +184,20 @@ export class NetworkStore extends AsyncStore {
 		this.track(
 			reaction(
 				() => this.userStore.id,
-				(userId) => {
-					if (!userId) {
-						this.reset();
-						return;
-					}
-
-					void this.loadServices(userId);
-				},
+				() => this.reset(),
 				{ fireImmediately: true }
 			)
 		);
 	}
 
 	protected reset(): void {
+		this.generation++;
+		this.initializing = null;
+
 		this.services = [];
 		this.isReady = false;
 		this.isReordering = false;
+
+		this.setError(null);
 	}
 }

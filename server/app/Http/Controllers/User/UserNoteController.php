@@ -7,6 +7,7 @@ use App\Models\User\UserNote;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\Rule;
 
 class UserNoteController extends Controller
 {
@@ -28,6 +29,11 @@ class UserNoteController extends Controller
             'notes' => ['required', 'array', 'min:1', 'max:50'],
             'notes.*.id' => ['required', 'uuid'],
             'notes.*.text' => ['present', 'nullable', 'string', 'max:2000'],
+            'notes.*.color' => [
+                'required',
+                'string',
+                Rule::in(['slate', 'rose', 'amber', 'emerald', 'violet', 'lime', 'fuchsia', 'sky']),
+            ],
             'notes.*.order_idx' => ['required', 'integer', 'min:0'],
         ]);
 
@@ -42,6 +48,7 @@ class UserNoteController extends Controller
                     'id' => $note['id'],
                     'user_id' => $user->id,
                     'text' => $note['text'] ?? '',
+                    'color' => $note['color'],
                     'order_idx' => $note['order_idx'],
                     'created_at' => $now,
                     'updated_at' => $now,

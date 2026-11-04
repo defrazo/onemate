@@ -30,16 +30,16 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	addButton.type = 'button';
 	addButton.title = 'Добавить задачу';
 	addButton.className =
-		'mr-auto size-4.5 cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover:opacity-100';
-	insertSvg(addButton, addIcon, 'size-4.5');
+		'mr-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover:opacity-100';
+	insertSvg(addButton, addIcon, 'size-5 xl:size-4.5');
 
 	// === SETTINGS BUTTON ===
 	const settingsButton = document.createElement('button');
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
 	settingsButton.className =
-		'size-4.5 cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
-	insertSvg(settingsButton, settingsIcon, 'size-4.5');
+		'ml-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
+	insertSvg(settingsButton, settingsIcon, 'size-5 xl:size-4.5');
 
 	// === COUNTER ===
 	const counter = document.createElement('span');

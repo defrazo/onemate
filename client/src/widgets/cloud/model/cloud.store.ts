@@ -10,8 +10,9 @@ import { CLOUD_STORAGE_BYTES } from '.';
 const TEXT_SAVE_DELAY = 3000;
 
 export class CloudStore extends AsyncStore {
-	private uploadController: AbortController | null = null;
 	private readonly textDebouncer = new Debouncer();
+	private initializing: Promise<void> | null = null;
+	private uploadController: AbortController | null = null;
 
 	private savedText = '';
 	private textRevision = 0;
@@ -105,6 +106,24 @@ export class CloudStore extends AsyncStore {
 
 	setFavoritesOnly(value: boolean): void {
 		this.favoritesOnly = value;
+	}
+
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!userId || this.isReady) return Promise.resolve();
+
+		if (this.initializing) return this.initializing;
+
+		const promise = this.load(userId);
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
 	}
 
 	async load(userId: string): Promise<void> {
@@ -611,19 +630,14 @@ export class CloudStore extends AsyncStore {
 
 	init(): void {
 		if (this.inited) return;
-
 		this.inited = true;
 
 		this.track(
 			reaction(
 				() => this.userStore.id,
-				(userId) => {
+				() => {
 					this.session++;
 					this.reset();
-
-					if (!userId) return;
-
-					void this.load(userId);
 				},
 				{ fireImmediately: true }
 			)
@@ -638,6 +652,8 @@ export class CloudStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.initializing = null;
+
 		this.uploadController?.abort();
 		this.uploadController = null;
 
@@ -668,5 +684,7 @@ export class CloudStore extends AsyncStore {
 		this.isSavingText = false;
 		this.savingPromise = null;
 		this.uploadProgress = 0;
+
+		this.setError(null);
 	}
 }

@@ -3,17 +3,17 @@ import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '
 import { createDatePicker, createPropertyRow, createSelect } from '../../components';
 
 type CreateTaskPropertiesProps = {
-	status: TaskStatus;
-	priority: TaskPriority;
-	startDate: string;
+	status: TaskStatus | null;
+	priority: TaskPriority | null;
+	startDate: string | null;
 	endDate: string | null;
 	onChange: () => void;
 };
 
 type TaskPropertiesValue = {
-	status: TaskStatus;
-	priority: TaskPriority;
-	startDate: string;
+	status: TaskStatus | null;
+	priority: TaskPriority | null;
+	startDate: string | null;
 	endDate: string | null;
 };
 
@@ -63,14 +63,18 @@ export const createTaskProperties = ({
 	// === STATUS ===
 	const statusRow = createPropertyRow(statusIcon, 'Статус');
 
-	const statusItems = Object.entries(TASK_STATUS).map(([value, config]) => ({ value, label: config.label }));
+	const statusItems = [
+		{ value: null, label: 'Не задан' },
+		...Object.entries(TASK_STATUS).map(([value, config]) => ({ value: value as TaskStatus, label: config.label })),
+	];
 
-	const statusSelect = createSelect({
+	const statusSelect = createSelect<TaskStatus | null>({
 		initialValue: initialStatus,
 		items: statusItems,
+		direction: 'up',
 		className: 'w-32',
 		onChange: (value) => {
-			selectedStatus = value as TaskStatus;
+			selectedStatus = value;
 			onChange();
 		},
 	});
@@ -80,19 +84,22 @@ export const createTaskProperties = ({
 	// === PRIORITY ===
 	const priorityRow = createPropertyRow(priorityIcon, 'Приоритет');
 
-	const priorityItems = Object.entries(TASK_PRIORITY).map(([value, config]) => ({
-		value,
-		label: config.label,
-		color: config.color,
-	}));
+	const priorityItems = [
+		{ value: null, label: 'Не задан' },
+		...Object.entries(TASK_PRIORITY).map(([value, config]) => ({
+			value: value as TaskPriority,
+			label: config.label,
+			color: config.color,
+		})),
+	];
 
-	const prioritySelect = createSelect({
+	const prioritySelect = createSelect<TaskPriority | null>({
 		initialValue: initialPriority,
 		items: priorityItems,
 		direction: 'up',
 		className: 'w-32',
 		onChange: (value) => {
-			selectedPriority = value as TaskPriority;
+			selectedPriority = value;
 			onChange();
 		},
 	});
@@ -110,7 +117,7 @@ export const createTaskProperties = ({
 		return {
 			status: selectedStatus,
 			priority: selectedPriority,
-			startDate: startDate.getValue(),
+			startDate: startDate.getValue() || null,
 			endDate: endDate.getValue() || null,
 		};
 	}

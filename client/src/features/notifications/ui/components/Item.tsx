@@ -54,7 +54,7 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 				</div>
 			</button>
 			<Button
-				centerIcon={<IconX className="size-4" />}
+				centerIcon={<IconX className="size-4.5 xl:size-4" />}
 				className="absolute top-1.5 right-2 transition-[color,opacity] group-hover:opacity-100 xl:opacity-0"
 				padding="none"
 				title="Удалить уведомление"

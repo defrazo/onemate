@@ -208,7 +208,7 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 						{publicUrl && (
 							<Button
 								centerIcon={
-									<IconLink className="size-4 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover)" />
+									<IconLink className="size-5 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover) xl:size-4" />
 								}
 								className="px-1.5"
 								disabled={isLoading}
@@ -221,9 +221,9 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 						<Button
 							centerIcon={
 								file.isFavorite ? (
-									<IconStarFilled className="size-4 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover)" />
+									<IconStarFilled className="size-5 text-(--accent-primary) transition-colors hover:text-(--accent-primary-hover) xl:size-4" />
 								) : (
-									<IconStar className="size-4 transition-opacity xl:opacity-0 xl:group-hover/file:opacity-100" />
+									<IconStar className="size-5 transition-opacity xl:size-4 xl:opacity-0 xl:group-hover/file:opacity-100" />
 								)
 							}
 							className="px-1.5"

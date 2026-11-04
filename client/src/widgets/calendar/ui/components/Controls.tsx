@@ -63,7 +63,7 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 					Учитывать выходные
 				</Button>
 				<Button
-					centerIcon={<IconCopy className="size-4" />}
+					centerIcon={<IconCopy className="size-5 xl:size-4" />}
 					className="block text-xs md:hidden"
 					disabled={rangeInfo === null}
 					title="Скопировать период"
@@ -77,13 +77,13 @@ export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, 
 					centerIcon={
 						isMobile &&
 						!isTablet &&
-						(hasStart ? <IconTrash className="size-4.5" /> : <IconCancel className="size-4.5" />)
+						(hasStart ? <IconTrash className="size-5" /> : <IconCancel className="size-5" />)
 					}
 					className={cn(
 						'h-8 bg-transparent text-xs md:border md:border-(--border-primary) lg:min-w-30 lg:px-3 xl:text-sm xl:hover:border-transparent',
 						!isMobile && 'w-32'
 					)}
-					leftIcon={!isMobile || (isTablet && hasStart && <IconTrash className="size-4.5" />)}
+					leftIcon={!isMobile || (isTablet && hasStart && <IconTrash className="size-5" />)}
 					title={hasStart ? 'Сбросить' : 'Отмена'}
 					variant={isMobile && !isTablet ? 'icon' : 'danger'}
 					onClick={onReset}

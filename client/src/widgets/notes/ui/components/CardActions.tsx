@@ -4,17 +4,19 @@ import { observer } from 'mobx-react-lite';
 import type { HTMLAttributes } from 'react';
 
 import { useStore } from '@/app/providers';
+import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { useCopy } from '@/shared/lib/hooks';
 import { Button, ConfirmDialog } from '@/shared/ui';
 
 interface CardActionsProps {
 	id: string;
 	text: string;
+	color: PaletteColor;
 	attributes: HTMLAttributes<HTMLElement>;
 	listeners: DraggableSyntheticListeners;
 }
 
-export const CardActions = observer(({ id, text, attributes, listeners }: CardActionsProps) => {
+export const CardActions = observer(({ id, text, color, attributes, listeners }: CardActionsProps) => {
 	const copy = useCopy();
 
 	const { modalStore, notesStore, notifyStore } = useStore();
@@ -42,17 +44,24 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 
 	return (
 		<div className="flex shrink-0 flex-col items-center justify-between gap-2 px-2">
+			<div className="relative hidden size-5 shrink-0 items-center justify-center xl:flex">
+				<span
+					aria-hidden="true"
+					className="h-1 w-3 rounded-full transition-opacity duration-200 group-hover/note:opacity-0"
+					style={{ backgroundColor: COLOR_PALETTE[color].value }}
+				/>
+				<Button
+					centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
+					className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 active:cursor-grabbing"
+					padding="none"
+					title="Переместить"
+					variant="icon"
+					{...listeners}
+					{...attributes}
+				/>
+			</div>
 			<Button
-				centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
-				className="hidden cursor-grab hover:text-(--accent-primary-hover) xl:block"
-				padding="none"
-				title="Переместить"
-				variant="icon"
-				{...listeners}
-				{...attributes}
-			/>
-			<Button
-				centerIcon={<IconCopy className="size-4" />}
+				centerIcon={<IconCopy className="size-5 xl:size-4" />}
 				className="transition-[color,opacity] xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Скопировать"
@@ -66,7 +75,7 @@ export const CardActions = observer(({ id, text, attributes, listeners }: CardAc
 				}}
 			/>
 			<Button
-				centerIcon={<IconTrash className="size-4" />}
+				centerIcon={<IconTrash className="size-5 xl:size-4" />}
 				className="transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Удалить заметку"

@@ -30,7 +30,7 @@ export const createTaskMenu = ({ trigger, onView, onEdit, onDelete }: CreateTask
 				? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
 				: 'hover:bg-(--tone-strong-hover) hover:text-(--text-primary)'
 		);
-		insertSvg(button, icon, 'size-4');
+		insertSvg(button, icon, 'size-5 xl:size-4');
 
 		const text = document.createElement('span');
 		text.className = 'trim';

@@ -1,4 +1,4 @@
-import { createSvg, settingsIcon } from '../../../lib';
+import { createSvg, notifier, settingsIcon } from '../../../lib';
 import { LIMITS, type TaskPriority, type TaskStatus } from '../../../model';
 import { createButton, createDialog } from '../../components';
 import { createTaskDetails, createTaskProperties } from '.';
@@ -8,23 +8,25 @@ type EditTaskProps = {
 	initial: {
 		title: string;
 		description?: string;
-		status: TaskStatus;
-		priority: TaskPriority;
-		startDate: string;
+		status: TaskStatus | null;
+		priority: TaskPriority | null;
+		startDate: string | null;
 		endDate: string | null;
 	};
 	onSubmit: (
 		title: string,
 		description: string,
-		status: TaskStatus,
-		priority: TaskPriority,
-		startDate: string,
+		status: TaskStatus | null,
+		priority: TaskPriority | null,
+		startDate: string | null,
 		endDate: string | null
-	) => void;
+	) => void | boolean | Promise<void | boolean>;
+	onClose?: () => void;
 };
 
 export const editTask = (options: EditTaskProps) => {
 	let isClosed = false;
+	let saving = false;
 
 	// === DIALOG ===
 	const icon = createSvg(settingsIcon, 'size-4');
@@ -33,7 +35,7 @@ export const editTask = (options: EditTaskProps) => {
 		overlay,
 		container,
 		close: closeDialog,
-	} = createDialog(options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи', icon);
+	} = createDialog(options.mode === 'create' ? 'Добавление задачи' : 'Редактирование задачи', icon, cleanup);
 
 	// === FORM ===
 	const form = document.createElement('form');
@@ -103,7 +105,9 @@ export const editTask = (options: EditTaskProps) => {
 		};
 	}
 
-	function handleSubmit() {
+	async function handleSubmit() {
+		if (isClosed || saving) return;
+
 		const data = getFormData();
 
 		if (!data.title) return;
@@ -115,9 +119,32 @@ export const editTask = (options: EditTaskProps) => {
 			return;
 		}
 
-		options.onSubmit(data.title, data.description, data.status, data.priority, data.startDate, data.endDate);
+		saving = true;
+		form.inert = true;
 
-		close();
+		updateSubmitState();
+
+		try {
+			const result = await options.onSubmit(
+				data.title,
+				data.description,
+				data.status,
+				data.priority,
+				data.startDate,
+				data.endDate
+			);
+
+			if (result !== false && !isClosed) close();
+		} catch {
+			if (!isClosed) notifier.setNotice('Не удалось сохранить задачу', 'error');
+		} finally {
+			saving = false;
+
+			if (!isClosed) {
+				form.inert = false;
+				updateSubmitState();
+			}
+		}
 	}
 
 	function updateSubmitState() {
@@ -128,23 +155,28 @@ export const editTask = (options: EditTaskProps) => {
 		properties.setDatesInvalid(!datesValid);
 
 		submitButton.disabled =
-			!title || title.length > LIMITS.TASK_TITLE || description.length > LIMITS.TASK_DESC || !datesValid;
+			saving ||
+			!title ||
+			title.length > LIMITS.TASK_TITLE ||
+			description.length > LIMITS.TASK_DESC ||
+			!datesValid;
 	}
 
 	// === LIFECYCLE ===
 	function cleanup() {
-		form.removeEventListener('submit', onSubmit);
-		overlay.removeEventListener('keydown', onKeyDown);
-
-		mainFields.destroy();
-		properties.destroy();
-	}
-
-	function close() {
 		if (isClosed) return;
 		isClosed = true;
 
-		cleanup();
+		form.removeEventListener('submit', onSubmit);
+		overlay.removeEventListener('keydown', onKeyDown);
+		cancelButton.removeEventListener('click', close);
+
+		mainFields.destroy();
+		properties.destroy();
+		options.onClose?.();
+	}
+
+	function close() {
 		closeDialog();
 	}
 

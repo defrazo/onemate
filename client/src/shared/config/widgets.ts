@@ -4,6 +4,7 @@ import {
 	IconCalculator,
 	IconCalendarWeek,
 	IconCash,
+	IconChecks,
 	IconCloudPin,
 	IconCloudUpload,
 	IconLanguage,
@@ -25,6 +26,7 @@ export const WIDGETS = [
 	{ id: 'translator', title: 'Переводчик', icon: IconLanguage },
 	{ id: 'network', title: 'Сеть', icon: IconActivityHeartbeat },
 	{ id: 'cloud', title: 'Облако', icon: IconCloudUpload },
+	{ id: 'todo', title: 'Задачи', icon: IconChecks },
 ] as const satisfies readonly WidgetConfig[];
 
 export type WidgetId = (typeof WIDGETS)[number]['id'];

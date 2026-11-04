@@ -21,11 +21,11 @@ export const dayOfWeek = (timestamp: number, length: 'short' | 'long') => {
 };
 
 // Форматирует строку даты в полную дату + время в локали ru-RU (например: "31.07.2025, 14:05")
-export const fullDate = (date: string) =>
+export const fullDate = (date: string, shortYear = false) =>
 	new Date(date).toLocaleString('ru-RU', {
 		day: '2-digit',
 		month: '2-digit',
-		year: 'numeric',
+		year: shortYear ? '2-digit' : 'numeric',
 		hour: '2-digit',
 		minute: '2-digit',
 	});
@@ -45,3 +45,27 @@ export const generateMonth = (count = 12): { value: string; label: string }[] =>
 		value: i.toString(),
 		label: capitalizeFirstLetter(new Date(0, i).toLocaleString('ru', { month: 'long' })),
 	}));
+
+// Делает дату относительной
+interface DateOffsetOptions {
+	days?: number;
+	hours?: number;
+	minutes?: number;
+	withTime?: boolean;
+}
+
+export const dateOffset = ({ days = 0, hours = 0, minutes = 0, withTime = false }: DateOffsetOptions = {}) => {
+	const date = new Date();
+
+	date.setDate(date.getDate() + days);
+	date.setHours(date.getHours() + hours);
+	date.setMinutes(date.getMinutes() + minutes);
+
+	if (withTime) return date.toISOString();
+
+	const year = date.getFullYear();
+	const month = String(date.getMonth() + 1).padStart(2, '0');
+	const day = String(date.getDate()).padStart(2, '0');
+
+	return `${year}-${month}-${day}`;
+};

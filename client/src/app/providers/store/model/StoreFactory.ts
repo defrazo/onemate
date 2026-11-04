@@ -1,3 +1,4 @@
+import { TodoRepoRouting, TodoStore } from '@/entities/todo';
 import { UserRepoRouting, UserStore } from '@/entities/user';
 import { UserLocationRepoRouting } from '@/entities/user-location';
 import { ProfileRepoRouting, UserProfileStore } from '@/entities/user-profile';
@@ -55,6 +56,7 @@ export class StoreFactory {
 		const cloudStore = new CloudStore(userStore, new CloudRepoRouting(userStore));
 		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
 		const notesStore = new NotesStore(userStore, new NotesRepoRouting(userStore));
+		const todoStore = new TodoStore(userStore, new TodoRepoRouting(userStore));
 		const currencyStore = new CurrencyStore(userStore);
 		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore));
 
@@ -79,6 +81,7 @@ export class StoreFactory {
 			networkStore,
 			weatherStore,
 			notesStore,
+			todoStore,
 			currencyStore,
 			translatorStore,
 		};

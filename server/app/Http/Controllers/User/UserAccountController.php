@@ -54,6 +54,8 @@ class UserAccountController extends Controller
                 'different:current_password',
                 'not_regex:/[А-Яа-яЁё]/u',
             ],
+        ], [
+            'password.different' => 'Новый пароль должен отличаться от текущего',
         ]);
 
         /** @var User $user */

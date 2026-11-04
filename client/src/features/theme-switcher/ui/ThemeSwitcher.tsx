@@ -14,7 +14,7 @@ export const ThemeSwitcher = observer(() => {
 	return (
 		<Button
 			centerIcon={isDark ? <IconSunFilled className={style} /> : <IconMoonFilled className={style} />}
-			className="group size-9"
+			className="group size-9 not-md:mr-2"
 			title={title}
 			type="button"
 			variant="iconSurface"

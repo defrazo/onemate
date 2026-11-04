@@ -15,7 +15,7 @@ export const Navigation = ({ month, onNext, onPrev }: NavigationProps) => {
 		<div className="flex h-8 items-center justify-center">
 			<Button
 				centerIcon={
-					<IconChevronLeft className="size-4 transition-opacity group-hover:opacity-100 xl:opacity-0" />
+					<IconChevronLeft className="size-5 transition-opacity group-hover:opacity-100 xl:size-4 xl:opacity-0" />
 				}
 				className="group size-6 rounded-md"
 				padding="none"
@@ -26,7 +26,7 @@ export const Navigation = ({ month, onNext, onPrev }: NavigationProps) => {
 			<div className="trim min-w-38 cursor-default text-center font-semibold">{formatMonthTitle(month)}</div>
 			<Button
 				centerIcon={
-					<IconChevronRight className="size-4 transition-opacity group-hover:opacity-100 xl:opacity-0" />
+					<IconChevronRight className="size-5 transition-opacity group-hover:opacity-100 xl:size-4 xl:opacity-0" />
 				}
 				className="group size-6 rounded-md"
 				padding="none"

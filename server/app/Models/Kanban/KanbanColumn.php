@@ -27,6 +27,11 @@ class KanbanColumn extends Model
         return $this->belongsTo(User::class);
     }
 
+    public function board(): BelongsTo
+    {
+        return $this->belongsTo(KanbanBoard::class, 'board_id');
+    }
+
     public function tasks(): HasMany
     {
         return $this->hasMany(KanbanTask::class, 'column_id');
