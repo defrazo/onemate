@@ -38,7 +38,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
 	settingsButton.className =
-		'cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
+		'ml-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
 	insertSvg(settingsButton, settingsIcon, 'size-5 xl:size-4.5');
 
 	// === COUNTER ===

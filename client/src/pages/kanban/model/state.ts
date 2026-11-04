@@ -24,6 +24,7 @@ export const createState = (repo: IKanbanRepo) => {
 	let loading = false;
 	let switching = false;
 	let savingBoard = false;
+	let pendingWrites = 0;
 	let loadError = false;
 	let conflict: { boardId: string; currentRevision: number } | null = null;
 	let generation = 0;
@@ -41,6 +42,7 @@ export const createState = (repo: IKanbanRepo) => {
 		loading,
 		switching,
 		savingBoard,
+		isSyncing: pendingWrites > 0,
 		loadError,
 		hasOpenEditor: editors.size > 0,
 		canCreateBoard: boards.length < LIMITS.MAX_BOARDS,
@@ -93,14 +95,23 @@ export const createState = (repo: IKanbanRepo) => {
 			if (currentRevision === null || currentRevision === undefined) return false;
 			return (await operation({ boardId, revision: currentRevision, current })) === true;
 		});
+		pendingWrites++;
+		notifyBoards();
+
+		const tracked = pending.finally(() => {
+			pendingWrites--;
+			notifyBoards();
+		});
+
 		queues.set(
 			boardId,
-			pending.then(
+			tracked.then(
 				() => {},
 				() => {}
 			)
 		);
-		return pending;
+
+		return tracked;
 	};
 
 	const registerEditor = (close: () => void) => {
@@ -747,7 +758,7 @@ export const createState = (repo: IKanbanRepo) => {
 	const canLeaveEditor = () => {
 		if (editors.size === 0) return true;
 
-		notifier.setNotice('Сохраните или закройте открытую форму перед переключением доски', 'info');
+		notifier.setNotice(MESSAGES.boards.editorOpen, 'info');
 
 		return false;
 	};
@@ -876,10 +887,10 @@ export const createState = (repo: IKanbanRepo) => {
 					if (context.current()) {
 						notifier.setNotice(
 							error instanceof BoardRevisionConflictError
-								? 'Доска изменилась. Обновите доску'
+								? MESSAGES.boards.revisionConflict
 								: error instanceof Error
 									? error.message
-									: 'Не удалось выполнить операцию',
+									: MESSAGES.boards.operationError,
 							'error'
 						);
 					}
@@ -894,7 +905,7 @@ export const createState = (repo: IKanbanRepo) => {
 	};
 
 	const validBoardTitle = (title: string) => {
-		if (!title || [...title].length > LIMITS.BOARD_TITLE) throw new Error('Название: от 1 до 30 символов');
+		if (!title || [...title].length > LIMITS.BOARD_TITLE) throw new Error(MESSAGES.boards.titleLimit);
 		return true;
 	};
 
@@ -903,7 +914,7 @@ export const createState = (repo: IKanbanRepo) => {
 			title = title.trim();
 
 			if (!canLeaveEditor() || !validBoardTitle(title) || boards.length >= LIMITS.MAX_BOARDS)
-				throw new Error('Нельзя создать доску');
+				throw new Error(MESSAGES.boards.createError);
 
 			const snapshot = await repo.createBoard(title);
 			if (!context.current()) return false;
@@ -960,7 +971,7 @@ export const createState = (repo: IKanbanRepo) => {
 			try {
 				await selectBoard(boards[0].id);
 			} catch {
-				if (!destroyed) notifier.setNotice('Не удалось загрузить доску', 'error');
+				if (!destroyed) notifier.setNotice(MESSAGES.boards.loadError, 'error');
 			}
 		}
 		return success;

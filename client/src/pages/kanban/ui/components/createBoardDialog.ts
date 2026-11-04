@@ -1,4 +1,4 @@
-import { createSvg, settingsIcon } from '../../lib';
+import { addIcon, createSvg } from '../../lib';
 import { LIMITS } from '../../model';
 import { createButton, createDialog } from '.';
 
@@ -10,11 +10,11 @@ export const createBoardDialog = ({ onSubmit }: { onSubmit: (title: string) => P
 		overlay,
 		container,
 		close: closeDialog,
-	} = createDialog('Новая доска', createSvg(settingsIcon, 'size-5'), cleanup);
+	} = createDialog('Новая доска', createSvg(addIcon, 'size-5'), cleanup);
 
 	// === FORM ===
 	const form = document.createElement('form');
-	form.className = 'flex flex-col gap-3 select-none';
+	form.className = 'flex flex-col gap-2 select-none';
 
 	// === FIELD ===
 	const field = document.createElement('div');
@@ -22,16 +22,16 @@ export const createBoardDialog = ({ onSubmit }: { onSubmit: (title: string) => P
 
 	const label = document.createElement('label');
 	label.htmlFor = 'kanban-board-title';
-	label.textContent = 'Название';
-	label.className = 'text-sm text-(--text-secondary)';
+	label.textContent = 'Название доски';
+	label.className = 'text-sm text-(--text-secondary) opacity-70';
 
 	const input = document.createElement('input');
 	input.id = 'kanban-board-title';
 	input.type = 'text';
 	input.maxLength = LIMITS.BOARD_TITLE;
-	input.placeholder = 'Введите название';
+	input.placeholder = 'Введите название доски';
 	input.className =
-		'h-10 w-full rounded-lg border border-(--border-primary) bg-(--tone) px-3 text-sm text-(--text-primary) outline-none focus:border-(--accent-primary)';
+		'w-full rounded-lg border border-(--border-contrast)/15 bg-(--tone) p-2 text-(--text-primary) transition-colors outline-none hover:border-(--accent-primary-hover)/70 focus:border-(--accent-primary) focus:text-(--text-primary)';
 
 	const counter = document.createElement('span');
 	counter.className = 'ml-auto text-xs text-(--text-secondary) opacity-70';

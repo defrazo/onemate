@@ -3,7 +3,7 @@ import { reaction } from 'mobx';
 
 import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
-import { Button, LoadingError, WorkspaceTabs } from '@/shared/ui';
+import { Button, LoadingError, SyncIndicator, WorkspaceTabs } from '@/shared/ui';
 
 import { createSvg, deleteIcon, notifier } from '../lib';
 import { LIMITS } from '../model';
@@ -216,17 +216,13 @@ export const KanbanPage = () => {
 							onSelect={selectBoard}
 						/>
 					</div>
-					{!view.conflict && (
-						<Button disabled={isLoading || view.savingBoard || error} onClick={() => void reloadBoard()}>
-							Обновить доску
-						</Button>
-					)}
+					{view.isSyncing && <SyncIndicator className="static bg-transparent" />}
 				</div>
 			)}
 			{view?.conflict && (
 				<div className="flex items-center justify-between gap-3 text-sm text-(--status-error)" role="alert">
 					<span>Доска изменилась. Обновите её перед продолжением.</span>
-					<Button disabled={view.loading} onClick={() => void reloadBoard()}>
+					<Button className="h-8" disabled={view.loading} onClick={() => void reloadBoard()}>
 						Обновить доску
 					</Button>
 				</div>

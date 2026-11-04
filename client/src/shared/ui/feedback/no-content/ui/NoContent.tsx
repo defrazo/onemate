@@ -12,7 +12,7 @@ interface NoContentProps {
 }
 
 export const NoContent = ({ icon: Icon = IconHistory, title, description, className, children }: NoContentProps) => (
-	<div className={cn('flex h-full flex-col items-center justify-center py-2', className)}>
+	<div className={cn('flex h-full flex-col items-center justify-center py-2 select-none', className)}>
 		<div className="mb-1.5 flex size-8 items-center justify-center rounded-lg bg-(--tone) md:size-10">
 			<Icon className="size-4.5 shrink-0 text-(--text-tertiary) md:size-5.5" />
 		</div>

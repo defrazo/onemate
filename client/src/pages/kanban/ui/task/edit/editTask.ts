@@ -22,7 +22,6 @@ type EditTaskProps = {
 		endDate: string | null
 	) => void | boolean | Promise<void | boolean>;
 	onClose?: () => void;
-	onRefresh?: () => Promise<void>;
 };
 
 export const editTask = (options: EditTaskProps) => {
@@ -71,33 +70,6 @@ export const editTask = (options: EditTaskProps) => {
 	const cancelButton = createButton({ text: 'Отмена', variant: 'secondary', onClick: close });
 
 	actions.append(submitButton, cancelButton);
-
-	const refreshButton = options.onRefresh
-		? createButton({ text: 'Обновить доску', variant: 'secondary', className: 'hidden', onClick: handleRefresh })
-		: null;
-	if (refreshButton) actions.prepend(refreshButton);
-
-	async function handleRefresh() {
-		if (isClosed || saving) return;
-
-		saving = true;
-		form.inert = true;
-
-		updateSubmitState();
-
-		try {
-			await options.onRefresh?.();
-		} catch {
-			notifier.setNotice('Не удалось обновить доску', 'error');
-		} finally {
-			saving = false;
-
-			if (!isClosed) {
-				form.inert = false;
-				updateSubmitState();
-			}
-		}
-	}
 
 	// === EVENTS ===
 	const onSubmit = (e: SubmitEvent) => {
@@ -163,7 +135,6 @@ export const editTask = (options: EditTaskProps) => {
 			);
 
 			if (result !== false && !isClosed) close();
-			else if (!isClosed && refreshButton) refreshButton.classList.remove('hidden');
 		} catch {
 			if (!isClosed) notifier.setNotice('Не удалось сохранить задачу', 'error');
 		} finally {
@@ -199,7 +170,6 @@ export const editTask = (options: EditTaskProps) => {
 		form.removeEventListener('submit', onSubmit);
 		overlay.removeEventListener('keydown', onKeyDown);
 		cancelButton.removeEventListener('click', close);
-		refreshButton?.removeEventListener('click', handleRefresh);
 
 		mainFields.destroy();
 		properties.destroy();

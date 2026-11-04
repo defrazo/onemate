@@ -14,7 +14,7 @@ export const Thumbnail = ({ src, alt, title, isLoading, className, onClick }: Th
 	return (
 		<div className={cn('flex items-center justify-center overflow-hidden rounded-full', className)}>
 			{isLoading ? (
-				<LoadingState />
+				<LoadingState size="sm" />
 			) : (
 				<img
 					alt={alt}

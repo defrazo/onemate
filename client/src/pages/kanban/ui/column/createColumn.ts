@@ -44,7 +44,6 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 				editTaskModal = null;
 				release();
 			},
-			onRefresh: () => state.reloadBoard(),
 			initial: {
 				title: '',
 				description: '',

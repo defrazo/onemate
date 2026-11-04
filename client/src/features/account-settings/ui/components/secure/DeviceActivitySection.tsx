@@ -61,7 +61,7 @@ export const DeviceActivitySection = observer(() => {
 	};
 
 	return (
-		<section className="flex flex-col gap-4 lg:flex-row xl:gap-0">
+		<section className="flex min-h-29 flex-col gap-4 lg:flex-row xl:gap-0">
 			<div className="flex flex-col gap-2.5 select-none xl:w-[45%]">
 				<h3 className="text-xs text-(--text-secondary)">Это устройство</h3>
 				{!store.isReady ? (
@@ -149,7 +149,7 @@ export const DeviceActivitySection = observer(() => {
 					</Button>
 				</div>
 				{!store.isHistoryReady ? (
-					<LoadingError error={!!store.error} size="lg" onRetry={handleLoad} />
+					<LoadingError error={!!store.error} size="md" onRetry={handleLoad} />
 				) : (
 					<div className="core-scrollbar max-h-23 overflow-y-auto overscroll-contain">
 						<div className="flex flex-col gap-1">

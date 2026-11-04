@@ -1,8 +1,3 @@
-import { createElement } from 'react';
-import { createRoot } from 'react-dom/client';
-
-import { Switch } from '@/shared/ui';
-
 import { limitIcon, paletteIcon } from '../../../lib';
 import { COLUMN_COLORS, type ColumnColor } from '../../../model';
 import { createPropertyRow, createSelect } from '../../components';
@@ -20,7 +15,6 @@ export const createColumnProperties = ({
 }: CreateColumnPropertiesProps) => {
 	let selectedColor: ColumnColor = initialColor ?? 'slate';
 	let selectedLimit: number | null = initialLimit;
-	let lastNumericLimit = initialLimit ?? 10;
 
 	const paletteListeners: Array<{ button: HTMLButtonElement; handler: () => void }> = [];
 
@@ -31,52 +25,26 @@ export const createColumnProperties = ({
 	// === LIMIT ===
 	const limitRow = createPropertyRow(limitIcon, 'Лимит задач');
 
-	const limitOptions: { value: number; label: string }[] = Array.from({ length: 15 }, (_, index) => ({
-		value: index + 1,
-		label: String(index + 1),
-	}));
+	const limitOptions: { value: number | null; label: string }[] = [
+		{ value: null, label: 'Не задан' },
+		...Array.from({ length: 15 }, (_, index) => ({ value: index + 1, label: String(index + 1) })),
+	];
 
-	if (!limitOptions.some((option) => option.value === lastNumericLimit))
-		limitOptions.push({ value: lastNumericLimit, label: String(lastNumericLimit) });
+	if (initialLimit !== null && !limitOptions.some((option) => option.value === initialLimit))
+		limitOptions.push({ value: initialLimit, label: String(initialLimit) });
 
-	const limitSelect = createSelect<number>({
-		initialValue: lastNumericLimit,
+	const limitSelect = createSelect<number | null>({
+		initialValue: initialLimit,
 		items: limitOptions,
 		direction: 'up',
-		className: 'w-24',
+		className: 'w-32',
 		onChange: (value) => {
-			lastNumericLimit = value;
-			if (selectedLimit !== null) selectedLimit = value;
+			selectedLimit = value;
 			onChange();
 		},
 	});
 
-	const unlimitedLabel = document.createElement('span');
-	unlimitedLabel.textContent = 'Без лимита';
-	unlimitedLabel.className = 'text-sm text-(--text-secondary)';
-	const switchContainer = document.createElement('div');
-	switchContainer.setAttribute('role', 'group');
-	switchContainer.setAttribute('aria-label', 'Лимит задач');
-	const switchRoot = createRoot(switchContainer);
-	limitRow.content.classList.add('gap-2');
-	limitRow.content.append(unlimitedLabel, limitSelect.element, switchContainer);
-
-	function updateLimitControls() {
-		const enabled = selectedLimit !== null;
-		unlimitedLabel.classList.toggle('hidden', enabled);
-		limitSelect.element.classList.toggle('hidden', !enabled);
-		switchRoot.render(
-			createElement(Switch, {
-				checked: enabled,
-				onCheckedChange: (checked) => {
-					selectedLimit = checked ? lastNumericLimit : null;
-					updateLimitControls();
-					onChange();
-				},
-			})
-		);
-	}
-	updateLimitControls();
+	limitRow.content.append(limitSelect.element);
 
 	// === COLOR ===
 	const colorRow = createPropertyRow(paletteIcon, 'Цвет');
@@ -101,7 +69,6 @@ export const createColumnProperties = ({
 		const handler = () => selectColor(columnColor);
 
 		button.addEventListener('click', handler);
-
 		paletteListeners.push({ button, handler });
 
 		button.append(dot);
@@ -113,7 +80,6 @@ export const createColumnProperties = ({
 	// === ACTION FUNCTIONS ===
 	function selectColor(color: ColumnColor) {
 		selectedColor = color;
-
 		updatePalette();
 		onChange();
 	}
@@ -121,6 +87,7 @@ export const createColumnProperties = ({
 	function updatePalette() {
 		paletteListeners.forEach(({ button }) => {
 			const selected = button.dataset.color === selectedColor;
+
 			button.classList.toggle('border-(--tone-strong-hover)', selected);
 			button.classList.toggle('border-transparent', !selected);
 			button.classList.toggle('scale-110', selected);
@@ -133,7 +100,6 @@ export const createColumnProperties = ({
 
 	// === LIFECYCLE ===
 	function destroy() {
-		switchRoot.unmount();
 		limitSelect.destroy();
 
 		paletteListeners.forEach(({ button, handler }) => button.removeEventListener('click', handler));

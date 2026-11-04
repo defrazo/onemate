@@ -1,4 +1,12 @@
 export const MESSAGES = {
+	boards: {
+		editorOpen: 'Сначала закройте редактор',
+		revisionConflict: 'Доска изменена. Обновите её',
+		operationError: 'Не удалось изменить доску',
+		loadError: 'Не удалось загрузить доску',
+		titleLimit: 'Название: от 1 до 30 символов',
+		createError: 'Не удалось создать доску',
+	},
 	columns: {
 		fetchError: 'Не удалось загрузить колонки',
 		addError: 'Не удалось добавить колонку',

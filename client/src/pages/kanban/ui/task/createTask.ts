@@ -5,7 +5,7 @@ import type { createState, Task } from '../../model';
 import { createConfirmDialog } from '../components';
 import { createTaskHeader, createTaskMeta, editTask, viewTask } from '.';
 
-export const createTaskCard = (task: Task, state: ReturnType<typeof createState>) => {
+export const createTask = (task: Task, state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;
 
 	let viewTaskModal: ReturnType<typeof viewTask> | null = null;
@@ -125,7 +125,6 @@ export const createTaskCard = (task: Task, state: ReturnType<typeof createState>
 				editTaskModal = null;
 				release();
 			},
-			onRefresh: () => state.reloadBoard(),
 			initial: {
 				title: task.title,
 				description: task.description,

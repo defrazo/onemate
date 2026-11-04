@@ -1,903 +1,826 @@
-import { beforeEach, describe, expect, it, type Mock, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { MESSAGES, notifier, now } from '../lib';
-import { type Column, createState, type IKanbanRepo, type Task } from '.';
+import { BoardRevisionConflictError } from '../api';
+import { MESSAGES, notifier } from '../lib';
+import type { IKanbanRepo, KanbanSnapshot, Task } from '.';
+import { createState, getDefaultColumns, getDefaultTasks, sortTasks } from '.';
 
-const createRepoMock = (): IKanbanRepo => ({
-	fetchColumns: vi.fn(),
-	addColumn: vi.fn(),
-	editColumn: vi.fn(),
-	deleteColumn: vi.fn(),
-	moveColumn: vi.fn(),
-	fetchTasks: vi.fn(),
-	addTask: vi.fn(),
-	editTask: vi.fn(),
-	deleteTask: vi.fn(),
-	moveTask: vi.fn(),
-});
-
-vi.mock('../lib/notifier', () => ({
-	notifier: { setNotice: vi.fn() },
-}));
-
-vi.mock('../lib/utils', async (importOriginal) => {
-	const actual = await importOriginal<typeof import('../lib/utils')>();
-	return { ...actual, now: vi.fn() };
-});
-
-const mockColumns: Column[] = [
-	{ id: 'c1', title: 'Запланировано', color: 'slate', taskLimit: 10, position: 1000 },
-	{ id: 'c2', title: 'Подготовка', color: 'amber', taskLimit: 10, position: 2000 },
-	{ id: 'c3', title: 'В работе', color: 'rose', taskLimit: 10, position: 3000 },
-	{ id: 'c4', title: 'Завершено', color: 'lime', taskLimit: 10, position: 4000 },
-];
-
-const mockTasks: Task[] = [
-	{
-		id: 't1',
-		columnId: 'c1',
-		title: 'Задача 1',
-		description: 'Описание задачи',
-		status: 'waiting',
-		priority: 'high',
-		startDate: '2026-03-18',
-		endDate: '2026-03-20',
-		completed: false,
-		position: 1000,
-		createdAt: '18.03.2026, 10:00',
-		updatedAt: null,
-	},
-	{
-		id: 't2',
-		columnId: 'c1',
-		title: 'Задача 2',
-		description: 'Описание задачи',
-		status: 'active',
-		priority: 'medium',
-		startDate: '2026-03-18',
-		endDate: '2026-03-20',
-		completed: false,
-		position: 2000,
-		createdAt: '18.03.2026, 10:00',
-		updatedAt: null,
-	},
-];
-
-const createInitializedState = async () => {
-	const repo = createRepoMock();
-
-	(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
-	(repo.fetchTasks as Mock).mockResolvedValue(mockTasks);
-
+vi.mock('../lib/notifier', () => ({ notifier: { setNotice: vi.fn() } }));
+const deferred = <T>() => {
+	let resolve!: (value: T) => void;
+	let reject!: (error: Error) => void;
+	const promise = new Promise<T>((res, rej) => {
+		resolve = res;
+		reject = rej;
+	});
+	return { promise, resolve, reject };
+};
+const flush = async () => {
+	await Promise.resolve();
+	await Promise.resolve();
+};
+const createRepo = (ownerId = 'owner', withExistingSecondBoard = false): IKanbanRepo => {
+	let sequence = 0;
+	const data: KanbanSnapshot[] = [];
+	const make = (title: string, populated = true) => {
+		const id = `board-${++sequence}`;
+		const columns = populated
+			? getDefaultColumns().map((column, index) => ({ ...column, id: `${id}-c${index}` }))
+			: [];
+		const snapshot: KanbanSnapshot = {
+			board: { id, ownerId, title, revision: 0, createdAt: null, updatedAt: null },
+			columns,
+			tasks: (populated ? getDefaultTasks(columns.map((column) => column.id)) : []).map((task, index) => ({
+				...task,
+				id: `${id}-t${index}`,
+				createdAt: '2026-01-01',
+				updatedAt: null,
+			})),
+		};
+		snapshot.tasks.sort(
+			(a, b) =>
+				columns.findIndex((c) => c.id === a.columnId) - columns.findIndex((c) => c.id === b.columnId) ||
+				a.position - b.position
+		);
+		data.push(snapshot);
+		return structuredClone(snapshot);
+	};
+	const find = (id: string) => {
+		const snapshot = data.find((item) => item.board.id === id);
+		if (!snapshot) throw new Error('Missing board');
+		return snapshot;
+	};
+	const change = (id: string, revision: number, operation: (snapshot: KanbanSnapshot) => void) => {
+		const current = find(id);
+		if (current.board.revision !== revision) throw new BoardRevisionConflictError(current.board.revision);
+		const next = structuredClone(current);
+		operation(next);
+		next.board.revision++;
+		next.columns.sort((a, b) => a.position - b.position);
+		data[data.indexOf(current)] = next;
+		return structuredClone(next);
+	};
+	make('First');
+	if (withExistingSecondBoard) make('Second');
+	return {
+		fetchBoards: async () => ({ boards: data.map((item) => structuredClone(item.board)) }),
+		initialize: async () => structuredClone(data[0]),
+		fetchBoard: async (id) => structuredClone(find(id)),
+		createBoard: async (title) => make(title, false),
+		renameBoard: async (id, revision, title) =>
+			change(id, revision, (next) => {
+				next.board.title = title;
+			}),
+		deleteBoard: async (id, revision) => {
+			change(id, revision, () => {});
+			data.splice(data.indexOf(find(id)), 1);
+			return { deleted_board_id: id };
+		},
+		addColumn: async (id, revision, column) =>
+			change(id, revision, (next) => {
+				next.columns.push({ ...column, id: `column-${++sequence}` });
+			}),
+		editColumn: async (id, revision, columnId, changes) =>
+			change(id, revision, (next) => {
+				Object.assign(
+					next.columns.find((column) => column.id === columnId)!,
+					changes
+				);
+			}),
+		deleteColumn: async (id, revision, columnId) =>
+			change(id, revision, (next) => {
+				next.columns = next.columns.filter((column) => column.id !== columnId);
+				next.tasks = next.tasks.filter((task) => task.columnId !== columnId);
+			}),
+		reorderColumns: async (id, revision, ids) =>
+			change(id, revision, (next) => {
+				next.columns = ids.map((columnId, index) => ({
+					...next.columns.find((column) => column.id === columnId)!,
+					position: (index + 1) * 1000,
+				}));
+			}),
+		addTask: async (id, revision, task) =>
+			change(id, revision, (next) => {
+				next.tasks.push({ ...task, id: `task-${++sequence}`, createdAt: '2026-01-01', updatedAt: null });
+			}),
+		editTask: async (id, revision, taskId, changes) =>
+			change(id, revision, (next) => {
+				Object.assign(
+					next.tasks.find((task) => task.id === taskId)!,
+					changes
+				);
+			}),
+		deleteTask: async (id, revision, taskId) =>
+			change(id, revision, (next) => {
+				next.tasks = next.tasks.filter((task) => task.id !== taskId);
+			}),
+		moveTask: async (id, revision, taskId, columnId, position) =>
+			change(id, revision, (next) => {
+				Object.assign(
+					next.tasks.find((task) => task.id === taskId)!,
+					{ columnId, position }
+				);
+			}),
+	};
+};
+const setup = async () => {
+	const repo = createRepo('owner', true);
+	const first = await repo.initialize();
+	const second = await repo.fetchBoard((await repo.fetchBoards()).boards[1].id);
 	const state = createState(repo);
 	await state.loadData();
-
-	return { state, repo };
+	return { repo, state, first, second };
 };
+const edit = (state: ReturnType<typeof createState>, task: Task, title = task.title, completed?: boolean) =>
+	state.editTask(
+		task.id,
+		title,
+		task.description,
+		task.status,
+		task.priority,
+		task.startDate,
+		task.endDate,
+		completed
+	);
+const add = (state: ReturnType<typeof createState>, column: string, title = 'Added') =>
+	state.addTask(column, title, '', null, null, null, null, false);
 
-describe('state', () => {
-	const MOCKED_NOW = '2026-04-14T10:00:00.000Z';
-
-	beforeEach(() => {
-		vi.clearAllMocks();
-		(now as Mock).mockReturnValue(MOCKED_NOW);
+beforeEach(() => vi.clearAllMocks());
+describe('board loading and lifecycle', () => {
+	it('selects the first board in server order on every opening', async () => {
+		const { repo, state, first, second } = await setup();
+		expect(state.getBoardState()).toMatchObject({
+			activeBoardId: first.board.id,
+			revision: 0,
+			loading: false,
+			switching: false,
+			conflict: null,
+		});
+		expect(state.getBoardState().boards.map((board) => board.id)).toEqual([first.board.id, second.board.id]);
+		await state.selectBoard(second.board.id);
+		await state.loadData();
+		expect(state.getBoardState().activeBoardId).toBe(first.board.id);
+		const another = createState(repo);
+		await another.loadData();
+		expect(another.getBoardState().activeBoardId).toBe(first.board.id);
 	});
-
-	describe('columns', () => {
-		let state: ReturnType<typeof createState>;
-		let repo: IKanbanRepo;
-
-		describe('fetchColumns', () => {
-			beforeEach(() => {
-				repo = createRepoMock();
-				state = createState(repo);
-			});
-
-			it('should notify subscribers with columns when request succeeds', async () => {
-				// ARRANGE
-				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
-				(repo.fetchTasks as Mock).mockResolvedValue([]);
-
-				const listener = vi.fn();
-				state.subscribeColumns(listener);
-
-				// ACT
-				await state.loadData();
-
-				// ASSERT
-				expect(listener).toHaveBeenCalledTimes(2);
-				expect(listener).toHaveBeenLastCalledWith(mockColumns);
-			});
-
-			it('should create default columns when API returns empty array', async () => {
-				// ARRANGE
-				(repo.fetchColumns as Mock).mockResolvedValue([]);
-				(repo.fetchTasks as Mock).mockResolvedValue(mockTasks);
-				(repo.addColumn as Mock).mockImplementation(async (column) => ({
-					id: `c${column.position / 1000}`,
-					...column,
-				}));
-
-				// ACT
-				await state.loadData();
-
-				// ASSERT
-				expect(repo.addColumn).toHaveBeenCalledTimes(4);
-				expect(state.getColumns()).toHaveLength(4);
-			});
-
-			it('should show error when request fails', async () => {
-				// ARRANGE
-				(repo.fetchColumns as Mock).mockRejectedValue(new Error('network'));
-
-				// ACT
-				await state.fetchColumns();
-
-				// ASSERT
-				expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.fetchError, 'error');
-			});
-		});
-
-		describe('actions', () => {
-			beforeEach(async () => {
-				const initialized = await createInitializedState();
-				state = initialized.state;
-				repo = initialized.repo;
-			});
-
-			describe('addColumn', () => {
-				it('should add column and notify subscribers when request succeeds', async () => {
-					// ARRANGE
-					const newColumn: Column = {
-						id: 'c5',
-						title: 'Готово',
-						color: 'slate',
-						taskLimit: 0,
-						position: 5000,
-					};
-					(repo.addColumn as Mock).mockResolvedValue(newColumn);
-
-					const listener = vi.fn();
-					state.subscribeColumns(listener);
-					listener.mockClear();
-
-					// ACT
-					await state.addColumn('Готово', 'slate', 0);
-
-					// ASSERT
-					expect(repo.addColumn).toHaveBeenCalledWith({
-						title: 'Готово',
-						color: 'slate',
-						taskLimit: 0,
-						position: 5000,
-					});
-					expect(listener).toHaveBeenCalledTimes(1);
-					expect(state.getColumns()).toContainEqual(newColumn);
-				});
-
-				it('should not add or call repo if title exceeds length limit', async () => {
-					// ARRANGE
-					const before = state.getColumns().length;
-
-					// ACT
-					await state.addColumn('Длинный заголовок превышающий лимит', 'sky', 7);
-
-					// ASSERT
-					const after = state.getColumns().length;
-					expect(after).toEqual(before);
-					expect(repo.addColumn).not.toHaveBeenCalled();
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.addTitleLimit, 'info');
-				});
-
-				it('should rollback state when request fails', async () => {
-					// ARRANGE
-					(repo.addColumn as Mock).mockRejectedValue(new Error('fail'));
-
-					const columnsBefore = state.getColumns();
-
-					// ACT
-					await state.addColumn('Сломанная', 'sky', 0);
-
-					// ASSERT
-					expect(state.getColumns()).toEqual(columnsBefore);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.addError, 'error');
-				});
-			});
-
-			describe('editColumn', () => {
-				it('should update column optimistically when request succeeds', async () => {
-					// ARRANGE
-					(repo.editColumn as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.editColumn('c1', 'Переделать', 'sky', 7);
-
-					// ASSERT
-					const updated = state.getColumns().find((column) => column.id === 'c1');
-					expect(updated).toMatchObject({ title: 'Переделать', color: 'sky', taskLimit: 7 });
-					expect(repo.editColumn).toHaveBeenCalledWith('c1', {
-						title: 'Переделать',
-						color: 'sky',
-						taskLimit: 7,
-					});
-				});
-
-				it('should not update or call repo if title exceeds length limit', async () => {
-					// ARRANGE
-					const before = state.getColumns().find((column) => column.id === 'c1');
-
-					// ACT
-					await state.editColumn('c1', 'Длинный заголовок превышающий лимит', 'sky', 7);
-
-					// ASSERT
-					const after = state.getColumns().find((column) => column.id === 'c1');
-					expect(after).toEqual(before);
-					expect(repo.editColumn).not.toHaveBeenCalled();
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.updateTitleLimit, 'info');
-				});
-
-				it('should rollback changes when request fails', async () => {
-					// ARRANGE
-					(repo.editColumn as Mock).mockRejectedValue(new Error('fail'));
-					const before = state.getColumns().find((column) => column.id === 'c1');
-
-					// ACT
-					await state.editColumn('c1', 'Переделать', 'sky', 99);
-
-					// ASSERT
-					const after = state.getColumns().find((column) => column.id === 'c1');
-					expect(after).toEqual(before);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.updateError, 'error');
-				});
-			});
-
-			describe('deleteColumn', () => {
-				it('should delete column when request succeeds', async () => {
-					// ARRANGE
-					(repo.deleteColumn as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.deleteColumn('c1');
-
-					// ASSERT
-					expect(state.getColumns().find((column) => column.id === 'c1')).toBeUndefined();
-					expect(repo.deleteColumn).toHaveBeenCalledWith('c1');
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.deleted, 'success');
-				});
-
-				it('should rollback deletion when request fails', async () => {
-					// ARRANGE
-					(repo.deleteColumn as Mock).mockRejectedValue(new Error('fail'));
-					const countBefore = state.getColumns().length;
-
-					// ACT
-					await state.deleteColumn('c1');
-
-					// ASSERT
-					expect(state.getColumns()).toHaveLength(countBefore);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.deleteError, 'error');
-				});
-			});
-
-			describe('moveColumn', () => {
-				it('should reorder columns when request succeeds', async () => {
-					// ARRANGE
-					(repo.moveColumn as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.moveColumn('c2', 0);
-
-					// ASSERT
-					expect(repo.moveColumn).toHaveBeenCalledTimes(1);
-					expect(repo.moveColumn).toHaveBeenCalledWith('c2', 0);
-					const cols = state.getColumns();
-					expect(cols.map((column) => column.id)).toEqual(['c2', 'c1', 'c3', 'c4']);
-					expect(cols.map((column) => column.position)).toEqual([0, 1000, 3000, 4000]);
-				});
-
-				it('should ignore second moveColumn call while first one is pending', async () => {
-					// ARRANGE
-					const resolves: Array<() => void> = [];
-
-					(repo.moveColumn as Mock).mockImplementation(
-						() => new Promise<void>((resolve) => resolves.push(resolve))
-					);
-
-					// ACT
-					const firstCall = state.moveColumn('c2', 0);
-					const secondCall = state.moveColumn('c3', 1);
-
-					expect(state.isMovingColumn).toBe(true);
-
-					await Promise.resolve();
-
-					expect(repo.moveColumn).toHaveBeenCalledTimes(1);
-					expect(repo.moveColumn).toHaveBeenCalledWith('c2', 0);
-
-					// ACT
-					resolves.forEach((resolve) => resolve());
-
-					await firstCall;
-					await secondCall;
-
-					// ASSERT
-					expect(state.isMovingColumn).toBe(false);
-				});
-
-				it('should do nothing when oldIdx equals newIdx', async () => {
-					// ACT
-					await state.moveColumn('c1', 0);
-
-					// ASSERT
-					expect(repo.moveColumn).not.toHaveBeenCalled();
-				});
-
-				it('should rollback reorder when request fails', async () => {
-					// ARRANGE
-					(repo.moveColumn as Mock).mockRejectedValue(new Error('fail'));
-					const before = state.getColumns().map((column) => column.id);
-
-					// ACT
-					await state.moveColumn('c2', 0);
-
-					// ASSERT
-					expect(state.getColumns().map((column) => column.id)).toEqual(before);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moveError, 'error');
-				});
-
-				it('should reset isMovingColumn after failed move', async () => {
-					// ARRANGE
-					(repo.moveColumn as Mock).mockRejectedValue(new Error('fail'));
-
-					// ACT
-					await state.moveColumn('c2', 0);
-
-					// ASSERT
-					expect(state.isMovingColumn).toBe(false);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.columns.moveError, 'error');
-				});
-			});
-		});
+	it('initializes only when the list is empty and uses the returned snapshot', async () => {
+		const repo = createRepo();
+		vi.spyOn(repo, 'fetchBoards').mockResolvedValue({ boards: [] });
+		const initialize = vi.spyOn(repo, 'initialize');
+		const read = vi.spyOn(repo, 'fetchBoard');
+		const state = createState(repo);
+		await state.loadData();
+		expect(initialize).toHaveBeenCalledOnce();
+		expect(read).not.toHaveBeenCalled();
+		expect(state.getColumns()).toHaveLength(4);
+		expect(state.getTasks()).toHaveLength(6);
 	});
-
-	describe('tasks', () => {
-		let state: ReturnType<typeof createState>;
-		let repo: IKanbanRepo;
-
-		describe('fetchTasks', () => {
-			beforeEach(() => {
-				repo = createRepoMock();
-				state = createState(repo);
-			});
-
-			it('should notify subscribers with tasks when request succeeds', async () => {
-				// ARRANGE
-				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
-				(repo.fetchTasks as Mock).mockResolvedValue(mockTasks);
-
-				const listener = vi.fn();
-				state.subscribeTasks(listener);
-
-				// ACT
-				await state.loadData();
-
-				// ASSERT
-				expect(listener).toHaveBeenCalledTimes(2);
-				expect(listener).toHaveBeenLastCalledWith(mockTasks);
-			});
-
-			it('should create default tasks when API returns empty array', async () => {
-				// ARRANGE
-				(repo.fetchColumns as Mock).mockResolvedValue(mockColumns);
-				(repo.fetchTasks as Mock).mockResolvedValue([]);
-				(repo.addTask as Mock).mockImplementation(async (task) => ({
-					id: `default-${task.columnId}-${task.position}`,
-					...task,
-					createdAt: '18.03.2026, 10:00',
-					updatedAt: null,
-				}));
-
-				// ACT
-				await state.loadData();
-
-				// ASSERT
-				expect(repo.addTask).toHaveBeenCalled();
-				expect(state.getTasks()).not.toHaveLength(0);
-			});
-
-			it('should show error when request fails', async () => {
-				// ARRANGE
-				(repo.fetchTasks as Mock).mockRejectedValue(new Error('network'));
-
-				// ACT
-				await state.fetchTasks();
-
-				// ASSERT
-				expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.fetchError, 'error');
-			});
-		});
-
-		describe('actions', () => {
-			beforeEach(async () => {
-				const initialized = await createInitializedState();
-				state = initialized.state;
-				repo = initialized.repo;
-			});
-
-			describe('addTask', () => {
-				it('should add task and notify subscribers when request succeeds', async () => {
-					// ARRANGE
-					const newTask: Task = {
-						id: 't3',
-						columnId: 'c1',
-						title: 'Задача 3',
-						description: 'Описание',
-						status: 'waiting',
-						priority: 'high',
-						startDate: '2026-03-18',
-						endDate: null,
-						completed: false,
-						position: 3000,
-						createdAt: '18.03.2026, 10:00',
-						updatedAt: null,
-					};
-					(repo.addTask as Mock).mockResolvedValue(newTask);
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					listener.mockClear();
-
-					// ACT
-					await state.addTask('c1', 'Задача 3', 'Описание', 'waiting', 'high', '2026-03-18', null, false, 10);
-
-					// ASSERT
-					expect(repo.addTask).toHaveBeenCalledWith(
-						expect.objectContaining({ title: 'Задача 3', columnId: 'c1', position: 3000, completed: false })
-					);
-					expect(listener).toHaveBeenCalledTimes(1);
-				});
-
-				it('should not add or call repo if title exceeds length limit', async () => {
-					// ARRANGE
-					const before = state.getTasks().length;
-
-					// ACT
-					await state.addTask(
-						'c1',
-						'Очень длинный заголовок точно превышающий лимит заголовка задачи',
-						'Описание',
-						'waiting',
-						'high',
-						'2026-03-18',
-						null,
-						false,
-						10
-					);
-
-					// ASSERT
-					const after = state.getTasks().length;
-					expect(after).toEqual(before);
-					expect(repo.addTask).not.toHaveBeenCalled();
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.addTitleLimit, 'info');
-				});
-
-				it('should rollback state when request fails', async () => {
-					// ARRANGE
-					(repo.addTask as Mock).mockRejectedValue(new Error('fail'));
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					const tasksBefore = listener.mock.calls.at(-1)?.[0];
-					listener.mockClear();
-
-					// ACT
-					await state.addTask('c1', 'Задача 3', '', 'active', 'low', '', '', false, 10);
-
-					// ASSERT
-					expect(listener).toHaveBeenLastCalledWith(tasksBefore);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.addError, 'error');
-				});
-			});
-
-			describe('editTask', () => {
-				it('should update task optimistically when request succeeds', async () => {
-					// ARRANGE
-					(repo.editTask as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.editTask(
-						't1',
-						'Задача 3',
-						'Новое описание задачи',
-						'active',
-						'high',
-						'2024-02-01',
-						'2024-02-01'
-					);
-
-					// ASSERT
-					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(false);
-
-					expect(repo.editTask).toHaveBeenCalledWith('t1', {
-						title: 'Задача 3',
-						description: 'Новое описание задачи',
-						status: 'active',
-						priority: 'high',
-						startDate: '2024-02-01',
-						endDate: '2024-02-01',
-						updatedAt: MOCKED_NOW,
-					});
-				});
-
-				it('should preserve completion when editing a completed task', async () => {
-					// ARRANGE
-					(repo.fetchTasks as Mock).mockResolvedValue([{ ...mockTasks[0], completed: true }, mockTasks[1]]);
-
-					await state.loadData();
-
-					(repo.editTask as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.editTask(
-						't1',
-						'Новое название',
-						'Описание задачи',
-						'waiting',
-						'high',
-						'2026-03-18',
-						'2026-03-20'
-					);
-
-					// ASSERT
-					expect(state.getTasks().find((task) => task.id === 't1')).toMatchObject({
-						title: 'Новое название',
-						completed: true,
-					});
-
-					const [, changes] = (repo.editTask as Mock).mock.calls[0];
-
-					expect(changes).not.toHaveProperty('completed');
-				});
-
-				it('should update task completion when completed is provided', async () => {
-					// ARRANGE
-					(repo.editTask as Mock).mockResolvedValue(undefined);
-
-					// ACT
-					await state.editTask(
-						't1',
-						'Задача 1',
-						'Описание задачи',
-						'waiting',
-						'high',
-						'2026-03-18',
-						'2026-03-20',
-						true
-					);
-
-					// ASSERT
-					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(true);
-
-					expect(repo.editTask).toHaveBeenCalledWith(
-						't1',
-						expect.objectContaining({ completed: true, updatedAt: MOCKED_NOW })
-					);
-				});
-
-				it('should resume a completed task', async () => {
-					// ARRANGE
-					(repo.fetchTasks as Mock).mockResolvedValue([{ ...mockTasks[0], completed: true }, mockTasks[1]]);
-
-					await state.loadData();
-
-					// ACT
-					await state.editTask(
-						't1',
-						'Задача 1',
-						'Описание задачи',
-						'waiting',
-						'high',
-						'2026-03-18',
-						'2026-03-20',
-						false
-					);
-
-					// ASSERT
-					expect(state.getTasks().find((task) => task.id === 't1')?.completed).toBe(false);
-
-					expect(repo.editTask).toHaveBeenCalledWith('t1', expect.objectContaining({ completed: false }));
-				});
-
-				it('should not update or call repo if title exceeds length limit', async () => {
-					// ARRANGE
-					const before = state.getTasks().length;
-
-					// ACT
-					await state.editTask(
-						't1',
-						'Очень длинный заголовок точно превышающий лимит заголовка задачи',
-						'Описание',
-						'waiting',
-						'high',
-						'2026-03-18',
-						null
-					);
-
-					// ASSERT
-					const after = state.getTasks().length;
-					expect(after).toEqual(before);
-					expect(repo.editTask).not.toHaveBeenCalled();
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updateTitleLimit, 'info');
-				});
-
-				it('should rollback changes when request fails', async () => {
-					// ARRANGE
-					(repo.editTask as Mock).mockRejectedValue(new Error('fail'));
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					const before = listener.mock.calls.at(-1)?.[0];
-					listener.mockClear();
-
-					// ACT
-					await state.editTask('t1', 'Задача 3', '', 'active', 'low', '', '');
-
-					// ASSERT
-					expect(listener).toHaveBeenLastCalledWith(before);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.updateError, 'error');
-				});
-			});
-
-			describe('moveTask', () => {
-				it('should move task to another column when request succeeds', async () => {
-					// ARRANGE
-					(repo.moveTask as Mock).mockResolvedValue(undefined);
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					listener.mockClear();
-
-					// ACT
-					await state.moveTask('t1', 'c2');
-
-					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 1000, MOCKED_NOW);
-
-					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
-					const moved = tasks.find((task) => task.id === 't1');
-
-					expect(moved).toMatchObject({ columnId: 'c2', position: 1000, updatedAt: MOCKED_NOW });
-					expect(listener).toHaveBeenCalledTimes(1);
-				});
-
-				it('should assign next position when target column already contains tasks', async () => {
-					// ARRANGE
-					(repo.moveTask as Mock).mockResolvedValue(undefined);
-
-					(repo.fetchTasks as Mock).mockResolvedValue([
-						...mockTasks,
-						{ ...mockTasks[0], id: 't3', columnId: 'c2', position: 2000 },
-					]);
-
-					await state.loadData();
-
-					// ACT
-					await state.moveTask('t1', 'c2');
-
-					// ASSERT
-					expect(repo.moveTask).toHaveBeenCalledWith('t1', 'c2', 3000, MOCKED_NOW);
-				});
-
-				it('should do nothing when task is already in target column', async () => {
-					// ACT
-					await state.moveTask('t1', 'c1');
-
-					// ASSERT
-					expect(repo.moveTask).not.toHaveBeenCalled();
-				});
-
-				it('should do nothing when task is not found', async () => {
-					// ACT
-					await state.moveTask('t999', 'c2');
-
-					// ASSERT
-					expect(repo.moveTask).not.toHaveBeenCalled();
-				});
-
-				it('should do nothing when target column is not found', async () => {
-					// ACT
-					await state.moveTask('t1', 'unknown');
-
-					// ASSERT
-					expect(repo.moveTask).not.toHaveBeenCalled();
-				});
-
-				it('should not move task when target column is full', async () => {
-					// ARRANGE
-					(repo.fetchColumns as Mock).mockResolvedValue(
-						mockColumns.map((column) => (column.id === 'c2' ? { ...column, taskLimit: 1 } : column))
-					);
-
-					(repo.fetchTasks as Mock).mockResolvedValue([
-						...mockTasks,
-						{ ...mockTasks[0], id: 't3', columnId: 'c2', position: 1000 },
-					]);
-
-					await state.loadData();
-
-					// ACT
-					await state.moveTask('t1', 'c2');
-
-					// ASSERT
-					expect(repo.moveTask).not.toHaveBeenCalled();
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moveLimit, 'info');
-					expect(state.getTasks().find((task) => task.id === 't1')?.columnId).toBe('c1');
-				});
-
-				it('should ignore second moveTask call while first one is pending', async () => {
-					// ARRANGE
-					let resolveMove!: () => void;
-
-					(repo.moveTask as Mock).mockImplementation(
-						() =>
-							new Promise<void>((resolve) => {
-								resolveMove = resolve;
-							})
-					);
-
-					// ACT
-					const firstCall = state.moveTask('t1', 'c2');
-					const secondCall = state.moveTask('t2', 'c3');
-
-					// ASSERT
-					expect(state.isMovingTask).toBe(true);
-					expect(repo.moveTask).toHaveBeenCalledTimes(1);
-
-					resolveMove();
-
-					await Promise.all([firstCall, secondCall]);
-
-					expect(state.isMovingTask).toBe(false);
-				});
-
-				it('should rollback move when request fails', async () => {
-					// ARRANGE
-					(repo.moveTask as Mock).mockRejectedValue(new Error('fail'));
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-
-					const before = listener.mock.calls.at(-1)?.[0];
-					listener.mockClear();
-
-					// ACT
-					await state.moveTask('t1', 'c2');
-
-					// ASSERT
-					expect(listener).toHaveBeenLastCalledWith(before);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.moveError, 'error');
-					expect(state.isMovingTask).toBe(false);
-				});
-			});
-
-			describe('deleteTask', () => {
-				it('should delete task when request succeeds', async () => {
-					// ARRANGE
-					(repo.deleteTask as Mock).mockResolvedValue(undefined);
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					listener.mockClear();
-
-					// ACT
-					await state.deleteTask('t1');
-
-					// ASSERT
-					const tasks = listener.mock.calls.at(-1)?.[0] as Task[];
-					expect(tasks.find((task) => task.id === 't1')).toBeUndefined();
-					expect(repo.deleteTask).toHaveBeenCalledWith('t1');
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.deleted, 'success');
-				});
-
-				it('should rollback deletion when request fails', async () => {
-					// ARRANGE
-					(repo.deleteTask as Mock).mockRejectedValue(new Error('fail'));
-
-					const listener = vi.fn();
-					state.subscribeTasks(listener);
-					const before = listener.mock.calls.at(-1)?.[0];
-					listener.mockClear();
-
-					// ACT
-					await state.deleteTask('t1');
-
-					// ASSERT
-					expect(listener).toHaveBeenLastCalledWith(before);
-					expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.deleteError, 'error');
-				});
-			});
-		});
+	it('does not initialize an existing empty board or create client defaults', async () => {
+		const { repo, state, first } = await setup();
+		const initialize = vi.spyOn(repo, 'initialize');
+		const write = vi.spyOn(repo, 'addColumn');
+		vi.spyOn(repo, 'fetchBoard').mockResolvedValue({ ...first, columns: [], tasks: [] });
+		await state.reloadBoard();
+		expect(state.getColumns()).toEqual([]);
+		expect(state.getTasks()).toEqual([]);
+		expect(initialize).not.toHaveBeenCalled();
+		expect(write).not.toHaveBeenCalled();
 	});
-
-	// SUBSCRIPTIONS
-	describe('subscriptions', () => {
-		let state: ReturnType<typeof createState>;
-		let repo: IKanbanRepo;
-
-		describe('subscribeColumns / subscribeColumns unsubscribe', () => {
-			beforeEach(async () => {
-				const initialized = await createInitializedState();
-				state = initialized.state;
-				repo = initialized.repo;
-			});
-
-			it('should call listener immediately with current state when subscribing', async () => {
-				// ARRANGE
-				const listener = vi.fn();
-
-				// ACT
-				state.subscribeColumns(listener);
-
-				// ASSERT
-				expect(listener).toHaveBeenCalledWith(mockColumns);
-			});
-
-			it('should stop notifying after unsubscribe', async () => {
-				// ARRANGE
-				(repo.addColumn as Mock).mockResolvedValue({
-					id: 'c5',
-					title: 'Готово',
-					color: 'slate',
-					taskLimit: 10,
-					position: 4,
-				});
-
-				const listener = vi.fn();
-				const unsubscribe = state.subscribeColumns(listener);
-				listener.mockClear();
-
-				// ACT
-				unsubscribe();
-				await state.addColumn('Готово', 'slate', 10);
-
-				// ASSERT
-				expect(listener).not.toHaveBeenCalled();
-			});
+	it('clears old data during switching and applies both arrays before notifying', async () => {
+		const { repo, state, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'fetchBoard').mockReturnValue(pending.promise);
+		const reading = state.selectBoard(second.board.id);
+		expect(state.getColumns()).toEqual([]);
+		expect(state.getTasks()).toEqual([]);
+		expect(state.getBoardState()).toMatchObject({
+			activeBoardId: second.board.id,
+			loading: true,
+			switching: true,
+			revision: null,
 		});
-
-		describe('subscribeTasks / unsubscribe', () => {
-			beforeEach(async () => {
-				const initialized = await createInitializedState();
-				state = initialized.state;
-				repo = initialized.repo;
-			});
-
-			it('should call listener immediately with current state when subscribing', async () => {
-				// ARRANGE
-				const listener = vi.fn();
-
-				// ACT
-				state.subscribeTasks(listener);
-
-				// ASSERT
-				expect(listener).toHaveBeenCalledWith(mockTasks);
-			});
-
-			it('should stop notifying after unsubscribe', async () => {
-				// ARRANGE
-				(repo.deleteTask as Mock).mockResolvedValue(undefined);
-
-				const listener = vi.fn();
-				const unsubscribe = state.subscribeTasks(listener);
-				listener.mockClear();
-
-				// ACT
-				unsubscribe();
-				await state.deleteTask('t1');
-
-				// ASSERT
-				expect(listener).not.toHaveBeenCalled();
-			});
+		const listener = vi.fn(() => {
+			if (state.getColumns().length) expect(state.getTasks()).toEqual(second.tasks);
 		});
+		state.subscribeColumns(listener);
+		pending.resolve(second);
+		await reading;
+		expect(state.getBoardState().loading).toBe(false);
+		expect(state.getColumns()).toEqual(second.columns);
+	});
+	it.each(['resolve', 'reject'] as const)('ignores an old read after fast switching: %s', async (outcome) => {
+		const { repo, state, first, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'fetchBoard').mockReturnValueOnce(pending.promise).mockResolvedValueOnce(first);
+		const old = state.selectBoard(second.board.id);
+		await state.selectBoard(first.board.id);
+		if (outcome === 'resolve') pending.resolve(second);
+		else pending.reject(new Error('Late'));
+		await old;
+		expect(state.getBoardState()).toMatchObject({ activeBoardId: first.board.id, loading: false });
+		expect(state.getTasks()).toEqual(first.tasks);
+		expect(notifier.setNotice).not.toHaveBeenCalled();
+	});
+	it('stops initialization after a late list when destroyed', async () => {
+		const repo = createRepo();
+		const pending = deferred<{ boards: [] }>();
+		vi.spyOn(repo, 'fetchBoards').mockReturnValue(pending.promise);
+		const initialize = vi.spyOn(repo, 'initialize');
+		const state = createState(repo);
+		const loading = state.loadData();
+		state.destroy();
+		state.destroy();
+		pending.resolve({ boards: [] });
+		await loading;
+		expect(initialize).not.toHaveBeenCalled();
+		expect(state.getColumns()).toEqual([]);
+	});
+	it.each(['resolve', 'reject'] as const)('ignores a read after destroy: %s', async (outcome) => {
+		const { repo, state, first } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'fetchBoard').mockReturnValue(pending.promise);
+		const loading = state.reloadBoard();
+		await flush();
+		const listener = vi.fn();
+		state.subscribeColumns(listener);
+		state.subscribeTasks(listener);
+		state.subscribeBoards(listener);
+		state.destroy();
+		state.destroy();
+		listener.mockClear();
+		if (outcome === 'resolve') pending.resolve(first);
+		else pending.reject(new Error('Late'));
+		await loading;
+		await state.loadData();
+		await state.deleteTask(first.tasks[0].id);
+		expect(listener).not.toHaveBeenCalled();
+		expect(notifier.setNotice).not.toHaveBeenCalled();
+	});
+	it('propagates active loading failures for the existing retry UI', async () => {
+		const { repo, state } = await setup();
+		const error = new Error('Failed');
+		vi.spyOn(repo, 'fetchBoard').mockRejectedValueOnce(error);
+		await expect(state.reloadBoard()).rejects.toBe(error);
+		expect(state.getBoardState().loading).toBe(false);
+		await state.reloadBoard();
+		expect(state.getColumns()).toHaveLength(4);
+	});
+	it('returns defensive copies and supports unsubscribe', async () => {
+		const { state } = await setup();
+		const meta = state.getBoardState();
+		meta.boards.length = 0;
+		state.getColumns()[0].title = 'Outside';
+		state.getTasks()[0].title = 'Outside';
+		expect(state.getBoardState().boards).toHaveLength(2);
+		expect(state.getColumns()[0].title).not.toBe('Outside');
+		expect(state.getTasks()[0].title).not.toBe('Outside');
+		const listener = vi.fn();
+		const off = state.subscribeBoards(listener);
+		off();
+		listener.mockClear();
+		await state.reloadBoard();
+		expect(listener).not.toHaveBeenCalled();
+	});
+});
+
+describe('serialized board writes', () => {
+	it('serializes optimistic changes, request parameters, full snapshots and revisions', async () => {
+		const { repo, state, first } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		const write = vi.spyOn(repo, 'editTask').mockReturnValueOnce(pending.promise);
+		const task = first.tasks[0];
+		const one = edit(state, task, 'First');
+		const two = edit(state, task, 'Second');
+		await flush();
+		expect(write).toHaveBeenCalledTimes(1);
+		expect(state.getTasks().find((item) => item.id === task.id)?.title).toBe('First');
+		const result = structuredClone(first);
+		result.board.revision = 7;
+		result.tasks[0].title = 'Server';
+		result.columns[0].title = 'Server column';
+		const secondResult = structuredClone(result);
+		secondResult.board.revision = 8;
+		secondResult.tasks[0].title = 'Second';
+		write.mockResolvedValueOnce(secondResult);
+		pending.resolve(result);
+		await one;
+		await two;
+		expect(write.mock.calls.map((call) => call[1])).toEqual([0, 7]);
+		expect(state.getTasks().find((item) => item.id === task.id)?.title).toBe('Second');
+	});
+	it('applies the complete server snapshot instead of merging only the changed item', async () => {
+		const { repo, state, first } = await setup();
+		const response = structuredClone(first);
+		response.board.revision = 3;
+		response.tasks = [];
+		response.columns[0].title = 'Authoritative';
+		vi.spyOn(repo, 'editColumn').mockResolvedValue(response);
+		await state.editColumn(first.columns[0].id, 'Local', 'slate', null);
+		expect(state.getColumns()).toEqual(response.columns);
+		expect(state.getTasks()).toEqual([]);
+		expect(state.getBoardState().revision).toBe(3);
+	});
+	it('rolls back before the next operation calculates its parameters', async () => {
+		const { repo, state, first } = await setup();
+		const fail = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'deleteTask').mockReturnValueOnce(fail.promise);
+		const write = vi.spyOn(repo, 'addTask');
+		const deleting = state.deleteTask(first.tasks[0].id);
+		const adding = add(state, first.columns[0].id);
+		await flush();
+		expect(write).not.toHaveBeenCalled();
+		fail.reject(new Error('Failed'));
+		await deleting;
+		await adding;
+		expect(write.mock.calls[0][1]).toBe(0);
+		expect(write.mock.calls[0][2].position).toBe(3000);
+		expect(state.getTasks()).toHaveLength(7);
+		expect(notifier.setNotice).toHaveBeenCalledWith(MESSAGES.tasks.deleteError, 'error');
+	});
+	it.each(['resolve', 'reject'] as const)(
+		'ignores a late write and drops old queued operations after switching: %s',
+		async (outcome) => {
+			const { repo, state, first, second } = await setup();
+			const pending = deferred<KanbanSnapshot>();
+			const write = vi.spyOn(repo, 'editTask').mockReturnValueOnce(pending.promise);
+			const old = edit(state, first.tasks[0], 'Old');
+			const queued = state.deleteTask(first.tasks[1].id);
+			const remove = vi.spyOn(repo, 'deleteTask');
+			await flush();
+			await state.selectBoard(second.board.id);
+			await edit(state, second.tasks[0], 'New');
+			const tasks = state.getTasks();
+			const meta = state.getBoardState();
+			if (outcome === 'resolve') pending.resolve(first);
+			else pending.reject(new Error('Old'));
+			await old;
+			await queued;
+			expect(state.getTasks()).toEqual(tasks);
+			expect(state.getBoardState()).toEqual(meta);
+			expect(remove).not.toHaveBeenCalled();
+			expect(write).toHaveBeenCalledTimes(2);
+			expect(notifier.setNotice).not.toHaveBeenCalled();
+		}
+	);
+	it('does not overlap writes to the same board after leaving and returning', async () => {
+		const { repo, state, first, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		const write = vi.spyOn(repo, 'editTask').mockReturnValueOnce(pending.promise);
+		const old = edit(state, first.tasks[0], 'Old');
+		await flush();
+		await state.selectBoard(second.board.id);
+		await state.selectBoard(first.board.id);
+		const next = edit(state, first.tasks[0], 'New');
+		await flush();
+		expect(write).toHaveBeenCalledTimes(1);
+		pending.resolve(first);
+		await old;
+		await next;
+		expect(write).toHaveBeenCalledTimes(2);
+	});
+	it('calculates positions inside the queue after the previous authoritative response', async () => {
+		const { repo, state, first } = await setup();
+		const write = vi.spyOn(repo, 'addTask');
+		await Promise.all([add(state, first.columns[0].id, 'One'), add(state, first.columns[0].id, 'Two')]);
+		expect(write.mock.calls.map((call) => [call[1], call[2].position])).toEqual([
+			[0, 3000],
+			[1, 4000],
+		]);
+		expect(state.getBoardState().revision).toBe(2);
+	});
+	it('does not let an old column move clear the current board movement flag', async () => {
+		const { repo, state, first, second } = await setup();
+		const oldPending = deferred<KanbanSnapshot>();
+		const newPending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'reorderColumns')
+			.mockReturnValueOnce(oldPending.promise)
+			.mockReturnValueOnce(newPending.promise);
+		const old = state.moveColumn(first.columns[0].id, 2);
+		await flush();
+		await state.selectBoard(second.board.id);
+		const current = state.moveColumn(second.columns[0].id, 2);
+		await flush();
+		expect(state.isMovingColumn).toBe(true);
+		oldPending.resolve(first);
+		await old;
+		expect(state.isMovingColumn).toBe(true);
+		newPending.resolve(second);
+		await current;
+		expect(state.isMovingColumn).toBe(false);
+	});
+	it('does not write while loading or before initialization', async () => {
+		const repo = createRepo();
+		const state = createState(repo);
+		const write = vi.spyOn(repo, 'addColumn');
+		await state.addColumn('No board', 'slate', 10);
+		expect(write).not.toHaveBeenCalled();
+	});
+	it.each(['resolve', 'reject'] as const)(
+		'ignores late write callbacks and queued work after destruction: %s',
+		async (outcome) => {
+			const { repo, state, first } = await setup();
+			const pending = deferred<KanbanSnapshot>();
+			vi.spyOn(repo, 'deleteTask').mockReturnValueOnce(pending.promise);
+			const write = vi.spyOn(repo, 'addColumn');
+			const deleting = state.deleteTask(first.tasks[0].id);
+			const adding = state.addColumn('Queued', 'slate', 10);
+			await flush();
+			state.destroy();
+			const tasks = state.getTasks();
+			if (outcome === 'resolve') pending.resolve(first);
+			else pending.reject(new Error('Late'));
+			await deleting;
+			await adding;
+			expect(state.getTasks()).toEqual(tasks);
+			expect(write).not.toHaveBeenCalled();
+			expect(notifier.setNotice).not.toHaveBeenCalled();
+		}
+	);
+	it('records 409, cancels queued writes and resumes only through an explicit reload', async () => {
+		const { repo, state, first } = await setup();
+		const write = vi.spyOn(repo, 'editTask').mockRejectedValueOnce(new BoardRevisionConflictError(8));
+		const one = edit(state, first.tasks[0], 'Conflict');
+		const two = edit(state, first.tasks[1], 'Queued');
+		await one;
+		await two;
+		expect(write).toHaveBeenCalledTimes(1);
+		expect(state.getTasks()).toEqual(first.tasks);
+		expect(state.getBoardState()).toMatchObject({
+			revision: 0,
+			conflict: { boardId: first.board.id, currentRevision: 8 },
+		});
+		await edit(state, first.tasks[0], 'Blocked');
+		expect(write).toHaveBeenCalledTimes(1);
+		const fresh = structuredClone(first);
+		fresh.board.revision = 8;
+		vi.spyOn(repo, 'fetchBoard').mockRejectedValueOnce(new Error('Refresh failed')).mockResolvedValueOnce(fresh);
+		await expect(state.reloadBoard()).rejects.toThrow('Refresh failed');
+		expect(state.getBoardState().conflict?.currentRevision).toBe(8);
+		await state.reloadBoard();
+		expect(state.getBoardState()).toMatchObject({ revision: 8, conflict: null });
+		write.mockResolvedValueOnce({ ...fresh, board: { ...fresh.board, revision: 9 } });
+		await edit(state, first.tasks[0], 'Resumed');
+		expect(write.mock.calls[1][1]).toBe(8);
+	});
+});
+
+describe('existing column and task behavior', () => {
+	it('creates, edits and deletes columns using snapshots and nullable limits', async () => {
+		const { state } = await setup();
+		await state.addColumn('Added', 'slate', null);
+		const column = state.getColumns().find((item) => item.title === 'Added')!;
+		await state.editColumn(column.id, 'Edited', 'rose', null);
+		expect(state.getColumns().find((item) => item.id === column.id)).toMatchObject({
+			title: 'Edited',
+			taskLimit: null,
+		});
+		await state.deleteColumn(column.id);
+		expect(state.getColumns()).toHaveLength(4);
+		expect(state.getBoardState().revision).toBe(3);
+	});
+	it('moves columns with one full-order request and normalized positions, preserving no-op behavior', async () => {
+		const { repo, state, first } = await setup();
+		const reorder = vi.spyOn(repo, 'reorderColumns');
+		await state.moveColumn(first.columns[0].id, 2);
+		expect(reorder).toHaveBeenCalledExactlyOnceWith(first.board.id, 0, [
+			first.columns[1].id,
+			first.columns[2].id,
+			first.columns[0].id,
+			first.columns[3].id,
+		]);
+		expect(state.getColumns().map((item) => item.position)).toEqual([1000, 2000, 3000, 4000]);
+		expect(state.isMovingColumn).toBe(false);
+		await state.moveColumn(first.columns[0].id, 2);
+		expect(reorder).toHaveBeenCalledTimes(1);
+	});
+	it('rolls back failed column moves and clears the DnD flag', async () => {
+		const { repo, state, first } = await setup();
+		vi.spyOn(repo, 'reorderColumns').mockRejectedValue(new Error('Move failed'));
+		await state.moveColumn(first.columns[0].id, 3);
+		expect(state.getColumns()).toEqual(first.columns);
+		expect(state.isMovingColumn).toBe(false);
+	});
+	it('creates nullable tasks, completes, restores, moves and deletes them', async () => {
+		const { state, first } = await setup();
+		await add(state, first.columns[0].id);
+		let task = state.getTasks().find((item) => item.title === 'Added')!;
+		expect(task).toMatchObject({ status: null, priority: null, startDate: null, endDate: null });
+		await edit(state, task, 'Added', true);
+		task = state.getTasks().find((item) => item.id === task.id)!;
+		expect(task.completed).toBe(true);
+		await edit(state, task, 'Added', false);
+		await state.moveTask(task.id, first.columns[1].id);
+		expect(state.getTasks().find((item) => item.id === task.id)?.columnId).toBe(first.columns[1].id);
+		await state.moveTask(task.id, first.columns[1].id, 500);
+		expect(state.getTasks().find((item) => item.id === task.id)?.position).toBe(500);
+		expect(state.isMovingTask).toBe(false);
+		await state.deleteTask(task.id);
+		expect(state.getTasks()).toHaveLength(6);
+	});
+	it('uses the latest column limit when queued task creation starts, with null unlimited', async () => {
+		const { repo, state, first } = await setup();
+		const column = first.columns[0];
+		const update = state.editColumn(column.id, column.title, column.color, null);
+		const adding = add(state, column.id, 'Unlimited');
+		await update;
+		await adding;
+		expect(state.getTasks().some((task) => task.title === 'Unlimited')).toBe(true);
+		const write = vi.spyOn(repo, 'addTask');
+		await state.editColumn(column.id, column.title, column.color, 1);
+		await add(state, column.id, 'Blocked');
+		expect(write).not.toHaveBeenCalled();
+	});
+	it('enforces column counts, task movement capacity and title lengths without API writes', async () => {
+		const { repo, state, first } = await setup();
+		const write = vi.spyOn(repo, 'addColumn');
+		await state.addColumn('X'.repeat(21), 'slate', 10);
+		expect(write).not.toHaveBeenCalled();
+		await state.addColumn('Fifth', 'slate', 10);
+		await state.addColumn('Sixth', 'slate', 10);
+		await state.addColumn('Seventh', 'slate', 10);
+		expect(write).toHaveBeenCalledTimes(2);
+		const destination = first.columns[0];
+		await state.editColumn(destination.id, destination.title, destination.color, 1);
+		const move = vi.spyOn(repo, 'moveTask');
+		await state.moveTask(first.tasks.find((task) => task.columnId !== destination.id)!.id, destination.id);
+		expect(move).not.toHaveBeenCalled();
+		const addTask = vi.spyOn(repo, 'addTask');
+		await add(state, destination.id, 'X'.repeat(61));
+		expect(addTask).not.toHaveBeenCalled();
+	});
+	it('leaves visual task sorting and completed placement unchanged', async () => {
+		const { state, first } = await setup();
+		const task = first.tasks[0];
+		await edit(state, task, task.title, true);
+		const sorted = state.getTasks().sort(sortTasks);
+		expect(sorted.at(-1)?.id).toBe(task.id);
+	});
+});
+
+describe('board management for workspace tabs', () => {
+	it('creates a board, selects its returned snapshot and keeps the server list order', async () => {
+		const { repo, state, first, second } = await setup();
+		const write = vi.spyOn(repo, 'createBoard');
+		expect(await state.createBoard(' New ')).toBe(true);
+		const view = state.getBoardState();
+		expect(write).toHaveBeenCalledExactlyOnceWith('New');
+		expect(view.boards.map((board) => board.title)).toEqual([first.board.title, second.board.title, 'New']);
+		expect(view.activeBoardId).toBe(view.boards[2].id);
+		expect(view.revision).toBe(0);
+		expect(view.savingBoard).toBe(false);
+		expect(state.getColumns()).toHaveLength(0);
+		expect(state.getTasks()).toHaveLength(0);
+	});
+	it('renames with the revision from the previous queued task operation', async () => {
+		const { repo, state, first } = await setup();
+		const rename = vi.spyOn(repo, 'renameBoard');
+		const task = edit(state, first.tasks[0], 'Task edit');
+		const naming = state.renameBoard(first.board.id, ' Renamed ');
+		await task;
+		expect(await naming).toBe(true);
+		expect(rename).toHaveBeenCalledExactlyOnceWith(first.board.id, 1, 'Renamed');
+		expect(state.getBoardState().revision).toBe(2);
+		expect(state.getBoardState().boards[0].title).toBe('Renamed');
+	});
+	it('deletes the selected board with its latest revision and selects the first remaining board', async () => {
+		const { repo, state, first, second } = await setup();
+		await state.selectBoard(second.board.id);
+		await state.renameBoard(second.board.id, 'Changed');
+		const remove = vi.spyOn(repo, 'deleteBoard');
+		expect(await state.deleteBoard(second.board.id)).toBe(true);
+		expect(remove).toHaveBeenCalledExactlyOnceWith(second.board.id, 1);
+		expect(state.getBoardState()).toMatchObject({
+			activeBoardId: first.board.id,
+			revision: 0,
+			canDeleteBoard: false,
+		});
+		expect(state.getTasks()).toEqual(first.tasks);
+		expect(await state.deleteBoard(first.board.id)).toBe(false);
+		expect(remove).toHaveBeenCalledTimes(1);
+	});
+	it('rejects invalid titles and the eleventh board without sending requests', async () => {
+		const { repo, state } = await setup();
+		const write = vi.spyOn(repo, 'createBoard');
+		for (const title of ['', '  ', 'x'.repeat(31)]) expect(await state.createBoard(title)).toBe(false);
+		expect(write).not.toHaveBeenCalled();
+		for (let i = 0; i < 8; i++) expect(await state.createBoard('Duplicate')).toBe(true);
+		expect(state.getBoardState().canCreateBoard).toBe(false);
+		expect(await state.createBoard('Extra')).toBe(false);
+		expect(write).toHaveBeenCalledTimes(8);
+	});
+	it('returns false on create and rename errors so the UI can preserve drafts and retry', async () => {
+		const { repo, state, first } = await setup();
+		vi.spyOn(repo, 'createBoard').mockRejectedValueOnce(new Error('Creation failed'));
+		expect(await state.createBoard('Draft')).toBe(false);
+		expect(state.getBoardState().boards).toHaveLength(2);
+		expect(await state.createBoard('Draft')).toBe(true);
+		const id = state.getBoardState().activeBoardId!;
+		vi.spyOn(repo, 'renameBoard').mockRejectedValueOnce(new Error('Rename failed'));
+		expect(await state.renameBoard(id, 'Name draft')).toBe(false);
+		expect(state.getBoardState().boards.find((board) => board.id === id)?.title).toBe('Draft');
+		expect(await state.renameBoard(id, 'Name draft')).toBe(true);
+		expect(state.getBoardState().boards[0].id).toBe(first.board.id);
+	});
+	it.each(['rename', 'delete'] as const)(
+		'handles %s revision conflicts without retry and permits an explicit refresh',
+		async (operation) => {
+			const { repo, state, first } = await setup();
+			const read = vi.spyOn(repo, 'fetchBoard');
+			const method = operation === 'rename' ? vi.spyOn(repo, 'renameBoard') : vi.spyOn(repo, 'deleteBoard');
+			method.mockRejectedValueOnce(new BoardRevisionConflictError(4));
+			const success =
+				operation === 'rename'
+					? await state.renameBoard(first.board.id, 'Draft')
+					: await state.deleteBoard(first.board.id);
+			expect(success).toBe(false);
+			expect(method).toHaveBeenCalledOnce();
+			expect(read).not.toHaveBeenCalled();
+			expect(state.getBoardState().conflict?.currentRevision).toBe(4);
+			await state.reloadBoard();
+			expect(read).toHaveBeenCalledOnce();
+			expect(state.getBoardState().conflict).toBeNull();
+		}
+	);
+	it('prevents duplicate board requests and ignores late creation after switching', async () => {
+		const { repo, state, first, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		const write = vi.spyOn(repo, 'createBoard').mockReturnValueOnce(pending.promise);
+		const creating = state.createBoard('Pending');
+		await flush();
+		expect(state.getBoardState().savingBoard).toBe(true);
+		expect(await state.createBoard('Duplicate')).toBe(false);
+		await state.selectBoard(second.board.id);
+		pending.resolve({ ...first, board: { ...first.board, id: 'late' } });
+		expect(await creating).toBe(false);
+		expect(state.getBoardState().activeBoardId).toBe(second.board.id);
+		expect(state.getBoardState().boards).toHaveLength(2);
+		expect(write).toHaveBeenCalledOnce();
+	});
+	it('keeps deletion committed and exposes retry when the next snapshot fails to load', async () => {
+		const { repo, state, first, second } = await setup();
+		vi.spyOn(repo, 'fetchBoard').mockRejectedValueOnce(new Error('Read failed'));
+		expect(await state.deleteBoard(first.board.id)).toBe(true);
+		expect(state.getBoardState()).toMatchObject({
+			activeBoardId: second.board.id,
+			loadError: true,
+			savingBoard: false,
+		});
+		expect(state.getBoardState().boards).toHaveLength(1);
+		await state.reloadBoard();
+		expect(state.getBoardState().loadError).toBe(false);
+	});
+});
+
+describe('personal state stabilization regressions', () => {
+	it('never hydrates another account or demo instance from a previous state', async () => {
+		const { state: a, first } = await setup();
+		const bRepo = createRepo('account-b');
+		const pending = deferred<{ boards: [] }>();
+		vi.spyOn(bRepo, 'fetchBoards').mockReturnValue(pending.promise);
+		const b = createState(bRepo);
+		const loading = b.loadData();
+		expect(b.getColumns()).toEqual([]);
+		expect(b.getTasks()).toEqual([]);
+		expect(b.getBoardState().boards).toEqual([]);
+		a.destroy();
+		expect(a.getColumns()).toEqual([]);
+		expect(a.getBoardState().boards).toEqual([]);
+		pending.resolve({ boards: [] });
+		await loading;
+		expect(b.getBoardState().activeBoardId).toBe(first.board.id);
+		expect(b.getBoardState().boards[0].ownerId).toBe('account-b');
+		const nextDemo = createState(createRepo('demo'));
+		expect(nextDemo.getTasks()).toEqual([]);
+		expect(nextDemo.getBoardState().boards).toEqual([]);
+	});
+	it('switches already loaded boards immediately without extra requests or background updates', async () => {
+		const { repo, state, first, second } = await setup();
+		const read = vi.spyOn(repo, 'fetchBoard');
+		await state.selectBoard(second.board.id);
+		expect(read).toHaveBeenCalledTimes(1);
+		await state.selectBoard(first.board.id);
+		await state.selectBoard(second.board.id);
+		expect(read).toHaveBeenCalledTimes(1);
+		expect(state.getTasks()).toEqual(second.tasks);
+	});
+	it('serializes task writes behind a rename and uses its new revision', async () => {
+		const { repo, state, first } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'renameBoard').mockReturnValueOnce(pending.promise);
+		const taskWrite = vi
+			.spyOn(repo, 'editTask')
+			.mockResolvedValue({ ...first, board: { ...first.board, revision: 2 } });
+		const renaming = state.renameBoard(first.board.id, 'Renamed');
+		await flush();
+		const editing = edit(state, first.tasks[0], 'Task');
+		await flush();
+		expect(taskWrite).not.toHaveBeenCalled();
+		pending.resolve({ ...first, board: { ...first.board, title: 'Renamed', revision: 1 } });
+		await renaming;
+		await editing;
+		expect(taskWrite.mock.calls[0][1]).toBe(1);
+	});
+	it('does not execute queued tasks after the board has been deleted', async () => {
+		const { repo, state, first } = await setup();
+		const pending = deferred<{ deleted_board_id: string }>();
+		vi.spyOn(repo, 'deleteBoard').mockReturnValueOnce(pending.promise);
+		const write = vi.spyOn(repo, 'editTask');
+		const deleting = state.deleteBoard(first.board.id);
+		await flush();
+		const editing = edit(state, first.tasks[0], 'Must not write');
+		pending.resolve({ deleted_board_id: first.board.id });
+		await deleting;
+		await editing;
+		expect(write).not.toHaveBeenCalled();
+		expect(state.getBoardState().activeBoardId).not.toBe(first.board.id);
+	});
+	it('applies the entire rename snapshot, including an inactive board', async () => {
+		const { repo, state, first, second } = await setup();
+		await state.selectBoard(second.board.id);
+		const result = structuredClone(first);
+		result.board.revision = 3;
+		result.tasks[0].title = 'Server title';
+		result.columns[0].taskLimit = null;
+		vi.spyOn(repo, 'renameBoard').mockResolvedValueOnce(result);
+		expect(await state.renameBoard(first.board.id, 'Name')).toBe(true);
+		expect(state.getTasks()).toEqual(second.tasks);
+		await state.selectBoard(first.board.id);
+		expect(state.getTasks()).toEqual(result.tasks);
+		expect(state.getColumns()).toEqual(result.columns);
+	});
+	it('preserves the conflict across cached switches until a successful explicit refresh', async () => {
+		const { repo, state, first, second } = await setup();
+		vi.spyOn(repo, 'editTask').mockRejectedValueOnce(new BoardRevisionConflictError(4));
+		await edit(state, first.tasks[0]);
+		await state.selectBoard(second.board.id);
+		await state.selectBoard(first.board.id);
+		expect(state.getBoardState().conflict?.currentRevision).toBe(4);
+		const write = vi.spyOn(repo, 'deleteTask');
+		await state.deleteTask(first.tasks[0].id);
+		expect(write).not.toHaveBeenCalled();
+		vi.spyOn(repo, 'fetchBoard').mockResolvedValueOnce({ ...first, board: { ...first.board, revision: 4 } });
+		await state.reloadBoard();
+		expect(state.getBoardState().conflict).toBeNull();
+	});
+	it.each([403, 404])('discards inaccessible board snapshots and closes private forms after %s', async (status) => {
+		const { repo, state, first } = await setup();
+		const close = vi.fn();
+		state.registerEditor(close);
+		vi.spyOn(repo, 'fetchBoard').mockRejectedValueOnce(
+			Object.assign(new Error('Unavailable'), { isAxiosError: true, response: { status } })
+		);
+		await expect(state.reloadBoard()).rejects.toThrow('Unavailable');
+		expect(state.getTasks()).toEqual([]);
+		expect(state.getColumns()).toEqual([]);
+		expect(state.getBoardState().boards.some((board) => board.id === first.board.id)).toBe(false);
+		expect(close).toHaveBeenCalledOnce();
+	});
+	it('drops an unavailable late target without disturbing the current board', async () => {
+		const { repo, state, first, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		vi.spyOn(repo, 'fetchBoard').mockReturnValueOnce(pending.promise);
+		const old = state.selectBoard(second.board.id);
+		await state.selectBoard(first.board.id);
+		pending.reject(Object.assign(new Error('Missing'), { isAxiosError: true, response: { status: 404 } }));
+		await old;
+		expect(state.getBoardState()).toMatchObject({ activeBoardId: first.board.id, loadError: false });
+		expect(state.getTasks()).toEqual(first.tasks);
+		expect(state.getBoardState().boards.some((board) => board.id === second.board.id)).toBe(false);
+	});
+	it('blocks switching rather than destroying an open draft, and permits manual reload without closing it', async () => {
+		const { state, first, second } = await setup();
+		const close = vi.fn();
+		const release = state.registerEditor(close);
+		await state.selectBoard(second.board.id);
+		expect(state.getBoardState().activeBoardId).toBe(first.board.id);
+		expect(close).not.toHaveBeenCalled();
+		await state.reloadBoard();
+		expect(close).not.toHaveBeenCalled();
+		expect(state.getBoardState().hasOpenEditor).toBe(true);
+		release();
+		await state.selectBoard(second.board.id);
+		expect(state.getBoardState().activeBoardId).toBe(second.board.id);
+	});
+	it('remembers a late successful own write so returning and writing again does not manufacture a conflict', async () => {
+		const { repo, state, first, second } = await setup();
+		const pending = deferred<KanbanSnapshot>();
+		const write = vi.spyOn(repo, 'editTask').mockReturnValueOnce(pending.promise);
+		const old = edit(state, first.tasks[0], 'One');
+		await flush();
+		await state.selectBoard(second.board.id);
+		await state.selectBoard(first.board.id);
+		const response = structuredClone(first);
+		response.board.revision = 1;
+		response.tasks[0].title = 'One';
+		const next = edit(state, first.tasks[1], 'Two');
+		await flush();
+		expect(write).toHaveBeenCalledTimes(1);
+		write.mockResolvedValueOnce({ ...response, board: { ...response.board, revision: 2 } });
+		pending.resolve(response);
+		await old;
+		await next;
+		expect(write.mock.calls[1][1]).toBe(1);
+		expect(state.getBoardState().conflict).toBeNull();
 	});
 });
