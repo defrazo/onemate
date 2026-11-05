@@ -55,6 +55,8 @@ class UserProfileController extends Controller
 
             'network_notifications_enabled' => ['sometimes', 'boolean'],
             'kanban_notifications_enabled' => ['sometimes', 'boolean'],
+            'network_email_notifications_enabled' => ['sometimes', 'boolean'],
+            'kanban_email_notifications_enabled' => ['sometimes', 'boolean'],
         ]);
 
         $profile = $request->user()

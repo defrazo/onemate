@@ -32,6 +32,8 @@ class KanbanTask extends Model
             'end_date' => 'date:Y-m-d',
             'remind_before_days' => 'integer',
             'reminder_notified_date' => 'date:Y-m-d',
+            'reminder_email_queued_date' => 'date:Y-m-d',
+            'overdue_email_queued_date' => 'date:Y-m-d',
             'completed' => 'boolean',
             'overdue_notified_date' => 'date:Y-m-d',
         ];

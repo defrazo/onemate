@@ -10,8 +10,10 @@ class TaskOverdueNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(private readonly KanbanTask $task)
-    {
+    public function __construct(
+        private readonly KanbanTask $task,
+        private readonly string $boardTitle,
+    ) {
     }
 
     public function via(object $notifiable): array
@@ -28,7 +30,7 @@ class TaskOverdueNotification extends Notification
     {
         return [
             'title' => 'Задача просрочена',
-            'message' => $this->task->title,
+            'message' => "{$this->task->title} ({$this->boardTitle})",
         ];
     }
 }

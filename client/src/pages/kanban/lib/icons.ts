@@ -11,6 +11,7 @@ export { default as errorIcon } from '@/shared/assets/icons/kanban/error.svg?raw
 export { default as viewIcon } from '@/shared/assets/icons/kanban/eye.svg?raw';
 export { default as priorityIcon } from '@/shared/assets/icons/kanban/flag.svg?raw';
 export { default as limitIcon } from '@/shared/assets/icons/kanban/hash.svg?raw';
+export { default as infinityIcon } from '@/shared/assets/icons/kanban/infinity.svg?raw';
 export { default as infoIcon } from '@/shared/assets/icons/kanban/info.svg?raw';
 export { default as optionsIcon } from '@/shared/assets/icons/kanban/options.svg?raw';
 export { default as paletteIcon } from '@/shared/assets/icons/kanban/palette.svg?raw';

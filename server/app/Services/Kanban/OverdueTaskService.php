@@ -4,6 +4,7 @@ namespace App\Services\Kanban;
 
 use App\Models\Kanban\KanbanTask;
 use App\Models\User\User;
+use App\Notifications\Kanban\KanbanDeadlineEmailNotification;
 use App\Notifications\Kanban\TaskDueSoonNotification;
 use App\Notifications\Kanban\TaskOverdueNotification;
 use Illuminate\Support\Facades\DB;
@@ -24,14 +25,18 @@ class OverdueTaskService
                         ->where(function ($unnotified) {
                             $unnotified
                                 ->whereNull('overdue_notified_date')
-                                ->orWhereColumn('overdue_notified_date', '!=', 'end_date');
+                                ->orWhereColumn('overdue_notified_date', '!=', 'end_date')
+                                ->orWhereNull('overdue_email_queued_date')
+                                ->orWhereColumn('overdue_email_queued_date', '!=', 'end_date');
                         });
                 })->orWhere(function ($reminder) use ($today) {
                     $reminder
                         ->where(function ($unnotified) {
                             $unnotified
                                 ->whereNull('reminder_notified_date')
-                                ->orWhereColumn('reminder_notified_date', '!=', 'end_date');
+                                ->orWhereColumn('reminder_notified_date', '!=', 'end_date')
+                                ->orWhereNull('reminder_email_queued_date')
+                                ->orWhereColumn('reminder_email_queued_date', '!=', 'end_date');
                         })
                         ->where(function ($dates) use ($today) {
                             foreach ([0, 1, 2, 3, 7] as $days) {
@@ -89,47 +94,53 @@ class OverdueTaskService
                             return;
                         }
 
-                        $kanbanNotificationsEnabled = $user->profile?->kanban_notifications_enabled ?? true;
+                        $overdue = $currentTask->end_date->lt($today);
 
-                        if (!$kanbanNotificationsEnabled) {
+                        if (!$overdue && (
+                            $currentTask->remind_before_days === null ||
+                            !$currentTask->end_date->copy()->subDays($currentTask->remind_before_days)->isSameDay($today)
+                        )) {
                             return;
                         }
 
-                        if ($currentTask->end_date->lt($today)) {
-                            if (
-                                $currentTask->overdue_notified_date !== null &&
-                                $currentTask->end_date->isSameDay($currentTask->overdue_notified_date)
-                            ) {
-                                return;
-                            }
+                        $notifiedColumn = $overdue ? 'overdue_notified_date' : 'reminder_notified_date';
+                        $emailColumn = $overdue ? 'overdue_email_queued_date' : 'reminder_email_queued_date';
+                        $profile = $user->profile;
 
-                            $notification = new TaskOverdueNotification($currentTask);
-                            $notifiedColumn = 'overdue_notified_date';
-                        } else {
-                            if (
-                                $currentTask->remind_before_days === null ||
-                                !$currentTask->end_date->copy()
-                                    ->subDays($currentTask->remind_before_days)
-                                    ->isSameDay($today) ||
-                                (
-                                    $currentTask->reminder_notified_date !== null &&
-                                    $currentTask->end_date->isSameDay($currentTask->reminder_notified_date)
-                                )
-                            ) {
-                                return;
-                            }
+                        if (($profile?->kanban_notifications_enabled ?? true) && (
+                            $currentTask->$notifiedColumn === null ||
+                            !$currentTask->end_date->isSameDay($currentTask->$notifiedColumn)
+                        )) {
+                            $user->notify($overdue
+                                ? new TaskOverdueNotification($currentTask, $board->title)
+                                : new TaskDueSoonNotification($currentTask, $board->title));
 
-                            $notification = new TaskDueSoonNotification($currentTask);
-                            $notifiedColumn = 'reminder_notified_date';
-                        }
-
-                        $user->notify($notification);
-
-                        DB::table('kanban_tasks')
-                            ->where('id', $currentTask->id)
-                            ->update([
+                            DB::table('kanban_tasks')->where('id', $currentTask->id)->update([
                                 $notifiedColumn => $currentTask->end_date->toDateString(),
                             ]);
+                        }
+
+                        if (($profile?->kanban_email_notifications_enabled ?? false) && (
+                            $currentTask->$emailColumn === null ||
+                            !$currentTask->end_date->isSameDay($currentTask->$emailColumn)
+                        )) {
+                            try {
+                                DB::transaction(function () use ($user, $currentTask, $board, $overdue, $emailColumn) {
+                                    $user->notify(new KanbanDeadlineEmailNotification(
+                                        $currentTask->title,
+                                        $board->title,
+                                        $currentTask->end_date->toDateString(),
+                                        $overdue,
+                                    ));
+
+                                    DB::table('kanban_tasks')->where('id', $currentTask->id)->update([
+                                        $emailColumn => $currentTask->end_date->toDateString(),
+                                    ]);
+                                });
+                            } catch (\Throwable $exception) {
+                                report($exception);
+                            }
+                        }
                     });
                 }
             });

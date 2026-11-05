@@ -10,8 +10,10 @@ class TaskDueSoonNotification extends Notification
 {
     use Queueable;
 
-    public function __construct(private readonly KanbanTask $task)
-    {
+    public function __construct(
+        private readonly KanbanTask $task,
+        private readonly string $boardTitle,
+    ) {
     }
 
     public function via(object $notifiable): array
@@ -33,7 +35,7 @@ class TaskDueSoonNotification extends Notification
                 7 => 'До срока задачи – неделя',
                 default => 'До срока задачи – ' . $this->task->remind_before_days . ' дня',
             },
-            'message' => $this->task->title,
+            'message' => "{$this->task->title} ({$this->boardTitle})",
         ];
     }
 }

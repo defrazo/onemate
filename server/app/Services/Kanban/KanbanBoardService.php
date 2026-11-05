@@ -186,6 +186,7 @@ class KanbanBoardService
 
             if ($task->isDirty(['end_date', 'remind_before_days'])) {
                 $task->reminder_notified_date = null;
+                $task->reminder_email_queued_date = null;
             }
 
             $task->save();

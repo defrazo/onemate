@@ -3,8 +3,10 @@
 namespace App\Services\Network;
 
 use App\Models\Network\MonitoredService;
+use App\Notifications\Network\NetworkStatusEmailNotification;
 use App\Notifications\Network\ServiceDownNotification;
 use App\Notifications\Network\ServiceRecoveredNotification;
+use Illuminate\Support\Facades\DB;
 
 class MonitoredServiceCheckService
 {
@@ -16,7 +18,6 @@ class MonitoredServiceCheckService
 
     public function check(MonitoredService $service): MonitoredService
     {
-        $previousStatus = $service->last_status;
         $checkedAt = now();
 
         if ($service->type === 'http') {
@@ -43,29 +44,33 @@ class MonitoredServiceCheckService
             $responseTime = $result['responseTime'];
         }
 
-        $service->update([
-            'last_status' => $status,
-            'last_status_code' => $statusCode,
-            'last_response_time' => $responseTime,
-            'last_checked_at' => $checkedAt,
-        ]);
+        return DB::transaction(function () use ($service, $status, $statusCode, $responseTime, $checkedAt) {
+            $current = MonitoredService::whereKey($service->id)->lockForUpdate()->first();
 
-        $service->checks()->create([
-            'status' => $status,
-            'status_code' => $statusCode,
-            'response_time' => $responseTime,
-            'checked_at' => $checkedAt,
-        ]);
+            if ($current === null || !$current->is_active || $current->last_checked_at?->gt($checkedAt)) {
+                return $current ?? $service;
+            }
 
-        $service = $service->refresh();
+            $previousStatus = $current->last_status;
 
-        $this->notifyStatusChange(
-            $service,
-            $previousStatus,
-            $status,
-        );
+            $current->update([
+                'last_status' => $status,
+                'last_status_code' => $statusCode,
+                'last_response_time' => $responseTime,
+                'last_checked_at' => $checkedAt,
+            ]);
 
-        return $service;
+            $current->checks()->create([
+                'status' => $status,
+                'status_code' => $statusCode,
+                'response_time' => $responseTime,
+                'checked_at' => $checkedAt,
+            ]);
+
+            $this->notifyStatusChange($current, $previousStatus, $status);
+
+            return $current;
+        });
     }
 
     private function notifyStatusChange(MonitoredService $service, ?string $previousStatus, string $currentStatus): void
@@ -76,19 +81,24 @@ class MonitoredServiceCheckService
 
         $user = $service->user;
 
-        $networkNotificationsEnabled =
-            $user->profile?->network_notifications_enabled ?? true;
+        if ($user->profile?->network_notifications_enabled ?? true) {
+            if ($previousStatus === 'up' && $currentStatus === 'down') {
+                $user->notify(new ServiceDownNotification($service));
+            }
 
-        if (!$networkNotificationsEnabled) {
-            return;
+            if ($previousStatus === 'down' && $currentStatus === 'up') {
+                $user->notify(new ServiceRecoveredNotification($service));
+            }
         }
 
-        if ($previousStatus === 'up' && $currentStatus === 'down') {
-            $user->notify(new ServiceDownNotification($service));
-        }
-
-        if ($previousStatus === 'down' && $currentStatus === 'up') {
-            $user->notify(new ServiceRecoveredNotification($service));
+        if ($user->profile?->network_email_notifications_enabled ?? false) {
+            try {
+                DB::transaction(fn () => $user->notify(
+                    new NetworkStatusEmailNotification($service->name, $currentStatus),
+                ));
+            } catch (\Throwable $exception) {
+                report($exception);
+            }
         }
     }
 }
