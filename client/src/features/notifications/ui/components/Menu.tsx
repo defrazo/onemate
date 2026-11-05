@@ -2,6 +2,7 @@ import { IconInbox, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
 import { Item } from '.';
@@ -30,9 +31,16 @@ export const Menu = observer(() => {
 			<div className="flex h-9 items-center justify-between px-4 py-2.5">
 				<div className="flex items-center gap-2">
 					<span className="trim text-sm font-semibold text-(--text-primary)">Уведомления</span>
-					{store.unreadCount > 0 && (
-						<span className="mt-0.5 rounded-md bg-(--accent-primary-muted) px-1.5 py-0.5 text-xs text-(--accent-primary)">
-							{store.unreadCount}
+					{store.notifications.length > 0 && (
+						<span
+							className={cn(
+								'mt-0.5 rounded-md px-1.5 py-0.5 text-xs',
+								store.unreadCount > 0
+									? 'bg-(--accent-primary-muted) text-(--accent-primary)'
+									: 'bg-(--bg-tertiary) text-(--text-secondary)'
+							)}
+						>
+							{store.unreadCount || store.notifications.length}
 						</span>
 					)}
 				</div>
