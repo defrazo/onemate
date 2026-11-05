@@ -18,6 +18,7 @@ const DeletedAccountPage = lazy(() =>
 	import('@/pages/account-deleted').then((m) => ({ default: m.DeletedAccountPage }))
 );
 const HomePage = lazy(() => import('@/pages/home').then((m) => ({ default: m.HomePage })));
+const MonitoringPage = lazy(() => import('@/pages/monitoring').then((m) => ({ default: m.MonitoringPage })));
 const KanbanPage = lazy(() => import('@/pages/kanban').then((m) => ({ default: m.KanbanPage })));
 const NotFoundPage = lazy(() => import('@/pages/not-found').then((m) => ({ default: m.NotFoundPage })));
 const OAuthAuthorizePage = lazy(() => import('@/pages/auth').then((m) => ({ default: m.OAuthAuthorizePage })));
@@ -39,6 +40,15 @@ export const routes: RouteObject[] = [
 			{
 				element: <ActiveAccountRoute />,
 				children: [
+					{
+						element: <GuardedRoute feature="monitoring" />,
+						children: [
+							{
+								element: <Layout hideFooter title="Мониторинг пользователей" />,
+								children: [{ path: '/monitoring', element: <MonitoringPage /> }],
+							},
+						],
+					},
 					{
 						path: '/auth/authorize',
 						element: <OAuthAuthorizePage />,

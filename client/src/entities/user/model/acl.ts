@@ -11,14 +11,15 @@ export const FEATURES = {
 	kanban: ['read', 'save', 'delete'],
 	network: ['read', 'save', 'delete', 'use'],
 	cloud: ['read', 'save', 'delete', 'upload', 'use'],
+	monitoring: ['read'],
 } as const;
 
-export type Role = 'user' | 'demo';
+export type Role = 'user' | 'demo' | 'admin';
 export type Feature = keyof typeof FEATURES;
 export type Operation<F extends Feature = Feature> = (typeof FEATURES)[F][number];
 type Capabilities = { [F in Feature]: Partial<Record<(typeof FEATURES)[F][number], boolean>> };
 
-export const ACL: Record<Role, Capabilities> = {
+const baseACL = {
 	user: {
 		user: { read: true, save: true, delete: true },
 		profile: { read: true, save: true, delete: true, configure: true },
@@ -32,6 +33,7 @@ export const ACL: Record<Role, Capabilities> = {
 		kanban: { read: true, save: true, delete: true },
 		network: { read: true, save: true, delete: true, use: true },
 		cloud: { read: true, save: true, delete: true, upload: true, use: true },
+		monitoring: { read: false },
 	},
 	demo: {
 		user: { read: false, save: false, delete: false },
@@ -46,8 +48,14 @@ export const ACL: Record<Role, Capabilities> = {
 		kanban: { read: true, save: true, delete: true },
 		network: { read: false, save: false, delete: false, use: true },
 		cloud: { read: true, save: false, delete: false, upload: false, use: false },
+		monitoring: { read: false },
 	},
-} satisfies Record<Role, Capabilities>;
+} satisfies Record<'user' | 'demo', Capabilities>;
+
+export const ACL: Record<Role, Capabilities> = {
+	...baseACL,
+	admin: { ...baseACL.user, monitoring: { read: true } },
+};
 
 export class PermissionService {
 	static canPerform<F extends Feature>(role: Role, feature: F, operation: Operation<F>) {
