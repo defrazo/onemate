@@ -32,7 +32,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	const selected = document.createElement('button');
 	selected.type = 'button';
 	selected.className =
-		'flex w-full min-w-0 cursor-pointer items-center justify-between rounded-md border border-(--tone-strong) bg-(--tone) px-2.5 py-2 text-left text-(--text-primary) transition-colors hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover) focus-visible:border-(--accent-primary) focus-visible:outline-none';
+		'flex w-full min-w-0 items-center justify-between rounded-md border border-(--tone-strong) bg-(--tone) px-2.5 py-2 text-left text-(--text-primary) transition-colors enabled:cursor-pointer enabled:hover:border-(--accent-primary-hover)/70 enabled:hover:bg-(--tone-hover) focus-visible:border-(--accent-primary) focus-visible:outline-none disabled:opacity-50';
 
 	const selectedValue = document.createElement('span');
 	selectedValue.textContent = findLabel(currentValue);
@@ -110,6 +110,8 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	}
 
 	function open() {
+		if (selected.disabled) return;
+
 		closeAllSelects(optionsContainer);
 
 		optionsContainer.classList.remove('hidden');
@@ -127,6 +129,23 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	function close() {
 		optionsContainer.classList.add('hidden');
 		arrow.classList.remove('rotate-180');
+	}
+
+	function setValue(value: T) {
+		currentValue = value;
+		selectedValue.textContent = findLabel(value);
+
+		const color = findColor(value);
+		selectedValue.style.color = color ? `var(${color})` : '';
+
+		updateSelectedOption();
+		close();
+	}
+
+	function setDisabled(disabled: boolean) {
+		selected.disabled = disabled;
+
+		if (disabled) close();
 	}
 
 	function updateSelectedOption() {
@@ -179,7 +198,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	// === ASSEMBLY ===
 	container.append(selected, optionsContainer);
 
-	return { element: container, getValue, destroy };
+	return { element: container, getValue, setValue, setDisabled, destroy };
 
 	// === HELPERS ===
 	function getItemValue(item: T | SelectItem<T>): T {

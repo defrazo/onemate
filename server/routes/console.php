@@ -2,6 +2,7 @@
 
 use App\Jobs\CheckMonitoredService;
 use App\Jobs\CheckOverdueKanbanTasks;
+use App\Jobs\CleanupNotifications;
 use App\Models\Network\MonitoredService;
 use App\Models\Network\MonitoringCheck;
 use Illuminate\Support\Facades\Schedule;
@@ -26,9 +27,13 @@ Schedule::call(function () {
         ->delete();
 })
     ->name('cleanup-monitoring-checks')
-    ->hourly()
+    ->dailyAt('02:00')
     ->withoutOverlapping();
 
 Schedule::job(new CheckOverdueKanbanTasks)
-    ->dailyAt('00:05')
+    ->twiceDaily(6, 18)
+    ->withoutOverlapping();
+
+Schedule::job(new CleanupNotifications)
+    ->weeklyOn(0, '03:30')
     ->withoutOverlapping();

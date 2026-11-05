@@ -1,4 +1,4 @@
-import { arrowIcon, calendarIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
+import { arrowIcon, calendarIcon, calendarTimeIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
 import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../../../model';
 import { createPropertyRow } from '../../components';
 
@@ -7,9 +7,16 @@ type CreateTaskViewPropertiesProps = {
 	priority: TaskPriority | null;
 	startDate: string | null;
 	endDate: string | null;
+	remindBeforeDays: number | null;
 };
 
-export const createTaskViewProperties = ({ status, priority, startDate, endDate }: CreateTaskViewPropertiesProps) => {
+export const createTaskViewProperties = ({
+	status,
+	priority,
+	startDate,
+	endDate,
+	remindBeforeDays,
+}: CreateTaskViewPropertiesProps) => {
 	const element = document.createElement('div');
 	element.className = 'flex flex-col rounded-lg border border-(--border-primary) bg-(--tone) select-none';
 
@@ -32,6 +39,23 @@ export const createTaskViewProperties = ({ status, priority, startDate, endDate 
 	period.append(start, arrow, end);
 	periodRow.content.append(period);
 
+	// === REMINDER ===
+	const reminderRow = createPropertyRow(calendarTimeIcon, 'Напомнить', false);
+
+	const reminderLabels: Record<number, string> = {
+		0: 'В день срока',
+		1: 'За 1 день',
+		2: 'За 2 дня',
+		3: 'За 3 дня',
+		7: 'За неделю',
+	};
+
+	const reminderValue = document.createElement('span');
+	reminderValue.className = 'text-sm text-(--text-primary)';
+	reminderValue.textContent = remindBeforeDays !== null ? (reminderLabels[remindBeforeDays] ?? 'Нет') : 'Нет';
+
+	reminderRow.content.append(reminderValue);
+
 	// === STATUS ===
 	const statusRow = createPropertyRow(statusIcon, 'Статус', false);
 
@@ -53,7 +77,7 @@ export const createTaskViewProperties = ({ status, priority, startDate, endDate 
 	priorityRow.content.append(priorityValue);
 
 	// === ASSEMBLY ===
-	element.append(periodRow.element, statusRow.element, priorityRow.element);
+	element.append(periodRow.element, reminderRow.element, statusRow.element, priorityRow.element);
 
 	return { element };
 };

@@ -498,7 +498,8 @@ export const createState = (repo: IKanbanRepo) => {
 		priority: TaskPriority | null,
 		startDate: string | null,
 		endDate: string | null,
-		completed: boolean
+		completed: boolean,
+		remindBeforeDays: number | null = null
 	) =>
 		enqueue(async (context) => {
 			if (!context.current()) return;
@@ -535,6 +536,7 @@ export const createState = (repo: IKanbanRepo) => {
 						priority,
 						startDate,
 						endDate,
+						remindBeforeDays,
 						completed,
 						position,
 					})
@@ -566,7 +568,8 @@ export const createState = (repo: IKanbanRepo) => {
 		priority: TaskPriority | null,
 		startDate: string | null,
 		endDate: string | null,
-		completed?: boolean
+		completed?: boolean,
+		remindBeforeDays?: number | null
 	) =>
 		enqueue(async (context) => {
 			if (!context.current()) return;
@@ -589,6 +592,7 @@ export const createState = (repo: IKanbanRepo) => {
 					startDate,
 					endDate,
 					...(completed !== undefined && { completed }),
+					...(remindBeforeDays !== undefined && { remindBeforeDays }),
 					updatedAt,
 				};
 

@@ -154,6 +154,10 @@ class KanbanBoardService
                 $data['end_date'] ?? null,
             );
 
+            if (empty($data['end_date'])) {
+                $data['remind_before_days'] = null;
+            }
+
             $task = $column->tasks()->make($data);
             $task->user_id = $board->owner_id;
             $task->save();
@@ -177,12 +181,28 @@ class KanbanBoardService
                 $data['description'] ??= '';
             }
 
-            $this->checkTaskDates(
-                array_key_exists('start_date', $data) ? $data['start_date'] : $task->start_date,
-                array_key_exists('end_date', $data) ? $data['end_date'] : $task->end_date,
-            );
+            $startDate = array_key_exists('start_date', $data)
+                ? $data['start_date']
+                : $task->start_date;
 
-            $task->update($data);
+            $endDate = array_key_exists('end_date', $data)
+                ? $data['end_date']
+                : $task->end_date;
+
+            $this->checkTaskDates($startDate, $endDate);
+
+            if ($endDate === null) {
+                $data['remind_before_days'] = null;
+            }
+
+            $task->fill($data);
+
+            if ($task->isDirty(['end_date', 'remind_before_days'])) {
+                $task->reminder_notified_date = null;
+                $task->reminder_email_queued_date = null;
+            }
+
+            $task->save();
         });
     }
 

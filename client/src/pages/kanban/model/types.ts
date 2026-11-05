@@ -9,6 +9,7 @@ export type Task = {
 	priority: TaskPriority | null;
 	startDate: string | null;
 	endDate: string | null;
+	remindBeforeDays: number | null;
 	completed: boolean;
 	position: number;
 	createdAt: string;
@@ -25,6 +26,7 @@ export type DbTask = {
 	priority: TaskPriority | null;
 	start_date: string | null;
 	end_date: string | null;
+	remind_before_days: number | null;
 	completed: boolean;
 	position: number;
 	created_at: string;

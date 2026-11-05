@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Collapse, PhoneInput } from '@/shared/ui';
+import { Collapse, LoadingState, PhoneInput } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib';
 import { FormActions, RemoveButton } from '..';
@@ -67,6 +67,8 @@ export const PhonesSection = observer(() => {
 			setIsLoading(false);
 		}
 	};
+
+	if (!userProfileStore.isReady) return <LoadingState className="xl:min-h-10.5" />;
 
 	return (
 		<div className="flex flex-col gap-1">

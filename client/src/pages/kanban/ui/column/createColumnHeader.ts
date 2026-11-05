@@ -1,4 +1,4 @@
-import { addIcon, insertSvg, settingsIcon } from '../../lib';
+import { addIcon, infinityIcon, insertSvg, settingsIcon } from '../../lib';
 import { type Column, COLUMN_COLORS } from '../../model';
 
 type CreateColumnHeaderProps = {
@@ -43,7 +43,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 
 	// === COUNTER ===
 	const counter = document.createElement('span');
-	counter.className = 'shrink-0 text-xs text-(--text-secondary)';
+	counter.className = 'flex shrink-0 items-center gap-1 text-xs text-(--text-secondary)';
 
 	// === UPDATE ===
 	function update(nextColumn: Column, nextTasksCount: number) {
@@ -53,7 +53,10 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 		title.textContent = nextColumn.title;
 		title.title = nextColumn.title;
 
-		counter.textContent = `${nextTasksCount} / ${limit === Infinity ? '∞' : limit}`;
+		counter.textContent = `${nextTasksCount} / `;
+
+		if (limit === Infinity) insertSvg(counter, infinityIcon, 'size-4');
+		else counter.append(String(limit));
 
 		accent.style.backgroundColor = COLUMN_COLORS[nextColumn.color ?? 'slate'];
 

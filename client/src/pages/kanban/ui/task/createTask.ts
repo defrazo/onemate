@@ -74,6 +74,13 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 		const dueDate = new Date(`${task.endDate.slice(0, 10)}T00:00:00`);
 		const isOverdue = !task.completed && dueDate < today;
 
+		if (task.remindBeforeDays != null && !task.completed && !isOverdue) {
+			const indicator = document.createElement('span');
+			indicator.className = 'mt-px size-1 shrink-0 rounded-full bg-(--priority-low)';
+
+			deadline.prepend(indicator);
+		}
+
 		if (isOverdue) deadline.classList.add('line-through', 'decoration-(--text-tertiary)');
 
 		timestamp.append(deadline);
@@ -91,6 +98,7 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
+				remindBeforeDays: task.remindBeforeDays ?? null,
 				completed: task.completed,
 				created: task.createdAt,
 				updated: task.updatedAt,
@@ -104,7 +112,8 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 					task.priority,
 					task.startDate,
 					task.endDate,
-					completed
+					completed,
+					task.remindBeforeDays ?? null
 				);
 
 				viewTaskModal = null;
@@ -132,9 +141,20 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
+				remindBeforeDays: task.remindBeforeDays ?? null,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				return state.editTask(task.id, title, description, status, priority, startDate, endDate);
+			onSubmit: (title, description, status, priority, startDate, endDate, remindBeforeDays) => {
+				return state.editTask(
+					task.id,
+					title,
+					description,
+					status,
+					priority,
+					startDate,
+					endDate,
+					undefined,
+					remindBeforeDays
+				);
 			},
 		});
 

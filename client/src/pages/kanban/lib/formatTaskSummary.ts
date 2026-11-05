@@ -7,6 +7,7 @@ type TaskSummary = {
 	priority: TaskPriority | null;
 	startDate: string | null;
 	endDate: string | null;
+	remindBeforeDays: number | null;
 	completed: boolean;
 };
 
@@ -23,15 +24,27 @@ export const formatTaskSummary = (task: TaskSummary): string => {
 				? `С ${formatDate(task.startDate)}`
 				: task.endDate
 					? `До ${formatDate(task.endDate)}`
-					: null;
+					: 'Не задан';
+
+	const reminder =
+		task.remindBeforeDays === null
+			? 'Нет'
+			: task.remindBeforeDays === 0
+				? 'В день срока'
+				: task.remindBeforeDays === 1
+					? 'За 1 день'
+					: task.remindBeforeDays === 7
+						? 'За неделю'
+						: `За ${task.remindBeforeDays} дн.`;
 
 	const lines = [
 		task.title,
 		...(task.description ? ['', task.description] : []),
 		'',
-		...(task.status !== null ? [`Статус: ${TASK_STATUS[task.status].label}`] : []),
-		...(task.priority !== null ? [`Приоритет: ${TASK_PRIORITY[task.priority].label}`] : []),
-		...(period ? [`Период: ${period}`] : []),
+		`Статус: ${task.status !== null ? TASK_STATUS[task.status].label : 'Не задан'}`,
+		`Приоритет: ${task.priority !== null ? TASK_PRIORITY[task.priority].label : 'Не задан'}`,
+		`Период: ${period}`,
+		`Напомнить: ${reminder}`,
 		`Завершено: ${task.completed ? 'Да' : 'Нет'}`,
 	];
 

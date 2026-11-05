@@ -29,9 +29,9 @@ export const ContactsTab = observer(() => {
 				)}
 			</div>
 			<Divider className="mb-1 md:hidden" />
-			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast) xl:min-h-10.5">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconPhone} title="Телефоны" />
-				{!userProfileStore.isReady ? <LoadingState /> : <PhonesSection />}
+				<PhonesSection />
 			</div>
 		</div>
 	);

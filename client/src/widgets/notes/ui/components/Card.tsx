@@ -7,8 +7,17 @@ import type { PaletteColor } from '@/shared/config';
 
 import { CardActions } from '.';
 
-export const Card = observer(({ id, color }: { id: string; color: PaletteColor }) => {
-	const { attributes, listeners, transform, transition, isDragging, setNodeRef } = useSortable({ id });
+interface CardProps {
+	id: string;
+	color: PaletteColor;
+	sortingDisabled?: boolean;
+}
+
+export const Card = observer(({ id, color, sortingDisabled = false }: CardProps) => {
+	const { attributes, listeners, transform, transition, isDragging, setNodeRef } = useSortable({
+		id,
+		disabled: sortingDisabled,
+	});
 
 	const { notesStore } = useStore();
 
@@ -30,7 +39,14 @@ export const Card = observer(({ id, color }: { id: string; color: PaletteColor }
 					{note.text || 'Пустая заметка'}
 				</p>
 			</button>
-			<CardActions attributes={attributes} color={color} id={id} listeners={listeners} text={note.text} />
+			<CardActions
+				attributes={attributes}
+				color={color}
+				id={id}
+				listeners={listeners}
+				sortingDisabled={sortingDisabled}
+				text={note.text}
+			/>
 		</div>
 	);
 });
