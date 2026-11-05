@@ -11,6 +11,7 @@ use App\Http\Controllers\Cloud\CloudShareController;
 use App\Http\Controllers\Kanban\KanbanBoardColumnController;
 use App\Http\Controllers\Kanban\KanbanBoardController;
 use App\Http\Controllers\Kanban\KanbanBoardTaskController;
+use App\Http\Controllers\Monitoring\MonitoringController;
 use App\Http\Controllers\Network\MonitoredServiceController;
 use App\Http\Controllers\Network\PortCheckController;
 use App\Http\Controllers\Network\ServiceCheckController;
@@ -24,6 +25,7 @@ use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
 use App\Http\Middleware\EnsureAccountIsActive;
+use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureNotDemo;
 use Illuminate\Support\Facades\Route;
 
@@ -81,6 +83,8 @@ Route::middleware('auth:sanctum')->group(function () {
 
     // Active accounts
     Route::middleware(EnsureAccountIsActive::class)->group(function () {
+        Route::get('/monitoring', MonitoringController::class)->middleware(EnsureAdmin::class);
+
         // User
         Route::prefix('user')->group(function () {
             Route::patch('/username', [UserAccountController::class, 'updateUsername'])->middleware('throttle:5,1');
