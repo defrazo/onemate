@@ -6,6 +6,7 @@ import type { HTMLAttributes } from 'react';
 import { useStore } from '@/app/providers';
 import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { useCopy } from '@/shared/lib/hooks';
+import { cn } from '@/shared/lib/utils';
 import { Button, ConfirmDialog } from '@/shared/ui';
 
 interface CardActionsProps {
@@ -14,9 +15,10 @@ interface CardActionsProps {
 	color: PaletteColor;
 	attributes: HTMLAttributes<HTMLElement>;
 	listeners: DraggableSyntheticListeners;
+	sortingDisabled?: boolean;
 }
 
-export const CardActions = observer(({ id, text, color, attributes, listeners }: CardActionsProps) => {
+export const CardActions = observer(({ id, text, color, attributes, listeners, sortingDisabled }: CardActionsProps) => {
 	const copy = useCopy();
 
 	const { modalStore, notesStore, notifyStore } = useStore();
@@ -47,18 +49,23 @@ export const CardActions = observer(({ id, text, color, attributes, listeners }:
 			<div className="relative hidden size-5 shrink-0 items-center justify-center xl:flex">
 				<span
 					aria-hidden="true"
-					className="h-1 w-3 rounded-full transition-opacity duration-200 group-hover/note:opacity-0"
+					className={cn(
+						'h-1 w-3 rounded-full',
+						!sortingDisabled && 'transition-opacity duration-200 group-hover/note:opacity-0'
+					)}
 					style={{ backgroundColor: COLOR_PALETTE[color].value }}
 				/>
-				<Button
-					centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
-					className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 active:cursor-grabbing"
-					padding="none"
-					title="Переместить"
-					variant="icon"
-					{...listeners}
-					{...attributes}
-				/>
+				{!sortingDisabled && (
+					<Button
+						centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
+						className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 active:cursor-grabbing"
+						padding="none"
+						title="Переместить"
+						variant="icon"
+						{...listeners}
+						{...attributes}
+					/>
+				)}
 			</div>
 			<Button
 				centerIcon={<IconCopy className="size-5 xl:size-4" />}

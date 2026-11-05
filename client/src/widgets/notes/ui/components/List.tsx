@@ -1,21 +1,28 @@
 import { closestCenter, DndContext, type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { restrictToParentElement } from '@dnd-kit/modifiers';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { IconSearchOff } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 import type { ReactElement } from 'react';
 
 import { useStore } from '@/app/providers';
-import { LoadingState } from '@/shared/ui';
+import { LoadingState, NoContent } from '@/shared/ui';
 
 import type { Note } from '../../model';
 
-export const List = observer(({ children }: { children: (note: Note) => ReactElement }) => {
+interface ListProps {
+	notes: Note[];
+	sortingDisabled: boolean;
+	children: (note: Note) => ReactElement;
+}
+
+export const List = observer(({ notes, sortingDisabled, children }: ListProps) => {
 	const sensors = useSensors(useSensor(PointerSensor));
 
 	const { notesStore } = useStore();
 
 	const handleDragEnd = ({ active, over }: DragEndEvent) => {
-		if (!over || active.id === over.id) return;
+		if (sortingDisabled || !over || active.id === over.id) return;
 
 		const oldIdx = notesStore.draft.findIndex((note) => note.id === active.id);
 		const newIdx = notesStore.draft.findIndex((note) => note.id === over.id);
@@ -32,12 +39,18 @@ export const List = observer(({ children }: { children: (note: Note) => ReactEle
 			sensors={sensors}
 			onDragEnd={handleDragEnd}
 		>
-			<SortableContext items={notesStore.draft.map((note) => note.id)} strategy={verticalListSortingStrategy}>
+			<SortableContext items={notes.map((note) => note.id)} strategy={verticalListSortingStrategy}>
 				{notesStore.isLoading && !notesStore.isReady ? (
 					<LoadingState size="lg" />
+				) : notes.length === 0 ? (
+					<NoContent
+						description="Попробуйте изменить поисковый запрос"
+						icon={IconSearchOff}
+						title="Ничего не найдено"
+					/>
 				) : (
 					<div className="flex min-h-0 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
-						{notesStore.draft.map((note) => children(note))}
+						{notes.map((note) => children(note))}
 					</div>
 				)}
 			</SortableContext>
