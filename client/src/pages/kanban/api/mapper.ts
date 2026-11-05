@@ -40,6 +40,7 @@ export const mapTaskFromDb = (db: DbTask): Task => ({
 	position: db.position,
 	startDate: db.start_date,
 	endDate: db.end_date,
+	remindBeforeDays: db.remind_before_days ?? null,
 	completed: db.completed,
 	createdAt: db.created_at,
 	updatedAt: db.updated_at ?? null,
@@ -56,6 +57,7 @@ export const mapTaskToDb = (task: Partial<Task>): Partial<DbTask> => {
 	if (task.position !== undefined) map.position = task.position;
 	if (task.startDate !== undefined) map.start_date = task.startDate;
 	if (task.endDate !== undefined) map.end_date = task.endDate;
+	if (task.remindBeforeDays !== undefined) map.remind_before_days = task.remindBeforeDays;
 	if (task.completed !== undefined) map.completed = task.completed;
 	if (task.updatedAt !== undefined) map.updated_at = task.updatedAt;
 

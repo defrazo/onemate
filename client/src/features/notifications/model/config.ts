@@ -7,4 +7,5 @@ export const notificationConfig: Record<string, { source: string }> = {
 	'network.service_recovered': { source: 'Сеть' },
 
 	'kanban.task_overdue': { source: 'Канбан' },
+	'kanban.task_due_soon': { source: 'Канбан' },
 };

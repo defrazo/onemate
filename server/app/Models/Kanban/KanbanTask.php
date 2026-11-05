@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
     'position',
     'start_date',
     'end_date',
+    'remind_before_days',
     'completed',
 ])]
 class KanbanTask extends Model
@@ -29,6 +30,8 @@ class KanbanTask extends Model
             'position' => 'float',
             'start_date' => 'date:Y-m-d',
             'end_date' => 'date:Y-m-d',
+            'remind_before_days' => 'integer',
+            'reminder_notified_date' => 'date:Y-m-d',
             'completed' => 'boolean',
             'overdue_notified_date' => 'date:Y-m-d',
         ];

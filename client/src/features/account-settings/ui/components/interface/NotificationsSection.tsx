@@ -18,7 +18,7 @@ const sources = [
 	{
 		key: 'kanban_notifications_enabled',
 		title: 'Канбан',
-		description: 'Уведомления о просроченных задачах',
+		description: 'Напоминания о сроках и просроченных задачах',
 		notice: 'Уведомления о задачах',
 		icon: IconLayoutKanban,
 	},

@@ -1,4 +1,4 @@
-import { arrowIcon, calendarIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
+import { arrowIcon, calendarIcon, calendarTimeIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
 import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../../../model';
 import { createDatePicker, createPropertyRow, createSelect } from '../../components';
 
@@ -7,6 +7,7 @@ type CreateTaskPropertiesProps = {
 	priority: TaskPriority | null;
 	startDate: string | null;
 	endDate: string | null;
+	remindBeforeDays: number | null;
 	onChange: () => void;
 };
 
@@ -15,6 +16,7 @@ type TaskPropertiesValue = {
 	priority: TaskPriority | null;
 	startDate: string | null;
 	endDate: string | null;
+	remindBeforeDays: number | null;
 };
 
 export const createTaskProperties = ({
@@ -22,6 +24,7 @@ export const createTaskProperties = ({
 	priority: initialPriority,
 	startDate: initialStartDate,
 	endDate: initialEndDate,
+	remindBeforeDays: initialRemindBeforeDays,
 	onChange,
 }: CreateTaskPropertiesProps) => {
 	let selectedStatus = initialStatus;
@@ -59,6 +62,27 @@ export const createTaskProperties = ({
 
 	periodControl.append(datesRow, dateError);
 	periodRow.content.append(periodControl);
+
+	// === REMINDER ===
+	const reminderRow = createPropertyRow(calendarTimeIcon, 'Напомнить');
+
+	const reminderSelect = createSelect<number | null>({
+		initialValue: initialRemindBeforeDays,
+		items: [
+			{ value: null, label: 'Нет' },
+			{ value: 0, label: 'В день срока' },
+			{ value: 1, label: 'За 1 день' },
+			{ value: 2, label: 'За 2 дня' },
+			{ value: 3, label: 'За 3 дня' },
+			{ value: 7, label: 'За неделю' },
+		],
+		direction: 'up',
+		className: 'w-32',
+		onChange,
+	});
+	reminderSelect.setDisabled(!initialEndDate);
+
+	reminderRow.content.append(reminderSelect.element);
 
 	// === STATUS ===
 	const statusRow = createPropertyRow(statusIcon, 'Статус');
@@ -109,6 +133,7 @@ export const createTaskProperties = ({
 	// === EVENTS ===
 	function handleDateChange() {
 		setDatesInvalid(!areDatesValid());
+		reminderSelect.setDisabled(!endDate.getValue());
 		onChange();
 	}
 
@@ -119,6 +144,7 @@ export const createTaskProperties = ({
 			priority: selectedPriority,
 			startDate: startDate.getValue() || null,
 			endDate: endDate.getValue() || null,
+			remindBeforeDays: reminderSelect.getValue(),
 		};
 	}
 
@@ -139,12 +165,13 @@ export const createTaskProperties = ({
 	function destroy() {
 		startDate.destroy();
 		endDate.destroy();
+		reminderSelect.destroy();
 		statusSelect.destroy();
 		prioritySelect.destroy();
 	}
 
 	// === ASSEMBLY ===
-	element.append(periodRow.element, statusRow.element, priorityRow.element);
+	element.append(periodRow.element, reminderRow.element, statusRow.element, priorityRow.element);
 
 	return { element, getValue, areDatesValid, setDatesInvalid, destroy };
 };

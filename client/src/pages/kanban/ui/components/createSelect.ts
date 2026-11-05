@@ -110,6 +110,8 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	}
 
 	function open() {
+		if (selected.disabled) return;
+
 		closeAllSelects(optionsContainer);
 
 		optionsContainer.classList.remove('hidden');
@@ -127,6 +129,14 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	function close() {
 		optionsContainer.classList.add('hidden');
 		arrow.classList.remove('rotate-180');
+	}
+
+	function setDisabled(disabled: boolean) {
+		selected.disabled = disabled;
+		selected.classList.toggle('opacity-50', disabled);
+		selected.classList.toggle('cursor-not-allowed', disabled);
+
+		if (disabled) close();
 	}
 
 	function updateSelectedOption() {
@@ -179,7 +189,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 	// === ASSEMBLY ===
 	container.append(selected, optionsContainer);
 
-	return { element: container, getValue, destroy };
+	return { element: container, getValue, setDisabled, destroy };
 
 	// === HELPERS ===
 	function getItemValue(item: T | SelectItem<T>): T {

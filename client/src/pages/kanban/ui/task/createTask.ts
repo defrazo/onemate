@@ -68,6 +68,13 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 		const deadline = createDateLabel(calendarDueIcon, task.endDate, `Срок выполнения: ${task.endDate}`);
 		deadline.classList.add('ml-auto', 'shrink-0');
 
+		if (task.remindBeforeDays != null) {
+			const indicator = document.createElement('span');
+			indicator.className = 'mt-px size-1 shrink-0 rounded-full bg-(--priority-low)';
+
+			deadline.prepend(indicator);
+		}
+
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
@@ -91,6 +98,7 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
+				remindBeforeDays: task.remindBeforeDays ?? null,
 				completed: task.completed,
 				created: task.createdAt,
 				updated: task.updatedAt,
@@ -104,7 +112,8 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 					task.priority,
 					task.startDate,
 					task.endDate,
-					completed
+					completed,
+					task.remindBeforeDays ?? null
 				);
 
 				viewTaskModal = null;
@@ -132,9 +141,20 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 				priority: task.priority,
 				startDate: task.startDate,
 				endDate: task.endDate,
+				remindBeforeDays: task.remindBeforeDays ?? null,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				return state.editTask(task.id, title, description, status, priority, startDate, endDate);
+			onSubmit: (title, description, status, priority, startDate, endDate, remindBeforeDays) => {
+				return state.editTask(
+					task.id,
+					title,
+					description,
+					status,
+					priority,
+					startDate,
+					endDate,
+					undefined,
+					remindBeforeDays
+				);
 			},
 		});
 

@@ -11,6 +11,7 @@ type ViewTaskProps = {
 		priority: TaskPriority | null;
 		startDate: string | null;
 		endDate: string | null;
+		remindBeforeDays: number | null;
 		completed: boolean;
 		created: string;
 		updated: string | null;
@@ -37,6 +38,7 @@ export const viewTask = (options: ViewTaskProps) => {
 		priority: options.initial.priority,
 		startDate: options.initial.startDate,
 		endDate: options.initial.endDate,
+		remindBeforeDays: options.initial.remindBeforeDays,
 	});
 
 	// === META ===

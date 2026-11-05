@@ -182,7 +182,13 @@ class KanbanBoardService
                 array_key_exists('end_date', $data) ? $data['end_date'] : $task->end_date,
             );
 
-            $task->update($data);
+            $task->fill($data);
+
+            if ($task->isDirty(['end_date', 'remind_before_days'])) {
+                $task->reminder_notified_date = null;
+            }
+
+            $task->save();
         });
     }
 

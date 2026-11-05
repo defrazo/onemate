@@ -26,9 +26,9 @@ Schedule::call(function () {
         ->delete();
 })
     ->name('cleanup-monitoring-checks')
-    ->hourly()
+    ->dailyAt('02:00')
     ->withoutOverlapping();
 
 Schedule::job(new CheckOverdueKanbanTasks)
-    ->dailyAt('00:05')
+    ->twiceDaily(6, 18)
     ->withoutOverlapping();

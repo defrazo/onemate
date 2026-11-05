@@ -12,6 +12,7 @@ type EditTaskProps = {
 		priority: TaskPriority | null;
 		startDate: string | null;
 		endDate: string | null;
+		remindBeforeDays: number | null;
 	};
 	onSubmit: (
 		title: string,
@@ -19,7 +20,8 @@ type EditTaskProps = {
 		status: TaskStatus | null,
 		priority: TaskPriority | null,
 		startDate: string | null,
-		endDate: string | null
+		endDate: string | null,
+		remindBeforeDays: number | null
 	) => void | boolean | Promise<void | boolean>;
 	onClose?: () => void;
 };
@@ -54,6 +56,7 @@ export const editTask = (options: EditTaskProps) => {
 		priority: options.initial.priority,
 		startDate: options.initial.startDate,
 		endDate: options.initial.endDate,
+		remindBeforeDays: options.initial.remindBeforeDays,
 		onChange: updateSubmitState,
 	});
 
@@ -102,6 +105,7 @@ export const editTask = (options: EditTaskProps) => {
 			priority: taskProperties.priority,
 			startDate: taskProperties.startDate,
 			endDate: taskProperties.endDate,
+			remindBeforeDays: taskProperties.remindBeforeDays,
 		};
 	}
 
@@ -131,7 +135,8 @@ export const editTask = (options: EditTaskProps) => {
 				data.status,
 				data.priority,
 				data.startDate,
-				data.endDate
+				data.endDate,
+				data.remindBeforeDays
 			);
 
 			if (result !== false && !isClosed) close();

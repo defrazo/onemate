@@ -51,9 +51,20 @@ export const createColumn = (column: Column, state: ReturnType<typeof createStat
 				priority: 'medium',
 				startDate: today,
 				endDate: null,
+				remindBeforeDays: null,
 			},
-			onSubmit: (title, description, status, priority, startDate, endDate) => {
-				return state.addTask(columnId, title, description, status, priority, startDate, endDate, false);
+			onSubmit: (title, description, status, priority, startDate, endDate, remindBeforeDays) => {
+				return state.addTask(
+					columnId,
+					title,
+					description,
+					status,
+					priority,
+					startDate,
+					endDate,
+					false,
+					remindBeforeDays
+				);
 			},
 		});
 

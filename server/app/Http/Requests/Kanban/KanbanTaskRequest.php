@@ -46,6 +46,7 @@ class KanbanTaskRequest extends FormRequest
             'priority' => ['nullable', 'string', Rule::in(['low', 'medium', 'high'])],
             'start_date' => ['nullable', 'date'],
             'end_date' => ['nullable', 'date'],
+            'remind_before_days' => ['nullable', 'integer', Rule::in([0, 1, 2, 3, 7])],
             'position' => $position,
             'completed' => ['required', 'boolean'],
         ];
