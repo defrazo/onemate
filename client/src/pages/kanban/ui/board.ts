@@ -14,7 +14,8 @@ export const createBoard = (state: ReturnType<typeof createState>) => {
 
 	// === BOARD ===
 	const board = document.createElement('div');
-	board.className = 'core-gap flex h-full max-w-full min-w-0 items-start overflow-x-auto xl:overflow-y-hidden';
+	board.className =
+		'core-gap core-scrollbar flex h-full max-w-full min-w-0 items-start overflow-x-auto xl:overflow-y-hidden';
 
 	// === COLUMNS CONTAINER ===
 	const columnsContainer = document.createElement('div');

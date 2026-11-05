@@ -68,18 +68,18 @@ export const createTask = (task: Task, state: ReturnType<typeof createState>) =>
 		const deadline = createDateLabel(calendarDueIcon, task.endDate, `Срок выполнения: ${task.endDate}`);
 		deadline.classList.add('ml-auto', 'shrink-0');
 
-		if (task.remindBeforeDays != null) {
-			const indicator = document.createElement('span');
-			indicator.className = 'mt-px size-1 shrink-0 rounded-full bg-(--priority-low)';
-
-			deadline.prepend(indicator);
-		}
-
 		const today = new Date();
 		today.setHours(0, 0, 0, 0);
 
 		const dueDate = new Date(`${task.endDate.slice(0, 10)}T00:00:00`);
 		const isOverdue = !task.completed && dueDate < today;
+
+		if (task.remindBeforeDays != null && !task.completed && !isOverdue) {
+			const indicator = document.createElement('span');
+			indicator.className = 'mt-px size-1 shrink-0 rounded-full bg-(--priority-low)';
+
+			deadline.prepend(indicator);
+		}
 
 		if (isOverdue) deadline.classList.add('line-through', 'decoration-(--text-tertiary)');
 

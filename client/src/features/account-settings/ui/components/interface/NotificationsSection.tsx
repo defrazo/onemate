@@ -3,7 +3,7 @@ import { IconActivityHeartbeat, IconLayoutKanban } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Checkbox, Divider, Switch } from '@/shared/ui';
+import { Checkbox, Divider, LoadingState, Switch } from '@/shared/ui';
 
 type NotificationKey =
 	| 'network_notifications_enabled'
@@ -55,10 +55,9 @@ export const NotificationsSection = observer(() => {
 			await userProfileStore.updateNotification({ [key]: enabled });
 
 			const source = sources.find((source) => source.key === key || source.emailKey === key);
-			const channel = source?.emailKey === key ? 'Email' : 'В приложении';
 
 			notifyStore.setNotice(
-				`${source?.notice ?? 'Уведомления'} (${channel}) ${enabled ? 'включены' : 'отключены'}`,
+				`${source?.notice ?? 'Уведомления'} ${enabled ? 'включены' : 'отключены'}`,
 				'success'
 			);
 		} catch (error) {
@@ -67,6 +66,8 @@ export const NotificationsSection = observer(() => {
 			setLoading((prev) => ({ ...prev, [key]: false }));
 		}
 	};
+
+	if (!userProfileStore.isReady) return <LoadingState className="min-h-45 xl:min-h-40" />;
 
 	return (
 		<section className="flex flex-col gap-3 select-none xl:min-h-40">

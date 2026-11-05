@@ -83,7 +83,7 @@ export const ConnectedAppsSection = observer(() => {
 	}, [userStore, notifyStore]);
 
 	if (userStore.isConnectedAppsLoading && !userStore.isConnectedAppsLoaded)
-		return <LoadingState className="min-h-31" />;
+		return <LoadingState className="min-h-28 md:min-h-30" />;
 
 	return (
 		<section className="flex flex-col gap-2 select-none">

@@ -31,7 +31,7 @@ export const Toast = ({ toastId, type, message, options }: ToastProps) => {
 
 	return (
 		<div className={options?.className} style={options?.style} onClick={() => toast.dismiss(toastId)}>
-			<div className="core-surface flex min-w-30 items-center gap-2.5 bg-(--bg-secondary) px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-colors select-none not-xl:mt-px hover:bg-(--bg-tertiary)">
+			<div className="core-surface flex w-fit min-w-30 items-center gap-2.5 bg-(--bg-secondary) px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] transition-colors select-none not-md:w-full not-xl:mt-px hover:bg-(--bg-tertiary) md:max-w-60">
 				<div className={cn('flex size-7 shrink-0 items-center justify-center rounded-md', toastStyles[type])}>
 					<Icon className="size-4.5" />
 				</div>
