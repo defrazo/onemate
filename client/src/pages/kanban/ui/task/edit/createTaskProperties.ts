@@ -133,7 +133,11 @@ export const createTaskProperties = ({
 	// === EVENTS ===
 	function handleDateChange() {
 		setDatesInvalid(!areDatesValid());
-		reminderSelect.setDisabled(!endDate.getValue());
+
+		const hasEndDate = Boolean(endDate.getValue());
+		if (!hasEndDate) reminderSelect.setValue(null);
+
+		reminderSelect.setDisabled(!hasEndDate);
 		onChange();
 	}
 
