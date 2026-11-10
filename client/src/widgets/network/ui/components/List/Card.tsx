@@ -94,7 +94,7 @@ export const Card = ({ service, disabled = false, onClick }: CardProps) => {
 							<AddressIcon className="size-3.5 shrink-0" />
 							<span className="mt-px truncate">{address}</span>
 							<Divider
-								className="my-auto hidden h-2.5 transition-opacity group-hover/service:opacity-100 lg:block xl:opacity-0"
+								className="my-auto hidden h-2.75 bg-(--border-tone-strong) transition-opacity group-hover/service:opacity-100 lg:block xl:opacity-0"
 								direction="Y"
 								margX="xs"
 							/>

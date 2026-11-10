@@ -27,7 +27,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Удалить"
-				description="Это действие нельзя отменить."
+				description="Это действие нельзя отменить"
 				title="Удалить заметку?"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}

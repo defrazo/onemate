@@ -1,8 +1,10 @@
+import type { ReactNode } from 'react';
+
 export type SelectOption = {
 	key?: string;
 	value: string;
 	label: string;
-	icon?: string;
+	icon?: string | ReactNode;
 	disabled?: boolean;
 };
 

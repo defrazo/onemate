@@ -32,13 +32,14 @@ export const Editor = observer(({ color, onColorChange }: EditorProps) => {
 
 	const [paletteOpen, setPaletteOpen] = useState(false);
 
+	const editorRef = useOutsideClick<HTMLDivElement>(() => notesStore.closeNote());
 	const paletteRef = useOutsideClick<HTMLDivElement>(() => setPaletteOpen(false));
 
 	const note = notesStore.activeNote;
 	if (!note) return null;
 
 	return (
-		<div className="flex h-full min-h-0 flex-col">
+		<div ref={editorRef} className="flex h-full min-h-0 flex-col">
 			<div className="flex shrink-0 flex-col gap-2 border-b border-(--border-primary) pb-2 xl:flex-row xl:items-center xl:justify-between">
 				<BackButton className="mr-auto" title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
 				<div className="flex items-center justify-between md:gap-1 xl:ml-auto xl:justify-end">

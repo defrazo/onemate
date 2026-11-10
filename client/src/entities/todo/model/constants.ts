@@ -4,5 +4,5 @@ export const TODO_LIMITS = {
 	ITEMS: 25,
 	CANVAS_TITLE: 40,
 	LIST_TITLE: 60,
-	ITEM_TEXT: 50,
+	ITEM_TEXT: 100,
 } as const;

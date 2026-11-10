@@ -26,7 +26,7 @@ export const List = ({ options, value, onSelect, openUpwards, align, clearable, 
 	return (
 		<ul
 			className={cn(
-				'absolute right-0 left-0 z-30 max-h-56 scrollbar-none overflow-y-auto rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)',
+				'absolute right-0 left-0 z-30 max-h-56 scrollbar-none overflow-y-auto overscroll-contain rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)',
 				openUpwards ? 'bottom-full mb-1' : 'top-full mt-1',
 				className
 			)}
@@ -62,22 +62,21 @@ export const List = ({ options, value, onSelect, openUpwards, align, clearable, 
 							type="button"
 							onClick={() => onSelect(option.value)}
 						>
-							{option.icon && (
-								<img
-									alt=""
-									className="size-5 rounded-md"
-									decoding="async"
-									loading="lazy"
-									src={option.icon}
-								/>
-							)}
+							{option.icon &&
+								(typeof option.icon === 'string' ? (
+									<img alt="" className="size-5 shrink-0 rounded-md" src={option.icon} />
+								) : (
+									option.icon
+								))}
 							<span className="min-w-0 truncate font-semibold" title={option.label}>
 								{option.label}
 							</span>
-							<span className="max-w-24 shrink-0 truncate text-xs text-(--text-disabled)">
-								{option.key}
-							</span>
-							{selected && <IconCheck className="ml-auto size-4 shrink-0" />}
+							{option.key && (
+								<span className="max-w-24 shrink-0 truncate text-xs text-(--text-disabled)">
+									{option.key}
+								</span>
+							)}
+							{selected && <IconCheck className="absolute right-2.5 size-4 shrink-0" />}
 						</button>
 					</li>
 				);

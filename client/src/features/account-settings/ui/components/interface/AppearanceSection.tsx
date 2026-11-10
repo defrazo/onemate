@@ -18,7 +18,7 @@ export const AppearanceSection = observer(() => {
 	return (
 		<section className="flex items-center justify-between select-none">
 			<span className="text-sm text-(--text-secondary) opacity-70">Тема интерфейса</span>
-			<div className="flex w-fit gap-1 rounded-lg bg-(--bg-tertiary) p-1 xl:w-52">
+			<div className="flex h-8 w-fit gap-1 rounded-lg bg-(--bg-tertiary) p-0.75 xl:w-52">
 				{themes.map(({ value, label, icon: Icon }) => {
 					const isActive = userProfileStore.theme === value;
 
@@ -26,7 +26,7 @@ export const AppearanceSection = observer(() => {
 						<button
 							key={value}
 							className={cn(
-								'flex h-8 cursor-pointer items-center gap-2 rounded-md px-3 text-sm transition-colors',
+								'flex cursor-pointer items-center gap-2 rounded-md px-3 text-sm transition-colors',
 								isActive
 									? 'bg-(--accent-primary) text-(--text-on-accent)'
 									: 'hover:text-(--accent-primary)'

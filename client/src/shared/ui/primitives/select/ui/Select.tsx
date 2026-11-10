@@ -79,23 +79,13 @@ export const Select = ({
 				type="button"
 				onClick={toggle}
 			>
-				{selectedOption?.icon && (
-					<img
-						alt=""
-						className="size-5 shrink-0 rounded-md"
-						decoding="async"
-						loading="lazy"
-						src={selectedOption.icon}
-					/>
-				)}
-				<span
-					className={cn(
-						'min-w-0',
-						!selectedOption && 'text-(--text-secondary) transition-colors group-hover:text-(--text-primary)'
-					)}
-				>
-					{selectedOption?.label ?? placeholder}
-				</span>
+				{selectedOption?.icon &&
+					(typeof selectedOption.icon === 'string' ? (
+						<img alt="" className="size-5 shrink-0 rounded-md" src={selectedOption.icon} />
+					) : (
+						selectedOption.icon
+					))}
+				<span className="min-w-0">{selectedOption?.label ?? placeholder}</span>
 				{!hideChevron && (
 					<IconChevronDown
 						className={cn(
