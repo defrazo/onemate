@@ -30,7 +30,11 @@ class CloudController extends Controller
                 'mimeType' => $file->mime_type,
                 'createdAt' => $file->created_at->toISOString(),
                 'publicUrl' => $file->share_token
-                    ? rtrim(config('cloud.frontend_url'), '/') . "/share/{$file->share_token}"
+                    ? (
+                        $file->share_code
+                            ? rtrim(config('cloud.short_url'), '/') . "/{$file->share_code}"
+                            : rtrim(config('cloud.frontend_url'), '/') . "/share/{$file->share_token}"
+                    )
                     : null,
             ]),
             'usedBytes' => $files->sum('size'),

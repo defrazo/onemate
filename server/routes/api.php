@@ -64,10 +64,14 @@ Route::prefix('network')->group(function () {
 });
 
 // Cloud
-Route::prefix('cloud/shared')->middleware('throttle:60,1')->group(function () {
-    Route::get('/{token}', [CloudShareController::class, 'show']);
-    Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
-    Route::get('/{token}/download', [CloudShareController::class, 'download']);
+Route::prefix('cloud')->middleware('throttle:60,1')->group(function () {
+    Route::get('/short/{code}', [CloudShareController::class, 'redirect'])
+        ->where('code', 'f[a-f0-9]{15}');
+    Route::prefix('shared')->group(function () {
+        Route::get('/{token}', [CloudShareController::class, 'show']);
+        Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
+        Route::get('/{token}/download', [CloudShareController::class, 'download']);
+    });
 });
 
 // Authenticated

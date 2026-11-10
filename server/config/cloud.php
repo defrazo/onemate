@@ -6,4 +6,5 @@ return [
     'file_max_size_mb' => (int) env('CLOUD_FILE_MAX_SIZE_MB', 250),
     'disk' => env('CLOUD_DISK', 'local'),
     'frontend_url' => env('FRONTEND_URL', 'http://localhost:3000'),
+    'short_url' => env('CLOUD_SHORT_URL', 'https://go.letunoff.ru'),
 ];
