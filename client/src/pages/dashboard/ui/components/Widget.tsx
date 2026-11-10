@@ -1,14 +1,20 @@
-import { type CSSProperties, memo } from 'react';
+import { type CSSProperties, Fragment, memo, useState } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { IconGripHorizontal } from '@tabler/icons-react';
 
-import { Button, Tooltip } from '@/shared/ui';
+import { cn } from '@/shared/lib/utils';
+import { Button, Divider, Tooltip } from '@/shared/ui';
 
 import type { WidgetItem } from '../../model';
 
-export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem) => {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+export const Widget = memo(({ items }: { items: WidgetItem[] }) => {
+	const [activeId, setActiveId] = useState(items[0].id);
+
+	const active = items.find((item) => item.id === activeId) ?? items[0];
+
+	const { title, icon: Icon, content, tip } = active;
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: items[0].id });
 
 	const combinedStyle: CSSProperties = {
 		transform: CSS.Transform.toString(transform),
@@ -28,8 +34,38 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 					<div className="flex size-7 items-center justify-center rounded-md bg-(--accent-primary-muted)">
 						<Icon className="size-4 text-(--accent-primary)" stroke={2.5} />
 					</div>
-					<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
+					{items.length === 1 && (
+						<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
+					)}
 				</Tooltip>
+				{items.length > 1 && (
+					<div
+						aria-label="Виджеты слота"
+						className="mx-2 flex min-w-0 flex-1 items-center gap-2"
+						role="tablist"
+					>
+						{items.map((item, index) => (
+							<div key={item.id} className="flex min-w-0 items-center gap-2">
+								{index > 0 && (
+									<Divider className="my-auto h-2.5 bg-(--border-primary)" direction="Y" margX="xs" />
+								)}
+								<Button
+									aria-selected={active.id === item.id}
+									className={cn(
+										'trim text-lg font-bold select-none md:mr-auto md:ml-0',
+										active.id === item.id ? 'text-(--text-primary)' : 'text-(--text-secondary)'
+									)}
+									padding="none"
+									role="tab"
+									variant="custom"
+									onClick={() => setActiveId(item.id)}
+								>
+									{item.title}
+								</Button>
+							</div>
+						))}
+					</div>
+				)}
 				<Button
 					centerIcon={<IconGripHorizontal className="size-4" />}
 					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100"
@@ -40,7 +76,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 					{...attributes}
 				/>
 			</header>
-			{content}
+			<Fragment key={active.id}>{content}</Fragment>
 		</div>
 	);
 });

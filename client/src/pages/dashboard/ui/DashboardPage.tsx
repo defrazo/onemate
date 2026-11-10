@@ -27,8 +27,8 @@ export const DashboardPage = observer(() => {
 						onDragEnd={handleDragEnd}
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
-							{widgetsOrder.map((widget) => (
-								<Widget key={widget.id} {...widget} />
+							{widgetsOrder.map((items) => (
+								<Widget key={items[0].id} items={items} />
 							))}
 						</SortableContext>
 					</DndContext>

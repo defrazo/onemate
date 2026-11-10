@@ -1,4 +1,4 @@
-import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
 import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
@@ -40,7 +40,7 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		throw new RestrictedAccess();
 	}
 
-	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+	async updateWidgets(id: string, widgets: DashboardLayout): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_sequence: widgets }));
 	}

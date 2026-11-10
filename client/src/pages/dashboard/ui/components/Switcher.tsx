@@ -59,11 +59,8 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 	}, [options, value]);
 
 	return (
-		<div className="z-0 flex rounded-xl border-(--border-primary) bg-(--bg-primary) p-1">
-			<div
-				ref={listRef}
-				className="relative flex flex-1 items-center justify-between gap-1 py-1 whitespace-nowrap"
-			>
+		<div className="flex h-13 shrink-0 scrollbar-none overflow-x-auto rounded-xl border-(--border-primary) bg-(--bg-primary) p-1">
+			<div ref={listRef} className="relative flex flex-1 items-center justify-between gap-1 py-1">
 				<div
 					ref={switcherRef}
 					className="absolute top-0 left-0 z-0 rounded-lg bg-(--accent-primary-muted) transition-[transform,width,opacity] duration-300 ease-out"
@@ -78,7 +75,10 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 							ref={(element) => {
 								optionRefs.current[option.value] = element;
 							}}
-							className={cn('px-2', isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)')}
+							className={cn(
+								'h-full px-2',
+								isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)'
+							)}
 							role="tab"
 							type="button"
 							onClick={() => onChange(option.value)}

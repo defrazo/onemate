@@ -1,12 +1,11 @@
-import { DEFAULT_THEME, type WidgetId, type WidgetSlot } from '@/shared/config';
+import { createDefaultDashboardLayout, DEFAULT_THEME, type WidgetSlot } from '@/shared/config';
 
 import type { UserProfile } from '.';
 
 const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
 
-const DEFAULT_WIDGETS = ['cloud', 'calendar', 'notes', 'currency', 'weather', 'todo'] as const;
-export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
+export const createDefaultWidgets = createDefaultDashboardLayout;
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
 export const createDefaultSlots = (): WidgetSlot[] => [...DEFAULT_SLOTS];

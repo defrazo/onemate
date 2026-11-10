@@ -47,8 +47,7 @@ class UserProfileController extends Controller
                 Rule::in(['light', 'dark']),
             ],
 
-            'widgets_sequence' => ['sometimes', 'nullable', 'array'],
-            'widgets_sequence.*' => ['string'],
+            'widgets_sequence' => $this->widgetSequenceRules(),
 
             'widgets_slots' => ['sometimes', 'nullable', 'array'],
             'widgets_slots.*' => ['string'],
@@ -111,8 +110,7 @@ class UserProfileController extends Controller
     public function updateWidgets(Request $request): JsonResponse
     {
         $data = $request->validate([
-            'widgets_sequence' => ['nullable', 'array'],
-            'widgets_sequence.*' => ['string'],
+            'widgets_sequence' => $this->widgetSequenceRules(),
             'widgets_slots' => ['nullable', 'array'],
             'widgets_slots.*' => ['string'],
         ]);
@@ -126,5 +124,42 @@ class UserProfileController extends Controller
         return response()->json([
             'profile' => $profile,
         ]);
+    }
+
+    private function widgetSequenceRules(): array
+    {
+        return [
+            'sometimes',
+            'array',
+            'size:6',
+            function (string $attribute, mixed $value, \Closure $fail): void {
+                $allowed = ['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo'];
+                $used = [];
+
+                if (!is_array($value) || !array_is_list($value)) {
+                    $fail('Некорректная раскладка виджетов');
+
+                    return;
+                }
+
+                foreach ($value as $slot) {
+                    if (!is_array($slot) || !array_is_list($slot) || count($slot) < 1 || count($slot) > 2) {
+                        $fail('В каждом слоте должен быть один или два виджета');
+
+                        return;
+                    }
+
+                    foreach ($slot as $id) {
+                        if (!is_string($id) || !in_array($id, $allowed, true) || in_array($id, $used, true)) {
+                            $fail('Виджеты должны быть известными и не повторяться.');
+
+                            return;
+                        }
+
+                        $used[] = $id;
+                    }
+                }
+            },
+        ];
     }
 }

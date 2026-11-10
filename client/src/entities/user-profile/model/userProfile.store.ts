@@ -4,7 +4,14 @@ import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AVATAR_ENTRIES, type AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import { DEFAULT_THEME, type Theme, type WidgetId, type WidgetSlot } from '@/shared/config';
+import {
+	type DashboardLayout,
+	DEFAULT_THEME,
+	normalizeDashboardLayout,
+	type Theme,
+	type WidgetId,
+	type WidgetSlot,
+} from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
@@ -98,7 +105,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		return this.profile?.theme ?? DEFAULT_THEME;
 	}
 
-	get widgets(): WidgetId[] {
+	get widgets(): DashboardLayout {
 		return this.profile?.widgets_sequence ?? createDefaultWidgets();
 	}
 
@@ -183,14 +190,55 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		await this.saveProfile(patch, (id, data) => this.repo.updateNotification(id, data));
 	}
 
-	async updateWidgetSequence(widgets: WidgetId[]): Promise<void> {
+	async setSlotWidgets(index: number, primary: WidgetId, secondary: WidgetId | ''): Promise<void> {
+		const widgets = normalizeDashboardLayout(this.widgets);
+		const slot = widgets[index];
+
+		if (!slot || (secondary && secondary === primary)) return;
+
+		const previousPrimary = slot[0];
+
+		if (previousPrimary !== primary) {
+			for (const other of widgets) {
+				if (other[0] === primary) other[0] = previousPrimary;
+				else if (other[1] === primary) other[1] = previousPrimary;
+			}
+
+			slot[0] = primary;
+		}
+
+		for (const other of widgets) {
+			if (other !== slot && other[1] === secondary) other.splice(1, 1);
+		}
+
+		if (secondary) {
+			if (widgets.some((other) => other !== slot && other[0] === secondary)) return;
+			slot[1] = secondary;
+		} else slot.splice(1, 1);
+
+		await this.updateWidgetSequence(widgets, true);
+	}
+
+	async updateWidgetSequence(value: DashboardLayout, immediate = false): Promise<void> {
 		const userId = this.userStore.id;
-		if (!userId || this.arraysEqual(this.profile?.widgets_sequence, widgets)) return;
+		const widgets = normalizeDashboardLayout(value);
+		if (!userId) return;
 
-		this.patchProfile({ widgets_sequence: widgets });
-		userProfileCache.setWidgets(userId, widgets);
+		const unchanged = JSON.stringify(this.widgets) === JSON.stringify(widgets);
+		if (unchanged && !immediate) return;
 
-		this.scheduleServerUpdate(this.widgetSequenceUpdate, 2000, userId, () =>
+		if (!unchanged) {
+			this.patchProfile({ widgets_sequence: widgets });
+			userProfileCache.setWidgets(userId, widgets);
+		}
+
+		if (immediate) {
+			this.widgetSequenceUpdate.cancel();
+			await this.repo.updateWidgets(userId, widgets);
+			return;
+		}
+
+		this.scheduleServerUpdate(this.widgetSequenceUpdate, 3000, userId, () =>
 			this.repo.updateWidgets(userId, widgets)
 		);
 	}
@@ -203,13 +251,6 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		userProfileCache.setSlots(userId, slots);
 
 		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots));
-	}
-
-	async replaceWidget(currentId: WidgetId, nextId: WidgetId): Promise<void> {
-		const widgets = this.widgets.map((id) => (id === currentId ? nextId : id));
-		const slots = this.slots.map((id) => (id === currentId ? nextId : id));
-
-		await Promise.all([this.updateWidgetSequence(widgets), this.updateWidgetSlots(slots)]);
 	}
 
 	setLocation(city: City): void {
@@ -251,12 +292,18 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	private applyProfile(profile: UserProfile): void {
-		this.profile = profile;
+		this.profile = { ...profile, widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence) };
 		this.profileReady = true;
 	}
 
 	private patchProfile(patch: Partial<UserProfile>): void {
-		this.profile = { ...(this.profile ?? createDefaultProfile()), ...patch };
+		this.profile = {
+			...(this.profile ?? createDefaultProfile()),
+			...patch,
+			...(patch.widgets_sequence !== undefined && {
+				widgets_sequence: normalizeDashboardLayout(patch.widgets_sequence),
+			}),
+		};
 	}
 
 	private applyLocation(location: City | null): void {

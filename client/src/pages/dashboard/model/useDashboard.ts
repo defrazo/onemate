@@ -12,19 +12,18 @@ export const useDashboard = () => {
 
 	const { userProfileStore: store } = useStore();
 
-	const rowIds = store.widgets;
+	const layout = store.widgets;
+	const rowIds = layout.map((slot) => slot[0]);
 	const slots = store.slots;
 
 	const widgetMap = new Map<WidgetId, WidgetItem>(widgets.map((widget) => [widget.id, widget]));
 
-	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => rowIds.includes(id)).map(({ id, icon }) => ({
+	const options: SwitcherOption[] = WIDGETS.map(({ id, icon }) => ({
 		value: id,
-		label: createElement(icon, { className: 'size-7', stroke: 2 }),
+		label: createElement(icon, { className: 'size-8', stroke: 2 }),
 	}));
 
-	const widgetsOrder = rowIds
-		.map((id) => widgetMap.get(id))
-		.filter((widget): widget is WidgetItem => widget !== undefined);
+	const widgetsOrder = layout.map((slot) => slot.map((id) => widgetMap.get(id)!));
 
 	const getSlotContent = (slot: WidgetSlot) => {
 		if (slot === EMPTY_WIDGET_SLOT) return null;
@@ -53,7 +52,7 @@ export const useDashboard = () => {
 
 		if (oldIdx === -1 || newIdx === -1) return;
 
-		void store.updateWidgetSequence(arrayMove(rowIds, oldIdx, newIdx));
+		void store.updateWidgetSequence(arrayMove(layout, oldIdx, newIdx));
 	};
 
 	return { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd };
