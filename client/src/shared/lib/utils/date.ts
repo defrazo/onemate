@@ -5,6 +5,9 @@ export const formatDate = (timestamp: number) => {
 	return new Date(timestamp * 1000).toISOString().split('T')[0];
 };
 
+// Форматирует дату в короткий вид: "11 ноя", "25 дек"
+export const shortDate = (date: Date): string => date.toLocaleDateString('ru-RU', { day: 'numeric', month: 'long' });
+
 // Преобразует строку даты в локализованный формат (short – "дд.мм", long – "дд.мм.yy")
 export const convertDate = (timestamp: string, length: 'short' | 'long') => {
 	const date = new Date(timestamp);

@@ -7,7 +7,9 @@ import type { ModalStore } from '@/features/modal';
 import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
 import type { NotifyStore } from '@/features/toast';
+import type { CalendarStore } from '@/widgets/calendar';
 import type { CloudStore } from '@/widgets/cloud';
+import type { CredentialsStore } from '@/widgets/credentials';
 import type { CurrencyStore } from '@/widgets/currency';
 import type { NetworkStore } from '@/widgets/network';
 import type { NotesStore } from '@/widgets/notes';
@@ -15,6 +17,7 @@ import type { TranslatorStore } from '@/widgets/translator';
 import type { WeatherStore } from '@/widgets/weather';
 
 export type AllStores = {
+	credentialsStore: CredentialsStore;
 	userStore: UserStore;
 	notifyStore: NotifyStore;
 	modalStore: ModalStore;
@@ -23,6 +26,7 @@ export type AllStores = {
 	authFormStore: AuthFormStore;
 	themeStore: ThemeStore;
 	notificationStore: NotificationStore;
+	calendarStore: CalendarStore;
 	deviceActivityStore: DeviceActivityStore;
 	cloudStore: CloudStore;
 	networkStore: NetworkStore;
@@ -34,10 +38,12 @@ export type AllStores = {
 };
 
 export type InitKeys =
+	| 'credentialsStore'
 	| 'themeStore'
 	| 'notificationStore'
 	| 'userProfileStore'
 	| 'authStore'
+	| 'calendarStore'
 	| 'deviceActivityStore'
 	| 'cloudStore'
 	| 'networkStore'

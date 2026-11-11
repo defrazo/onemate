@@ -7,4 +7,5 @@ export const API_URLS = {
 	IPIFY: 'https://api.ipify.org?format=json',
 	MYMEMORY: 'https://api.mymemory.translated.net/get?q=',
 	NOMINATIM: 'https://nominatim.openstreetmap.org/',
+	ISDAYOFF: 'https://isdayoff.ru/api/getdata',
 } as const;

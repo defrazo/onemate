@@ -7,9 +7,11 @@ type LifecycleStore = {
 
 export class StoreInitializer {
 	private static readonly REACTIVE_STORES: ReadonlyArray<InitKeys> = [
+		'credentialsStore',
 		'notificationStore',
 		'themeStore',
 		'userProfileStore',
+		'calendarStore',
 		'deviceActivityStore',
 		'cloudStore',
 		'networkStore',

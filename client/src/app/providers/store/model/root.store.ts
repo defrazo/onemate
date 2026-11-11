@@ -1,6 +1,7 @@
 import { type AllStores, StoreFactory, StoreInitializer } from '.';
 
 export class RootStore implements AllStores {
+	public readonly credentialsStore: AllStores['credentialsStore'];
 	public readonly userStore: AllStores['userStore'];
 	public readonly notifyStore: AllStores['notifyStore'];
 	public readonly notificationStore: AllStores['notificationStore'];
@@ -9,6 +10,7 @@ export class RootStore implements AllStores {
 	public readonly authStore: AllStores['authStore'];
 	public readonly authFormStore: AllStores['authFormStore'];
 	public readonly themeStore: AllStores['themeStore'];
+	public readonly calendarStore: AllStores['calendarStore'];
 	public readonly deviceActivityStore: AllStores['deviceActivityStore'];
 	public readonly cloudStore: AllStores['cloudStore'];
 	public readonly networkStore: AllStores['networkStore'];
@@ -24,6 +26,7 @@ export class RootStore implements AllStores {
 
 	constructor() {
 		const allStores = StoreFactory.createAllStores();
+		this.credentialsStore = allStores.credentialsStore;
 
 		this.userStore = allStores.userStore;
 		this.notifyStore = allStores.notifyStore;
@@ -33,6 +36,7 @@ export class RootStore implements AllStores {
 		this.authStore = allStores.authStore;
 		this.authFormStore = allStores.authFormStore;
 		this.themeStore = allStores.themeStore;
+		this.calendarStore = allStores.calendarStore;
 		this.deviceActivityStore = allStores.deviceActivityStore;
 		this.cloudStore = allStores.cloudStore;
 		this.networkStore = allStores.networkStore;

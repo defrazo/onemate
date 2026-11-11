@@ -1,96 +1,129 @@
-import { IconCancel, IconCheck, IconCopy, IconTrash } from '@tabler/icons-react';
+import { useId } from 'react';
+import { IconCopy } from '@tabler/icons-react';
+import { observer } from 'mobx-react-lite';
 
-import { useCopy, useResponsive } from '@/shared/lib/hooks';
-import { cn, pluralize } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+import { useStore } from '@/app/providers';
+import { useCopy } from '@/shared/lib/hooks';
+import { Button, Checkbox, Input, SegmentedControl } from '@/shared/ui';
 
-import type { DateRange, RangeInfo } from '../../model';
+import { MAX_DAY_COUNT } from '../../lib/calculation';
+import { formatCalendarDate } from '../../lib/format';
+import type { CalendarMode } from '../../model/types';
 
-interface ControlsProps {
-	range: DateRange;
-	rangeInfo: RangeInfo | null;
-	includeWeekends: boolean;
-	onToggleWeekends: () => void;
-	onReset: () => void;
-}
+const modes: { value: CalendarMode; label: string }[] = [
+	{ value: 'period', label: 'Период' },
+	{ value: 'after', label: 'Через N' },
+	{ value: 'until', label: 'До даты' },
+];
 
-export const Controls = ({ range, rangeInfo, includeWeekends, onToggleWeekends, onReset }: ControlsProps) => {
-	const { isMobile, isTablet } = useResponsive();
+export const Controls = observer(() => {
 	const copy = useCopy();
 
-	const hasStart = range[0];
+	const { calendarStore: store } = useStore();
+
+	const calculation = store.calculation;
+	const result = store.result;
+	const countError = store.countError;
+	const afterEnd = store.afterEnd;
+
+	const countId = useId();
+	const errorId = `${countId}-error`;
+
+	const hint =
+		store.mode === 'period'
+			? `Выберите дату ${store.range[0] ? 'конца' : 'начала'} периода`
+			: store.mode === 'until'
+				? 'Выберите целевую дату'
+				: 'Введите количество дней';
 
 	return (
-		<div className="flex flex-col">
-			<div className="mb-2 flex h-8 items-center lg:my-2">
-				{rangeInfo ? (
-					<div className="mx-auto flex items-center gap-1 text-sm">
-						<span className="trim text-(--text-secondary)">{rangeInfo.label} </span>
-						<span className="trim text-(--text-disabled)">·</span>
-						<span className="trim font-semibold">
-							{rangeInfo.days} {pluralize(rangeInfo.days, 'день', 'дня', 'дней')}
+		<div className="flex min-w-0 flex-col text-sm">
+			<SegmentedControl className="mb-1.5 w-full" options={modes} value={store.mode} onChange={store.setMode} />
+			<div aria-live="polite" className="flex min-h-7 min-w-0 items-center justify-center gap-2">
+				{store.mode === 'after' ? (
+					<>
+						<span className="shrink-0 text-sm text-(--text-secondary)">
+							{formatCalendarDate(store.afterStart, store.today)} +
 						</span>
-						{rangeInfo.weekendLabel && (
-							<span className="trim text-(--text-secondary)">({rangeInfo.weekendLabel})</span>
-						)}
-						<Button
-							centerIcon={<IconCopy className="size-4" />}
-							className="ml-1 hidden text-sm md:block"
-							disabled={rangeInfo === null}
+						<Input
+							aria-describedby={countError ? errorId : undefined}
+							aria-label="Количество дней"
+							className="number-no-spinner h-6 w-11 shrink-0 px-2 text-center text-sm"
+							error={countError}
+							fullWidth={false}
+							id={countId}
+							inputMode="numeric"
+							max={MAX_DAY_COUNT}
+							min={0}
 							padding="none"
-							title="Скопировать период"
-							variant="icon"
-							onClick={() => copy(rangeInfo.copyText, 'Период скопирован')}
+							step={1}
+							type="number"
+							value={store.dayCount}
+							variant="ghost"
+							onChange={(event) => store.setDayCount(event.target.value)}
 						/>
-					</div>
+						<span className="shrink-0 text-sm text-(--text-secondary)">дн.</span>
+						{countError ? (
+							<span className="text-xs text-(--status-error)" id={errorId} role="alert">
+								Целое число: 0–{MAX_DAY_COUNT}
+							</span>
+						) : store.productionLimitation ? (
+							<span className="text-xs text-(--status-error)" role="alert">
+								{store.productionLimitation}
+							</span>
+						) : afterEnd && store.dayCount !== '' ? (
+							<span className="min-w-0 text-sm text-(--text-secondary)">
+								={' '}
+								<span className="text-(--text-primary)">
+									{formatCalendarDate(afterEnd, store.today)}
+								</span>
+							</span>
+						) : null}
+					</>
+				) : calculation ? (
+					<span className="min-w-0 text-center text-sm text-(--text-secondary)">
+						{calculation.prefix && (
+							<>
+								{calculation.prefix}
+								{store.mode === 'period' ? ' – ' : ' '}
+							</>
+						)}
+						<span className="font-medium text-(--text-primary)">{calculation.value}</span>
+						{calculation.suffix && ` ${calculation.suffix}`}
+					</span>
 				) : (
-					<span className="flex-1 text-center text-sm text-(--text-secondary)">
-						Выберите дату {hasStart ? 'конца' : 'начала'} периода
+					<span className="min-w-0 text-center text-sm text-(--text-secondary)">
+						{store.productionLimitation ?? hint}
 					</span>
 				)}
+				{result && (
+					<Button
+						centerIcon={<IconCopy className="size-4" />}
+						className="shrink-0"
+						padding="none"
+						title="Скопировать результат"
+						variant="icon"
+						onClick={() => copy(result, 'Результат скопирован')}
+					/>
+				)}
 			</div>
-			<div className="flex w-full items-center justify-between gap-2">
-				<Button
-					className={cn(
-						'h-8 w-full border border-(--border-primary) bg-transparent text-xs text-(--text-primary) hover:bg-(--accent-primary)/20 hover:text-(--accent-primary) enabled:border-(--accent-primary)/70 xl:text-sm',
-						includeWeekends &&
-							'border-transparent bg-(--accent-primary-muted) text-(--accent-primary) hover:bg-(--accent-primary)/20'
-					)}
-					disabled={!rangeInfo?.hasWeekends}
-					rightIcon={includeWeekends && <IconCheck className="size-4" />}
-					onClick={onToggleWeekends}
-				>
-					Учитывать выходные
-				</Button>
-				<Button
-					centerIcon={<IconCopy className="size-5 xl:size-4" />}
-					className="block text-xs md:hidden"
-					disabled={rangeInfo === null}
-					title="Скопировать период"
-					variant="icon"
-					onClick={() => {
-						if (!rangeInfo) return;
-						copy(rangeInfo.copyText, 'Период скопирован');
-					}}
+			<div className="flex min-w-0 items-center justify-between gap-2">
+				<Checkbox
+					checked={store.includeWeekends}
+					className="text-xs text-(--text-secondary)"
+					label="Учитывать выходные"
+					size="sm"
+					onChange={store.setIncludeWeekends}
 				/>
 				<Button
-					centerIcon={
-						isMobile &&
-						!isTablet &&
-						(hasStart ? <IconTrash className="size-5" /> : <IconCancel className="size-5" />)
-					}
-					className={cn(
-						'h-8 bg-transparent text-xs md:border md:border-(--border-primary) lg:min-w-30 lg:px-3 xl:text-sm xl:hover:border-transparent',
-						!isMobile && 'w-32'
-					)}
-					leftIcon={!isMobile || (isTablet && hasStart && <IconTrash className="size-5" />)}
-					title={hasStart ? 'Сбросить' : 'Отмена'}
-					variant={isMobile && !isTablet ? 'icon' : 'danger'}
-					onClick={onReset}
+					className="text-xs text-(--text-secondary) hover:text-(--danger)"
+					padding="none"
+					variant="custom"
+					onClick={store.resetSelection}
 				>
-					{(!isMobile || isTablet) && hasStart ? 'Сбросить' : 'Отмена'}
+					{store.hasSelection ? 'Сбросить' : 'Отмена'}
 				</Button>
 			</div>
 		</div>
 	);
-};
+});
