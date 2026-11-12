@@ -38,8 +38,8 @@ export const useSelect = (
 	const dismiss = useDismiss(context);
 	const { getReferenceProps, getFloatingProps } = useInteractions([dismiss]);
 
-	const close = (): void => setIsOpen(false);
-	const toggle = (): void => setIsOpen((open) => !open);
+	const close = () => setIsOpen(false);
+	const toggle = () => setIsOpen((open) => !open);
 
 	return { isOpen, refs, floatingStyles, getReferenceProps, getFloatingProps, close, toggle };
 };

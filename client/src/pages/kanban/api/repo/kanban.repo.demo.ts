@@ -80,7 +80,7 @@ export class KanbanRepoDemo implements IKanbanRepo {
 			if (columnIds.length !== snapshot.columns.length || new Set(columnIds).size !== columnIds.length)
 				throw new Error('Некорректный порядок колонок');
 
-			columnIds.forEach((id, index) => (this.findColumn(snapshot, id).position = (index + 1) * 1000));
+			columnIds.forEach((id, idx) => (this.findColumn(snapshot, id).position = (idx + 1) * 1000));
 		});
 	}
 

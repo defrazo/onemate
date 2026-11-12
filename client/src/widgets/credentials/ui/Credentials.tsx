@@ -32,12 +32,12 @@ export const Credentials = observer(() => {
 		useSensor(KeyboardSensor, { coordinateGetter: sortableKeyboardCoordinates })
 	);
 
-	const { credentialsStore: store, notifyStore, modalStore, authStore, userStore } = useStore();
+	const { authStore, credentialsStore: store, modalStore, notifyStore, userStore } = useStore();
 
 	const [searchOpen, setSearchOpen] = useState(false);
 	const [query, setQuery] = useState('');
 
-	const closeSearch = (): void => {
+	const closeSearch = () => {
 		setSearchOpen(false);
 		setQuery('');
 	};
@@ -64,7 +64,7 @@ export const Credentials = observer(() => {
 	const sortingDisabled = store.conflict || (store.isLoading && !store.reordering) || searchOpen;
 	const limitReached = store.entries.length >= CREDENTIAL_LIMIT;
 
-	const reload = (): void => {
+	const reload = () => {
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Удалить черновик и загрузить"
@@ -81,7 +81,7 @@ export const Credentials = observer(() => {
 		);
 	};
 
-	const reorder = ({ active, over }: DragEndEvent): void => {
+	const reorder = ({ active, over }: DragEndEvent) => {
 		if (sortingDisabled || !over || active.id === over.id) return;
 
 		const from = store.entries.findIndex((entry) => entry.id === active.id);
@@ -194,7 +194,7 @@ export const Credentials = observer(() => {
 			{store.isLoading && <SyncIndicator />}
 			{store.error && (
 				<div className="flex shrink-0 flex-wrap items-center justify-between gap-2 text-xs">
-					<span className="text-(--status-error)">{store.error.message}</span>
+					<span className="text-(--status-error)/80">{store.error.message}</span>
 					{store.conflict ? (
 						<Button className="h-6 text-xs" onClick={reload}>
 							Загрузить с сервера

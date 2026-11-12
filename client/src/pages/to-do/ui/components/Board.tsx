@@ -114,12 +114,12 @@ export const Board = observer(({ canvas, onEdit, onDelete }: BoardProps) => {
 
 		let position = ids.length;
 
-		for (let index = 0; index < ids.length; index++) {
-			const row = rows.find(({ id }) => id === ids[index]);
+		for (let idx = 0; idx < ids.length; idx++) {
+			const row = rows.find(({ id }) => id === ids[idx]);
 			if (!row) continue;
 
 			if (pointerY < row.rect.top + row.rect.height / 2) {
-				position = index;
+				position = idx;
 				break;
 			}
 		}
@@ -209,7 +209,7 @@ export const Board = observer(({ canvas, onEdit, onDelete }: BoardProps) => {
 		}
 
 		const originalIds = orderedItems(source).map((item) => item.id);
-		if (targetIds.some((id, index) => id !== originalIds[index])) void todoStore.reorderItems(source.id, targetIds);
+		if (targetIds.some((id, idx) => id !== originalIds[idx])) void todoStore.reorderItems(source.id, targetIds);
 	};
 
 	const draggedList = drag?.kind === 'list' ? canvas.lists.find(({ id }) => id === drag.id) : undefined;

@@ -24,11 +24,11 @@ export class NotesRepoLaravel implements INotesRepo {
 				{
 					user_id: id,
 					revision,
-					notes: notes.map((note, index) => ({
+					notes: notes.map((note, idx) => ({
 						id: note.id,
 						text: note.text,
 						color: note.color,
-						order_idx: index,
+						order_idx: idx,
 					})),
 				},
 				{ signal }

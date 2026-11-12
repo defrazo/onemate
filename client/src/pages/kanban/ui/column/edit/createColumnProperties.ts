@@ -27,7 +27,7 @@ export const createColumnProperties = ({
 
 	const limitOptions: { value: number | null; label: string }[] = [
 		{ value: null, label: 'Не задан' },
-		...Array.from({ length: 15 }, (_, index) => ({ value: index + 1, label: String(index + 1) })),
+		...Array.from({ length: 15 }, (_, idx) => ({ value: idx + 1, label: String(idx + 1) })),
 	];
 
 	if (initialLimit !== null && !limitOptions.some((option) => option.value === initialLimit))

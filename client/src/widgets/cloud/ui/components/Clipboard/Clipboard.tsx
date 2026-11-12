@@ -40,14 +40,14 @@ export const Clipboard = observer(() => {
 		<div className="flex min-h-0 flex-1 flex-col">
 			<Textarea
 				ref={textareaRef}
-				className="min-h-0 flex-1 scrollbar-none p-0 text-base"
+				className="h-full min-h-0 flex-1 scrollbar-none p-0 text-base"
 				disabled={store.isResolvingTextConflict}
 				id="clipboard"
 				maxLength={CLOUD_LIMITS.TEXT_LENGTH}
 				placeholder="Текст, ссылка, команда или что-нибудь ещё..."
-				resize="none"
 				value={store.text}
 				variant="custom"
+				wrapperClassName="min-h-0 flex-1"
 				onChange={(event) => store.setText(event.target.value)}
 			/>
 			<div className="flex shrink-0 items-center justify-between gap-2 pt-2">

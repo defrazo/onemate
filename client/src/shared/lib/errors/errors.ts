@@ -46,3 +46,9 @@ export class CredentialsConflictError extends Error {
 		this.name = 'CredentialsConflictError';
 	}
 }
+
+export class NotesConflictError extends Error {
+	constructor(readonly currentRevision: number) {
+		super('Заметки были изменены в другом месте');
+	}
+}

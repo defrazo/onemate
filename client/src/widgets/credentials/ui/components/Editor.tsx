@@ -259,13 +259,7 @@ export const Editor = observer(() => {
 						variant="icon"
 						onClick={copyAll}
 					/>
-					<Button
-						className="h-7 text-xs"
-						disabled={store.conflict}
-						loading={store.isLoading}
-						variant="accent"
-						onClick={closeEditor}
-					>
+					<Button className="h-7 text-xs" disabled={store.conflict} variant="accent" onClick={closeEditor}>
 						Сохранить
 					</Button>
 				</div>

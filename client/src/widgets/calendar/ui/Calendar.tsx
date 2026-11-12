@@ -16,10 +16,15 @@ export const Calendar = observer(() => {
 	const errorCount = calendarStore.productionErrorCount;
 
 	useEffect(() => {
+		calendarStore.init();
+
+		return () => calendarStore.destroy();
+	}, [calendarStore]);
+
+	useEffect(() => {
 		if (errorCount <= lastErrorCount.current) return;
 
 		lastErrorCount.current = errorCount;
-
 		notifyStore.setNotice('Не удалось загрузить производственный календарь', 'error');
 	}, [errorCount, notifyStore]);
 
@@ -27,7 +32,6 @@ export const Calendar = observer(() => {
 		<div ref={calendarRef} className="-mt-2 flex min-h-0 min-w-0 flex-1 flex-col gap-2">
 			<Navigation />
 			<Grid />
-
 			<Collapse className="-mt-2" open={calendarStore.isControlsOpen}>
 				<Controls />
 			</Collapse>

@@ -427,7 +427,7 @@ export const createState = (repo: IKanbanRepo) => {
 				const updated = [...withoutMoved];
 				updated.splice(clampedIdx, 0, column);
 
-				columns = updated.map((item, index) => ({ ...item, position: (index + 1) * 1000 }));
+				columns = updated.map((item, idx) => ({ ...item, position: (idx + 1) * 1000 }));
 
 				notifyColumns();
 				if (!context.current()) return;

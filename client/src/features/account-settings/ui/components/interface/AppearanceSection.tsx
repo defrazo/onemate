@@ -18,7 +18,7 @@ export const AppearanceSection = observer(() => {
 	return (
 		<section className="flex items-center justify-between select-none">
 			<span className="text-sm text-(--text-secondary) opacity-70">Тема интерфейса</span>
-			<div className="flex h-8 w-fit gap-1 rounded-lg bg-(--bg-tertiary) p-0.75 xl:w-52">
+			<div className="flex h-8 w-fit gap-1 rounded-lg bg-(--tone-strong) p-0.75 xl:w-52">
 				{themes.map(({ value, label, icon: Icon }) => {
 					const isActive = userProfileStore.theme === value;
 

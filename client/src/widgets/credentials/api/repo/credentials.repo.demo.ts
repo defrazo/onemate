@@ -106,7 +106,7 @@ export class CredentialsRepoDemo implements ICredentialsRepo {
 
 		this.entries = this.entries
 			.filter((entry) => entry.id !== id)
-			.map((entry, index) => ({ ...entry, order_idx: index }));
+			.map((entry, idx) => ({ ...entry, order_idx: idx }));
 
 		this.revision++;
 

@@ -6,7 +6,7 @@ import { PRODUCTION_DAY, type ProductionYear } from '../model/types';
 
 export const PRODUCTION_TIMEOUT = 30_000;
 
-const validateYear = (year: number): void => {
+const validateYear = (year: number) => {
 	if (!Number.isInteger(year) || year < 1000 || year > 9999) throw new Error('Некорректный год');
 };
 

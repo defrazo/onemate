@@ -42,7 +42,7 @@ export const Controls = observer(() => {
 			<div aria-live="polite" className="flex min-h-7 min-w-0 items-center justify-center gap-2">
 				{store.mode === 'after' ? (
 					<>
-						<span className="shrink-0 text-sm text-(--text-secondary)">
+						<span className="-mr-px shrink-0 text-sm text-(--text-secondary)">
 							{formatCalendarDate(store.afterStart, store.today)} +
 						</span>
 						<Input
@@ -110,13 +110,13 @@ export const Controls = observer(() => {
 			<div className="flex min-w-0 items-center justify-between gap-2">
 				<Checkbox
 					checked={store.includeWeekends}
-					className="text-xs text-(--text-secondary)"
+					className="text-xs text-(--text-tertiary)"
 					label="Учитывать выходные"
 					size="sm"
 					onChange={store.setIncludeWeekends}
 				/>
 				<Button
-					className="text-xs text-(--text-secondary) hover:text-(--danger)"
+					className="text-xs text-(--text-tertiary) hover:text-(--danger)"
 					padding="none"
 					variant="custom"
 					onClick={store.resetSelection}

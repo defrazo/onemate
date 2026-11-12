@@ -311,11 +311,14 @@ export class CalendarStore extends BaseStore implements CalendarState {
 
 	init(): void {
 		if (this.inited) return;
+		this.inited = true;
+
+		this.production.init();
 
 		this.track(
-			this.production.subscribe(() => {
-				runInAction(() => (this.productionSnapshot = this.production.getSnapshot()));
-			})
+			this.production.subscribe(() =>
+				runInAction(() => (this.productionSnapshot = this.production.getSnapshot()))
+			)
 		);
 
 		this.track(
@@ -331,8 +334,6 @@ export class CalendarStore extends BaseStore implements CalendarState {
 		window.addEventListener('focus', this.onWindowFocus);
 
 		this.scheduleMidnightUpdate();
-
-		this.inited = true;
 	}
 
 	override destroy(): void {

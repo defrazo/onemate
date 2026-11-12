@@ -26,8 +26,9 @@ interface EditorProps {
 }
 
 export const Editor = observer(({ color, onColorChange }: EditorProps) => {
-	const { notesStore } = useStore();
 	const { textareaRef, feedback, undo, redo, cut, copy, paste, selectAll, clear } = useTextEditor(NOTE_MAX_LENGTH);
+
+	const { notesStore } = useStore();
 
 	const editorRef = useOutsideClick<HTMLDivElement>(() => notesStore.closeNote(), '[data-widget]');
 

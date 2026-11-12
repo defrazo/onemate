@@ -206,12 +206,12 @@ export class CloudStore extends AsyncStore {
 		let uploadedBytes = 0;
 
 		try {
-			for (const [index, file] of files.entries()) {
+			for (const [idx, file] of files.entries()) {
 				if (controller.signal.aborted) break;
 				if (!userId || !this.isCurrentSession(userId, session)) return;
 
 				runInAction(() => {
-					this.uploadFileIndex = index + 1;
+					this.uploadFileIndex = idx + 1;
 					this.uploadFileName = file.name;
 					this.uploadFileSize = file.size;
 					this.uploadLoadedBytes = 0;

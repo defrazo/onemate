@@ -22,7 +22,7 @@ export const SegmentedControl = <T extends string>({
 	className,
 }: SegmentedControlProps<T>) => {
 	return (
-		<div className={cn('flex h-7 rounded-lg bg-(--bg-tertiary) p-0.5', className)}>
+		<div className={cn('flex h-7 rounded-lg border border-(--border-contrast)/15 bg-(--tone) p-0.5', className)}>
 			{options.map((option) => {
 				const active = value === option.value;
 

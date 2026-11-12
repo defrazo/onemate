@@ -17,6 +17,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'size'>
 
 	align?: keyof typeof alignStyles;
 	error?: boolean;
+	fullWidth?: boolean;
 
 	variant?: keyof typeof variants.input;
 	padding?: Padding;
@@ -29,6 +30,7 @@ export const Input = ({
 
 	align,
 	error = false,
+	fullWidth = true,
 
 	variant = 'default',
 	padding = 'md',
@@ -45,7 +47,7 @@ export const Input = ({
 	});
 
 	return (
-		<div className={cn('relative flex w-full items-center', align && alignStyles[align])}>
+		<div className={cn('relative flex items-center', fullWidth ? 'w-full' : 'w-fit', align && alignStyles[align])}>
 			{leftIcon && <span className="absolute left-0 px-1.5">{leftIcon}</span>}
 			{rightIcon && <span className="absolute right-0 px-1.5">{rightIcon}</span>}
 			<input {...props} ref={ref} aria-invalid={error || undefined} className={styles} disabled={disabled} />

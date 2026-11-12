@@ -25,7 +25,7 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 		>
 			<Textarea
 				className={cn(
-					'h-full min-h-0 flex-1 resize-none overflow-auto py-3',
+					'block h-full min-h-0 flex-1 overflow-auto py-3',
 					!isSource && 'text-(--text-primary)',
 					isSource ? 'lg:pr-4 lg:pl-0' : 'pl-4 lg:pr-0'
 				)}
@@ -33,8 +33,10 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 				name={`${side}-textbox`}
 				placeholder={isSource ? 'Введите текст...' : 'Перевод появится здесь'}
 				readOnly={!isSource}
+				resize="none"
 				value={text}
 				variant="custom"
+				wrapperClassName="min-h-0 flex-1"
 				onChange={isSource ? (e) => translatorStore.setSourceText(e.target.value) : undefined}
 			/>
 			<div className={cn('flex items-center justify-between', isSource ? 'pr-2' : 'pl-2')}>

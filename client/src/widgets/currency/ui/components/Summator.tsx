@@ -53,7 +53,7 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 		newRowId.current = null;
 	};
 
-	const copyTotal = (): void => {
+	const copyTotal = () => {
 		if (total === null) return;
 
 		const summary = formatSummatorSummary(value.rows, value.target, total);
@@ -71,10 +71,10 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 				</div>
 			</div>
 			<div className="mt-2 flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto">
-				{value.rows.map((row, index) => (
+				{value.rows.map((row, idx) => (
 					<SummatorRow
 						key={row.id}
-						index={index}
+						index={idx}
 						inputRef={row.id === newRowId.current ? focusNewRow : undefined}
 						options={currencyStore.currencyOptions}
 						row={row}

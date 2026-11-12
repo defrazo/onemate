@@ -7,6 +7,7 @@ import {
 	IconChecks,
 	IconCloudPin,
 	IconCloudUpload,
+	IconKey,
 	IconLanguage,
 	IconNote,
 } from '@tabler/icons-react';
@@ -22,6 +23,7 @@ export const WIDGETS = [
 	{ id: 'calendar', title: 'Календарь', icon: IconCalendarWeek },
 	{ id: 'weather', title: 'Погода', icon: IconCloudPin },
 	{ id: 'notes', title: 'Заметки', icon: IconNote },
+	{ id: 'credentials', title: 'Аккаунты', icon: IconKey },
 	{ id: 'currency', title: 'Конвертер валют', icon: IconCash },
 	{ id: 'translator', title: 'Переводчик', icon: IconLanguage },
 	{ id: 'network', title: 'Сеть', icon: IconActivityHeartbeat },

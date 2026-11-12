@@ -120,25 +120,25 @@ export const WidgetsSection = observer(() => {
 				Выберите позицию на схеме Dashboard, чтобы настроить её инструменты
 			</p>
 			<div className="grid grid-cols-1 gap-2 md:grid-cols-2 lg:grid-cols-3">
-				{layout.map((slot, index) => {
+				{layout.map((slot, idx) => {
 					const primary = WIDGETS.find(({ id }) => id === slot[0]);
 					const secondary = WIDGETS.find(({ id }) => id === slot[1]);
-					const isSelected = selectedIndex === index;
+					const isSelected = selectedIndex === idx;
 
 					return (
 						<Button
-							key={index}
+							key={idx}
 							aria-pressed={isSelected}
 							className={cn(
 								'group min-h-14 min-w-0 flex-col items-start gap-1.5 border px-2.5 py-2',
 								isSelected
 									? 'border-(--accent-primary)/50 bg-(--accent-primary-muted)'
-									: 'border-(--border-contrast)/15 bg-(--bg-tertiary) hover:border-(--accent-primary)/30'
+									: 'border-(--border-contrast)/15 bg-(--tone-strong) hover:border-(--accent-primary)/30 hover:bg-(--tone-strong-hover)'
 							)}
 							disabled={isSaving}
 							padding="none"
 							variant="custom"
-							onClick={() => handleSelectPosition(index)}
+							onClick={() => handleSelectPosition(idx)}
 						>
 							<div className="flex min-w-0 items-center gap-2">
 								{primary && <primary.icon className="size-4 shrink-0 text-(--accent-primary)" />}
@@ -206,7 +206,7 @@ export const WidgetsSection = observer(() => {
 						</Button>
 					</div>
 					<div className="flex items-center justify-between gap-3">
-						<div className="flex items-center gap-1.5 text-(--text-secondary)">
+						<div className="flex items-center gap-1.5 text-(--text-tertiary)">
 							<span className="text-xs">
 								Выбрано {layout.reduce((count, slot) => count + slot.length, 0)} из {WIDGETS.length}{' '}
 								инструментов
@@ -216,7 +216,7 @@ export const WidgetsSection = observer(() => {
 							</Tooltip>
 						</div>
 						<Button
-							className="text-xs text-(--text-secondary) transition-colors hover:text-(--danger)"
+							className="text-xs text-(--text-tertiary) transition-colors hover:text-(--danger)"
 							disabled={isSaving}
 							padding="none"
 							variant="custom"

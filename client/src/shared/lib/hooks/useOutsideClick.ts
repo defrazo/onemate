@@ -10,18 +10,19 @@
 
 import { useEffect, useRef } from 'react';
 
-export const useOutsideClick = <T extends HTMLElement>(callback: () => void) => {
+export const useOutsideClick = <T extends HTMLElement>(callback: () => void, boundarySelector?: string) => {
 	const ref = useRef<T>(null);
 
 	useEffect(() => {
 		const handleClick = (e: MouseEvent) => {
-			if (ref.current && !ref.current.contains(e.target as Node)) callback();
+			const boundary = boundarySelector ? ref.current?.closest(boundarySelector) : ref.current;
+			if (boundary && !boundary.contains(e.target as Node)) callback();
 		};
 
 		document.addEventListener('mousedown', handleClick);
 
 		return () => document.removeEventListener('mousedown', handleClick);
-	}, [callback]);
+	}, [callback, boundarySelector]);
 
 	return ref;
 };

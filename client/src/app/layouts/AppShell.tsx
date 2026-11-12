@@ -60,7 +60,7 @@ export const AppShell = ({
 					)}
 				>
 					{left && <aside className="flex min-h-0">{left}</aside>}
-					<main className="flex min-h-0 min-w-0">{children}</main>
+					<main className="flex min-h-0 min-w-0 overflow-hidden">{children}</main>
 					{right && <aside className="flex min-h-0">{right}</aside>}
 				</div>
 				{(!isMobile || isTablet) && !hideFooter && <Footer />}

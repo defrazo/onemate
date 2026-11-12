@@ -10,7 +10,7 @@ export const LanguageSection = () => {
 		<section className="flex items-center justify-between select-none">
 			<div className="flex items-center gap-2">
 				<p className="text-sm whitespace-nowrap text-(--text-secondary) opacity-70">Язык интерфейса</p>
-				<span className="trim mt-0.5 hidden h-4 rounded-md bg-(--bg-tertiary) px-1.5 py-1 text-[10px] text-(--text-secondary) xl:block">
+				<span className="trim mt-0.5 hidden h-4 rounded-md bg-(--tone-strong) px-1.5 py-1 text-[10px] text-(--text-secondary) xl:block">
 					Скоро
 				</span>
 			</div>
@@ -19,6 +19,7 @@ export const LanguageSection = () => {
 				className="ml-auto h-8 max-w-36 xl:max-w-52"
 				options={languages}
 				value="ru"
+				variant="toneStrong"
 				onChange={() => {}}
 			/>
 		</section>

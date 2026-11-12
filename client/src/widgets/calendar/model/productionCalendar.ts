@@ -55,11 +55,6 @@ export class ProductionCalendar {
 		fetching: false,
 	};
 
-	constructor(
-		private readonly onError: () => void,
-		private readonly fetchYear = fetchProductionYear
-	) {}
-
 	getSnapshot = (): ProductionSnapshot => this.snapshot;
 
 	subscribe = (listener: () => void): (() => void) => {
@@ -72,12 +67,12 @@ export class ProductionCalendar {
 		};
 	};
 
-	update(request: ProductionRequest): void {
+	update(request: ProductionRequest) {
 		if (!this.destroyed && this.enabled && getProductionRequestKey(request) !== this.snapshot.key)
 			void this.run(request);
 	}
 
-	toggle(request: ProductionRequest): void {
+	toggle(request: ProductionRequest) {
 		if (this.destroyed) return;
 
 		if (this.enabled) {
@@ -93,22 +88,7 @@ export class ProductionCalendar {
 		void this.run(request);
 	}
 
-	destroy(): void {
-		if (this.destroyed) return;
-
-		this.destroyed = true;
-		this.enabled = false;
-		this.generation++;
-
-		this.abortPending();
-		this.years.clear();
-
-		this.publish({ status: 'inactive', key: null, limitation: null });
-
-		this.listeners.clear();
-	}
-
-	private abortPending(): void {
+	private abortPending() {
 		for (const controller of this.controllers.values()) {
 			controller.abort();
 		}
@@ -117,7 +97,7 @@ export class ProductionCalendar {
 		this.pending.clear();
 	}
 
-	private publish(update: ProductionUpdate): void {
+	private publish(update: ProductionUpdate) {
 		this.snapshot = { ...update, fetching: update.fetching ?? false, years: new Map(this.years) };
 
 		for (const listener of this.listeners) {
@@ -239,5 +219,29 @@ export class ProductionCalendar {
 
 			this.onError();
 		}
+	}
+
+	constructor(
+		private readonly onError: () => void,
+		private readonly fetchYear = fetchProductionYear
+	) {}
+
+	init(): void {
+		this.destroyed = false;
+	}
+
+	destroy() {
+		if (this.destroyed) return;
+
+		this.destroyed = true;
+		this.enabled = false;
+		this.generation++;
+
+		this.abortPending();
+		this.years.clear();
+
+		this.publish({ status: 'inactive', key: null, limitation: null });
+
+		this.listeners.clear();
 	}
 }

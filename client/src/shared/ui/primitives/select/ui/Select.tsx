@@ -70,7 +70,7 @@ export const Select = ({
 
 	const selectedOption = options.find((option) => option.value === value);
 
-	const handleSelect = (nextValue: string): void => {
+	const handleSelect = (nextValue: string) => {
 		onChange(nextValue);
 		close();
 	};

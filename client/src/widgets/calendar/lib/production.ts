@@ -47,7 +47,7 @@ export const getProductionYears = (start: Date, end: Date): number[] => {
 
 	if (last - first >= MAX_PRODUCTION_YEARS) throw new ProductionRangeError();
 
-	return Array.from({ length: last - first + 1 }, (_, index) => first + index);
+	return Array.from({ length: last - first + 1 }, (_, idx) => first + idx);
 };
 
 export const getProductionDay = (date: Date, years: ReadonlyMap<number, ProductionYear>): ProductionDay => {

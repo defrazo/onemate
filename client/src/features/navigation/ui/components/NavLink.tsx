@@ -18,7 +18,7 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 		active ? 'text-(--accent-primary)' : 'text-(--text-primary)/80 hover:text-(--accent-primary)',
 		isMobile
 			? 'min-w-0 flex-1 flex-col gap-1 px-1 py-1 text-xs'
-			: 'gap-2 px-3 py-1.5 font-bold hover:bg-(--tone-strong-hover)',
+			: 'gap-2 px-3 py-1.5 font-bold hover:bg-(--tone-hover)',
 		!isMobile && active && 'bg-(--accent-primary)/12',
 		isPrimary && '-translate-y-2.5'
 	);

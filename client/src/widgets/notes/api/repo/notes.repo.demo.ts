@@ -32,10 +32,10 @@ export class NotesRepoDemo implements INotesRepo {
 			const snapshot = {
 				user_id: id,
 				revision: 1,
-				notes: createDefaultNotes().map((note, index) => ({
+				notes: createDefaultNotes().map((note, idx) => ({
 					...note,
 					id: generateUUID(),
-					order_idx: index,
+					order_idx: idx,
 					created_at: now,
 					updated_at: now,
 				})),
@@ -53,16 +53,16 @@ export class NotesRepoDemo implements INotesRepo {
 			const snapshot = {
 				user_id: id,
 				revision: revision + 1,
-				notes: notes.map((note, index) => {
+				notes: notes.map((note, idx) => {
 					const previous = current.notes.find((item) => item.id === note.id);
 					const changed =
 						!previous ||
 						previous.text !== note.text ||
 						previous.color !== note.color ||
-						previous.order_idx !== index;
+						previous.order_idx !== idx;
 					return {
 						...note,
-						order_idx: index,
+						order_idx: idx,
 						created_at: previous?.created_at ?? note.created_at,
 						updated_at: changed ? now : previous.updated_at,
 					};

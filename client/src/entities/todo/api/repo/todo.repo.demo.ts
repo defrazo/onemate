@@ -67,7 +67,7 @@ export class TodoRepoDemo implements ITodoRepo {
 
 	private freeSlot(canvas: TodoCanvas): number {
 		const used = new Set(canvas.lists.map((list) => list.slot));
-		const slot = Array.from({ length: 16 }, (_, index) => index).find((value) => !used.has(value));
+		const slot = Array.from({ length: 16 }, (_, idx) => idx).find((value) => !used.has(value));
 
 		if (slot === undefined) throw new Error('Нет свободных слотов');
 		return slot;
@@ -75,8 +75,8 @@ export class TodoRepoDemo implements ITodoRepo {
 
 	private normalize(listId: string): void {
 		const { list } = this.list(listId);
-		list.items.forEach((item, index) => {
-			item.position = index;
+		list.items.forEach((item, idx) => {
+			item.position = idx;
 		});
 	}
 

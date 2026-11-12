@@ -24,15 +24,13 @@ const createRepo = (ownerId = 'owner', withExistingSecondBoard = false): IKanban
 	const data: KanbanSnapshot[] = [];
 	const make = (title: string, populated = true) => {
 		const id = `board-${++sequence}`;
-		const columns = populated
-			? getDefaultColumns().map((column, index) => ({ ...column, id: `${id}-c${index}` }))
-			: [];
+		const columns = populated ? getDefaultColumns().map((column, idx) => ({ ...column, id: `${id}-c${idx}` })) : [];
 		const snapshot: KanbanSnapshot = {
 			board: { id, ownerId, title, revision: 0, createdAt: null, updatedAt: null },
 			columns,
-			tasks: (populated ? getDefaultTasks(columns.map((column) => column.id)) : []).map((task, index) => ({
+			tasks: (populated ? getDefaultTasks(columns.map((column) => column.id)) : []).map((task, idx) => ({
 				...task,
-				id: `${id}-t${index}`,
+				id: `${id}-t${idx}`,
 				createdAt: '2026-01-01',
 				updatedAt: null,
 			})),
@@ -94,9 +92,9 @@ const createRepo = (ownerId = 'owner', withExistingSecondBoard = false): IKanban
 			}),
 		reorderColumns: async (id, revision, ids) =>
 			change(id, revision, (next) => {
-				next.columns = ids.map((columnId, index) => ({
+				next.columns = ids.map((columnId, idx) => ({
 					...next.columns.find((column) => column.id === columnId)!,
-					position: (index + 1) * 1000,
+					position: (idx + 1) * 1000,
 				}));
 			}),
 		addTask: async (id, revision, task) =>

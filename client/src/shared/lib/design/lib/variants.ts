@@ -38,11 +38,21 @@ export const variants: Record<Component, Record<string, string>> = {
 			'hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-hover)',
 			'focus:text-(--text-primary)'
 		),
+		toneStrong: cn(
+			'border border-(--border-contrast)/15 bg-(--tone-strong) text-(--text-primary)',
+			'hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-strong-hover)',
+			'focus:text-(--text-primary)'
+		),
 		custom: '',
 	},
 	textarea: {
 		default: cn('border border-transparent bg-(--bg-tertiary)', 'hover:border-(--accent-primary-hover)/70'),
 		ghost: cn('border border-(--border-primary) bg-transparent', 'hover:border-(--accent-primary-hover)/70'),
+		toneStrong: cn(
+			'border border-(--border-contrast)/15 bg-(--tone-strong) text-(--text-primary)',
+			'hover:border-(--accent-primary-hover)/70 hover:bg-(--tone-strong-hover)',
+			'focus:text-(--text-primary)'
+		),
 	},
 	checkbox: {
 		default: '',

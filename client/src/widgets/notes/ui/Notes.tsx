@@ -12,12 +12,12 @@ import { Card, Editor, List } from './components';
 export const Notes = observer(() => {
 	const copy = useCopy();
 
-	const { notesStore: store, authStore, userStore, notifyStore, modalStore } = useStore();
+	const { authStore, modalStore, notesStore: store, notifyStore, userStore } = useStore();
 
 	const [searchOpen, setSearchOpen] = useState(false);
 	const [query, setQuery] = useState('');
 
-	const closeSearch = (): void => {
+	const closeSearch = () => {
 		setSearchOpen(false);
 		setQuery('');
 	};
@@ -38,7 +38,7 @@ export const Notes = observer(() => {
 
 	const sortingDisabled = searchOpen || store.conflict || store.isLoading;
 
-	const reload = (): void => {
+	const reload = () => {
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Удалить черновик и загрузить"
@@ -56,7 +56,7 @@ export const Notes = observer(() => {
 		);
 	};
 
-	const showConflict = (): void => {
+	const showConflict = () => {
 		modalStore.setModal(
 			<ConfirmDialog
 				cancelLabel="Загрузить с сервера"
@@ -69,7 +69,7 @@ export const Notes = observer(() => {
 		);
 	};
 
-	const addNote = (): void => {
+	const addNote = () => {
 		try {
 			const id = store.addNote();
 			store.openNote(id);

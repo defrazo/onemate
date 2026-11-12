@@ -13,15 +13,15 @@ export const Controls = observer(() => {
 				hideChevron
 				align="start"
 				className="justify-center text-sm"
-				listClassName="right-auto mt-2 w-50"
+				listPlacement="start"
 				options={translatorStore.languages}
 				value={translatorStore.sourceLang}
 				variant="custom"
 				onChange={translatorStore.setSourceLanguage}
 			/>
 			<Button
-				centerIcon={<IconArrowsExchange className="size-4 group-active:scale-90" />}
-				className="group h-6 w-13"
+				centerIcon={<IconArrowsExchange className="size-4 group-active/switcher:scale-90" />}
+				className="group/switcher h-6 w-13"
 				padding="none"
 				title="Поменять языки местами"
 				variant="accent"
@@ -31,7 +31,7 @@ export const Controls = observer(() => {
 				hideChevron
 				align="start"
 				className="justify-center text-sm"
-				listClassName="left-auto mt-2 w-50"
+				listPlacement="end"
 				options={translatorStore.languages}
 				value={translatorStore.targetLang}
 				variant="custom"

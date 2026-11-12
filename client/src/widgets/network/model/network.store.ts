@@ -100,7 +100,7 @@ export class NetworkStore extends AsyncStore {
 		if (this.isReordering) return;
 
 		const previous = [...this.services];
-		const next = services.map((service, index) => ({ ...service, orderIdx: index }));
+		const next = services.map((service, idx) => ({ ...service, orderIdx: idx }));
 
 		this.isReordering = true;
 		this.services = next;

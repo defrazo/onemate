@@ -36,15 +36,15 @@ export const Grid = observer(() => {
 				))}
 			</div>
 			<div
-				className="grid min-h-0 flex-1 grid-cols-7"
+				className="mb-1 grid min-h-0 flex-1 grid-cols-7"
 				style={{ gridTemplateRows: `repeat(${rows}, minmax(0, 1fr))` }}
 			>
-				{days.map((day, index) =>
+				{days.map((day, idx) =>
 					day === null ? (
-						<div key={index} />
+						<div key={idx} />
 					) : (
 						<DayCell
-							key={index}
+							key={idx}
 							date={getDateInMonth(store.currentMonth, day)}
 							highlightRange={highlightRange}
 							productionYears={productionYears}

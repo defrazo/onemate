@@ -17,17 +17,10 @@ type DayCellProps = {
 };
 
 const dayStyles = {
-	holiday: 'bg-(--status-error)/10 text-(--status-error)',
-	nonWorking: 'bg-(--tone) text-(--text-secondary)',
-	workingSaturday: 'bg-(--accent-primary-muted) text-(--accent-primary)',
-	shortened: 'bg-(--status-warning)/10 text-(--text-primary)',
-};
-
-const markerStyles = {
-	holiday: 'size-1 rounded-full bg-(--status-error)',
-	nonWorking: 'h-0.5 w-2 rounded-full bg-(--status-warning)',
-	workingSaturday: 'size-1 rounded-xs bg-(--accent-primary)',
-	shortened: 'size-1 rounded-full bg-(--status-warning)',
+	holiday: 'bg-(--priority-high)/10 text-(--priority-high)',
+	nonWorking: 'bg-(--priority-high)/10 text-(--priority-high)',
+	workingSaturday: 'bg-(--priority-medium)/10 text-(--priority-medium)',
+	shortened: 'bg-(--priority-low)/10 text-(--priority-low)',
 };
 
 export const DayCell = ({ date, range, highlightRange, productionYears, onSelect }: DayCellProps) => {
@@ -81,12 +74,6 @@ export const DayCell = ({ date, range, highlightRange, productionYears, onSelect
 						<span
 							aria-hidden="true"
 							className="absolute -bottom-0.5 size-1 rounded-full bg-(--accent-primary)"
-						/>
-					)}
-					{kind && (
-						<span
-							aria-hidden="true"
-							className={cn('pointer-events-none absolute -bottom-0.5', markerStyles[kind])}
 						/>
 					)}
 				</button>

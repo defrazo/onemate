@@ -42,19 +42,17 @@ export const Widget = memo(({ items, activeId, onSelect }: WidgetProps) => {
 					<div className="flex size-7 items-center justify-center rounded-md bg-(--accent-primary-muted)">
 						<Icon className="size-4 text-(--accent-primary)" stroke={2.5} />
 					</div>
-					{items.length === 1 && (
-						<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
-					)}
 				</Tooltip>
+				{items.length === 1 && <h1 className="trim ml-2 text-lg font-bold select-none md:mr-auto">{title}</h1>}
 				{items.length > 1 && (
 					<div
 						aria-label="Виджеты слота"
 						className="mx-2 flex min-w-0 flex-1 items-center gap-2"
 						role="tablist"
 					>
-						{items.map((item, index) => (
+						{items.map((item, idx) => (
 							<div key={item.id} className="flex min-w-0 items-center gap-2">
-								{index > 0 && (
+								{idx > 0 && (
 									<Divider className="my-auto h-2.5 bg-(--border-primary)" direction="Y" margX="xs" />
 								)}
 								<Button

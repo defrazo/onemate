@@ -4,8 +4,8 @@ export const getCalendarDays = (month: Date): (number | null)[] => {
 	const firstWeekday = (getDay(startOfMonth(month)) + 6) % 7;
 	const daysInMonth = getDaysInMonth(month);
 
-	const days = Array.from({ length: 42 }, (_, index) => {
-		const day = index - firstWeekday + 1;
+	const days = Array.from({ length: 42 }, (_, idx) => {
+		const day = idx - firstWeekday + 1;
 		return day >= 1 && day <= daysInMonth ? day : null;
 	});
 
