@@ -1,5 +1,6 @@
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../primitives/button/ui/Button';
 
 interface SegmentedControlOption<T extends string> {
 	value: T;

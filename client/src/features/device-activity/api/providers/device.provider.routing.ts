@@ -1,8 +1,10 @@
 import type { UserStore } from '@/entities/user';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { DeviceData, IDeviceProvider } from '../../model';
-import { DeviceProviderApi, DeviceProviderDemo } from '.';
+import type { IDeviceProvider } from '../../model/ports';
+import type { DeviceData } from '../../model/types';
+import { DeviceProviderDemo } from './device.provider.demo';
+import { DeviceProviderApi } from './device.provider.real';
 
 export class DeviceProviderRouting extends BaseRouting implements IDeviceProvider {
 	private readonly realProvider: IDeviceProvider;

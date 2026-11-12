@@ -1,18 +1,19 @@
 import { type Feature, type IUserRoutingPort, type Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
+import type { INetworkRepo } from '../../model/ports';
 import type {
 	CheckVia,
 	CreateMonitoredService,
-	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '../../model';
-import { NetworkRepoDemo, NetworkRepoLaravel } from '.';
+} from '../../model/types';
+import { NetworkRepoDemo } from './network.repo.demo';
+import { NetworkRepoLaravel } from './network.repo.laravel';
 
 export class NetworkRepoRouting implements INetworkRepo {
 	private readonly realRepo: INetworkRepo;

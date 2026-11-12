@@ -21,7 +21,8 @@ import { useStore } from '@/app/providers';
 import { TODO_LIMITS, type TodoCanvas, type TodoList } from '@/entities/todo';
 import { cn } from '@/shared/lib/utils';
 
-import { BoardSlot, ListCard } from '.';
+import { BoardSlot } from './BoardSlot';
+import { ListCard } from './ListCard';
 
 type TodoDrag = { kind: 'list'; id: string } | { kind: 'item'; id: string; listId: string };
 type DraftItems = Record<string, string[]>;

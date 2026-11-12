@@ -14,8 +14,9 @@ import { useStore } from '@/app/providers';
 import { capitalizeFirstLetter, formatTime } from '@/shared/lib/utils';
 import { Tooltip } from '@/shared/ui';
 
-import { getWindDirection } from '../../lib';
-import { ConditionIcon, Metric } from '.';
+import { getWindDirection } from '../../lib/utils';
+import { ConditionIcon } from './ConditionIcon';
+import { Metric } from './Metric';
 
 export const Current = observer(() => {
 	const { weatherStore } = useStore();

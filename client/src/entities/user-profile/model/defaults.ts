@@ -1,6 +1,6 @@
 import { createDefaultDashboardLayout, DEFAULT_THEME, type WidgetSlot } from '@/shared/config';
 
-import type { UserProfile } from '.';
+import type { UserProfile } from './types';
 
 const clone = <T>(v: T): T =>
 	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));

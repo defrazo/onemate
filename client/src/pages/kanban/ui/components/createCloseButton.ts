@@ -1,4 +1,5 @@
-import { closeIcon, insertSvg } from '../../lib';
+import { closeIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 export const createCloseButton = (onClose: () => void) => {
 	const button = document.createElement('button');

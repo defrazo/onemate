@@ -1,3 +1,1 @@
-export * from './base';
-export * from './paddings';
-export * from './variants';
+export { variants } from './variants';

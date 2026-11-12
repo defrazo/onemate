@@ -2,8 +2,9 @@ import { useLocation } from 'react-router-dom';
 
 import { cn } from '@/shared/lib/utils';
 
-import { isActiveRoute } from '../lib';
-import { navItems, type NavVariant } from '../model';
+import { isActiveRoute } from '../lib/utils';
+import { navItems } from '../model/navItems';
+import type { NavVariant } from '../model/types';
 import { NavLink } from './components';
 
 export const Navbar = ({ variant = 'desktop' }: { variant?: NavVariant }) => {

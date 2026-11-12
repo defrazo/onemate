@@ -3,9 +3,9 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import type { IUserAuthPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { authApi } from '../api';
-import { authChannel } from '../lib';
-import type { IAuthDevicePort } from '.';
+import { authApi } from '../api/auth';
+import { authChannel } from '../lib/auth-channel';
+import type { IAuthDevicePort } from './ports';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	private authVersion = 0;

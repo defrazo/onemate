@@ -2,7 +2,7 @@ import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
-import type { ResultItem } from '../../model';
+import type { ResultItem } from '../../model/types';
 
 export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => void }) => {
 	const { isMobile } = useResponsive();

@@ -1,7 +1,11 @@
-import { createSvg, deleteIcon, notifier, settingsIcon } from '../../../lib';
-import { type ColumnColor, LIMITS } from '../../../model';
+import { deleteIcon, settingsIcon } from '../../../lib/icons';
+import { notifier } from '../../../lib/notifier';
+import { createSvg } from '../../../lib/utils';
+import { LIMITS } from '../../../model/constants';
+import type { ColumnColor } from '../../../model/types';
 import { createButton, createConfirmDialog, createDialog } from '../../components';
-import { createColumnDetails, createColumnProperties } from '.';
+import { createColumnDetails } from './createColumnDetails';
+import { createColumnProperties } from './createColumnProperties';
 
 type EditColumnProps = {
 	mode: 'create' | 'edit';

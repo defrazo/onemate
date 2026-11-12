@@ -2,7 +2,8 @@ import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, User } from '../../model';
+import type { IUserRepo } from '../../model/ports';
+import type { ConnectedApp, ConnectedAppsResponse, User } from '../../model/types';
 
 export class UserRepoDemo implements IUserRepo {
 	constructor(private readonly getCurrentUser: () => User | null) {}

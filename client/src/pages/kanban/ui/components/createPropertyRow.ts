@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-import { insertSvg } from '../../lib';
+import { insertSvg } from '../../lib/utils';
 
 export const createPropertyRow = (icon: string, label: string, interactive = true) => {
 	const element = document.createElement('div');

@@ -1,6 +1,6 @@
 import { dateOffset } from '@/shared/lib/utils';
 
-import type { CreateColumnInput, CreateTaskInput } from '.';
+import type { CreateColumnInput, CreateTaskInput } from './types';
 
 export const getDefaultColumns = (): CreateColumnInput[] => [
 	{ title: 'Запланировано', color: 'slate', taskLimit: 10, position: 1000 },

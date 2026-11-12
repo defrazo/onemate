@@ -1,6 +1,6 @@
 import { LS_PREFIX } from '@/shared/config';
 
-import type { Cache, CacheSection } from '../model';
+import type { Cache, CacheSection } from '../model/types';
 
 export const cacheKey = (id: string) => `${LS_PREFIX}cache_${id}`;
 

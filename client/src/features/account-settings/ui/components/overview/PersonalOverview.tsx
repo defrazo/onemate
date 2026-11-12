@@ -3,9 +3,10 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 
-import { genderOptions } from '../../../lib';
-import { useProfile } from '../../../model';
-import { OverviewRow, OverviewSection } from '.';
+import { genderOptions } from '../../../lib/utils';
+import { useProfile } from '../../../model/useProfile';
+import { OverviewRow } from './OverviewRow';
+import { OverviewSection } from './OverviewSection';
 
 export const PersonalOverview = observer(() => {
 	const { userProfileStore, userStore } = useStore();

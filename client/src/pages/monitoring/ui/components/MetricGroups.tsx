@@ -9,9 +9,9 @@ import {
 	IconNotes,
 } from '@tabler/icons-react';
 
-import { formatFileSize } from '@/widgets/cloud';
+import { formatFileSize } from '@/shared/lib/utils';
 
-import type { MonitoringCounts } from '../../api';
+import type { MonitoringCounts } from '../../api/monitoring';
 
 interface MetricGroup {
 	title: string;

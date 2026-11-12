@@ -1,8 +1,8 @@
 import { WIDGETS } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
-import { cacheKey, cleanupCache } from '../lib';
-import type { Cache, CachePatch } from '../model';
+import { cacheKey, cleanupCache } from '../lib/utils';
+import type { Cache, CachePatch } from '../model/types';
 
 export const readCache = (id: string): Cache | null => {
 	return storage.get(cacheKey(id)) as Cache | null;

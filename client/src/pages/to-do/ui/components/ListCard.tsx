@@ -11,7 +11,10 @@ import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
-import { AddItem, ItemRow, ListActions, ListHidden } from '.';
+import { AddItem } from './AddItem';
+import { ItemRow } from './ItemRow';
+import { ListActions } from './ListActions';
+import { ListHidden } from './ListHidden';
 
 interface ListCardProps {
 	list: TodoList;

@@ -2,7 +2,8 @@ import { useEffect, useState } from 'react';
 import { IconListNumbers } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../primitives/button/ui/Button';
 
 export const TableOfContents = () => {
 	const [sections, setSections] = useState<{ id: string; title: string }[]>([]);

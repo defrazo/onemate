@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-import type { Component } from '../model';
+import type { Component } from '../model/types';
 
 export const variants: Record<Component, Record<string, string>> = {
 	button: {

@@ -8,7 +8,7 @@ import { IconLocation } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
 import { Input, LoadingState } from '@/shared/ui';
 
-import { LocationSearchStore } from '../model';
+import { LocationSearchStore } from '../model/location.store';
 import { Suggestions } from './components';
 
 interface LocationSearchProps {

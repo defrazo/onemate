@@ -2,14 +2,11 @@ import { action, computed, makeObservable, observable } from 'mobx';
 
 import { AsyncStore } from '@/shared/lib/store';
 
-import { availableLanguages } from '../lib';
-import {
-	createDefaultTranslator,
-	type ITranslatorProvider,
-	type Language,
-	type Textbox,
-	TRANSLATOR_MAX_LENGTH,
-} from '.';
+import { availableLanguages } from '../lib/languages';
+import { TRANSLATOR_MAX_LENGTH } from './constants';
+import { createDefaultTranslator } from './defaults';
+import type { ITranslatorProvider } from './ports';
+import type { Language, Textbox } from './types';
 
 const SOURCE_IDX = 0;
 const TARGET_IDX = 1;

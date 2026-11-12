@@ -4,10 +4,10 @@ import { observer } from 'mobx-react-lite';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { useStore } from '@/app/providers';
-import { cn } from '@/shared/lib/utils';
+import { cn, formatFileSize } from '@/shared/lib/utils';
 import { Button, Input, Switch } from '@/shared/ui';
 
-import { formatFileSize, getFileIcon } from '../../../lib';
+import { getFileIcon } from '../../../lib/getFileIcon';
 
 export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 	const { cloudStore, notifyStore } = useStore();

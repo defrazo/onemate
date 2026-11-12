@@ -6,8 +6,8 @@ import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { getExternalUrl } from '../../../lib';
-import { ConflictDialog } from '.';
+import { getExternalUrl } from '../../../lib/getExternalUrl';
+import { ConflictDialog } from './ConflictDialog';
 
 const SAVED_STATUS_DURATION = 4000;
 

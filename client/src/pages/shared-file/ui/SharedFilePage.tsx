@@ -14,12 +14,17 @@ import { useParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { useCopy, usePageTitle } from '@/shared/lib/hooks';
+import { formatFileSize } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
-import { formatFileSize } from '@/widgets/cloud';
 
-import { getSharedFile, getSharedFileDownloadUrl, getSharedFilePreviewUrl, SharedFileNotFoundError } from '../api';
-import { getPreviewType } from '../lib';
-import type { SharedFile } from '../model';
+import {
+	getSharedFile,
+	getSharedFileDownloadUrl,
+	getSharedFilePreviewUrl,
+	SharedFileNotFoundError,
+} from '../api/sharedFile';
+import { getPreviewType } from '../lib/utils';
+import type { SharedFile } from '../model/types';
 
 type Status = 'loading' | 'success' | 'not-found' | 'error';
 type PreviewStatus = 'idle' | 'loading' | 'success' | 'error';

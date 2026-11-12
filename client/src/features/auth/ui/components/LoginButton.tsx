@@ -5,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { useResponsive } from '@/shared/lib/hooks';
 import { Button } from '@/shared/ui';
 
-import { UserAuth } from '..';
+import { UserAuth } from '../UserAuth';
 
 export const LoginButton = observer(() => {
 	const { isMobile } = useResponsive();

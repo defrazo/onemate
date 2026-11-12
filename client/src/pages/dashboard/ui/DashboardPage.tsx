@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 
-import { useDashboard } from '../model';
+import { useDashboard } from '../model/useDashboard';
 import { Slot, Widget } from './components';
 
 export const DashboardPage = observer(() => {

@@ -4,8 +4,9 @@ import { action, computed, makeObservable, observable, reaction, runInAction } f
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import type { CloudData, CloudFile, CloudSort, ICloudRepo } from '.';
-import { CLOUD_STORAGE_BYTES } from '.';
+import { CLOUD_STORAGE_BYTES } from './constants';
+import type { ICloudRepo } from './ports';
+import type { CloudData, CloudFile, CloudSort } from './types';
 
 const TEXT_SAVE_DELAY = 3000;
 

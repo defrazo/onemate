@@ -2,8 +2,9 @@ import { IconCloudUpload } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { formatFileSize } from '@/shared/lib/utils';
 
-import { formatFileSize, formatRemainingTime, formatUploadSpeed } from '../../../lib';
+import { formatRemainingTime, formatUploadSpeed } from '../../../lib/utils';
 
 export const UploadProgress = observer(() => {
 	const { cloudStore: store } = useStore();

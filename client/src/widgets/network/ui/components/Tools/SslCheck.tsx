@@ -5,9 +5,13 @@ import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { Divider, Input, InputLabel } from '@/shared/ui';
 
-import { getDaysRemaining, sslResultToCopy } from '../../../lib';
-import type { SslCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
+import { getDaysRemaining, sslResultToCopy } from '../../../lib/utils';
+import type { SslCheckResult } from '../../../model/types';
+import { CopyButton } from '../CopyButton';
+import { Metric } from '../Metric';
+import { StatusDot } from '../StatusDot';
+import { SubmitButton } from '../SubmitButton';
+import { ViewHeader } from '../ViewHeader';
 
 export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();

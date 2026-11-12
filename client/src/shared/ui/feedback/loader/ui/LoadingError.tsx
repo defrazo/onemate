@@ -1,8 +1,7 @@
 import { IconWifiOff } from '@tabler/icons-react';
 
-import { Button } from '@/shared/ui';
-
-import { LoadingState, type SpinnerSize } from '.';
+import { Button } from '../../../primitives/button/ui/Button';
+import { LoadingState, type SpinnerSize } from './LoadingState';
 
 interface LoadingErrorProps {
 	error?: boolean | null;

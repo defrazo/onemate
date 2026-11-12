@@ -7,7 +7,7 @@ import type {
 	KanbanBoard,
 	KanbanSnapshot,
 	Task,
-} from '../model';
+} from '../model/types';
 
 // === COLUMNS ===
 export const mapColumnFromDb = (db: DbColumn): Column => ({

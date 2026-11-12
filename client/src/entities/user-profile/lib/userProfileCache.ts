@@ -1,7 +1,7 @@
 import { normalizeDashboardLayout } from '@/shared/config';
 import { readCache, writeCache } from '@/shared/lib/cache';
 
-import type { UserProfile } from '../model';
+import type { UserProfile } from '../model/types';
 
 export type UserProfileCacheData = Pick<UserProfile, 'avatar_url' | 'widgets_sequence' | 'widgets_slots'>;
 

@@ -7,7 +7,7 @@ import type { WidgetId } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider, Tooltip } from '@/shared/ui';
 
-import type { WidgetItem } from '../../model';
+import type { WidgetItem } from '../../model/types';
 
 interface WidgetProps {
 	items: WidgetItem[];

@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 import { Link } from '@/shared/ui';
 
-import type { NavItem, NavVariant } from '../../model';
+import type { NavItem, NavVariant } from '../../model/types';
 
 interface NavLinkProps {
 	item: NavItem;

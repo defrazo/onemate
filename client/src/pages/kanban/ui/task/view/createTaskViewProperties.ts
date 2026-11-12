@@ -1,5 +1,7 @@
-import { arrowIcon, calendarIcon, calendarTimeIcon, insertSvg, priorityIcon, statusIcon } from '../../../lib';
-import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../../../model';
+import { arrowIcon, calendarIcon, calendarTimeIcon, priorityIcon, statusIcon } from '../../../lib/icons';
+import { insertSvg } from '../../../lib/utils';
+import { TASK_PRIORITY, TASK_STATUS } from '../../../model/constants';
+import type { TaskPriority, TaskStatus } from '../../../model/types';
 import { createPropertyRow } from '../../components';
 
 type CreateTaskViewPropertiesProps = {

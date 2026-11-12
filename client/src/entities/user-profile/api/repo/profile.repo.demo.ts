@@ -3,7 +3,8 @@ import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
 
 export class ProfileRepoDemo implements IUserProfileRepo {
 	constructor(private readonly loadInitialProfile: (id: string) => Promise<UserProfile>) {}

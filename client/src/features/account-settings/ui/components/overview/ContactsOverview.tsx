@@ -3,7 +3,8 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 
-import { OverviewRow, OverviewSection } from '.';
+import { OverviewRow } from './OverviewRow';
+import { OverviewSection } from './OverviewSection';
 
 const renderValues = (values: string[]) => {
 	const filtered = values.filter((value) => value.trim());

@@ -2,8 +2,10 @@ import type { UserStore } from '@/entities/user';
 import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
-import { ProfileRepoDemo, ProfileRepoLaravel } from '.';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
+import { ProfileRepoDemo } from './profile.repo.demo';
+import { ProfileRepoLaravel } from './profile.repo.laravel';
 
 export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo {
 	private readonly realRepo: IUserProfileRepo;

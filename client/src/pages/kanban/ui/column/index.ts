@@ -1,3 +1,3 @@
 export { createColumn } from './createColumn';
 export { createColumnHeader } from './createColumnHeader';
-export { editColumn } from './edit';
+export { editColumn } from './edit/editColumn';

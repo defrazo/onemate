@@ -6,7 +6,8 @@ import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 import { key } from '@/shared/lib/utils';
 
-import type { ActivityLog, DeviceData, IActivityRepo, IDeviceProvider } from '.';
+import type { IActivityRepo, IDeviceProvider } from './ports';
+import type { ActivityLog, DeviceData } from './types';
 
 export class DeviceActivityStore extends AsyncStore {
 	private initializing: Promise<void> | null = null;

@@ -1,6 +1,8 @@
 import { cn } from '@/shared/lib/utils';
 
-import { deviceUtils, errorIcon, infoIcon, insertSvg, successIcon } from '../lib';
+import { deviceUtils } from './device';
+import { errorIcon, infoIcon, successIcon } from './icons';
+import { insertSvg } from './utils';
 
 type NotifyType = 'success' | 'error' | 'info';
 

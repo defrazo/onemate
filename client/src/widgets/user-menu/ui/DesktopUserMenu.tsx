@@ -6,7 +6,7 @@ import { useStore } from '@/app/providers';
 import { UserInfo } from '@/entities/user-profile';
 import { Button, Divider } from '@/shared/ui';
 
-import { desktopUserLinks } from '../model';
+import { desktopUserLinks } from '../model/menuItems';
 
 export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) => {
 	const navigate = useNavigate();

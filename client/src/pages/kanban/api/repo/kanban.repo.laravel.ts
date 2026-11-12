@@ -1,16 +1,17 @@
 import { api } from '@/shared/api';
 
+import type { IKanbanRepo } from '../../model/ports';
 import type {
 	CreateColumnInput,
 	CreateTaskInput,
 	DbKanbanBoards,
 	DbKanbanSnapshot,
 	DeletedKanbanBoard,
-	IKanbanRepo,
 	KanbanBoards,
 	KanbanSnapshot,
-} from '../../model';
-import { mapBoardFromDb, mapColumnToDb, mapSnapshotFromDb, mapTaskToDb, rethrowKanbanError } from '..';
+} from '../../model/types';
+import { rethrowKanbanError } from '../errors';
+import { mapBoardFromDb, mapColumnToDb, mapSnapshotFromDb, mapTaskToDb } from '../mapper';
 
 export class KanbanRepoLaravel implements IKanbanRepo {
 	async fetchBoards(): Promise<KanbanBoards> {

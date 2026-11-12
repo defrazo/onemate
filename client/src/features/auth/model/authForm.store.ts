@@ -1,6 +1,7 @@
 import { action, computed, makeObservable, observable } from 'mobx';
 
-import { type AuthData, type AuthType, createDefaultAuthForm } from '.';
+import { createDefaultAuthForm } from './defaults';
+import type { AuthData, AuthType } from './types';
 
 export class AuthFormStore {
 	authForm: AuthData = createDefaultAuthForm();

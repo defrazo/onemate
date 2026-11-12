@@ -1,6 +1,13 @@
-import { addIcon, insertSvg } from '../lib';
-import { type Column, type createState, enableMouseScroll, LIMITS, setupDnD, sortTasks, type Task } from '../model';
-import { createColumn, createTask, editColumn } from '.';
+import { addIcon } from '../lib/icons';
+import { insertSvg } from '../lib/utils';
+import { LIMITS } from '../model/constants';
+import { enableMouseScroll, setupDnD } from '../model/dnd';
+import { sortTasks } from '../model/sortTasks';
+import type { createState } from '../model/state';
+import type { Column, Task } from '../model/types';
+import { createColumn } from './column/createColumn';
+import { editColumn } from './column/edit/editColumn';
+import { createTask } from './task/createTask';
 
 export const createBoard = (state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;

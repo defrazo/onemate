@@ -1,4 +1,4 @@
-import { capitalizeFirstLetter } from '.';
+import { capitalizeFirstLetter } from './string';
 
 // Форматирует timestamp (секунды) в ISO-формат "YYYY-MM-DD"
 export const formatDate = (timestamp: number) => {

@@ -1,4 +1,4 @@
-import { LIMITS } from '../../../model';
+import { LIMITS } from '../../../model/constants';
 
 type CreateTaskDetailsProps = {
 	title: string;

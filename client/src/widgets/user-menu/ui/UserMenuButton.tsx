@@ -7,7 +7,8 @@ import { useEscapeClose, useOutsideClick, useResponsive } from '@/shared/lib/hoo
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { DesktopUserMenu, MobileUserMenu } from '.';
+import { DesktopUserMenu } from './DesktopUserMenu';
+import { MobileUserMenu } from './MobileUserMenu';
 
 export const UserMenuButton = () => {
 	const { isDesktop, isMobile, isTablet } = useResponsive();

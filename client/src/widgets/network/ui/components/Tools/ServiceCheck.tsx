@@ -11,9 +11,13 @@ import {
 	getServiceStatusClass,
 	getStatusCodeClass,
 	serviceResultToCopy,
-} from '../../../lib';
-import type { CheckVia, ServiceCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
+} from '../../../lib/utils';
+import type { CheckVia, ServiceCheckResult } from '../../../model/types';
+import { CopyButton } from '../CopyButton';
+import { Metric } from '../Metric';
+import { StatusDot } from '../StatusDot';
+import { SubmitButton } from '../SubmitButton';
+import { ViewHeader } from '../ViewHeader';
 
 export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();

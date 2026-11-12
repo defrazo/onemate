@@ -1,5 +1,5 @@
-import type { ButtonValue } from '../model';
-import { getBracketDepth } from '.';
+import type { ButtonValue } from '../model/types';
+import { getBracketDepth } from './expression';
 
 const MAX_BRACKET_DEPTH = 5;
 

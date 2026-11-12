@@ -1,1 +1,1 @@
-export * from './theme.store';
+export { ThemeStore } from './theme.store';

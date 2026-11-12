@@ -1,7 +1,11 @@
-import { createSvg, notifier, settingsIcon } from '../../../lib';
-import { LIMITS, type TaskPriority, type TaskStatus } from '../../../model';
+import { settingsIcon } from '../../../lib/icons';
+import { notifier } from '../../../lib/notifier';
+import { createSvg } from '../../../lib/utils';
+import { LIMITS } from '../../../model/constants';
+import type { TaskPriority, TaskStatus } from '../../../model/types';
 import { createButton, createDialog } from '../../components';
-import { createTaskDetails, createTaskProperties } from '.';
+import { createTaskDetails } from './createTaskDetails';
+import { createTaskProperties } from './createTaskProperties';
 
 type EditTaskProps = {
 	mode: 'create' | 'edit';

@@ -5,8 +5,8 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 
-import type { MonitoredService } from '../../../model';
-import { Card } from '.';
+import type { MonitoredService } from '../../../model/types';
+import { Card } from './Card';
 
 interface ListProps {
 	services: MonitoredService[];

@@ -2,9 +2,10 @@ import { IconChartLine, IconHistory, IconLoader2, IconPower } from '@tabler/icon
 
 import { cn } from '@/shared/lib/utils';
 
-import { getUptimeClass } from '../../../lib';
-import type { MonitoringHistory } from '../../../model';
-import { HistoryState, TimeChart } from '.';
+import { getUptimeClass } from '../../../lib/utils';
+import type { MonitoringHistory } from '../../../model/types';
+import { HistoryState } from './HistoryState';
+import { TimeChart } from './TimeChart';
 
 interface HistoryProps {
 	history: MonitoringHistory | null;

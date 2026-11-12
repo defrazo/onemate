@@ -1,6 +1,8 @@
-import { addIcon, createSvg } from '../../lib';
-import { LIMITS } from '../../model';
-import { createButton, createDialog } from '.';
+import { addIcon } from '../../lib/icons';
+import { createSvg } from '../../lib/utils';
+import { LIMITS } from '../../model/constants';
+import { createButton } from './createButton';
+import { createDialog } from './createDialog';
 
 export const createBoardDialog = ({ onSubmit }: { onSubmit: (title: string) => Promise<boolean> }) => {
 	let isClosed = false;

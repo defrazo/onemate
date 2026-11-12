@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo, UploadProgress } from '../../model';
+import type { ICloudRepo } from '../../model/ports';
+import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from '../../model/types';
 
 export class CloudRepoLaravel implements ICloudRepo {
 	async load(): Promise<CloudData> {

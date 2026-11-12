@@ -2,10 +2,10 @@ import { reaction } from 'mobx';
 
 import type { UserStore } from '@/entities/user';
 
-import { KanbanRepoRouting } from '../api';
-import { deviceUtils } from '../lib';
-import { createState } from '../model';
-import { renderKanban } from '.';
+import { KanbanRepoRouting } from '../api/repo/kanban.repo.routing';
+import { deviceUtils } from '../lib/device';
+import { createState } from '../model/state';
+import { renderKanban } from './render';
 
 export const initKanban = (root: HTMLElement, userStore: UserStore) => {
 	deviceUtils.init();

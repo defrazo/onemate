@@ -13,12 +13,16 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { cn } from '@/shared/lib/utils';
+import { cn, formatFileSize } from '@/shared/lib/utils';
 import { Button, ConfirmDialog, Input } from '@/shared/ui';
 
-import { formatFileSize, getFileIcon, getFileNameParts, getPreviewType } from '../../../lib';
-import type { CloudFile } from '../../../model';
-import { FilesItemActions, PreviewDialog, ShareDialog } from '.';
+import { getFileIcon } from '../../../lib/getFileIcon';
+import { getPreviewType } from '../../../lib/getPreviewType';
+import { getFileNameParts } from '../../../lib/utils';
+import type { CloudFile } from '../../../model/types';
+import { FilesItemActions } from './FilesItemActions';
+import { PreviewDialog } from './PreviewDialog';
+import { ShareDialog } from './ShareDialog';
 
 interface FilesItem {
 	file: CloudFile;

@@ -7,7 +7,7 @@ import { UserInfo } from '@/entities/user-profile';
 import { accountSettingsTabs, type TabId } from '@/features/account-settings';
 import { Button, Divider } from '@/shared/ui';
 
-import { mobileUserMenuLinks, profileTabs } from '../model';
+import { mobileUserMenuLinks, profileTabs } from '../model/menuItems';
 
 export const MobileUserMenu = observer(() => {
 	const navigate = useNavigate();

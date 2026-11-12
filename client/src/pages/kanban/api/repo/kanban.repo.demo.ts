@@ -1,16 +1,17 @@
 import { generateUUID } from '@/shared/lib/utils';
 
-import { now } from '../../lib';
+import { now } from '../../lib/utils';
+import { LIMITS } from '../../model/constants';
+import { getDefaultColumns, getDefaultTasks } from '../../model/defaults';
+import type { IKanbanRepo } from '../../model/ports';
 import type {
 	CreateColumnInput,
 	CreateTaskInput,
 	DeletedKanbanBoard,
-	IKanbanRepo,
 	KanbanBoards,
 	KanbanSnapshot,
-} from '../../model';
-import { getDefaultColumns, getDefaultTasks, LIMITS } from '../../model';
-import { BoardRevisionConflictError } from '..';
+} from '../../model/types';
+import { BoardRevisionConflictError } from '../errors';
 
 export class KanbanRepoDemo implements IKanbanRepo {
 	private boards: KanbanSnapshot[] = [];

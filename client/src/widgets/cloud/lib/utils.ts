@@ -1,13 +1,4 @@
-export const formatFileSize = (bytes: number) => {
-	if (bytes < 1024) return `${bytes} Б`;
-
-	const units = ['КБ', 'МБ', 'ГБ', 'ТБ'];
-	const idx = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)) - 1, units.length - 1);
-
-	const size = bytes / 1024 ** (idx + 1);
-
-	return `${Number(size.toFixed(1)).toLocaleString('ru-RU')} ${units[idx]}`;
-};
+import { formatFileSize } from '@/shared/lib/utils';
 
 export const normalizePastedFiles = (files: File[]): File[] =>
 	files.map((file) => {

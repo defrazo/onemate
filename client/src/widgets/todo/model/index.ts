@@ -1,1 +1,1 @@
-export * from './tip';
+export { TODO_TIP } from './tip';

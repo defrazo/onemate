@@ -7,9 +7,10 @@ import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
 import { Collapse, Input, Radio, Select } from '@/shared/ui';
 
-import { genderOptions, getAvailableDays } from '../../../lib';
-import type { PersonalDraft } from '../../../model';
-import { FormActions, RemoveButton } from '..';
+import { genderOptions, getAvailableDays } from '../../../lib/utils';
+import type { PersonalDraft } from '../../../model/types';
+import { FormActions } from '../FormActions';
+import { RemoveButton } from '../RemoveButton';
 
 export const PersonalDataSection = observer(() => {
 	const { notifyStore, userProfileStore, userStore } = useStore();

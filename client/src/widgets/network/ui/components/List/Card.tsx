@@ -6,9 +6,9 @@ import type { CSSProperties } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
 
-import { getCheckViaLabel, getResponseTimeClass } from '../../../lib';
-import type { MonitoredService } from '../../../model';
-import { StatusDot } from '..';
+import { getCheckViaLabel, getResponseTimeClass } from '../../../lib/utils';
+import type { MonitoredService } from '../../../model/types';
+import { StatusDot } from '../StatusDot';
 
 interface CardProps {
 	service: MonitoredService;

@@ -15,9 +15,10 @@ import {
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import { userProfileCache, type UserProfileCacheData } from '../lib';
-import type { Gender, IUserProfileRepo, IUserProfileThemePort, UserProfile, UserProfilePatch } from '.';
-import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from '.';
+import { userProfileCache, type UserProfileCacheData } from '../lib/userProfileCache';
+import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from './defaults';
+import type { IUserProfileRepo, IUserProfileThemePort } from './ports';
+import type { Gender, UserProfile, UserProfilePatch } from './types';
 
 export class UserProfileStore extends AsyncStore implements IUserProfileThemePort {
 	private readonly avatarUpdate = new Debouncer();

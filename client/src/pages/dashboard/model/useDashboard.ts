@@ -5,8 +5,9 @@ import { arrayMove } from '@dnd-kit/sortable';
 import { useStore } from '@/app/providers';
 import { EMPTY_WIDGET_SLOT, type WidgetId, WIDGETS, type WidgetSlot } from '@/shared/config';
 
-import { type SwitcherOption, type WidgetItem, widgets } from '.';
 import { normalizeActiveWidgets, readActiveWidgets, saveActiveWidgets } from './dashboardCache';
+import type { SwitcherOption, WidgetItem } from './types';
+import { widgets } from './widgets';
 
 export const useDashboard = () => {
 	const sensors = useSensors(useSensor(PointerSensor));

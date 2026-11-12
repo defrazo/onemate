@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { AppNotification, INotificationRepo } from '../../model';
+import type { INotificationRepo } from '../../model/ports';
+import type { AppNotification } from '../../model/types';
 
 export class NotificationRepoLaravel implements INotificationRepo {
 	async getNotifications(): Promise<AppNotification[]> {

@@ -3,7 +3,8 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-import { type Placement, useTooltip } from '../model';
+import type { Placement } from '../model/types';
+import { useTooltip } from '../model/useTooltip';
 
 interface TooltipProps {
 	content?: ReactNode;

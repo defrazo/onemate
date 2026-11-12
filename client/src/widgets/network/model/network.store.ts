@@ -3,18 +3,18 @@ import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { networkCache } from '../lib';
+import { networkCache } from '../lib/networkCache';
+import type { INetworkRepo } from './ports';
 import type {
 	CheckVia,
 	CreateMonitoredService,
-	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '.';
+} from './types';
 
 export class NetworkStore extends AsyncStore {
 	private initializing: Promise<void> | null = null;

@@ -4,7 +4,7 @@ import { useStore } from '@/app/providers';
 import { useResponsive } from '@/shared/lib/hooks';
 import { Button, Thumbnail } from '@/shared/ui';
 
-import { AvatarPicker } from '.';
+import { AvatarPicker } from './AvatarPicker';
 
 export const AvatarSection = observer(() => {
 	const { isMobile, isTablet } = useResponsive();

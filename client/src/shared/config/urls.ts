@@ -1,4 +1,4 @@
-import { APP_PREFIX } from '.';
+import { APP_PREFIX } from './app';
 
 export const API_URLS = {
 	CBR_LATEST: 'https://www.cbr-xml-daily.com/daily_json.js',

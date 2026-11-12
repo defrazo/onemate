@@ -1,4 +1,8 @@
-import type { TaskStatusConfig } from '.';
+export type TaskStatusConfig = {
+	label: string;
+	color: string;
+	halo?: boolean;
+};
 
 export const LIMITS = {
 	MAX_BOARDS: 10,

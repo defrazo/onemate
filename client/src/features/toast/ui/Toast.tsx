@@ -3,7 +3,7 @@ import { toast } from 'sonner';
 
 import { cn } from '@/shared/lib/utils';
 
-import type { NotifyType, ToastOptions } from '../model';
+import type { NotifyType, ToastOptions } from '../model/types';
 
 export const toastStyles: Record<NotifyType, string> = {
 	success: 'bg-(--status-success-muted) text-(--status-success)',

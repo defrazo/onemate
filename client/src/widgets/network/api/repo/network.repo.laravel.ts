@@ -1,16 +1,16 @@
 import { api } from '@/shared/api';
 
+import type { INetworkRepo } from '../../model/ports';
 import type {
 	CheckVia,
 	CreateMonitoredService,
-	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '../../model';
+} from '../../model/types';
 
 export class NetworkRepoLaravel implements INetworkRepo {
 	async loadServices(): Promise<MonitoredService[]> {

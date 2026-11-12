@@ -1,1 +1,1 @@
-export { CredentialsRepoRouting } from './repo';
+export { CredentialsRepoRouting } from './repo/credentials.repo.routing';

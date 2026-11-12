@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { Button, LoadingError, NoContent, SegmentedControl, SyncIndicator } from '@/shared/ui';
 
-import type { NetworkView } from '../model';
+import type { NetworkView } from '../model/types';
 import { AddService, Details, List, Settings, Tools } from './components';
 
 export const Network = observer(() => {

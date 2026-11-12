@@ -3,7 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { capitalizeFirstLetter } from '@/shared/lib/utils';
 
-import { ConditionIcon } from '.';
+import { ConditionIcon } from './ConditionIcon';
 
 export const Forecast = observer(() => {
 	const { weatherStore } = useStore();

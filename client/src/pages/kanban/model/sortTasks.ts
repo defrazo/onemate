@@ -1,4 +1,4 @@
-import type { Task, TaskPriority, TaskStatus } from '.';
+import type { Task, TaskPriority, TaskStatus } from './types';
 
 const STATUS_ORDER: Record<TaskStatus, number> = { active: 0, paused: 1, waiting: 2 };
 const PRIORITY_ORDER: Record<TaskPriority, number> = { high: 0, medium: 1, low: 2 };

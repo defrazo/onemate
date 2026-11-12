@@ -1,8 +1,9 @@
 import { storage } from '@/shared/lib/storage';
 import { generateUUID, key, randomNumber, toPlain } from '@/shared/lib/utils';
 
-import type { ActivityLog, IActivityRepo } from '../../model';
-import { fakeLog } from '..';
+import type { IActivityRepo } from '../../model/ports';
+import type { ActivityLog } from '../../model/types';
+import { fakeLog } from '../utils';
 
 export class ActivityRepoDemo implements IActivityRepo {
 	async loadActivityLog(id: string): Promise<ActivityLog[]> {

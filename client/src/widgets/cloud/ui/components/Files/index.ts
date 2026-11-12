@@ -1,9 +1,0 @@
-export { Files } from './Files';
-export { FilesFooter } from './FilesFooter';
-export { FilesItem } from './FilesItem';
-export { FilesItemActions } from './FilesItemActions';
-export { FilesToolbar } from './FilesToolbar';
-export { PreviewDialog } from './PreviewDialog';
-export { ShareDialog } from './ShareDialog';
-export { SortMenu } from './SortMenu';
-export { UploadProgress } from './UploadProgress';

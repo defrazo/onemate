@@ -6,8 +6,8 @@ import { useStore } from '@/app/providers';
 import { useResponsive, useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, PasswordInput } from '@/shared/ui';
 
-import { FormActions } from '..';
-import { PendingEmailDialog } from '.';
+import { FormActions } from '../FormActions';
+import { PendingEmailDialog } from './PendingEmailDialog';
 
 export const PrimaryEmail = observer(() => {
 	const { isMobile } = useResponsive();

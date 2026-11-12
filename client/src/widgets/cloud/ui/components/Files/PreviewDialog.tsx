@@ -5,8 +5,9 @@ import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { Button, LoadingState } from '@/shared/ui';
 
-import { getPreviewType } from '../../../lib';
-import { CLOUD_PREVIEW_BYTES, CLOUD_TEXT_PREVIEW_BYTES, type CloudFile } from '../../../model';
+import { getPreviewType } from '../../../lib/getPreviewType';
+import { CLOUD_PREVIEW_BYTES, CLOUD_TEXT_PREVIEW_BYTES } from '../../../model/constants';
+import type { CloudFile } from '../../../model/types';
 
 export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 	const copy = useCopy();

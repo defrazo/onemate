@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
-import { chevronDownIcon, insertSvg } from '../../lib';
+import { chevronDownIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 type SelectValue = string | number | null;
 

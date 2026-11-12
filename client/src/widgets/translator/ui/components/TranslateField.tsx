@@ -6,7 +6,7 @@ import { useCopy } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, LoadingState, Textarea } from '@/shared/ui';
 
-import { TRANSLATOR_MAX_LENGTH } from '../../model';
+import { TRANSLATOR_MAX_LENGTH } from '../../model/constants';
 
 export const TranslateField = observer(({ side }: { side: 'source' | 'target' }) => {
 	const copy = useCopy();

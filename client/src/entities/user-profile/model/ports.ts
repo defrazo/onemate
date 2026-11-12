@@ -1,6 +1,6 @@
 import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
 
-import type { UserProfile, UserProfilePatch } from '.';
+import type { UserProfile, UserProfilePatch } from './types';
 
 export interface IUserProfileThemePort {
 	readonly isReady: boolean;

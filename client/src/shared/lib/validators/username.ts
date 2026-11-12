@@ -1,4 +1,4 @@
-import type { ValidationResult } from '.';
+import type { ValidationResult } from './types';
 
 export const validateUsername = (username: string): ValidationResult => {
 	const normalized = username.trim();

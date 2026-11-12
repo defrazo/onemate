@@ -1,7 +1,7 @@
 import { makeAutoObservable } from 'mobx';
 import type { ReactNode } from 'react';
 
-import type { ModalConfig, ModalOptions, ModalType } from '.';
+import type { ModalConfig, ModalOptions, ModalType } from './types';
 
 export class ModalStore {
 	private history: ModalConfig[] = [];

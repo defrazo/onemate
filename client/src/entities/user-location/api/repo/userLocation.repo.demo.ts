@@ -2,7 +2,8 @@ import type { City } from '@/entities/city';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { IUserLocationRepo, UserLocationType } from '../../model';
+import type { IUserLocationRepo } from '../../model/ports';
+import type { UserLocationType } from '../../model/types';
 
 export class UserLocationRepoDemo implements IUserLocationRepo {
 	constructor(private readonly type: UserLocationType) {}

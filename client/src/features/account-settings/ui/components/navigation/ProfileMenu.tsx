@@ -5,7 +5,7 @@ import { APP_NAME } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
 
-import type { ProfileNavButton } from '../../../model';
+import type { ProfileNavButton } from '../../../model/types';
 
 const buttons: ProfileNavButton[] = [
 	{ id: 'overview', title: 'Главная', icon: IconHome },

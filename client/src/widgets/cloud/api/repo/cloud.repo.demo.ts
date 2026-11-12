@@ -3,8 +3,10 @@ import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key } from '@/shared/lib/utils';
 
-import { CLOUD_STORAGE_BYTES, type CloudData, type CloudTextData, type ICloudRepo } from '../../model';
-import { CLOUD_DEMO_FILES, DEMO_FILE_PATHS } from '..';
+import { CLOUD_STORAGE_BYTES } from '../../model/constants';
+import type { ICloudRepo } from '../../model/ports';
+import type { CloudData, CloudTextData } from '../../model/types';
+import { CLOUD_DEMO_FILES, DEMO_FILE_PATHS } from '../demoFiles';
 
 export class CloudRepoDemo implements ICloudRepo {
 	constructor(private readonly getCurrentUser: () => User | null) {}

@@ -1,6 +1,6 @@
 import { readCache, writeCache } from '@/shared/lib/cache';
 
-import type { CurrentType, ForecastType } from '../model';
+import type { CurrentType, ForecastType } from '../model/types';
 
 export type WeatherCacheData = {
 	current: CurrentType;

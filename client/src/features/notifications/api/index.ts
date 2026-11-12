@@ -1,2 +1,1 @@
-export * from './demoNotifications';
-export * from './repo';
+export { NotificationRepoRouting } from './repo/notification.repo.routing';

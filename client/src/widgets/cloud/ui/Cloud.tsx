@@ -4,7 +4,8 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { LoadingError, SyncIndicator } from '@/shared/ui';
 
-import { CLOUD_LIMITS, type CloudTab } from '../model';
+import { CLOUD_LIMITS } from '../model/constants';
+import type { CloudTab } from '../model/types';
 import { Clipboard, Files, Toolbar } from './components';
 
 export const Cloud = observer(() => {

@@ -1,5 +1,6 @@
-import { limitIcon, paletteIcon } from '../../../lib';
-import { COLUMN_COLORS, type ColumnColor } from '../../../model';
+import { limitIcon, paletteIcon } from '../../../lib/icons';
+import { COLUMN_COLORS } from '../../../model/constants';
+import type { ColumnColor } from '../../../model/types';
 import { createPropertyRow, createSelect } from '../../components';
 
 type CreateColumnPropertiesProps = {

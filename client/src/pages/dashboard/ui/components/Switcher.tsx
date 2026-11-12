@@ -3,7 +3,7 @@ import { useEffect, useRef } from 'react';
 import { EMPTY_WIDGET_SLOT, type WidgetId, type WidgetSlot } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 
-import type { SwitcherOption } from '../../model';
+import type { SwitcherOption } from '../../model/types';
 
 interface SwitcherProps {
 	options: SwitcherOption[];

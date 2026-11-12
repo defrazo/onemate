@@ -1,7 +1,8 @@
 import type { City } from '@/entities/city';
 import { api } from '@/shared/api';
 
-import type { IUserLocationRepo, UserLocationType } from '../../model';
+import type { IUserLocationRepo } from '../../model/ports';
+import type { UserLocationType } from '../../model/types';
 
 type DbUserLocation = {
 	id: number;

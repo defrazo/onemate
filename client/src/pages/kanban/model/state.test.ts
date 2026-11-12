@@ -1,9 +1,13 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 
-import { BoardRevisionConflictError } from '../api';
-import { MESSAGES, notifier } from '../lib';
-import type { IKanbanRepo, KanbanSnapshot, Task } from '.';
-import { createState, getDefaultColumns, getDefaultTasks, sortTasks } from '.';
+import { BoardRevisionConflictError } from '../api/errors';
+import { MESSAGES } from '../lib/messages';
+import { notifier } from '../lib/notifier';
+import { getDefaultColumns, getDefaultTasks } from './defaults';
+import type { IKanbanRepo } from './ports';
+import { sortTasks } from './sortTasks';
+import { createState } from './state';
+import type { KanbanSnapshot, Task } from './types';
 
 vi.mock('../lib/notifier', () => ({ notifier: { setNotice: vi.fn() } }));
 const deferred = <T>() => {

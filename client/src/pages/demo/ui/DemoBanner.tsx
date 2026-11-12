@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { Button, Link } from '@/shared/ui';
 
-import { demoCache } from '../lib';
+import { demoCache } from '../lib/demoCache';
 
 export const DemoBanner = observer(() => {
 	const { userStore } = useStore();

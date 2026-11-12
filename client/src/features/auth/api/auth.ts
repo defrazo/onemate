@@ -9,7 +9,7 @@ import type {
 	RegisterPayload,
 	ResetPasswordPayload,
 	VerifyInviteResponse,
-} from '.';
+} from './types';
 
 export const authApi = {
 	async verifyInvite(inviteCode: string): Promise<VerifyInviteResponse> {

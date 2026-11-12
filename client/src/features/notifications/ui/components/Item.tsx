@@ -6,7 +6,8 @@ import { APP_NAME } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { type AppNotification, notificationConfig } from '../../model';
+import { notificationConfig } from '../../model/config';
+import type { AppNotification } from '../../model/types';
 
 export const Item = observer(({ notification }: { notification: AppNotification }) => {
 	const { notificationStore: store, notifyStore } = useStore();

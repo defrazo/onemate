@@ -1,6 +1,6 @@
 import { type ReactNode, useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 
-import type { Placement } from '.';
+import type { Placement } from './types';
 
 const MARGIN = 8;
 

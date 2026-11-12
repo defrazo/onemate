@@ -6,9 +6,11 @@ import { useStore } from '@/app/providers';
 import { pluralize } from '@/shared/lib/utils';
 import { Button, ConfirmDialog, Input, NoContent } from '@/shared/ui';
 
-import { normalizePastedFiles } from '../../../lib';
-import { useCloudPaste } from '../../../model';
-import { FilesFooter, FilesItem, UploadProgress } from '.';
+import { normalizePastedFiles } from '../../../lib/utils';
+import { useCloudPaste } from '../../../model/useCloudPaste';
+import { FilesFooter } from './FilesFooter';
+import { FilesItem } from './FilesItem';
+import { UploadProgress } from './UploadProgress';
 
 interface FilesProps {
 	searchOpen: boolean;

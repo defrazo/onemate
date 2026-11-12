@@ -6,7 +6,7 @@ import { type City, isSameCity } from '@/entities/city';
 import { LocationSearch } from '@/features/location-search';
 import { Collapse } from '@/shared/ui';
 
-import { FormActions } from '..';
+import { FormActions } from '../FormActions';
 
 export const LocationSection = observer(() => {
 	const { notifyStore, userProfileStore } = useStore();

@@ -2,7 +2,8 @@ import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { type Padding, resolveStyles, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
-import { Spinner } from '@/shared/ui';
+
+import { Spinner } from '../../../feedback/loader/ui/Spinner';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	ref?: Ref<HTMLButtonElement>;

@@ -1,1 +1,0 @@
-export { availableLanguages } from './languages';

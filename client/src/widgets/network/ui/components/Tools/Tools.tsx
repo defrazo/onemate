@@ -3,7 +3,9 @@ import { type Icon, IconCertificate, IconLink, IconNetwork, IconPlus } from '@ta
 
 import { Button } from '@/shared/ui';
 
-import { PortCheck, ServiceCheck, SslCheck } from '.';
+import { PortCheck } from './PortCheck';
+import { ServiceCheck } from './ServiceCheck';
+import { SslCheck } from './SslCheck';
 
 type ToolId = 'service' | 'port' | 'ssl';
 

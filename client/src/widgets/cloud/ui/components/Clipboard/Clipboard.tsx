@@ -15,7 +15,7 @@ import { useStore } from '@/app/providers';
 import { useTextEditor } from '@/shared/lib/hooks';
 import { Divider, EditorAction, Textarea } from '@/shared/ui';
 
-import { CLOUD_LIMITS } from '../../../model';
+import { CLOUD_LIMITS } from '../../../model/constants';
 
 export const Clipboard = observer(() => {
 	const { cloudStore: store } = useStore();

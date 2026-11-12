@@ -1,1 +1,1 @@
-export * from './repo';
+export { NetworkRepoRouting } from './repo/network.repo.routing';

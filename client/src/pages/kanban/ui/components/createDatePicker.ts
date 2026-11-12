@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
-import { dateIcon, insertSvg } from '../../lib';
+import { dateIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 type CreateDatePickerProps = {
 	value?: string | null;

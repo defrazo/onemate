@@ -1,5 +1,6 @@
-import type { ITranslatorProvider, TranslateRequest } from '../../model';
-import { fetchTranslate } from '..';
+import type { ITranslatorProvider } from '../../model/ports';
+import type { TranslateRequest } from '../../model/types';
+import { fetchTranslate } from '../fetchTranslate';
 
 export class TranslatorProviderApi implements ITranslatorProvider {
 	async translate({ text, source, target, signal }: TranslateRequest): Promise<string> {

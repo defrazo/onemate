@@ -1,4 +1,4 @@
-import type { ActivityLog, DeviceData } from '.';
+import type { ActivityLog, DeviceData } from './types';
 
 export type ActivityLogInput = Omit<ActivityLog, 'id' | 'created_at' | 'user_id'>;
 

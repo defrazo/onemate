@@ -1,6 +1,6 @@
 import { useId, useState } from 'react';
 
-import type { MonitoringCheck } from '../../../model';
+import type { MonitoringCheck } from '../../../model/types';
 
 type ChartPoint = { x: number; y: number; responseTime: number; checkedAt: string };
 type TimelineSegment = { x1: number; x2: number; status: MonitoringCheck['status'] };

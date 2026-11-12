@@ -3,7 +3,8 @@ import { IconChevronUp } from '@tabler/icons-react';
 
 import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../primitives/button/ui/Button';
 
 const BASE_BOTTOM = 16;
 

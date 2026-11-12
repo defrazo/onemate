@@ -1,4 +1,4 @@
-import type { Textbox } from '.';
+import type { Textbox } from './types';
 
 const DEFAULT_TRANSLATOR: Textbox[] = [
 	{ type: 'source', language: 'ru', text: '' },

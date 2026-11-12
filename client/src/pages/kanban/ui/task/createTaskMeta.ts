@@ -1,4 +1,5 @@
-import { type Task, TASK_PRIORITY, TASK_STATUS } from '../../model';
+import { TASK_PRIORITY, TASK_STATUS } from '../../model/constants';
+import type { Task } from '../../model/types';
 
 export const createTaskMeta = (task: Task) => {
 	const element = document.createElement('div');

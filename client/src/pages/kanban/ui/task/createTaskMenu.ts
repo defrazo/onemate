@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
-import { deleteIcon, editIcon, insertSvg, viewIcon } from '../../lib';
+import { deleteIcon, editIcon, viewIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 type CreateTaskMenuProps = {
 	trigger: HTMLButtonElement;

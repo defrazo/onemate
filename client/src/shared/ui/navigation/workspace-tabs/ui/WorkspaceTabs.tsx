@@ -2,8 +2,10 @@ import { Fragment, type KeyboardEvent } from 'react';
 import { IconPlus } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button, ConfirmActions, Input } from '@/shared/ui';
 
+import { ConfirmActions } from '../../../controls/confirm-actions/ui/ConfirmActions';
+import { Button } from '../../../primitives/button/ui/Button';
+import { Input } from '../../../primitives/input/ui/Input';
 import { TabActions } from './components';
 
 interface WorkspaceTabsProps {

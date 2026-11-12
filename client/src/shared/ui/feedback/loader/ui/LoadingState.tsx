@@ -1,6 +1,6 @@
 import { cn } from '@/shared/lib/utils';
 
-import { Spinner } from '.';
+import { Spinner } from './Spinner';
 
 export type SpinnerSize = 'xs' | 'sm' | 'md' | 'lg' | 'xl';
 

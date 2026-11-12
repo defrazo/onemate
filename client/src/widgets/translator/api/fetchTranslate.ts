@@ -1,7 +1,7 @@
 import { API_URLS, env } from '@/shared/config';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
-import type { TranslateRequest } from '../model';
+import type { TranslateRequest } from '../model/types';
 
 // Запрос перевода текста
 export const fetchTranslate = async ({ text, source, target, signal }: TranslateRequest): Promise<string | null> => {

@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { IconDots, IconEdit, IconTrash } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../../primitives/button/ui/Button';
 
 interface TabActionsProps {
 	title: string;

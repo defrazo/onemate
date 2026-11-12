@@ -1,6 +1,6 @@
 import { getDaysInMonth } from 'date-fns';
 
-import type { GenderOption } from '../model';
+import type { GenderOption } from '../model/types';
 
 export const getAvailableDays = (year: string, month: string): string[] => {
 	if (!year || month === '') return [];

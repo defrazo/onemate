@@ -1,5 +1,7 @@
-import { addIcon, infinityIcon, insertSvg, settingsIcon } from '../../lib';
-import { type Column, COLUMN_COLORS } from '../../model';
+import { addIcon, infinityIcon, settingsIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
+import { COLUMN_COLORS } from '../../model/constants';
+import type { Column } from '../../model/types';
 
 type CreateColumnHeaderProps = {
 	column: Column;

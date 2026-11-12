@@ -1,2 +1,1 @@
-export * from './fetchTranslate';
-export * from './providers';
+export { TranslatorProviderRouting } from './providers/translator.provider.routing';

@@ -1,2 +1,2 @@
-export * from './styles';
-export type * from './types';
+export { resolveStyles } from './styles';
+export type { Padding } from './types';

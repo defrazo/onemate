@@ -2,8 +2,10 @@ import type { City } from '@/entities/city';
 import type { UserStore } from '@/entities/user';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { IUserLocationRepo, UserLocationType } from '../../model';
-import { UserLocationRepoDemo, UserLocationRepoLaravel } from '.';
+import type { IUserLocationRepo } from '../../model/ports';
+import type { UserLocationType } from '../../model/types';
+import { UserLocationRepoDemo } from './userLocation.repo.demo';
+import { UserLocationRepoLaravel } from './userLocation.repo.laravel';
 
 export class UserLocationRepoRouting extends BaseRouting implements IUserLocationRepo {
 	private readonly realRepo: IUserLocationRepo;

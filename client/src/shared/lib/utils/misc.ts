@@ -36,3 +36,15 @@ export const getRandomPaletteColor = (): PaletteColor => {
 	const colors = Object.keys(COLOR_PALETTE) as PaletteColor[];
 	return colors[Math.floor(Math.random() * colors.length)];
 };
+
+// Форматирует размер файла
+export const formatFileSize = (bytes: number) => {
+	if (bytes < 1024) return `${bytes} Б`;
+
+	const units = ['КБ', 'МБ', 'ГБ', 'ТБ'];
+	const idx = Math.min(Math.floor(Math.log(bytes) / Math.log(1024)) - 1, units.length - 1);
+
+	const size = bytes / 1024 ** (idx + 1);
+
+	return `${Number(size.toFixed(1)).toLocaleString('ru-RU')} ${units[idx]}`;
+};

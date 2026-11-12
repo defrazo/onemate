@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 
-import { TRANSLATE_DELAY } from '../model';
+import { TRANSLATE_DELAY } from '../model/constants';
 import { Controls, TranslateField } from './components';
 
 export const Translator = observer(() => {

@@ -5,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
-import { Item } from '.';
+import { Item } from './Item';
 
 export const Menu = observer(() => {
 	const { notificationStore: store, notifyStore } = useStore();

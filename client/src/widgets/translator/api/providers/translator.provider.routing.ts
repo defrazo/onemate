@@ -1,8 +1,10 @@
 import type { UserStore } from '@/entities/user';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { ITranslatorProvider, TranslateRequest } from '../../model';
-import { TranslatorProviderApi, TranslatorProviderDemo } from '.';
+import type { ITranslatorProvider } from '../../model/ports';
+import type { TranslateRequest } from '../../model/types';
+import { TranslatorProviderDemo } from './translator.provider.demo';
+import { TranslatorProviderApi } from './translator.provider.real';
 
 export class TranslatorProviderRouting extends BaseRouting implements ITranslatorProvider {
 	private readonly realProvider: ITranslatorProvider;

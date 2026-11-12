@@ -1,4 +1,5 @@
-import { createCloseButton, createOverlay } from '.';
+import { createCloseButton } from './createCloseButton';
+import { createOverlay } from './createOverlay';
 
 export const createDialog = (text: string, icon?: SVGElement, onClose?: () => void) => {
 	const { overlay, close } = createOverlay({

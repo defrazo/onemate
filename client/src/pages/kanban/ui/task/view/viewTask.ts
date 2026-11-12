@@ -1,7 +1,12 @@
-import { createSvg, formatTaskSummary, notifier, viewIcon } from '../../../lib';
-import type { TaskPriority, TaskStatus } from '../../../model';
+import { formatTaskSummary } from '../../../lib/formatTaskSummary';
+import { viewIcon } from '../../../lib/icons';
+import { notifier } from '../../../lib/notifier';
+import { createSvg } from '../../../lib/utils';
+import type { TaskPriority, TaskStatus } from '../../../model/types';
 import { createButton, createDialog } from '../../components';
-import { createTaskDetails, createTaskMeta, createTaskViewProperties } from '.';
+import { createTaskDetails } from './createTaskDetails';
+import { createTaskMeta } from './createTaskMeta';
+import { createTaskViewProperties } from './createTaskViewProperties';
 
 type ViewTaskProps = {
 	initial: {

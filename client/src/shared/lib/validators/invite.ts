@@ -1,4 +1,4 @@
-import type { ValidationResult } from '.';
+import type { ValidationResult } from './types';
 
 export const validateInvite = (invite: string): ValidationResult => {
 	const normalized = invite.trim();

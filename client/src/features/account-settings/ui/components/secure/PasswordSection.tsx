@@ -7,8 +7,8 @@ import { cn } from '@/shared/lib/utils';
 import { validatePassword } from '@/shared/lib/validators';
 import { Collapse, PasswordInput, PasswordRules } from '@/shared/ui';
 
-import { useProfile } from '../../../model';
-import { FormActions } from '..';
+import { useProfile } from '../../../model/useProfile';
+import { FormActions } from '../FormActions';
 
 export const PasswordSection = observer(() => {
 	const { checkPassword } = useValidation();

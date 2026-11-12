@@ -1,17 +1,17 @@
 import { api } from '@/shared/api';
 import { RestrictedAccess } from '@/shared/lib/errors';
 
+import type { INetworkRepo } from '../../model/ports';
 import type {
 	CheckVia,
 	CreateMonitoredService,
-	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '../../model';
+} from '../../model/types';
 
 export class NetworkRepoDemo implements INetworkRepo {
 	async loadServices(): Promise<MonitoredService[]> {

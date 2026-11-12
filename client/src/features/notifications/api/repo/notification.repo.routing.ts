@@ -1,8 +1,10 @@
 import { type Feature, type IUserRoutingPort, type Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { AppNotification, INotificationRepo } from '../../model';
-import { NotificationRepoDemo, NotificationRepoLaravel } from '.';
+import type { INotificationRepo } from '../../model/ports';
+import type { AppNotification } from '../../model/types';
+import { NotificationRepoDemo } from './notification.repo.demo';
+import { NotificationRepoLaravel } from './notification.repo.laravel';
 
 export class NotificationRepoRouting implements INotificationRepo {
 	private readonly realRepo: INotificationRepo;

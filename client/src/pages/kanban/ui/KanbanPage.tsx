@@ -5,10 +5,12 @@ import { useStore } from '@/app/providers';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { Button, LoadingError, SyncIndicator, WorkspaceTabs } from '@/shared/ui';
 
-import { createSvg, deleteIcon, notifier } from '../lib';
-import { LIMITS } from '../model';
-import { initKanban } from '.';
+import { deleteIcon } from '../lib/icons';
+import { notifier } from '../lib/notifier';
+import { createSvg } from '../lib/utils';
+import { LIMITS } from '../model/constants';
 import { createBoardDialog, createConfirmDialog } from './components';
+import { initKanban } from './init';
 
 type KanbanInstance = ReturnType<typeof initKanban>;
 

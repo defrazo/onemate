@@ -1,7 +1,8 @@
 import { api } from '@/shared/api';
 import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
 
 type ProfileResponse = {
 	profile: UserProfile;

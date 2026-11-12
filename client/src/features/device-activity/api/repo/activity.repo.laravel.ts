@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { ActivityLog, IActivityRepo } from '../../model';
+import type { IActivityRepo } from '../../model/ports';
+import type { ActivityLog } from '../../model/types';
 
 type ActivityListResponse = {
 	logs: ActivityLog[];

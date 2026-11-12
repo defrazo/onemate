@@ -4,8 +4,9 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { Collapse, LoadingState, PhoneInput } from '@/shared/ui';
 
-import { normalizeArray, withEmptySlot } from '../../../lib';
-import { FormActions, RemoveButton } from '..';
+import { normalizeArray, withEmptySlot } from '../../../lib/utils';
+import { FormActions } from '../FormActions';
+import { RemoveButton } from '../RemoveButton';
 
 const MAX_PHONES = 3;
 

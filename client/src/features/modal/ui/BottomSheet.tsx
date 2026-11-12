@@ -4,7 +4,7 @@ import { useBodyScrollLock } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { BackButton } from '@/shared/ui';
 
-import { useDragger } from '../model';
+import { useDragger } from '../model/useDragger';
 
 interface BottomSheetProps {
 	onBack?: () => void;

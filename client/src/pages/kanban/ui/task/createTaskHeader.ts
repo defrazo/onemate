@@ -1,8 +1,9 @@
 import { cn } from '@/shared/lib/utils';
 
-import { insertSvg, optionsIcon } from '../../lib';
-import type { Task } from '../../model';
-import { createTaskMenu } from '.';
+import { optionsIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
+import type { Task } from '../../model/types';
+import { createTaskMenu } from './createTaskMenu';
 
 type CreateTaskHeaderProps = {
 	task: Task;

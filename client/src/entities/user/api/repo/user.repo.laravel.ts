@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { ConnectedApp, ConnectedAppsResponse, IUserRepo, User } from '../../model';
+import type { IUserRepo } from '../../model/ports';
+import type { ConnectedApp, ConnectedAppsResponse, User } from '../../model/types';
 
 type UserResponse = {
 	user: User;

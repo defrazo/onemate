@@ -4,8 +4,9 @@ import type { IBaseUserPort } from '@/entities/user';
 import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { showBrowserNotification } from '../lib';
-import type { AppNotification, INotificationRepo } from '.';
+import { showBrowserNotification } from '../lib/utils';
+import type { INotificationRepo } from './ports';
+import type { AppNotification } from './types';
 
 const BROWSER_NOTIFICATIONS_KEY = 'browser-notifications-enabled';
 

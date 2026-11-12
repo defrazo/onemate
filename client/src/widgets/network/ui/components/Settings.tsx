@@ -4,8 +4,9 @@ import { IconLink, IconPlugConnected, IconServer, IconWorldWww, IconX } from '@t
 import { useStore } from '@/app/providers';
 import { Button, ConfirmDialog, Input, InputLabel, LengthHint, SegmentedControl, Switch } from '@/shared/ui';
 
-import { type CheckVia, LIMITS, type MonitoredService, type UpdateMonitoredService } from '../../model';
-import { ViewHeader } from '.';
+import { LIMITS } from '../../model/constants';
+import type { CheckVia, MonitoredService, UpdateMonitoredService } from '../../model/types';
+import { ViewHeader } from './ViewHeader';
 
 interface SettingsProps {
 	service: MonitoredService;

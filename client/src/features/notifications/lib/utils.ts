@@ -1,4 +1,4 @@
-import type { AppNotification } from '../model';
+import type { AppNotification } from '../model/types';
 
 export const showBrowserNotification = (notification: AppNotification) => {
 	if (!('Notification' in window)) return;

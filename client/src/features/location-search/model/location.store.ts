@@ -3,8 +3,8 @@ import { action, computed, makeObservable, observable, reaction } from 'mobx';
 import { type City, fetchCityByCoordinates } from '@/entities/city';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import { fetchCitiesByName } from '../api';
-import { regionsDictionary } from '../lib';
+import { fetchCitiesByName } from '../api/fetchCitiesByName';
+import { regionsDictionary } from '../lib/regionsDictionary';
 
 export class LocationSearchStore extends AsyncStore {
 	private readonly searchDebouncer = new Debouncer();

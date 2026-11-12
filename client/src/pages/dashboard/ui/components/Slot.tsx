@@ -5,8 +5,8 @@ import type { WidgetId, WidgetSlot } from '@/shared/config';
 import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 
-import type { SwitcherOption } from '../../model';
-import { Switcher } from '.';
+import type { SwitcherOption } from '../../model/types';
+import { Switcher } from './Switcher';
 
 interface SlotProps {
 	options: SwitcherOption[];
