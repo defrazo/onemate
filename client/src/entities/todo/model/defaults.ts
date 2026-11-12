@@ -1,6 +1,6 @@
 import { generateUUID } from '@/shared/lib/utils';
 
-import type { TodoCanvas } from '.';
+import type { TodoCanvas } from './types';
 
 export const getDefaultTodoCanvases = (userId: string): TodoCanvas[] => {
 	const timestamp = new Date().toISOString();

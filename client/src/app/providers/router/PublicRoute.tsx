@@ -3,7 +3,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 
 import { SplashScreen } from '@/shared/ui';
 
-import { useStore } from '../store';
+import { useStore } from '../store/ui/useStore';
 
 export const PublicRoute = observer(() => {
 	const { authStore, userStore } = useStore();

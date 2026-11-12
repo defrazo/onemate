@@ -1,4 +1,4 @@
-import type { AllStores, InitKeys } from '.';
+import type { AllStores, InitKeys } from './types';
 
 type LifecycleStore = {
 	init?: () => void;

@@ -1,7 +1,7 @@
 import { api } from '@/shared/api';
 import { handleError } from '@/shared/lib/errors';
 
-import type { City } from '../model';
+import type { City } from '../model/types';
 
 // Автоматическое получение местоположения по IP без запроса у пользователя
 export const fetchCityByIP = async (): Promise<City | null> => {

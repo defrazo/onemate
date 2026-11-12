@@ -1,1 +1,1 @@
-export * from './repo';
+export { TodoRepoRouting } from './repo';

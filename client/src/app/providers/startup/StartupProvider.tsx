@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { IconAlertCircle } from '@tabler/icons-react';
 
-import { App } from '@/app/App';
 import { APP_NAME } from '@/shared/config';
 import { Button, SplashScreen } from '@/shared/ui';
 
+import { App } from '../../App';
 import { getRootStore, StoreProvider } from '../store';
 
 const rootStore = getRootStore();

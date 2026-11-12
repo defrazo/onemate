@@ -1,4 +1,6 @@
-import { type AllStores, StoreFactory, StoreInitializer } from '.';
+import { StoreFactory } from './StoreFactory';
+import { StoreInitializer } from './StoreInitializer';
+import type { AllStores } from './types';
 
 export class RootStore implements AllStores {
 	public readonly credentialsStore: AllStores['credentialsStore'];

@@ -1,4 +1,4 @@
-import type { ItemChanges, ListChanges, TodoCanvas } from '.';
+import type { ItemChanges, ListChanges, TodoCanvas } from './types';
 
 export interface ITodoRepo {
 	load(signal: AbortSignal): Promise<TodoCanvas[]>;

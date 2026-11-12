@@ -1,14 +1,10 @@
 import type { User } from '@/entities/user';
 import { generateUUID } from '@/shared/lib/utils';
 
-import {
-	getDefaultTodoCanvases,
-	type ItemChanges,
-	type ITodoRepo,
-	type ListChanges,
-	TODO_LIMITS,
-	type TodoCanvas,
-} from '../../model';
+import { TODO_LIMITS } from '../../model/constants';
+import { getDefaultTodoCanvases } from '../../model/defaults';
+import type { ITodoRepo } from '../../model/ports';
+import type { ItemChanges, ListChanges, TodoCanvas } from '../../model/types';
 
 export class TodoRepoDemo implements ITodoRepo {
 	private canvases: TodoCanvas[] = [];

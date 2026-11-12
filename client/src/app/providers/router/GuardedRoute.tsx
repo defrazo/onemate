@@ -4,7 +4,7 @@ import { Navigate, Outlet } from 'react-router-dom';
 import { type Feature, PermissionService } from '@/entities/user';
 import { SplashScreen } from '@/shared/ui';
 
-import { useStore } from '../store';
+import { useStore } from '../store/ui/useStore';
 
 export const GuardedRoute = observer(({ feature }: { feature?: Feature }) => {
 	const { authStore, userStore } = useStore();

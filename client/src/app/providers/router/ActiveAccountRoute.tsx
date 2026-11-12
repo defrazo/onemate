@@ -1,7 +1,7 @@
 import { observer } from 'mobx-react-lite';
 import { Navigate, Outlet } from 'react-router-dom';
 
-import { useStore } from '../store';
+import { useStore } from '../store/ui/useStore';
 
 export const ActiveAccountRoute = observer(() => {
 	const { userStore } = useStore();
