@@ -24,7 +24,6 @@ export const ListSwitcher = ({ canvases, value, disabled, onChange }: ListSwitch
 					align="start"
 					className="min-w-40 border-0 text-sm font-medium"
 					disabled={disabled}
-					listClassName="min-w-40"
 					options={options}
 					value={value}
 					variant="tone"

@@ -1,5 +1,7 @@
 import type { ReactNode } from 'react';
 
+export type ListPlacement = 'start' | 'end';
+
 export type SelectOption = {
 	key?: string;
 	value: string;

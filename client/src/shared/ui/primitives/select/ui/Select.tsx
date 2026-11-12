@@ -1,9 +1,12 @@
+import { useId } from 'react';
+import { FloatingPortal } from '@floating-ui/react';
 import { IconChevronDown } from '@tabler/icons-react';
 
 import { type Padding, resolveStyles, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
 
-import { type Direction, type Justify, type SelectOption, useSelect } from '../model';
+import type { Direction, Justify, ListPlacement, SelectOption } from '../model/types';
+import { useSelect } from '../model/useSelect';
 import { List } from './components';
 
 interface SelectProps {
@@ -17,6 +20,9 @@ interface SelectProps {
 	direction?: Direction;
 	align?: Justify;
 
+	listWidth?: number;
+	listPlacement?: ListPlacement;
+
 	hideChevron?: boolean;
 	clearable?: boolean;
 	disabled?: boolean;
@@ -25,6 +31,12 @@ interface SelectProps {
 	className?: string;
 	listClassName?: string;
 }
+
+const alignments: Record<Justify, string> = {
+	start: 'justify-start text-left',
+	center: 'justify-center text-center',
+	end: 'justify-end text-right',
+};
 
 export const Select = ({
 	options,
@@ -37,6 +49,9 @@ export const Select = ({
 	direction = 'auto',
 	align = 'center',
 
+	listWidth,
+	listPlacement = 'start',
+
 	hideChevron = false,
 	clearable = false,
 	disabled = false,
@@ -45,18 +60,18 @@ export const Select = ({
 	className,
 	listClassName,
 }: SelectProps) => {
-	const { isOpen, openUpwards, wrapperRef, buttonRef, close, toggle } = useSelect(direction);
+	const listId = useId();
+
+	const { isOpen, refs, floatingStyles, getReferenceProps, getFloatingProps, close, toggle } = useSelect(
+		direction,
+		listPlacement,
+		listWidth
+	);
 
 	const selectedOption = options.find((option) => option.value === value);
 
-	const alignments = {
-		start: 'justify-start text-left',
-		center: 'justify-center text-center',
-		end: 'justify-end text-right',
-	} as const;
-
-	const handleSelect = (value: string) => {
-		onChange(value);
+	const handleSelect = (nextValue: string): void => {
+		onChange(nextValue);
 		close();
 	};
 
@@ -64,20 +79,23 @@ export const Select = ({
 		component: 'select',
 		variant,
 		padding,
-		className: cn('group relative flex w-full items-center gap-2', alignments[align], className),
+		className: cn('relative flex w-full items-center gap-2', alignments[align], className),
 	});
 
 	return (
-		<div ref={wrapperRef} className="relative w-full">
+		<div className="relative w-full">
 			<button
-				ref={buttonRef}
-				aria-expanded={isOpen}
-				aria-haspopup="listbox"
-				aria-invalid={error || undefined}
+				ref={refs.setReference}
+				{...getReferenceProps({
+					'aria-controls': isOpen ? listId : undefined,
+					'aria-expanded': isOpen,
+					'aria-haspopup': 'listbox',
+					'aria-invalid': error || undefined,
+					onClick: toggle,
+				})}
 				className={styles}
 				disabled={disabled}
 				type="button"
-				onClick={toggle}
 			>
 				{selectedOption?.icon &&
 					(typeof selectedOption.icon === 'string' ? (
@@ -85,7 +103,7 @@ export const Select = ({
 					) : (
 						selectedOption.icon
 					))}
-				<span className="min-w-0">{selectedOption?.label ?? placeholder}</span>
+				<span className="min-w-0 truncate">{selectedOption?.label ?? placeholder}</span>
 				{!hideChevron && (
 					<IconChevronDown
 						className={cn(
@@ -96,15 +114,19 @@ export const Select = ({
 				)}
 			</button>
 			{isOpen && !disabled && (
-				<List
-					align={align}
-					className={listClassName}
-					clearable={clearable}
-					openUpwards={openUpwards}
-					options={options}
-					value={value}
-					onSelect={handleSelect}
-				/>
+				<FloatingPortal>
+					<div ref={refs.setFloating} style={floatingStyles} {...getFloatingProps()} className="z-70">
+						<List
+							align={align}
+							className={listClassName}
+							clearable={clearable}
+							id={listId}
+							options={options}
+							value={value}
+							onSelect={handleSelect}
+						/>
+					</div>
+				</FloatingPortal>
 			)}
 		</div>
 	);

@@ -66,8 +66,8 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 				<Select
 					align="start"
 					className="w-30 hover:border-transparent focus:border-transparent"
-					direction="up"
-					listClassName="-right-1 mb-2 left-auto w-60"
+					listPlacement="end"
+					listWidth={240}
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
 					value={currency.code}

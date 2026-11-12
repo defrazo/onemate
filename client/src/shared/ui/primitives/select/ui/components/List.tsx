@@ -2,14 +2,14 @@ import { IconCheck } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
 
-import type { Justify, SelectOption } from '../../model';
+import type { Justify, SelectOption } from '../../model/types';
 
 interface ListProps {
+	id: string;
 	options: SelectOption[];
 	value: string;
 	onSelect: (value: string) => void;
 
-	openUpwards: boolean;
 	align: Justify;
 	clearable: boolean;
 
@@ -22,14 +22,14 @@ const alignments: Record<Justify, string> = {
 	end: 'justify-end',
 };
 
-export const List = ({ options, value, onSelect, openUpwards, align, clearable, className }: ListProps) => {
+export const List = ({ id, options, value, onSelect, align, clearable, className }: ListProps) => {
 	return (
 		<ul
 			className={cn(
-				'absolute right-0 left-0 z-30 max-h-56 scrollbar-none overflow-y-auto overscroll-contain rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)',
-				openUpwards ? 'bottom-full mb-1' : 'top-full mt-1',
+				'max-h-(--select-max-height) w-full scrollbar-none overflow-y-auto overscroll-contain rounded-xl border border-(--border-primary) bg-(--bg-secondary) p-1.5 shadow-(--shadow-contrast)',
 				className
 			)}
+			id={id}
 			role="listbox"
 		>
 			{clearable && value && (
