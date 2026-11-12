@@ -11,7 +11,15 @@ export type CurrencyOption = {
 	value: string;
 };
 
-export type RatesList = Record<string, { code: string; icon: string; name: string; value: number }>;
+export type RatesList = Record<
+	string,
+	{
+		code: string;
+		icon: string;
+		name: string;
+		value: number;
+	}
+>;
 
 export type RatesResponse = {
 	base: string;
@@ -35,4 +43,14 @@ type CBRValute = {
 	Name: string;
 	Value: number;
 	Previous: number;
+};
+
+export type CurrencyAmount = {
+	amount: string;
+	code: string;
+};
+
+export type SummatorState = {
+	rows: (CurrencyAmount & { id: string })[];
+	target: string;
 };

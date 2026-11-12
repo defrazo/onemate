@@ -1,12 +1,12 @@
 import { LS_PREFIX } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
-import type { RatesResponse } from '../model';
+import type { RatesResponse } from '../model/types';
 
 const CACHE_KEY = `${LS_PREFIX}currency_rates`;
 const TTL = 12 * 60 * 60 * 1000;
 
-export type CurrencyCacheData = {
+type CurrencyCacheData = {
 	rates: RatesResponse;
 	cachedAt: number;
 };

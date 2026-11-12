@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { Input, Select } from '@/shared/ui';
 
-import { MAX_VALUE } from '../../model';
+import { MAX_VALUE } from '../../model/constants';
 
 export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) => {
 	const { currencyStore, notifyStore } = useStore();

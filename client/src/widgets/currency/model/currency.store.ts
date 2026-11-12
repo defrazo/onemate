@@ -4,9 +4,14 @@ import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 import { formatFixed } from '@/shared/lib/utils';
 
-import { fetchRates } from '../api';
-import { currencyCache, currencyIcons, currencyNames, sortCodesByPopularity } from '../lib';
-import { createDefaultCurrencies, type Currency, type CurrencyOption, type RatesList, type RatesResponse } from '.';
+import { fetchRates } from '../api/fetchRates';
+import { currencyCache } from '../lib/currencyCache';
+import { currencyIcons } from '../lib/currencyIcons';
+import { currencyNames } from '../lib/currencyNames';
+import { convertAmount } from '../lib/sum';
+import { sortCodesByPopularity } from '../lib/utils';
+import { createDefaultCurrencies } from './defaults';
+import type { Currency, CurrencyOption, RatesList, RatesResponse } from './types';
 
 export class CurrencyStore extends AsyncStore {
 	private initialized = false;
@@ -193,18 +198,9 @@ export class CurrencyStore extends AsyncStore {
 		this.updateCurrency(1, 'value', value);
 	}
 
-	private getRate(code: string): number {
-		if (!this.rates?.rates) return code === 'RUB' ? 1 : 0;
-		return this.rates.rates[code] ?? (code === 'RUB' ? 1 : 0);
-	}
-
 	private convertCurrency(amount: number, from: string, to: string): number {
-		const fromRate = this.getRate(from);
-		const toRate = this.getRate(to);
-
-		if (!Number.isFinite(amount) || fromRate <= 0 || toRate <= 0) return 0;
-
-		return Number((amount * (toRate / fromRate)).toFixed(2));
+		const result = convertAmount(amount, from, to, this.ratesList);
+		return result === null ? 0 : Number(result.toFixed(2));
 	}
 
 	constructor(private readonly userStore: IBaseUserPort) {

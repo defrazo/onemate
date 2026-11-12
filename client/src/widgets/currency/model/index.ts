@@ -1,5 +1,2 @@
-export * from './constants';
-export * from './currency.store';
-export * from './defaults';
-export * from './tip';
-export type * from './types';
+export { CurrencyStore } from './currency.store';
+export { CURRENCY_TIP } from './tip';

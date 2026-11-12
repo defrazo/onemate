@@ -10,6 +10,7 @@ export const sortCodesByPopularity = (codes: string[]): string[] => {
 		const ia = idx(a);
 		const ib = idx(b);
 		if (ia !== ib) return ia - ib;
+
 		return a.localeCompare(b);
 	});
 };
