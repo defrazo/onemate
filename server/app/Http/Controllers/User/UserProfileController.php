@@ -133,7 +133,7 @@ class UserProfileController extends Controller
             'array',
             'size:6',
             function (string $attribute, mixed $value, \Closure $fail): void {
-                $allowed = ['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo'];
+                $allowed = ['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo', 'credentials'];
                 $used = [];
 
                 if (!is_array($value) || !array_is_list($value)) {

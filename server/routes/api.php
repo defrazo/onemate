@@ -21,6 +21,7 @@ use App\Http\Controllers\Todo\TodoController;
 use App\Http\Controllers\User\ConnectedAppsController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
+use App\Http\Controllers\User\UserCredentialController;
 use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
@@ -120,8 +121,21 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::post('/activity', [UserAuthLogController::class, 'store'])->middleware('throttle:10,1');
             Route::delete('/activity', [UserAuthLogController::class, 'destroy']);
 
+            // Credentials
+            Route::prefix('credentials')->group(function () {
+                Route::get('/', [UserCredentialController::class, 'index']);
+                Route::post('/initialize', [UserCredentialController::class, 'initialize']);
+                Route::post('/', [UserCredentialController::class, 'store']);
+                Route::patch('/order', [UserCredentialController::class, 'reorder']);
+                Route::get('/{credential}/password', [UserCredentialController::class, 'password'])->whereUuid('credential')->middleware('throttle:60,1');
+                Route::get('/{credential}', [UserCredentialController::class, 'show'])->whereUuid('credential');
+                Route::patch('/{credential}', [UserCredentialController::class, 'update'])->whereUuid('credential');
+                Route::delete('/{credential}', [UserCredentialController::class, 'destroy'])->whereUuid('credential');
+            });
+
             // Notes
             Route::get('/notes', [UserNoteController::class, 'index']);
+            Route::post('/notes/initialize', [UserNoteController::class, 'initialize']);
             Route::put('/notes', [UserNoteController::class, 'replace']);
         });
 
