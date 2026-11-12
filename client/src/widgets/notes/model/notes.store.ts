@@ -1,54 +1,67 @@
+import axios from 'axios';
 import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import type { IBaseUserPort } from '@/entities/user';
+import { NotesConflictError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 import { generateUUID, getRandomPaletteColor } from '@/shared/lib/utils';
 
-import { notesCache } from '../lib';
-import type { INotesRepo, Note } from '.';
+import { notesCache } from '../lib/notesCache';
+import type { INotesRepo } from './ports';
+import type { Note, NotesSnapshot } from './types';
+
+const snapshotOf = (notes: Note[]): string =>
+	JSON.stringify(notes.map(({ id, text, color }, order_idx) => ({ id, text, color, order_idx })));
 
 export class NotesStore extends AsyncStore {
 	private readonly debouncer = new Debouncer();
-	private initializing: Promise<void> | null = null;
-	private loaded = false;
+	private readonly requests = new Set<AbortController>();
 
-	private lastSnapshot = '';
-	private isSaving = false;
+	private initializing: Promise<void> | null = null;
+	private savingPromise: Promise<void> | null = null;
+	private loaded = false;
+	private verified = false;
+
+	private lastSnapshot = '[]';
 	private generation = 0;
 	private draftVersion = 0;
+	private revision: number | null = null;
+	private pendingSnapshot: string | null = null;
+	private uncertain = false;
+	private owner: string | null = null;
 
 	notes: Note[] = [];
 	draft: Note[] = [];
 	activeNoteId: string | null = null;
+	saving = false;
+	syncError: Error | null = null;
+	conflict = false;
 
 	get isReady(): boolean {
 		return this.loaded;
 	}
 
 	get activeNote(): Note | null {
-		if (!this.activeNoteId) return null;
 		return this.draft.find((note) => note.id === this.activeNoteId) ?? null;
 	}
 
-	private get canAddMore(): boolean {
-		return this.draft.length < 50;
-	}
-
-	private get canDeleteMore(): boolean {
-		return this.draft.length > 1;
+	get dirty(): boolean {
+		const current = snapshotOf(this.draft);
+		return current !== this.lastSnapshot || this.uncertain || (this.saving && this.pendingSnapshot !== current);
 	}
 
 	get isSyncing(): boolean {
-		return this.getDraftSnapshot() !== this.lastSnapshot;
+		return this.saving;
 	}
 
 	ensureLoaded(): Promise<void> {
 		const userId = this.userStore.id;
-		if (!userId || this.loaded) return Promise.resolve();
+		if (!userId || this.verified) return Promise.resolve();
 
 		if (this.initializing) return this.initializing;
 
 		const promise = this.loadNotes(userId);
+
 		this.initializing = promise;
 
 		void promise
@@ -69,29 +82,28 @@ export class NotesStore extends AsyncStore {
 	}
 
 	updateNote<K extends keyof Note>(id: string, key: K, value: Note[K]): void {
-		const idx = this.draft.findIndex((note) => note.id === id);
-		if (idx === -1) return;
+		const index = this.draft.findIndex((note) => note.id === id);
+		if (index < 0) return;
 
-		this.draft[idx] = { ...this.draft[idx], [key]: value, updated_at: new Date().toISOString() };
+		this.draft[index] = { ...this.draft[index], [key]: value, updated_at: new Date().toISOString() };
 		this.persistDraft();
 	}
 
-	updateOrder(newNotes: Note[]): void {
-		this.draft = this.normalizeOrder(newNotes);
+	updateOrder(notes: Note[]): void {
+		this.draft = this.normalizeOrder(notes);
 		this.commitDraft();
 		this.scheduleServerUpdate();
 	}
 
 	addNote(): string {
-		if (!this.canAddMore) throw new Error('Максимум 50 заметок');
+		if (this.draft.length >= 50) throw new Error('Максимум 50 заметок');
 
-		const maxOrder = this.draft.length ? Math.max(...this.draft.map((note) => note.order_idx)) + 1 : 0;
 		const now = new Date().toISOString();
 		const note: Note = {
 			id: generateUUID(),
 			text: '',
 			color: getRandomPaletteColor(),
-			order_idx: maxOrder,
+			order_idx: 0,
 			created_at: now,
 			updated_at: now,
 		};
@@ -99,107 +111,267 @@ export class NotesStore extends AsyncStore {
 		this.draft = this.normalizeOrder([note, ...this.draft]);
 		this.commitDraft();
 		this.scheduleServerUpdate();
-
 		return note.id;
 	}
 
 	removeNote(id: string): void {
-		if (!this.canDeleteMore) throw new Error('Нельзя удалить все заметки');
+		if (this.draft.length <= 1) throw new Error('Нельзя удалить все заметки');
 
-		this.draft = this.draft.filter((note) => note.id !== id);
+		this.draft = this.normalizeOrder(this.draft.filter((note) => note.id !== id));
 		this.commitDraft();
 		this.scheduleServerUpdate();
 	}
 
-	private async loadNotes(userId: string): Promise<void> {
-		const generation = this.generation;
-		const cached = notesCache.read(userId);
+	async retry(): Promise<void> {
+		if (this.conflict) return;
 
-		if (cached?.dirty) {
-			const sorted = this.sortNotes(cached.notes);
+		runInAction(() => (this.syncError = null));
 
-			runInAction(() => {
-				this.applyDirtyDraft(sorted);
-				this.loaded = true;
-			});
-
-			this.scheduleServerUpdate();
-			return;
-		}
-
-		if (cached && this.userStore.id === userId && this.generation === generation)
-			this.applyNotes(this.sortNotes(cached.notes));
-
-		await this.withLoading(async () => {
-			const draftVersion = this.draftVersion;
-			const notes = await this.repo.loadAll(userId);
-
-			if (this.userStore.id !== userId || this.generation !== generation || this.draftVersion !== draftVersion)
-				return;
-
-			const sorted = this.sortNotes(notes);
-
-			runInAction(() => {
-				this.applyNotes(sorted);
-				this.loaded = true;
-			});
-
-			notesCache.write(userId, sorted, false);
-		});
+		await this.ensureLoaded();
+		await this.save(true);
 	}
 
-	private scheduleServerUpdate(): void {
+	async flushForLogout(): Promise<void> {
+		this.debouncer.cancel();
+
+		await this.ensureLoaded();
+
+		if (this.conflict) throw new NotesConflictError(this.revision ?? 0);
+
+		await this.save(true);
+
+		if (this.hasUnsavedNotes()) throw new Error('Есть несохранённые черновики в других вкладках');
+	}
+
+	hasUnsavedNotes(): boolean {
+		if (this.dirty) return true;
+
+		const userId = this.userStore.id;
+		if (!userId) return false;
+
+		try {
+			return notesCache.readAll(userId).some((draft) => snapshotOf(draft.notes) !== this.lastSnapshot);
+		} catch {
+			return true;
+		}
+	}
+
+	getRecoveryText(): string {
+		const userId = this.userStore.id;
+		if (!userId) return '';
+
+		try {
+			return JSON.stringify({ notes: this.draft, drafts: notesCache.readAll(userId) }, null, 2);
+		} catch {
+			return JSON.stringify({ notes: this.draft }, null, 2);
+		}
+	}
+
+	async loadServerVersion(): Promise<void> {
 		const userId = this.userStore.id;
 		if (!userId) return;
 
-		this.debouncer.schedule(() => void this.syncDraftToServer(userId), 500);
-	}
-
-	private async syncDraftToServer(userId: string): Promise<void> {
-		if (this.userStore.id !== userId || this.isSaving || !this.hasDraftChanged() || this.activeNoteId) return;
+		if (this.savingPromise) await this.savingPromise.catch(() => {});
 
 		const generation = this.generation;
-		const draft = this.draft.map((note) => ({ ...note }));
-		const snapshot = this.getDraftSnapshot();
+		const version = this.draftVersion;
+		const controller = this.request();
 
-		this.isSaving = true;
+		try {
+			const server = await this.repo.loadAll(userId, controller.signal);
+
+			if (!this.current(userId, generation) || version !== this.draftVersion) return;
+
+			this.validateOwner(server, userId);
+
+			runInAction(() => {
+				this.applySnapshot(server);
+				this.conflict = false;
+				this.syncError = null;
+				this.verified = true;
+			});
+
+			notesCache.discardOwn(userId, this.writer);
+			notesCache.discardLegacy(userId);
+		} catch (error) {
+			if (!this.current(userId, generation)) return;
+
+			this.handleFailure(error);
+
+			throw error;
+		} finally {
+			this.requests.delete(controller);
+		}
+	}
+
+	discardForLogout(userId: string): void {
+		if (this.userStore.id !== userId) return;
+
+		notesCache.discardAll(userId);
+		this.reset();
+	}
+
+	private async loadNotes(userId: string): Promise<void> {
+		const generation = this.generation;
+		const controller = this.request();
+
+		runInAction(() => {
+			this.syncError = null;
+			this.setError(null);
+		});
+
+		try {
+			let server = await this.repo.loadAll(userId, controller.signal);
+
+			if (!this.current(userId, generation)) return;
+
+			this.validateOwner(server, userId);
+
+			if (server.notes.length === 0 && !this.dirty && server.revision === 0) {
+				server = await this.repo.initialize(userId, controller.signal);
+
+				if (!this.current(userId, generation)) return;
+
+				this.validateOwner(server, userId);
+			}
+			runInAction(() => {
+				if (!this.dirty || snapshotOf(this.draft) === snapshotOf(server.notes)) {
+					this.applySnapshot(server);
+					notesCache.discardOwn(userId, this.writer);
+				} else if (this.revision === null || this.revision !== server.revision || this.conflict) {
+					this.conflict = true;
+				} else {
+					this.lastSnapshot = snapshotOf(server.notes);
+				}
+
+				this.loaded = true;
+				this.verified = true;
+			});
+
+			if (this.dirty) {
+				this.persistDraft(false);
+				this.scheduleServerUpdate();
+			}
+		} catch (error) {
+			if (!this.current(userId, generation)) return;
+
+			this.handleFailure(error);
+			throw error;
+		} finally {
+			this.requests.delete(controller);
+		}
+	}
+
+	private scheduleServerUpdate(): void {
+		if (!this.verified || this.conflict || this.syncError) return;
+		this.debouncer.schedule(() => void this.save().catch(() => {}), 500);
+	}
+
+	private async save(force = false): Promise<void> {
+		if (this.savingPromise) {
+			await this.savingPromise;
+			if (force && this.dirty) await this.save(true);
+			return;
+		}
+
+		const userId = this.userStore.id;
+		if (!userId || !this.verified || !this.dirty || (!force && this.activeNoteId)) return;
+
+		if (this.conflict || this.revision === null) throw new NotesConflictError(this.revision ?? 0);
+
+		const promise = this.send(userId);
+		this.savingPromise = promise;
+
+		try {
+			await promise;
+		} finally {
+			if (this.savingPromise === promise) this.savingPromise = null;
+		}
+	}
+
+	private async send(userId: string): Promise<void> {
+		const generation = this.generation;
+		const version = this.draftVersion;
+		const draft = this.normalizeOrder(this.draft);
+		const controller = this.request();
+
+		this.pendingSnapshot = snapshotOf(draft);
+
+		runInAction(() => {
+			this.saving = true;
+			this.syncError = null;
+		});
 
 		let saved = false;
 
 		try {
-			await this.repo.replaceAll(userId, draft);
+			const server = await this.repo.replaceAll(userId, draft, this.revision!, controller.signal);
 
-			if (this.userStore.id !== userId || this.generation !== generation) return;
-			runInAction(() => (this.lastSnapshot = snapshot));
+			if (!this.current(userId, generation)) return;
 
+			this.validateOwner(server, userId);
+
+			runInAction(() => {
+				this.revision = server.revision;
+				this.lastSnapshot = snapshotOf(server.notes);
+				this.uncertain = false;
+				if (this.draftVersion === version) this.applySnapshot(server);
+			});
+
+			notesCache.acknowledge(userId, this.writer, version);
+			this.persistDraft(false);
 			saved = true;
+		} catch (error) {
+			if (!this.current(userId, generation)) return;
 
-			if (this.getDraftSnapshot() === snapshot) notesCache.write(userId, draft, false);
-		} catch {
+			runInAction(() => (this.uncertain = true));
+			this.handleFailure(error);
+			throw error;
 		} finally {
-			if (this.generation === generation) {
-				this.isSaving = false;
-
-				if (saved && this.userStore.id === userId && this.hasDraftChanged() && !this.activeNoteId)
-					this.scheduleServerUpdate();
+			this.requests.delete(controller);
+			if (this.current(userId, generation)) {
+				runInAction(() => {
+					this.saving = false;
+					this.pendingSnapshot = null;
+				});
+				if (saved && this.dirty && !this.activeNoteId) this.scheduleServerUpdate();
 			}
 		}
 	}
 
-	private applyNotes(notes: Note[]): void {
-		const copy = notes.map((note) => ({ ...note }));
+	private handleFailure(error: unknown): void {
+		runInAction(() => {
+			this.syncError = this.asError(error);
+			this.setError(this.syncError);
+			if (error instanceof NotesConflictError) this.conflict = true;
+		});
 
-		this.notes = copy;
-		this.draft = copy.map((note) => ({ ...note }));
+		this.persistDraft(false);
 
-		this.updateSnapshot();
+		if (axios.isAxiosError(error) && [401, 419].includes(error.response?.status ?? 0)) this.onSessionLost();
 	}
 
-	private applyDirtyDraft(notes: Note[]): void {
-		const copy = notes.map((note) => ({ ...note }));
+	private validateOwner(server: NotesSnapshot, userId: string): void {
+		if (server.user_id !== userId || !Number.isSafeInteger(server.revision) || server.revision < 0)
+			throw new Error('Сессия заметок изменилась');
+	}
 
-		this.notes = copy;
-		this.draft = copy.map((note) => ({ ...note }));
+	private current(userId: string, generation: number): boolean {
+		return this.userStore.id === userId && this.generation === generation;
+	}
+
+	private request(): AbortController {
+		const controller = new AbortController();
+		this.requests.add(controller);
+		return controller;
+	}
+
+	private asError(error: unknown): Error {
+		return error instanceof Error ? error : new Error(String(error));
+	}
+
+	private normalizeOrder(notes: Note[]): Note[] {
+		return notes.map((note, order_idx) => ({ ...note, order_idx }));
 	}
 
 	private commitDraft(): void {
@@ -207,117 +379,136 @@ export class NotesStore extends AsyncStore {
 		this.persistDraft();
 	}
 
-	private persistDraft(): void {
-		this.draftVersion++;
+	private persistDraft(increment = true): void {
+		if (increment) this.draftVersion++;
 
-		const userId = this.userStore.id;
+		const userId = this.owner;
 		if (!userId) return;
 
-		notesCache.write(
-			userId,
-			this.draft.map((note) => ({ ...note })),
-			true
-		);
+		try {
+			if (!this.dirty) {
+				notesCache.discardOwn(userId, this.writer);
+				return;
+			}
+
+			notesCache.write(userId, this.writer, {
+				notes: this.draft.map((note) => ({ ...note })),
+				revision: this.revision,
+				version: this.draftVersion,
+				conflict: this.conflict,
+			});
+		} catch (error) {
+			runInAction(() => (this.syncError = this.asError(error)));
+		}
 	}
 
-	private normalizeOrder(notes: Note[]): Note[] {
-		return notes.map((note, index) => ({ ...note, order_idx: index }));
-	}
-
-	private sortNotes(notes: Note[]): Note[] {
-		return [...notes].sort((a, b) => a.order_idx - b.order_idx);
-	}
-
-	private getDraftSnapshot(): string {
-		return JSON.stringify(this.draft.map(({ id, text, color, order_idx }) => ({ id, text, color, order_idx })));
-	}
-
-	private updateSnapshot(): void {
-		this.lastSnapshot = this.getDraftSnapshot();
-	}
-
-	private hasDraftChanged(): boolean {
-		return this.getDraftSnapshot() !== this.lastSnapshot;
+	private applySnapshot(server: NotesSnapshot): void {
+		this.notes = this.normalizeOrder(server.notes);
+		this.draft = this.notes.map((note) => ({ ...note }));
+		this.revision = server.revision;
+		this.lastSnapshot = snapshotOf(this.draft);
+		this.loaded = true;
+		this.conflict = false;
+		this.uncertain = false;
+		this.syncError = null;
+		this.setError(null);
 	}
 
 	constructor(
 		private readonly userStore: IBaseUserPort,
-		private readonly repo: INotesRepo
+		private readonly repo: INotesRepo,
+		private readonly writer = generateUUID(),
+		private readonly onSessionLost: () => void = () => {}
 	) {
 		super();
-
-		makeObservable<
-			this,
-			'loaded' | 'canAddMore' | 'canDeleteMore' | 'lastSnapshot' | 'reset' | 'applyNotes' | 'applyDirtyDraft'
-		>(this, {
+		makeObservable<this, 'loaded' | 'lastSnapshot' | 'uncertain' | 'reset' | 'applySnapshot'>(this, {
 			loaded: observable,
+			lastSnapshot: observable,
 			notes: observable,
 			draft: observable,
 			activeNoteId: observable,
-			lastSnapshot: observable,
-
-			activeNote: computed,
+			saving: observable,
+			syncError: observable,
+			conflict: observable,
+			uncertain: observable,
 			isReady: computed,
-			canAddMore: computed,
-			canDeleteMore: computed,
+			activeNote: computed,
+			dirty: computed,
 			isSyncing: computed,
-
 			openNote: action,
 			closeNote: action,
 			updateNote: action,
 			updateOrder: action,
 			addNote: action,
 			removeNote: action,
-
-			applyNotes: action,
-			applyDirtyDraft: action,
 			reset: action,
+			applySnapshot: action,
 		});
-
-		this.track(
-			reaction(
-				() => this.activeNoteId,
-				(focused) => {
-					if (focused === null && this.hasDraftChanged()) this.scheduleServerUpdate();
-				}
-			)
-		);
 	}
 
 	init(): void {
 		if (this.inited) return;
 		this.inited = true;
-
 		this.track(
 			reaction(
 				() => this.userStore.id,
-				(userId) => {
+				action((userId) => {
 					this.reset();
+					this.owner = userId;
 					if (!userId) return;
-
-					const cached = notesCache.read(userId);
-					if (cached?.dirty) {
-						this.applyDirtyDraft(this.sortNotes(cached.notes));
-						this.scheduleServerUpdate();
+					try {
+						const cached = notesCache.read(userId, this.writer);
+						if (!cached) return;
+						this.draft = this.normalizeOrder(cached.notes);
+						this.notes = this.draft.map((note) => ({ ...note }));
+						this.revision = cached.revision;
+						this.draftVersion = cached.writer === this.writer ? cached.version : 0;
+						this.conflict =
+							cached.conflict === true || cached.writer !== this.writer || cached.revision === null;
+						this.loaded = true;
+						this.persistDraft(false);
+					} catch (error) {
+						this.syncError = this.asError(error);
 					}
-				},
+				}),
 				{ fireImmediately: true }
+			)
+		);
+		this.track(
+			reaction(
+				() => this.activeNoteId,
+				(id) => {
+					if (id === null && this.dirty) this.scheduleServerUpdate();
+				}
 			)
 		);
 	}
 
+	override destroy(): void {
+		this.reset();
+		super.destroy();
+	}
+
 	protected reset(): void {
 		this.generation++;
+		for (const request of this.requests) request.abort();
+		this.requests.clear();
+		this.debouncer.cancel();
 		this.initializing = null;
+		this.savingPromise = null;
+		this.verified = false;
 		this.loaded = false;
-		this.isSaving = false;
-
+		this.saving = false;
+		this.pendingSnapshot = null;
+		this.uncertain = false;
+		this.syncError = null;
+		this.conflict = false;
+		this.revision = null;
+		this.owner = null;
 		this.notes = [];
 		this.draft = [];
 		this.activeNoteId = null;
-		this.lastSnapshot = '';
-
-		this.debouncer.cancel();
+		this.lastSnapshot = '[]';
 		this.setError(null);
 	}
 }

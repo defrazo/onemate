@@ -1,47 +1,82 @@
 import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
+import { NotesConflictError } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { generateUUID, key } from '@/shared/lib/utils';
 
-import { createDefaultNotes, type INotesRepo, type Note } from '../../model';
-
-type DefaultNote = Partial<Pick<Note, 'text' | 'color' | 'order_idx' | 'id' | 'created_at' | 'updated_at'>>;
-type NormalizeOptions = { touchUpdated?: boolean };
+import { createDefaultNotes } from '../../model/defaults';
+import type { INotesRepo } from '../../model/ports';
+import type { Note, NotesSnapshot } from '../../model/types';
 
 export class NotesRepoDemo implements INotesRepo {
-	async loadAll(id: string): Promise<Note[]> {
+	async loadAll(id: string): Promise<NotesSnapshot> {
+		return this.read(id);
+	}
+
+	private read(id: string): NotesSnapshot {
 		const stored = storage.get(key(id, 'notes'));
-
-		if (Array.isArray(stored) && stored.length > 0) {
-			const normalized = this.sortNotes(this.normalizeNotes(stored));
-			storage.set(key(id, 'notes'), normalized);
-			return structuredClone(normalized);
-		}
-
-		const defaultNotes = this.sortNotes(this.normalizeNotes(createDefaultNotes()));
-		storage.set(key(id, 'notes'), defaultNotes);
-		return structuredClone(defaultNotes);
+		const notes = Array.isArray(stored) ? stored : (stored?.notes ?? []);
+		return {
+			user_id: id,
+			revision: Array.isArray(stored) ? 0 : (stored?.revision ?? 0),
+			notes: notes
+				.map((note: Note) => ({ ...note, color: this.normalizeColor(note.color) }))
+				.sort((a: Note, b: Note) => a.order_idx - b.order_idx || a.id.localeCompare(b.id)),
+		};
 	}
 
-	async replaceAll(id: string, notes: Note[]): Promise<void> {
-		const normalized = this.sortNotes(this.normalizeNotes(notes, { touchUpdated: true }));
-		storage.set(key(id, 'notes'), normalized);
+	async initialize(id: string): Promise<NotesSnapshot> {
+		return this.locked(id, () => {
+			const current = this.read(id);
+			if (current.notes.length || current.revision !== 0) return current;
+			const now = new Date().toISOString();
+			const snapshot = {
+				user_id: id,
+				revision: 1,
+				notes: createDefaultNotes().map((note, index) => ({
+					...note,
+					id: generateUUID(),
+					order_idx: index,
+					created_at: now,
+					updated_at: now,
+				})),
+			};
+			storage.set(key(id, 'notes'), snapshot);
+			return snapshot;
+		});
 	}
 
-	private normalizeNotes(raw: DefaultNote[] | Note[], opts: NormalizeOptions = {}): Note[] {
-		const now = new Date().toISOString();
-
-		return raw.map(({ id, text, color, order_idx, created_at, updated_at }, idx) => ({
-			id: id ?? generateUUID(),
-			text: text ?? '',
-			color: this.normalizeColor(color),
-			order_idx: Number.isFinite(order_idx) ? order_idx! : idx,
-			created_at: created_at ?? now,
-			updated_at: opts.touchUpdated ? now : (updated_at ?? now),
-		}));
+	async replaceAll(id: string, notes: Note[], revision: number): Promise<NotesSnapshot> {
+		return this.locked(id, () => {
+			const current = this.read(id);
+			if (current.revision !== revision) throw new NotesConflictError(current.revision);
+			const now = new Date().toISOString();
+			const snapshot = {
+				user_id: id,
+				revision: revision + 1,
+				notes: notes.map((note, index) => {
+					const previous = current.notes.find((item) => item.id === note.id);
+					const changed =
+						!previous ||
+						previous.text !== note.text ||
+						previous.color !== note.color ||
+						previous.order_idx !== index;
+					return {
+						...note,
+						order_idx: index,
+						created_at: previous?.created_at ?? note.created_at,
+						updated_at: changed ? now : previous.updated_at,
+					};
+				}),
+			};
+			storage.set(key(id, 'notes'), snapshot);
+			return snapshot;
+		});
 	}
 
-	private sortNotes(notes: Note[]): Note[] {
-		return [...notes].sort((a, b) => a.order_idx - b.order_idx || a.id.localeCompare(b.id));
+	private locked(id: string, operation: () => NotesSnapshot): Promise<NotesSnapshot> {
+		if (typeof navigator !== 'undefined' && navigator.locks)
+			return navigator.locks.request(key(id, 'notes'), operation);
+		return Promise.resolve(operation());
 	}
 
 	private normalizeColor(color: unknown): PaletteColor {

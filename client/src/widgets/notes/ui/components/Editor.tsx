@@ -1,4 +1,3 @@
-import { useState } from 'react';
 import {
 	IconArrowBackUp,
 	IconArrowForwardUp,
@@ -14,12 +13,12 @@ import {
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
+import type { PaletteColor } from '@/shared/config';
 import { useOutsideClick, useTextEditor } from '@/shared/lib/hooks';
-import { cn, fullDate } from '@/shared/lib/utils';
-import { BackButton, Divider, EditorAction, Textarea } from '@/shared/ui';
+import { fullDate } from '@/shared/lib/utils';
+import { BackButton, ColorPicker, Divider, EditorAction, Textarea } from '@/shared/ui';
 
-import { NOTE_MAX_LENGTH } from '../../model';
+import { NOTE_MAX_LENGTH } from '../../model/constants';
 
 interface EditorProps {
 	color: PaletteColor;
@@ -30,17 +29,14 @@ export const Editor = observer(({ color, onColorChange }: EditorProps) => {
 	const { notesStore } = useStore();
 	const { textareaRef, feedback, undo, redo, cut, copy, paste, selectAll, clear } = useTextEditor(NOTE_MAX_LENGTH);
 
-	const [paletteOpen, setPaletteOpen] = useState(false);
-
-	const editorRef = useOutsideClick<HTMLDivElement>(() => notesStore.closeNote());
-	const paletteRef = useOutsideClick<HTMLDivElement>(() => setPaletteOpen(false));
+	const editorRef = useOutsideClick<HTMLDivElement>(() => notesStore.closeNote(), '[data-widget]');
 
 	const note = notesStore.activeNote;
 	if (!note) return null;
 
 	return (
 		<div ref={editorRef} className="flex h-full min-h-0 flex-col">
-			<div className="flex shrink-0 flex-col gap-2 border-b border-(--border-primary) pb-2 xl:flex-row xl:items-center xl:justify-between">
+			<div className="flex shrink-0 flex-col gap-2 border-b border-(--border-primary) pb-3 xl:flex-row xl:items-center xl:justify-between">
 				<BackButton className="mr-auto" title="Вернуться к заметкам" onClick={() => notesStore.closeNote()} />
 				<div className="flex items-center justify-between md:gap-1 xl:ml-auto xl:justify-end">
 					<EditorAction
@@ -73,64 +69,22 @@ export const Editor = observer(({ color, onColorChange }: EditorProps) => {
 						onClick={clear}
 					/>
 					<Divider className="my-auto h-4" direction="Y" margX="sm" />
-					<div className="relative">
-						<button
-							aria-expanded={paletteOpen}
-							aria-label="Цвет заметки"
-							className="flex size-8 cursor-pointer items-center justify-center rounded-md hover:bg-(--tone-hover)"
-							title="Цвет заметки"
-							type="button"
-							onClick={() => setPaletteOpen((current) => !current)}
-						>
-							<span
-								className="size-3.5 rounded-full"
-								style={{ backgroundColor: COLOR_PALETTE[color].value }}
-							/>
-						</button>
-						{paletteOpen && (
-							<div
-								ref={paletteRef}
-								className="absolute top-full right-0 z-30 mt-0.5 grid w-max grid-cols-4 gap-2 rounded-lg border border-(--border-primary) bg-(--bg-secondary) p-3 shadow-lg"
-							>
-								{Object.entries(COLOR_PALETTE).map(([key, config]) => (
-									<button
-										key={key}
-										aria-label={config.label}
-										aria-pressed={color === key}
-										className={cn(
-											'flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-md transition-colors hover:bg-(--tone-hover)',
-											color === key && 'bg-(--tone-hover)'
-										)}
-										title={config.label}
-										type="button"
-										onClick={() => {
-											onColorChange(key as PaletteColor);
-											setPaletteOpen(false);
-										}}
-									>
-										<span
-											className="size-4 rounded-full"
-											style={{ backgroundColor: config.value }}
-										/>
-									</button>
-								))}
-							</div>
-						)}
-					</div>
+					<ColorPicker color={color} title="Цвет заметки" onChange={onColorChange} />
 				</div>
 			</div>
 			<Textarea
 				ref={textareaRef}
 				autoFocus
-				className="min-h-0 flex-1 scrollbar-none px-0 py-2 text-base"
+				className="block h-full min-h-0 w-full scrollbar-none px-0 py-2 text-base"
 				maxLength={NOTE_MAX_LENGTH}
 				name={`note-${note.id}`}
 				resize="none"
 				value={note.text}
 				variant="custom"
+				wrapperClassName="min-h-0 flex-1"
 				onChange={(e) => notesStore.updateNote(note.id, 'text', e.target.value)}
 			/>
-			<div className="core-gap flex shrink-0 items-end pt-2 text-xs text-(--text-disabled) lg:text-sm xl:-mb-1">
+			<div className="core-gap flex shrink-0 items-end pt-2 text-xs text-(--text-disabled) lg:text-sm">
 				<div className="hidden items-center gap-1 lg:flex" title="Дата создания">
 					<IconCalendarPlus className="size-3.5" />
 					<span className="trim">{fullDate(note.created_at)}</span>

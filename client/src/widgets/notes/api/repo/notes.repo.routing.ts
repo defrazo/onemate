@@ -1,8 +1,10 @@
 import type { UserStore } from '@/entities/user';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { INotesRepo, Note } from '../../model';
-import { NotesRepoDemo, NotesRepoLaravel } from '.';
+import type { INotesRepo } from '../../model/ports';
+import type { Note, NotesSnapshot } from '../../model/types';
+import { NotesRepoDemo } from './notes.repo.demo';
+import { NotesRepoLaravel } from './notes.repo.laravel';
 
 export class NotesRepoRouting extends BaseRouting implements INotesRepo {
 	private readonly realRepo: INotesRepo;
@@ -18,13 +20,24 @@ export class NotesRepoRouting extends BaseRouting implements INotesRepo {
 		return this.role === 'demo' ? this.demoRepo : this.realRepo;
 	}
 
-	async loadAll(id: string): Promise<Note[]> {
+	async loadAll(id: string, signal?: AbortSignal): Promise<NotesSnapshot> {
 		this.checkPermission('notes', 'read');
-		return this.getTargetRepo().loadAll(id);
+		return this.getTargetRepo().loadAll(id, signal);
 	}
 
-	async replaceAll(id: string, notes: Note[]): Promise<void> {
+	async initialize(id: string, signal?: AbortSignal): Promise<NotesSnapshot> {
 		this.checkPermission('notes', 'save');
-		return this.getTargetRepo().replaceAll(id, notes);
+
+		if (this.userStore.id !== id) throw new Error('Сессия изменилась');
+
+		return this.getTargetRepo().initialize(id, signal);
+	}
+
+	async replaceAll(id: string, notes: Note[], revision: number, signal?: AbortSignal): Promise<NotesSnapshot> {
+		this.checkPermission('notes', 'save');
+
+		if (this.userStore.id !== id) throw new Error('Сессия изменилась');
+
+		return this.getTargetRepo().replaceAll(id, notes, revision, signal);
 	}
 }
