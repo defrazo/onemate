@@ -20,7 +20,8 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 	};
 
 	const handleLogout = async () => {
-		await authStore.logout();
+		if (!(await authStore.logout())) return;
+
 		modalStore.closeModal();
 		navigate('/');
 	};
@@ -47,6 +48,7 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 			<Button
 				className="mt-1 h-8 justify-start bg-transparent"
 				leftIcon={<IconLogout2 className="size-4.5" />}
+				loading={authStore.isLoggingOut}
 				padding="sm"
 				variant="tone"
 				onClick={handleLogout}

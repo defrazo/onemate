@@ -20,7 +20,8 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	const handleLogout = async () => {
-		await authStore.logout();
+		if (!(await authStore.logout())) return;
+
 		modalStore.closeModal();
 		navigate('/');
 	};
@@ -66,6 +67,7 @@ export const MobileUserMenu = observer(() => {
 			<Button
 				className="h-10 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
+				loading={authStore.isLoggingOut}
 				padding="sm"
 				variant="custom"
 				onClick={handleLogout}

@@ -9,9 +9,13 @@ import type { IAuthDevicePort } from '.';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	private authVersion = 0;
+	private logoutPromise: Promise<boolean> | null = null;
+	private logoutGuard: (userId: string) => Promise<'saved' | 'discard' | false> = async () => 'saved';
+	private discardNotes: (userId: string) => void = () => {};
 
 	isInitializing = true;
 	lastAuthTime = 0;
+	isLoggingOut = false;
 
 	get isReady(): boolean {
 		return !!this.userStore.id;
@@ -109,15 +113,54 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		});
 	}
 
-	async logout(): Promise<void> {
+	setLogoutGuard(
+		guard: (userId: string) => Promise<'saved' | 'discard' | false>,
+		discard: (userId: string) => void
+	): void {
+		this.logoutGuard = guard;
+		this.discardNotes = discard;
+	}
+
+	logout(): Promise<boolean> {
+		if (this.logoutPromise) return this.logoutPromise;
+
+		this.isLoggingOut = true;
+		const promise = this.performLogout().finally(
+			action(() => {
+				this.logoutPromise = null;
+				this.isLoggingOut = false;
+			})
+		);
+		this.logoutPromise = promise;
+
+		return promise;
+	}
+
+	private async performLogout(): Promise<boolean> {
+		const userId = this.userStore.id;
+		if (!userId) return true;
+
+		const decision = await this.logoutGuard(userId);
+		if (!decision || this.userStore.id !== userId) return false;
+
 		try {
 			await authApi.logout();
 
-			authChannel.postMessage({ type: 'logout' });
+			authChannel.postMessage({ type: 'logout', userId, discardNotes: decision === 'discard' });
 		} finally {
-			this.userStore.clearSession();
-			this.reset();
+			if (this.userStore.id === userId) {
+				if (decision === 'discard') this.discardNotes(userId);
+				this.endSession();
+			}
 		}
+
+		return true;
+	}
+
+	endSession(): void {
+		this.authVersion++;
+		this.userStore.clearSession();
+		this.reset();
 	}
 
 	private async checkAuth(): Promise<void> {
@@ -140,10 +183,10 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 
 	private readonly handleAuthMessage = (event: MessageEvent) => {
 		if (event.data?.type !== 'logout') return;
+		if (event.data.userId && event.data.userId !== this.userStore.id) return;
+		if (event.data.discardNotes && this.userStore.id) this.discardNotes(this.userStore.id);
 
-		this.authVersion++;
-		this.userStore.clearSession();
-		this.reset();
+		this.endSession();
 	};
 
 	constructor(private readonly userStore: IUserAuthPort) {
@@ -152,10 +195,13 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		makeObservable<this, 'updateAuthTime' | 'reset'>(this, {
 			isInitializing: observable,
 			lastAuthTime: observable,
+			isLoggingOut: observable,
 			isReady: computed,
 
 			updateAuthTime: action,
 			reset: action,
+			logout: action,
+			endSession: action,
 		});
 	}
 
