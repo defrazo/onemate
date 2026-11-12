@@ -1,3 +1,4 @@
+import { WIDGETS } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
 import { cacheKey, cleanupCache } from '../lib';
@@ -20,5 +21,23 @@ export const writeCache = (id: string, patch: CachePatch) => {
 };
 
 export const clearCache = (id: string) => {
+	const selected = readCache(id)?.ui?.dashboardActiveWidgets;
+
+	const choices =
+		selected && typeof selected === 'object' && !Array.isArray(selected)
+			? Object.fromEntries(
+					Object.entries(selected).filter(
+						([slot, widget]) =>
+							WIDGETS.some(({ id }) => id === slot) && WIDGETS.some(({ id }) => id === widget)
+					)
+				)
+			: {};
+
 	storage.remove(cacheKey(id));
+
+	if (Object.keys(choices).length) {
+		try {
+			storage.set(cacheKey(id), { ts: Date.now(), ui: { dashboardActiveWidgets: choices } });
+		} catch {}
+	}
 };

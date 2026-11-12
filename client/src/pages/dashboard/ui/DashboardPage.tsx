@@ -14,7 +14,18 @@ export const DashboardPage = observer(() => {
 
 	const { isDesktop, isTablet, isMobileLandscape } = useResponsive();
 
-	const { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd } = useDashboard();
+	const {
+		sensors,
+		rowIds,
+		widgetsOrder,
+		slots,
+		options,
+		getSlotContent,
+		setSlot,
+		handleDragEnd,
+		activeWidgets,
+		selectWidget,
+	} = useDashboard();
 
 	return (
 		<>
@@ -28,7 +39,12 @@ export const DashboardPage = observer(() => {
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
 							{widgetsOrder.map((items) => (
-								<Widget key={items[0].id} items={items} />
+								<Widget
+									key={items[0].id}
+									activeId={activeWidgets[items[0].id]}
+									items={items}
+									onSelect={(id) => selectWidget(items[0].id, id)}
+								/>
 							))}
 						</SortableContext>
 					</DndContext>
