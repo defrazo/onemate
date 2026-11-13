@@ -3,24 +3,27 @@ import { StoreInitializer } from './StoreInitializer';
 import type { AllStores } from './types';
 
 export class RootStore implements AllStores {
-	public readonly credentialsStore: AllStores['credentialsStore'];
-	public readonly userStore: AllStores['userStore'];
-	public readonly notifyStore: AllStores['notifyStore'];
-	public readonly notificationStore: AllStores['notificationStore'];
 	public readonly modalStore: AllStores['modalStore'];
+	public readonly notifyStore: AllStores['notifyStore'];
+	public readonly userStore: AllStores['userStore'];
+
 	public readonly userProfileStore: AllStores['userProfileStore'];
-	public readonly authStore: AllStores['authStore'];
+
 	public readonly authFormStore: AllStores['authFormStore'];
-	public readonly themeStore: AllStores['themeStore'];
-	public readonly calendarStore: AllStores['calendarStore'];
+	public readonly authStore: AllStores['authStore'];
 	public readonly deviceActivityStore: AllStores['deviceActivityStore'];
+	public readonly notificationStore: AllStores['notificationStore'];
+	public readonly themeStore: AllStores['themeStore'];
+
+	public readonly calendarStore: AllStores['calendarStore'];
+	public readonly credentialsStore: AllStores['credentialsStore'];
 	public readonly cloudStore: AllStores['cloudStore'];
+	public readonly currencyStore: AllStores['currencyStore'];
 	public readonly networkStore: AllStores['networkStore'];
-	public readonly weatherStore: AllStores['weatherStore'];
 	public readonly notesStore: AllStores['notesStore'];
 	public readonly todoStore: AllStores['todoStore'];
-	public readonly currencyStore: AllStores['currencyStore'];
 	public readonly translatorStore: AllStores['translatorStore'];
+	public readonly weatherStore: AllStores['weatherStore'];
 
 	private initPromise: Promise<void> | null = null;
 	private isInitialized = false;
@@ -28,25 +31,27 @@ export class RootStore implements AllStores {
 
 	constructor() {
 		const allStores = StoreFactory.createAllStores();
-		this.credentialsStore = allStores.credentialsStore;
-
-		this.userStore = allStores.userStore;
-		this.notifyStore = allStores.notifyStore;
-		this.notificationStore = allStores.notificationStore;
 		this.modalStore = allStores.modalStore;
+		this.notifyStore = allStores.notifyStore;
+		this.userStore = allStores.userStore;
+
 		this.userProfileStore = allStores.userProfileStore;
-		this.authStore = allStores.authStore;
+
 		this.authFormStore = allStores.authFormStore;
-		this.themeStore = allStores.themeStore;
-		this.calendarStore = allStores.calendarStore;
+		this.authStore = allStores.authStore;
 		this.deviceActivityStore = allStores.deviceActivityStore;
+		this.notificationStore = allStores.notificationStore;
+		this.themeStore = allStores.themeStore;
+
+		this.calendarStore = allStores.calendarStore;
+		this.credentialsStore = allStores.credentialsStore;
 		this.cloudStore = allStores.cloudStore;
+		this.currencyStore = allStores.currencyStore;
 		this.networkStore = allStores.networkStore;
-		this.weatherStore = allStores.weatherStore;
 		this.notesStore = allStores.notesStore;
 		this.todoStore = allStores.todoStore;
-		this.currencyStore = allStores.currencyStore;
 		this.translatorStore = allStores.translatorStore;
+		this.weatherStore = allStores.weatherStore;
 	}
 
 	async init(): Promise<void> {

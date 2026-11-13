@@ -17,40 +17,43 @@ import type { TranslatorStore } from '@/widgets/translator';
 import type { WeatherStore } from '@/widgets/weather';
 
 export type AllStores = {
-	credentialsStore: CredentialsStore;
-	userStore: UserStore;
-	notifyStore: NotifyStore;
 	modalStore: ModalStore;
+	notifyStore: NotifyStore;
+	userStore: UserStore;
+
 	userProfileStore: UserProfileStore;
-	authStore: AuthStore;
+
 	authFormStore: AuthFormStore;
-	themeStore: ThemeStore;
-	notificationStore: NotificationStore;
-	calendarStore: CalendarStore;
+	authStore: AuthStore;
 	deviceActivityStore: DeviceActivityStore;
+	notificationStore: NotificationStore;
+	themeStore: ThemeStore;
+
+	calendarStore: CalendarStore;
 	cloudStore: CloudStore;
+	credentialsStore: CredentialsStore;
+	currencyStore: CurrencyStore;
 	networkStore: NetworkStore;
-	weatherStore: WeatherStore;
 	notesStore: NotesStore;
 	todoStore: TodoStore;
-	currencyStore: CurrencyStore;
 	translatorStore: TranslatorStore;
+	weatherStore: WeatherStore;
 };
 
 export type InitKeys =
-	| 'credentialsStore'
-	| 'themeStore'
-	| 'notificationStore'
 	| 'userProfileStore'
 	| 'authStore'
-	| 'calendarStore'
 	| 'deviceActivityStore'
+	| 'notificationStore'
+	| 'themeStore'
+	| 'calendarStore'
 	| 'cloudStore'
+	| 'credentialsStore'
+	| 'currencyStore'
 	| 'networkStore'
-	| 'weatherStore'
 	| 'notesStore'
 	| 'todoStore'
-	| 'currencyStore';
+	| 'weatherStore';
 
 export interface CoreStores {
 	readonly userStore: UserStore;
