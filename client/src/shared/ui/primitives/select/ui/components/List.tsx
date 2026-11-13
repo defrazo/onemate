@@ -12,6 +12,7 @@ interface ListProps {
 
 	align: Justify;
 	clearable: boolean;
+	keyBadge?: boolean;
 
 	className?: string;
 }
@@ -22,7 +23,7 @@ const alignments: Record<Justify, string> = {
 	end: 'justify-end',
 };
 
-export const List = ({ id, options, value, onSelect, align, clearable, className }: ListProps) => {
+export const List = ({ id, options, value, onSelect, align, clearable, keyBadge = false, className }: ListProps) => {
 	return (
 		<ul
 			className={cn(
@@ -54,7 +55,7 @@ export const List = ({ id, options, value, onSelect, align, clearable, className
 						<button
 							className={cn(
 								'relative flex w-full min-w-0 cursor-pointer items-center gap-2 rounded-lg px-2.5 py-2 text-sm transition-colors hover:bg-(--tone-strong)',
-								selected && 'bg-(--accent-primary-muted) text-(--accent-primary)',
+								selected && 'bg-(--accent-primary-muted) pr-9 text-(--accent-primary)',
 								option.disabled && 'cursor-not-allowed opacity-40',
 								alignments[align]
 							)}
@@ -68,14 +69,21 @@ export const List = ({ id, options, value, onSelect, align, clearable, className
 								) : (
 									option.icon
 								))}
-							<span className="min-w-0 truncate font-semibold" title={option.label}>
-								{option.label}
-							</span>
 							{option.key && (
-								<span className="max-w-24 shrink-0 truncate text-xs text-(--text-disabled)">
+								<span
+									className={cn(
+										'max-w-24 shrink-0 truncate text-xs',
+										keyBadge
+											? 'rounded-md bg-(--accent-primary-muted) px-1.5 py-0.5 font-semibold text-(--accent-primary) uppercase'
+											: 'text-(--text-disabled)'
+									)}
+								>
 									{option.key}
 								</span>
 							)}
+							<span className="min-w-0 truncate font-semibold" title={option.label}>
+								{option.label}
+							</span>
 							{selected && <IconCheck className="absolute right-2.5 size-4 shrink-0" />}
 						</button>
 					</li>

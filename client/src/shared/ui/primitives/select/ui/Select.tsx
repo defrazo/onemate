@@ -20,10 +20,12 @@ interface SelectProps {
 	direction?: Direction;
 	align?: Justify;
 
+	selectedLabel?: 'label' | 'value';
 	listWidth?: number;
 	listPlacement?: ListPlacement;
 
 	hideChevron?: boolean;
+	keyBadge?: boolean;
 	clearable?: boolean;
 	disabled?: boolean;
 	error?: boolean;
@@ -49,10 +51,12 @@ export const Select = ({
 	direction = 'auto',
 	align = 'center',
 
+	selectedLabel = 'label',
 	listWidth,
 	listPlacement = 'start',
 
 	hideChevron = false,
+	keyBadge = false,
 	clearable = false,
 	disabled = false,
 	error = false,
@@ -103,7 +107,13 @@ export const Select = ({
 					) : (
 						selectedOption.icon
 					))}
-				<span className="min-w-0 truncate">{selectedOption?.label ?? placeholder}</span>
+				<span className="min-w-0 truncate">
+					{selectedOption
+						? selectedLabel === 'value'
+							? selectedOption.value
+							: selectedOption.label
+						: placeholder}
+				</span>
 				{!hideChevron && (
 					<IconChevronDown
 						className={cn(
@@ -121,6 +131,7 @@ export const Select = ({
 							className={listClassName}
 							clearable={clearable}
 							id={listId}
+							keyBadge={keyBadge}
 							options={options}
 							value={value}
 							onSelect={handleSelect}

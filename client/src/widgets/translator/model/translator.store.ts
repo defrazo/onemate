@@ -1,24 +1,41 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
 import { AsyncStore } from '@/shared/lib/store';
 
 import { availableLanguages } from '../lib/languages';
-import { TRANSLATOR_MAX_LENGTH } from './constants';
+import { PRIORITY_LANGUAGES, TRANSLATOR_MAX_LENGTH } from './constants';
 import { createDefaultTranslator } from './defaults';
-import type { ITranslatorProvider } from './ports';
+import type { TranslatorAvailability, TranslatorProvider } from './ports';
 import type { Language, Textbox } from './types';
 
 const SOURCE_IDX = 0;
 const TARGET_IDX = 1;
 
 export class TranslatorStore extends AsyncStore {
+	private preparationAbort: AbortController | null = null;
 	private abort: AbortController | null = null;
+	private availabilityVersion = 0;
 
-	private static readonly languagesCache: Language[] = Object.values(availableLanguages).map(({ name, code }) => ({
-		key: code,
-		label: name,
-		value: code,
-	}));
+	private static readonly languagesCache: Language[] = Object.values(availableLanguages)
+		.map(({ name, code }) => ({
+			key: code,
+			label: name,
+			value: code,
+		}))
+		.sort((a, b) => {
+			const aIndex = PRIORITY_LANGUAGES.indexOf(a.value);
+			const bIndex = PRIORITY_LANGUAGES.indexOf(b.value);
+
+			if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+			if (aIndex !== -1) return -1;
+			if (bIndex !== -1) return 1;
+
+			return 0;
+		});
+
+	availability: TranslatorAvailability = 'unavailable';
+	isPreparing = false;
+	preparationProgress = 0;
 
 	textboxes: Textbox[] = createDefaultTranslator();
 
@@ -58,10 +75,18 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	setSourceLanguage(language: string): void {
+		if (this.sourceLang === language) return;
+
+		this.cancelPreparation();
+		this.cancelRequest();
 		this.updateTextbox(SOURCE_IDX, 'language', language);
 	}
 
 	setTargetLanguage(language: string): void {
+		if (this.targetLang === language) return;
+
+		this.cancelPreparation();
+		this.cancelRequest();
 		this.updateTextbox(TARGET_IDX, 'language', language);
 	}
 
@@ -74,12 +99,69 @@ export class TranslatorStore extends AsyncStore {
 	swap(): void {
 		const [source, target] = this.textboxes;
 
+		this.cancelPreparation();
 		this.cancelRequest();
 
 		this.textboxes = [
 			{ ...source, language: target.language, text: target.text },
 			{ ...target, language: source.language, text: source.text },
 		];
+	}
+
+	async checkAvailability(): Promise<void> {
+		const version = ++this.availabilityVersion;
+		const source = this.sourceLang;
+		const target = this.targetLang;
+
+		if (source === target) {
+			runInAction(() => (this.availability = 'unavailable'));
+			return;
+		}
+
+		try {
+			const availability = await this.provider.availability(source, target);
+
+			if (version !== this.availabilityVersion) return;
+			runInAction(() => (this.availability = availability));
+		} catch {
+			if (version !== this.availabilityVersion) return;
+			runInAction(() => (this.availability = 'unavailable'));
+		}
+	}
+
+	async prepare(): Promise<void> {
+		if (this.isPreparing) return;
+
+		const controller = new AbortController();
+		this.preparationAbort = controller;
+
+		const source = this.sourceLang;
+		const target = this.targetLang;
+
+		runInAction(() => {
+			this.isPreparing = true;
+			this.preparationProgress = 0;
+		});
+
+		try {
+			await this.provider.prepare(source, target, controller.signal, (progress) => {
+				if (controller.signal.aborted) return;
+				runInAction(() => (this.preparationProgress = progress));
+			});
+
+			if (controller.signal.aborted) return;
+
+			await this.checkAvailability();
+
+			if (controller.signal.aborted) return;
+
+			if (this.sourceText.trim()) await this.translate();
+		} finally {
+			if (this.preparationAbort === controller) {
+				this.preparationAbort = null;
+				runInAction(() => (this.isPreparing = false));
+			}
+		}
 	}
 
 	async translate(): Promise<void> {
@@ -121,15 +203,28 @@ export class TranslatorStore extends AsyncStore {
 		this.textboxes = updated;
 	}
 
+	private cancelPreparation(): void {
+		this.availabilityVersion++;
+		this.preparationAbort?.abort();
+		this.preparationAbort = null;
+
+		this.availability = 'unavailable';
+		this.isPreparing = false;
+		this.preparationProgress = 0;
+	}
+
 	private cancelRequest(): void {
 		this.abort?.abort();
 		this.abort = null;
 	}
 
-	constructor(private readonly provider: ITranslatorProvider) {
+	constructor(private readonly provider: TranslatorProvider) {
 		super();
 
-		makeObservable<this, 'updateTextbox' | 'reset'>(this, {
+		makeObservable<this, 'updateTextbox' | 'cancelPreparation' | 'reset'>(this, {
+			availability: observable,
+			isPreparing: observable,
+			preparationProgress: observable,
 			textboxes: observable,
 
 			isReady: computed,
@@ -143,6 +238,7 @@ export class TranslatorStore extends AsyncStore {
 			setSourceText: action,
 			setSourceLanguage: action,
 			setTargetLanguage: action,
+			cancelPreparation: action,
 			clear: action,
 			swap: action,
 			reset: action,
@@ -152,6 +248,7 @@ export class TranslatorStore extends AsyncStore {
 		this.setTargetLanguage = this.setTargetLanguage.bind(this);
 		this.clear = this.clear.bind(this);
 		this.swap = this.swap.bind(this);
+		this.prepare = this.prepare.bind(this);
 	}
 
 	init(): void {
@@ -160,11 +257,13 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	destroy(): void {
+		this.cancelPreparation();
 		this.cancelRequest();
 		super.destroy();
 	}
 
 	reset(): void {
+		this.cancelPreparation();
 		this.cancelRequest();
 		this.textboxes = createDefaultTranslator();
 	}

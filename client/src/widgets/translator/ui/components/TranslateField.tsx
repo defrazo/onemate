@@ -1,4 +1,4 @@
-import { IconCopy, IconX } from '@tabler/icons-react';
+import { IconCopy, IconDownload, IconX } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -11,18 +11,13 @@ import { TRANSLATOR_MAX_LENGTH } from '../../model/constants';
 export const TranslateField = observer(({ side }: { side: 'source' | 'target' }) => {
 	const copy = useCopy();
 
-	const { translatorStore } = useStore();
+	const { notifyStore, translatorStore } = useStore();
 
 	const isSource = side === 'source';
 	const text = isSource ? translatorStore.sourceText : translatorStore.targetText;
 
 	return (
-		<div
-			className={cn(
-				'flex min-w-0 flex-1 flex-col border-(--border-primary)',
-				isSource ? 'xl:border-r' : 'border-t xl:border-t-0'
-			)}
-		>
+		<div className="flex min-w-0 flex-1 flex-col border-(--border-primary)">
 			<Textarea
 				className={cn(
 					'block h-full min-h-0 flex-1 overflow-auto py-3',
@@ -46,7 +41,32 @@ export const TranslateField = observer(({ side }: { side: 'source' | 'target' })
 							{translatorStore.sourceText.length} / {TRANSLATOR_MAX_LENGTH} зн.
 						</div>
 					)}
-					{!isSource && translatorStore.isLoading && <LoadingState size="xs" />}
+					{!isSource &&
+						(translatorStore.isLoading ? (
+							<LoadingState size="xs" />
+						) : (
+							(translatorStore.availability === 'downloadable' ||
+								translatorStore.availability === 'downloading') && (
+								<Button
+									className="h-6 rounded-md px-2 text-xs group-hover:opacity-100 xl:opacity-70"
+									disabled={translatorStore.isPreparing}
+									leftIcon={<IconDownload className="-mr-1 size-4" />}
+									padding="none"
+									onClick={() => {
+										translatorStore.prepare().catch((error) => {
+											if (error instanceof DOMException && error.name === 'AbortError') return;
+											notifyStore.setNotice('Что-то пошло не так', 'error');
+										});
+									}}
+								>
+									<span className="trim">
+										{translatorStore.isPreparing
+											? `Загрузка модели: ${translatorStore.preparationProgress}%`
+											: 'Локальный перевод'}
+									</span>
+								</Button>
+							)
+						))}
 				</div>
 				<div className="pointer-events-auto flex h-full items-end gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (

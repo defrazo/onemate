@@ -29,7 +29,7 @@ export const base: Record<Component, string> = {
 	select: cn(
 		'flex w-full items-center rounded-lg',
 		'cursor-pointer text-nowrap transition-colors',
-		'focus:border-(--accent-primary) focus:outline-none',
+		'focus:outline-none',
 		'disabled:pointer-events-none disabled:opacity-70',
 		'aria-invalid:border-(--status-error)'
 	),

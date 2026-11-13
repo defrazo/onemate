@@ -42,8 +42,8 @@ export class CurrencyStore extends AsyncStore {
 	get currencyOptions(): CurrencyOption[] {
 		return Object.values(this.ratesList).map(({ icon, name, code }) => ({
 			icon,
-			key: name,
-			label: code,
+			key: code,
+			label: name,
 			value: code,
 		}));
 	}

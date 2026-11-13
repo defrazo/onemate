@@ -64,12 +64,14 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 			</div>
 			<div className="shrink-0">
 				<Select
+					keyBadge
 					align="start"
 					className="w-30 hover:border-transparent focus:border-transparent"
 					listPlacement="end"
 					listWidth={240}
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
+					selectedLabel="value"
 					value={currency.code}
 					variant="tone"
 					onChange={(value) => currencyStore.selectCurrency(value, side)}

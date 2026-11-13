@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { Divider } from '@/shared/ui';
 
 import { TRANSLATE_DELAY } from '../model/constants';
 import { Controls, TranslateField } from './components';
@@ -32,6 +33,10 @@ export const Translator = observer(() => {
 	}, [store.sourceText, store.sourceLang, store.targetLang, store, notifyStore]);
 
 	useEffect(() => {
+		store.checkAvailability();
+	}, [store.sourceLang, store.targetLang, store]);
+
+	useEffect(() => {
 		return () => store.reset();
 	}, [location.pathname, store]);
 
@@ -42,8 +47,9 @@ export const Translator = observer(() => {
 	return (
 		<div className="flex min-h-0 flex-1 flex-col">
 			<Controls />
-			<div className="grid min-h-0 flex-1 grid-cols-1 gap-2 xl:grid-cols-2 xl:gap-0">
+			<div className="flex min-h-0 flex-1 flex-col gap-1 xl:flex-row xl:gap-0">
 				<TranslateField side="source" />
+				<Divider className="mt-4 self-stretch bg-(--tone-strong)" direction="Y" margX="xs" />
 				<TranslateField side="target" />
 			</div>
 		</div>
