@@ -13,14 +13,20 @@ type CurrencyCacheData = {
 
 export const currencyCache = {
 	read(): CurrencyCacheData | null {
-		const cached = storage.get(CACHE_KEY);
-		if (!cached || typeof cached !== 'object') return null;
+		try {
+			const cached = storage.get(CACHE_KEY);
+			if (!cached || typeof cached !== 'object') return null;
 
-		return cached as CurrencyCacheData;
+			return cached as CurrencyCacheData;
+		} catch {
+			return null;
+		}
 	},
 
 	write(rates: RatesResponse) {
-		storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
+		try {
+			storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
+		} catch {}
 	},
 
 	isFresh(cache: CurrencyCacheData) {
@@ -28,6 +34,8 @@ export const currencyCache = {
 	},
 
 	clear() {
-		storage.remove(CACHE_KEY);
+		try {
+			storage.remove(CACHE_KEY);
+		} catch {}
 	},
 };

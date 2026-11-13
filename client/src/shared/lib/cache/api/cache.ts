@@ -5,7 +5,11 @@ import { cacheKey, cleanupCache } from '../lib/utils';
 import type { Cache, CachePatch } from '../model/types';
 
 export const readCache = (id: string): Cache | null => {
-	return storage.get(cacheKey(id)) as Cache | null;
+	try {
+		return storage.get(cacheKey(id)) as Cache | null;
+	} catch {
+		return null;
+	}
 };
 
 export const writeCache = (id: string, patch: CachePatch) => {
@@ -17,7 +21,9 @@ export const writeCache = (id: string, patch: CachePatch) => {
 		auth: { ...(prev.auth ?? {}), ...(patch.auth ?? {}) },
 	});
 
-	storage.set(cacheKey(id), merged);
+	try {
+		storage.set(cacheKey(id), merged);
+	} catch {}
 };
 
 export const clearCache = (id: string) => {
@@ -33,7 +39,9 @@ export const clearCache = (id: string) => {
 				)
 			: {};
 
-	storage.remove(cacheKey(id));
+	try {
+		storage.remove(cacheKey(id));
+	} catch {}
 
 	if (Object.keys(choices).length) {
 		try {

@@ -28,16 +28,28 @@ export const useTextEditor = (maxLength: number) => {
 
 	const textareaRef = useRef<HTMLTextAreaElement>(null);
 	const feedbackTimerRef = useRef<number | null>(null);
+	const lifecycleRef = useRef<object | null>(null);
 
 	const [feedback, setFeedback] = useState<EditorFeedback>(null);
 
 	useEffect(() => {
+		lifecycleRef.current = {};
+
 		return () => {
+			lifecycleRef.current = null;
 			if (feedbackTimerRef.current !== null) window.clearTimeout(feedbackTimerRef.current);
+			feedbackTimerRef.current = null;
 		};
 	}, []);
 
+	const isCurrentEditor = (textarea: HTMLTextAreaElement, lifecycle: object | null) =>
+		lifecycle !== null &&
+		lifecycleRef.current === lifecycle &&
+		textareaRef.current === textarea &&
+		textarea.isConnected;
+
 	const showFeedback = (action: EditorFeedback) => {
+		if (lifecycleRef.current === null) return;
 		if (feedbackTimerRef.current !== null) window.clearTimeout(feedbackTimerRef.current);
 
 		setFeedback(action);
@@ -80,15 +92,20 @@ export const useTextEditor = (maxLength: number) => {
 		const textarea = textareaRef.current;
 		if (!textarea || !textarea.value) return;
 
+		const lifecycle = lifecycleRef.current;
+		const name = textarea.name;
+		const isCurrent = () => isCurrentEditor(textarea, lifecycle) && textarea.name === name;
+		if (!isCurrent()) return;
+
 		const { selectionStart, selectionEnd, value } = textarea;
 
 		const text = selectionStart !== selectionEnd ? value.slice(selectionStart, selectionEnd) : value;
 
 		try {
 			await navigator.clipboard.writeText(text);
-			showFeedback('copy');
+			if (isCurrent()) showFeedback('copy');
 		} catch {
-			notifyStore.setNotice('Не удалось скопировать текст', 'error');
+			if (isCurrent()) notifyStore.setNotice('Не удалось скопировать текст', 'error');
 		}
 	};
 
@@ -96,11 +113,24 @@ export const useTextEditor = (maxLength: number) => {
 		const textarea = textareaRef.current;
 		if (!textarea) return;
 
+		const lifecycle = lifecycleRef.current;
+		const value = textarea.value;
+		const name = textarea.name;
 		const start = textarea.selectionStart;
 		const end = textarea.selectionEnd;
+		const isCurrent = () =>
+			isCurrentEditor(textarea, lifecycle) &&
+			textarea.name === name &&
+			textarea.value === value &&
+			textarea.selectionStart === start &&
+			textarea.selectionEnd === end &&
+			!textarea.disabled &&
+			!textarea.readOnly;
+		if (!isCurrent()) return;
 
 		try {
 			const text = await navigator.clipboard.readText();
+			if (!isCurrent()) return;
 
 			if (text === '') {
 				notifyStore.setNotice('Буфер обмена пуст', 'info');
@@ -113,11 +143,12 @@ export const useTextEditor = (maxLength: number) => {
 			}
 
 			textarea.focus();
+			if (!isCurrent() || document.activeElement !== textarea) return;
 			textarea.setSelectionRange(start, end);
 
 			if (document.execCommand('insertText', false, text)) showFeedback('paste');
 		} catch {
-			notifyStore.setNotice('Не удалось получить доступ к буферу обмена', 'error');
+			if (isCurrent()) notifyStore.setNotice('Не удалось получить доступ к буферу обмена', 'error');
 		}
 	};
 

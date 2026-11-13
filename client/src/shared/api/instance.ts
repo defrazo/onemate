@@ -2,9 +2,11 @@ import axios from 'axios';
 
 import { handleLaravelError } from '@/shared/lib/errors';
 
+const REQUEST_TIMEOUT = 30_000;
+
 export const api = axios.create({
 	baseURL: '/api',
-	timeout: 30000,
+	timeout: REQUEST_TIMEOUT,
 	withCredentials: true,
 	withXSRFToken: true,
 	headers: { Accept: 'application/json' },
@@ -17,6 +19,7 @@ api.interceptors.response.use(
 
 export const csrf = async (): Promise<void> => {
 	await axios.get('/sanctum/csrf-cookie', {
+		timeout: REQUEST_TIMEOUT,
 		withCredentials: true,
 		withXSRFToken: true,
 		headers: { Accept: 'application/json' },

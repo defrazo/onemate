@@ -3,6 +3,9 @@ import { action, computed, makeObservable, observable } from 'mobx';
 import { BaseStore } from './base.store';
 
 export abstract class AsyncStore extends BaseStore {
+	private activeOperations = 0;
+	private latestOperationId = 0;
+
 	protected loading = false;
 	error: Error | null = null;
 
@@ -19,16 +22,22 @@ export abstract class AsyncStore extends BaseStore {
 	}
 
 	protected async withLoading<T>(operation: () => Promise<T>): Promise<T> {
+		const operationId = ++this.latestOperationId;
+		this.activeOperations++;
+
 		this.setLoading(true);
 		this.setError(null);
 
 		try {
 			return await operation();
 		} catch (error) {
-			this.setError(error instanceof Error ? error : new Error(String(error)));
+			if (operationId === this.latestOperationId)
+				this.setError(error instanceof Error ? error : new Error(String(error)));
+
 			throw error;
 		} finally {
-			this.setLoading(false);
+			this.activeOperations--;
+			this.setLoading(this.activeOperations > 0);
 		}
 	}
 

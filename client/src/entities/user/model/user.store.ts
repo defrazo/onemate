@@ -82,7 +82,11 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 
 		clearCache(userId);
 
-		if (isDemo) clearDemoStorage(userId);
+		if (isDemo) {
+			try {
+				clearDemoStorage(userId);
+			} catch {}
+		}
 	}
 
 	async loadUser(): Promise<void> {

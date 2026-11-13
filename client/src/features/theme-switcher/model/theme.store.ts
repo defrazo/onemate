@@ -40,14 +40,19 @@ export class ThemeStore extends BaseStore {
 	}
 
 	private saveTheme(theme: Theme): void {
-		const cached = storage.get(LS_CACHE_UI) ?? {};
-		storage.set(LS_CACHE_UI, { ...cached, theme });
+		try {
+			const cached = storage.get(LS_CACHE_UI) ?? {};
+			storage.set(LS_CACHE_UI, { ...cached, theme });
+		} catch {}
 	}
 
 	private getStoredTheme(): Theme {
-		const stored = storage.get(LS_CACHE_UI)?.theme;
-
-		return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME;
+		try {
+			const stored = storage.get(LS_CACHE_UI)?.theme;
+			return stored === 'light' || stored === 'dark' ? stored : DEFAULT_THEME;
+		} catch {
+			return DEFAULT_THEME;
+		}
 	}
 
 	private onStorage = (e: StorageEvent): void => {

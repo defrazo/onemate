@@ -232,6 +232,10 @@ export class DeviceActivityStore extends AsyncStore {
 
 		this.setError(null);
 
-		if (this.userStore.lastId) storage.remove(key(this.userStore.lastId, 'activity'));
+		if (this.userStore.lastId) {
+			try {
+				storage.remove(key(this.userStore.lastId, 'activity'));
+			} catch {}
+		}
 	}
 }
