@@ -5,7 +5,7 @@ import { cn } from '@/shared/lib/utils';
 
 import type { NotifyType, ToastOptions } from '../model/types';
 
-export const toastStyles: Record<NotifyType, string> = {
+const toastStyles: Record<NotifyType, string> = {
 	success: 'bg-(--status-success-muted) text-(--status-success)',
 	error: 'bg-(--status-error-muted) text-(--status-error)',
 	warning: 'bg-(--status-warning-muted) text-(--status-warning)',

@@ -6,7 +6,9 @@ import { ModalManager } from '@/features/modal';
 import { DemoBanner } from '@/pages/demo';
 import { useResponsive } from '@/shared/lib/hooks';
 
-import { NotificationsProvider, RouterProvider, useStore } from './providers';
+import { useStore } from './providers';
+import { NotificationsProvider } from './providers/notifications';
+import { RouterProvider } from './providers/router';
 
 export const App = observer(() => {
 	const { isDesktop } = useResponsive();
