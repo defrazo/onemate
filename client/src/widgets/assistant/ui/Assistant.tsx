@@ -138,25 +138,27 @@ export const Assistant = observer(() => {
 		<section aria-label="Mate AI" className="flex min-h-0 min-w-0 flex-1 flex-col gap-1.5 overflow-hidden">
 			<div className="mt-0.5 flex shrink-0 flex-wrap items-center justify-between gap-1">
 				<ModeSelector value={store.mode} onChange={store.setMode} />
-				<Tooltip
-					content={
-						store.searchEnabled
-							? 'Выключить поиск в интернете'
-							: 'Разрешить поиск в интернете. Расход токенов значительно увеличится.'
-					}
-					contentClassName="max-w-70"
-				>
-					<Button
-						aria-checked={store.searchEnabled}
-						aria-label="Поиск в интернете"
-						centerIcon={<IconWorld className="size-4" />}
-						className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
-						padding="none"
-						role="switch"
-						variant="iconSurface"
-						onClick={() => store.setSearchEnabled(!store.searchEnabled)}
-					/>
-				</Tooltip>
+				{userStore.userRole === 'admin' && (
+					<Tooltip
+						content={
+							store.searchEnabled
+								? 'Выключить поиск в интернете'
+								: 'Разрешить поиск в интернете. Расход токенов значительно увеличится.'
+						}
+						contentClassName="max-w-70"
+					>
+						<Button
+							aria-checked={store.searchEnabled}
+							aria-label="Поиск в интернете"
+							centerIcon={<IconWorld className="size-4" />}
+							className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
+							padding="none"
+							role="switch"
+							variant="iconSurface"
+							onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+						/>
+					</Tooltip>
+				)}
 				<Tooltip content="Лимиты и ограничения">
 					<Limits store={store} />
 				</Tooltip>

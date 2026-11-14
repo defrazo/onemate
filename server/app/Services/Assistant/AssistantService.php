@@ -162,6 +162,7 @@ class AssistantService
 
         return DB::transaction(function () use ($user, $data, $expected, $requestId, $fingerprint, $searchEnabled) {
             $owner = $this->lockOwner($user);
+            $searchEnabled = $owner->role === 'admin' && $searchEnabled;
             $existing = $owner->aiGenerations()->where('request_id', $requestId)->first();
 
             if ($existing) {
@@ -232,6 +233,7 @@ class AssistantService
             abort_unless($source, 404);
             $owner = $source->user;
             $conversation = $source->conversation;
+            $searchEnabled = $owner->role === 'admin' && (bool) $source->search_enabled;
 
             if ($conversation->archived_at !== null) {
                 $this->conflict('CONVERSATION_ARCHIVED', 'Архивный диалог доступен только для чтения');
@@ -251,7 +253,7 @@ class AssistantService
             $existing = $owner->aiGenerations()->where('request_id', $requestId)->first();
 
             if ($existing) {
-                if (!hash_equals($existing->fingerprint, $fingerprint) || (bool) $existing->search_enabled !== (bool) $source->search_enabled) {
+                if (!hash_equals($existing->fingerprint, $fingerprint) || (bool) $existing->search_enabled !== $searchEnabled) {
                     $this->conflict('REQUEST_ID_CONFLICT', 'Этот request_id уже использован для другого запроса');
                 }
 
@@ -270,7 +272,7 @@ class AssistantService
                 $this->conflict('QUESTION_ALREADY_ANSWERED', 'Для этого вопроса уже сохранён успешный ответ');
             }
 
-            return $this->enqueue($owner, $question, $requestId, $fingerprint, $source->mode, $source->provider, $source->model, (bool) $source->search_enabled);
+            return $this->enqueue($owner, $question, $requestId, $fingerprint, $source->mode, $source->provider, $source->model, $searchEnabled);
         });
     }
 
@@ -283,6 +285,7 @@ class AssistantService
             abort_unless($source, 404);
             $owner = $source->user;
             $conversation = $source->conversation;
+            $searchEnabled = $owner->role === 'admin' && $searchEnabled;
 
             if ($conversation->archived_at !== null) {
                 $this->conflict('CONVERSATION_ARCHIVED', 'Архивный диалог доступен только для чтения');
@@ -585,7 +588,7 @@ class AssistantService
             'provider' => $provider,
             'model' => $model,
             'status' => AiGeneration::STATUS_QUEUED,
-            'search_enabled' => $searchEnabled,
+            'search_enabled' => $owner->role === 'admin' && $searchEnabled,
             'queued_at' => now(),
             'execution_deadline_at' => now()->addMinutes(5),
         ]);
