@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use App\Models\Assistant\AiConversation;
+use App\Models\Assistant\AiGeneration;
 use App\Models\Cloud\CloudFile;
 use App\Models\Kanban\KanbanBoard;
 use App\Models\Kanban\KanbanColumn;
@@ -58,6 +60,16 @@ class User extends Authenticatable implements MustVerifyEmail
     public function credentials(): HasMany
     {
         return $this->hasMany(UserCredential::class);
+    }
+
+    public function aiConversations(): HasMany
+    {
+        return $this->hasMany(AiConversation::class);
+    }
+
+    public function aiGenerations(): HasMany
+    {
+        return $this->hasMany(AiGeneration::class);
     }
 
     public function locations(): HasMany

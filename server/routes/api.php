@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Assistant\AssistantConversationController;
+use App\Http\Controllers\Assistant\AssistantGenerationController;
+use App\Http\Controllers\Assistant\AssistantLimitsController;
+use App\Http\Controllers\Assistant\AssistantMessageController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\OAuthAuthorizationController;
@@ -213,5 +217,26 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/', [NotificationController::class, 'destroyAll']);
             Route::delete('/{notification}', [NotificationController::class, 'destroy']);
         });
+
+        // Assistant
+        Route::prefix('assistant')
+            ->middleware(EnsureNotDemo::class)
+            ->group(function () {
+                Route::post('/messages', AssistantMessageController::class)->middleware('throttle:10,1');
+                Route::get('/active', [AssistantConversationController::class, 'active']);
+                Route::get('/limits', AssistantLimitsController::class);
+
+                Route::post('/conversations/new', [AssistantConversationController::class, 'store']);
+                Route::get('/conversations', [AssistantConversationController::class, 'index']);
+                Route::patch('/conversations/{conversation}/pin', [AssistantConversationController::class, 'pin'])->whereUuid('conversation');
+                Route::delete('/conversations/{conversation}', [AssistantConversationController::class, 'destroy'])->whereUuid('conversation');
+                Route::get('/conversations/{conversation}/messages', [AssistantConversationController::class, 'messages'])->whereUuid('conversation');
+
+                Route::get('/generations/{generation}', AssistantGenerationController::class)->whereUuid('generation');
+                Route::post('/generations/{generation}/cancel', [AssistantGenerationController::class, 'cancel'])->whereUuid('generation');
+                Route::post('/generations/{generation}/retry', [AssistantGenerationController::class, 'retry'])->whereUuid('generation')->middleware('throttle:10,1');
+                Route::post('/generations/{generation}/regenerate', [AssistantGenerationController::class, 'regenerate'])->whereUuid('generation')->middleware('throttle:10,1');
+            });
+
     });
 });

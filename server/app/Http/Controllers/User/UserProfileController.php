@@ -133,7 +133,7 @@ class UserProfileController extends Controller
             'array',
             'size:6',
             function (string $attribute, mixed $value, \Closure $fail): void {
-                $allowed = ['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo', 'credentials'];
+                $allowed = ['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo', 'credentials', 'ask', 'assistant'];
                 $used = [];
 
                 if (!is_array($value) || !array_is_list($value)) {
@@ -151,7 +151,7 @@ class UserProfileController extends Controller
 
                     foreach ($slot as $id) {
                         if (!is_string($id) || !in_array($id, $allowed, true) || in_array($id, $used, true)) {
-                            $fail('Виджеты должны быть известными и не повторяться.');
+                            $fail('Виджеты должны быть известными и не повторяться');
 
                             return;
                         }

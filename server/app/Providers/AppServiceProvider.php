@@ -2,6 +2,9 @@
 
 namespace App\Providers;
 
+use App\AI\AiException;
+use App\AI\AiProvider;
+use App\AI\Providers\GroqProvider;
 use App\Http\Middleware\EnsureNotDemo;
 use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Support\Facades\Route;
@@ -10,10 +13,6 @@ use Laravel\Passport\Passport;
 
 class AppServiceProvider extends ServiceProvider
 {
-    public function register(): void
-    {
-    }
-
     public function boot(): void
     {
         JsonResource::withoutWrapping();
@@ -34,6 +33,17 @@ class AppServiceProvider extends ServiceProvider
             Route::getRoutes()
                 ->getByName('passport.authorizations.approve')
                 ?->middleware(EnsureNotDemo::class);
+        });
+    }
+
+    public function register(): void
+    {
+        $this->app->bind(AiProvider::class, function () {
+            if (config('ai.provider') !== 'groq') {
+                throw new AiException('unavailable');
+            }
+
+            return new GroqProvider;
         });
     }
 }
