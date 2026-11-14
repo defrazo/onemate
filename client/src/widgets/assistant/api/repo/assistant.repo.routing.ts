@@ -87,6 +87,15 @@ export class AssistantRepoRouting implements IAssistantRepo {
 		return this.getTargetRepo().newConversation(signal);
 	}
 
+	async resumeConversation(
+		id: string,
+		expectedActiveId: string | null,
+		signal: AbortSignal
+	): Promise<AssistantSnapshot> {
+		this.checkPermission('assistant', 'save');
+		return this.getTargetRepo().resumeConversation(id, expectedActiveId, signal);
+	}
+
 	async archive(search: string, page: number, signal: AbortSignal): Promise<ArchivePage> {
 		this.checkPermission('assistant', 'read');
 		return this.getTargetRepo().archive(search, page, signal);

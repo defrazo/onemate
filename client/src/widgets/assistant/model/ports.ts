@@ -26,6 +26,7 @@ export interface IAssistantRepo {
 		searchEnabled?: boolean
 	): Promise<AssistantGeneration>;
 	newConversation(signal: AbortSignal): Promise<{ archived_conversation_id: string | null }>;
+	resumeConversation(id: string, expectedActiveId: string | null, signal: AbortSignal): Promise<AssistantSnapshot>;
 	archive(search: string, page: number, signal: AbortSignal): Promise<ArchivePage>;
 	archivedMessages(id: string, before: number | null, signal: AbortSignal): Promise<AssistantSnapshot>;
 	pin(id: string, pinned: boolean, signal: AbortSignal): Promise<ArchivedConversation>;

@@ -85,6 +85,19 @@ export class AssistantRepoLaravel implements IAssistantRepo {
 		return data;
 	}
 
+	async resumeConversation(
+		id: string,
+		expectedActiveId: string | null,
+		signal: AbortSignal
+	): Promise<AssistantSnapshot> {
+		const { data } = await api.post<AssistantSnapshot>(
+			`/assistant/conversations/${id}/resume`,
+			{ expected_active_conversation_id: expectedActiveId },
+			{ signal }
+		);
+		return data;
+	}
+
 	async archive(search: string, page: number, signal: AbortSignal): Promise<ArchivePage> {
 		const { data } = await api.get<ArchivePage>('/assistant/conversations', { params: { search, page }, signal });
 		return data;

@@ -9,7 +9,10 @@ use App\AI\GenerationRequest;
 use App\AI\GenerationResult;
 use App\AI\GroqUsage;
 use Illuminate\Http\Client\ConnectionException;
+use Illuminate\Http\Client\Response;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Log;
+use Throwable;
 
 class GroqProvider implements AiProvider
 {
@@ -23,7 +26,7 @@ class GroqProvider implements AiProvider
 
         $started = hrtime(true);
         $usage = app(GroqUsage::class);
-        $attemptId = $usage->start($request);
+        $attemptId = $this->startUsage($usage, $request);
 
         try {
             $response = Http::withToken($key)->acceptJson()
@@ -36,15 +39,17 @@ class GroqProvider implements AiProvider
                     'reasoning_effort' => config('ai.groq.reasoning_effort'),
                     'include_reasoning' => config('ai.groq.include_reasoning'),
                     'max_completion_tokens' => $request->maxOutputTokens,
-                    ...($request->searchEnabled ? ['tools' => [['type' => 'browser_search']], 'tool_choice' => 'auto'] : ['tool_choice' => 'none']),
+                    ...($request->searchEnabled
+                        ? ['tools' => [['type' => 'browser_search']], 'tool_choice' => 'auto']
+                        : ['tool_choice' => 'none']),
                 ]);
         } catch (ConnectionException) {
-            $usage->finish($attemptId, null);
+            $this->finishUsage($usage, $attemptId, null);
 
             throw new AiException('connection_failed');
         }
 
-        $usage->finish($attemptId, $response);
+        $this->finishUsage($usage, $attemptId, $response);
 
         if ($response->status() === 429) {
             throw new AiException('rate_limited');
@@ -65,7 +70,10 @@ class GroqProvider implements AiProvider
         }
 
         $model = $response->json('model');
-        [$searchExecuted, $sources] = BrowserSearchResult::parse($response->json('choices.0.message.executed_tools'));
+
+        [$searchExecuted, $sources] = BrowserSearchResult::parse(
+            $response->json('choices.0.message.executed_tools'),
+        );
 
         return new GenerationResult(
             text: $text,
@@ -77,6 +85,36 @@ class GroqProvider implements AiProvider
             searchExecuted: $searchExecuted,
             sources: $sources,
         );
+    }
+
+    private function startUsage(GroqUsage $usage, GenerationRequest $request): ?string
+    {
+        try {
+            return $usage->start($request);
+        } catch (Throwable $error) {
+            Log::warning('Failed to start Groq usage tracking', [
+                'generation_id' => $request->generationId,
+                'exception' => $error,
+            ]);
+
+            return null;
+        }
+    }
+
+    private function finishUsage(GroqUsage $usage, ?string $attemptId, ?Response $response): void
+    {
+        if ($attemptId === null) {
+            return;
+        }
+
+        try {
+            $usage->finish($attemptId, $response);
+        } catch (Throwable $error) {
+            Log::warning('Failed to finish Groq usage tracking', [
+                'attempt_id' => $attemptId,
+                'exception' => $error,
+            ]);
+        }
     }
 
     private function tokens(mixed $value): ?int

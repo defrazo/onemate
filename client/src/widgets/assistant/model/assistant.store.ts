@@ -35,6 +35,7 @@ export class AssistantStore extends BaseStore {
 	private archiveController: AbortController | null = null;
 	private searchTimer: ReturnType<typeof setTimeout> | null = null;
 	private refreshActive = false;
+	private resumeRequest: { id: string; expectedActiveId: string | null } | null = null;
 
 	searchEnabled = false;
 
@@ -99,7 +100,27 @@ export class AssistantStore extends BaseStore {
 	}
 
 	get canSend(): boolean {
-		return this.view === 'active' && this.loaded && !this.busy && !this.generating && !this.intent;
+		return (
+			this.view === 'active' &&
+			this.loaded &&
+			!this.busy &&
+			!this.generating &&
+			!this.intent &&
+			!this.archiveSaving
+		);
+	}
+
+	get canResumeConversation(): boolean {
+		return (
+			this.view === 'readonly' &&
+			!!this.archivedConversation &&
+			this.loaded &&
+			!this.busy &&
+			!this.generating &&
+			!this.intent &&
+			!this.archiveLoading &&
+			!this.archiveSaving
+		);
 	}
 
 	get submissionRecovery(): { error: string; messageId: string | null; disabled: boolean } | null {
@@ -157,7 +178,6 @@ export class AssistantStore extends BaseStore {
 
 		this.limitsController = controller;
 		this.limitsLoading = true;
-		this.limitsError = null;
 
 		const owner = this.owner;
 
@@ -165,7 +185,10 @@ export class AssistantStore extends BaseStore {
 			const result = await this.repo.limits(controller.signal);
 
 			if (this.limitsController !== controller || owner !== this.owner) return;
-			runInAction(() => (this.limits = result));
+			runInAction(() => {
+				this.limits = result;
+				this.limitsError = null;
+			});
 		} catch (error) {
 			if (this.limitsController !== controller || controller.signal.aborted || owner !== this.owner) return;
 
@@ -195,34 +218,13 @@ export class AssistantStore extends BaseStore {
 	};
 
 	async load(): Promise<void> {
-		if (!this.available() || this.busy) return;
+		if (!this.available() || this.busy || this.archiveSaving) return;
 
 		this.loading = true;
 
 		await this.perform(
 			(signal) => this.repo.active(signal),
-			(snapshot) => {
-				if (this.conversation?.id !== snapshot.conversation?.id) {
-					this.searchEnabled = false;
-					this.messages = [];
-					this.generations = {};
-				}
-
-				this.conversation = snapshot.conversation;
-				this.merge(snapshot.messages);
-
-				for (const g of snapshot.generations) this.applyGeneration(g, false);
-
-				this.generation =
-					snapshot.pending_generation ??
-					[...snapshot.generations].sort(
-						(a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id)
-					)[0] ??
-					null;
-
-				this.before = snapshot.pagination.before_sequence;
-				this.loaded = true;
-			}
+			(snapshot) => this.applyActiveSnapshot(snapshot)
 		);
 		runInAction(() => {
 			if (!this.busy) this.loading = false;
@@ -359,6 +361,54 @@ export class AssistantStore extends BaseStore {
 		);
 
 		if (saved && owner === this.owner && this.available()) await this.load();
+	}
+
+	async resumeConversation(): Promise<void> {
+		if (!this.available() || !this.canResumeConversation || !this.archivedConversation) return;
+
+		const id = this.archivedConversation.id;
+		if (this.resumeRequest?.id !== id) this.resumeRequest = { id, expectedActiveId: this.conversation?.id ?? null };
+
+		const request = this.resumeRequest;
+		const owner = this.owner;
+		let conflict = false;
+		this.halt();
+
+		const saved = await this.archiveRequest(
+			async (signal) => {
+				try {
+					return await this.repo.resumeConversation(request.id, request.expectedActiveId, signal);
+				} catch (error) {
+					conflict = axios.isAxiosError(error) && error.response?.status === 409;
+					throw error;
+				}
+			},
+			(snapshot) => {
+				this.messages = [];
+				this.generations = {};
+				this.applyActiveSnapshot(snapshot);
+				this.view = 'active';
+				this.searchEnabled = false;
+				this.input = '';
+				this.lastSubmittedMessageId = null;
+				this.error = null;
+				this.historyError = null;
+				this.resumeRequest = null;
+				this.archivedConversation = null;
+				this.archivedMessages = [];
+				this.archivedBefore = null;
+				this.archiveItems = [];
+				this.archivePage = 0;
+				this.archiveHasMore = false;
+				this.persist();
+			},
+			true
+		);
+		if (!saved && conflict && owner === this.owner && this.available() && this.resumeRequest === request)
+			runInAction(() => {
+				this.resumeRequest = null;
+				this.archiveError = 'Активный диалог изменился или генерация ещё выполняется. Обновите состояние.';
+			});
 	}
 
 	openArchive = (): void => {
@@ -515,6 +565,26 @@ export class AssistantStore extends BaseStore {
 		this.stopping = false;
 	}
 
+	private applyActiveSnapshot(snapshot: AssistantSnapshot): void {
+		if (this.conversation?.id !== snapshot.conversation?.id) {
+			this.searchEnabled = false;
+			this.messages = [];
+			this.generations = {};
+		}
+
+		this.conversation = snapshot.conversation;
+		this.merge(snapshot.messages);
+		for (const g of snapshot.generations) this.applyGeneration(g, false);
+		this.generation =
+			snapshot.pending_generation ??
+			[...snapshot.generations].sort(
+				(a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id)
+			)[0] ??
+			null;
+		this.before = snapshot.pagination.before_sequence;
+		this.loaded = true;
+	}
+
 	private applyArchivedPage(page: AssistantSnapshot): void {
 		const generations = new Map(page.generations.map((item) => [item.user_message_id, item]));
 		const messages = page.messages.map((item) => ({
@@ -602,7 +672,7 @@ export class AssistantStore extends BaseStore {
 		apply: (data: T) => void,
 		history = false
 	): Promise<void> {
-		if (!this.available() || this.busy) return;
+		if (!this.available() || this.busy || this.archiveSaving) return;
 
 		if (this.timer) clearTimeout(this.timer);
 		this.timer = null;
@@ -742,7 +812,13 @@ export class AssistantStore extends BaseStore {
 
 		makeObservable<
 			this,
-			'submissionError' | 'controller' | 'reset' | 'applyArchivedPage' | 'applyGeneration' | 'merge'
+			| 'submissionError'
+			| 'controller'
+			| 'reset'
+			| 'applyActiveSnapshot'
+			| 'applyArchivedPage'
+			| 'applyGeneration'
+			| 'merge'
 		>(this, {
 			searchEnabled: observable,
 			limits: observable,
@@ -784,6 +860,7 @@ export class AssistantStore extends BaseStore {
 			phase: computed,
 			visibleMessages: computed,
 			canSend: computed,
+			canResumeConversation: computed,
 			submissionRecovery: computed,
 			regenerateMessageId: computed,
 
@@ -802,6 +879,7 @@ export class AssistantStore extends BaseStore {
 			regenerate: action,
 			stop: action,
 			newConversation: action,
+			resumeConversation: action,
 			loadArchive: action,
 			openArchived: action,
 			loadArchivedOlder: action,
@@ -811,6 +889,7 @@ export class AssistantStore extends BaseStore {
 			returnActive: action,
 			setSearch: action,
 			applyArchivedPage: action,
+			applyActiveSnapshot: action,
 			applyGeneration: action,
 			merge: action,
 			reset: action,
@@ -874,6 +953,7 @@ export class AssistantStore extends BaseStore {
 	}
 
 	protected reset(): void {
+		this.resumeRequest = null;
 		this.searchEnabled = false;
 		this.setLimitsOpen(false);
 		this.limits = null;

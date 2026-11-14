@@ -47,6 +47,10 @@ export class AssistantRepoDemo implements IAssistantRepo {
 		throw new RestrictedAccess();
 	}
 
+	async resumeConversation(): Promise<AssistantSnapshot> {
+		throw new RestrictedAccess();
+	}
+
 	async archive(): Promise<ArchivePage> {
 		throw new RestrictedAccess();
 	}

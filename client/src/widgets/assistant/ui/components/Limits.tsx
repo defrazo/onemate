@@ -39,21 +39,37 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 	]);
 
 	const data = store.limits;
+	const today = new Date().toISOString().slice(0, 10);
 
 	const metrics = [
 		{
-			label: 'Запросы сегодня',
+			label: 'Запросы',
+			periodStart: data?.daily_requests_local?.period_start,
 			used: data?.daily_requests_local?.used ?? null,
 			limit: LIMITS.requests,
 			partial: false,
 		},
 		{
-			label: 'Токены сегодня',
+			label: 'Токены',
+			periodStart: data?.daily_tokens.period_start,
 			used: data?.daily_tokens.used ?? null,
 			limit: LIMITS.tokens,
 			partial: (data?.daily_tokens.unmeasured_attempts ?? 0) > 0,
 		},
-	];
+	].map(({ label, periodStart, ...metric }) => {
+		const date = new Date(periodStart ?? '');
+		const valid = Number.isFinite(date.getTime());
+		const current = valid && date.toISOString().slice(0, 10) === today;
+		const period = valid
+			? date.toLocaleDateString('ru-RU', { day: '2-digit', month: '2-digit', timeZone: 'UTC' })
+			: null;
+
+		return {
+			...metric,
+			label: current ? `${label} сегодня` : period ? `${label} за ${period}` : label,
+			outdated: !current,
+		};
+	});
 
 	return (
 		<>
@@ -111,7 +127,16 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 							</div>
 						);
 					})}
-					{!data && store.limitsError && (
+					{data && (store.limitsError || metrics.some(({ outdated }) => outdated)) && (
+						<span className="text-xs text-(--text-disabled)" role="status">
+							{store.limitsError
+								? 'Не удалось обновить · данные могут быть устаревшими'
+								: store.limitsLoading
+									? 'Обновляем данные…'
+									: 'Данные за предыдущий период'}
+						</span>
+					)}
+					{!data && !store.limitsLoading && store.limitsError && (
 						<span className="text-xs text-(--status-error)/70" role="alert">
 							Не удалось обновить
 						</span>

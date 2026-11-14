@@ -222,9 +222,9 @@ export const Messages = ({
 					</article>
 				))}
 				{phase === 'loading' && <LoadingState size="md" />}
-				{phase === 'error' && (
+				{phase === 'error' && error && (
 					<span className="text-sm text-(--status-error)/80" role="alert">
-						{error ?? 'Не удалось загрузить диалог'}
+						{error}
 					</span>
 				)}
 			</div>

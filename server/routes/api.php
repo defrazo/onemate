@@ -228,6 +228,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
                 Route::post('/conversations/new', [AssistantConversationController::class, 'store']);
                 Route::get('/conversations', [AssistantConversationController::class, 'index']);
+                Route::post('/conversations/{conversation}/resume', [AssistantConversationController::class, 'resume'])->whereUuid('conversation');
                 Route::patch('/conversations/{conversation}/pin', [AssistantConversationController::class, 'pin'])->whereUuid('conversation');
                 Route::delete('/conversations/{conversation}', [AssistantConversationController::class, 'destroy'])->whereUuid('conversation');
                 Route::get('/conversations/{conversation}/messages', [AssistantConversationController::class, 'messages'])->whereUuid('conversation');

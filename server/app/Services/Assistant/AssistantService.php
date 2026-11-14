@@ -35,6 +35,38 @@ class AssistantService
         });
     }
 
+    public function resumeConversation(User $user, string $id, ?string $expectedActiveId): array
+    {
+        $id = strtolower($id);
+        $expectedActiveId = $expectedActiveId !== null ? strtolower($expectedActiveId) : null;
+
+        return DB::transaction(function () use ($user, $id, $expectedActiveId) {
+            $owner = $this->lockOwner($user);
+            $conversations = $owner->aiConversations()
+                ->where(fn ($query) => $query->where('id', $id)->orWhereNull('archived_at'))
+                ->orderBy('id')->lockForUpdate()->get();
+            $selected = $conversations->firstWhere('id', $id);
+            abort_unless($selected, 404);
+
+            $this->assertNoGenerationInProgress($owner);
+
+            $active = $conversations->first(fn ($conversation) => $conversation->archived_at === null);
+
+            if ($active?->id === $selected->id) {
+                return $this->messagePage($selected, null);
+            }
+
+            if ($active?->id !== $expectedActiveId) {
+                $this->conflict('ACTIVE_CONVERSATION_CHANGED', 'Активный диалог изменился. Обновите данные');
+            }
+
+            $active?->update(['archived_at' => now()]);
+            $selected->update(['archived_at' => null]);
+
+            return $this->messagePage($selected, null);
+        });
+    }
+
     public function archive(User $user, ?string $search): LengthAwarePaginator
     {
         return $user->aiConversations()->whereNotNull('archived_at')

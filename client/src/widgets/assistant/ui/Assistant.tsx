@@ -1,5 +1,5 @@
 import { createElement, type ReactNode, useEffect, useRef } from 'react';
-import { IconHistory, IconMessagePlus, IconTrash, IconWorld } from '@tabler/icons-react';
+import { IconHistory, IconMessagePlus, IconMessages, IconTrash, IconWorld } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -57,15 +57,29 @@ export const Assistant = observer(() => {
 	if (store.view === 'readonly') {
 		const conversation = store.archivedConversation;
 		const phase =
-			store.archiveLoading && !store.archivedMessages.length ? 'loading' : store.archiveError ? 'error' : 'idle';
+			store.archiveLoading && !store.archivedMessages.length
+				? 'loading'
+				: store.archiveError || store.error
+					? 'error'
+					: 'idle';
 
 		return (
 			<section
 				aria-label="Архивный диалог"
 				className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden"
 			>
-				<div className="flex shrink-0 items-center justify-between gap-2">
+				<div className="flex shrink-0 items-center gap-2">
 					<BackButton className="min-w-0" onBack="Назад" onClick={store.openArchive} />
+					<Button
+						className="ml-auto rounded-md text-xs"
+						disabled={!store.canResumeConversation}
+						leftIcon={<IconMessages className="size-4" />}
+						padding="sm"
+						variant="accent"
+						onClick={() => void store.resumeConversation()}
+					>
+						Продолжить диалог
+					</Button>
 					<Button
 						aria-label="Удалить диалог"
 						className="rounded-md text-xs"
@@ -91,7 +105,7 @@ export const Assistant = observer(() => {
 					readOnly
 					before={store.archivedBefore}
 					canRetry={false}
-					error={store.archiveError}
+					error={store.archiveError ?? store.error}
 					historyError={null}
 					loadingHistory={store.archiveLoading}
 					messages={store.archivedMessages}
@@ -103,9 +117,18 @@ export const Assistant = observer(() => {
 					<div className="mr-auto flex items-center gap-2">
 						<LoadingState size="xs" />
 						<span className="shrink-0 text-sm text-(--text-disabled)" role="status">
-							Удаляем…
+							Сохраняем изменения…
 						</span>
 					</div>
+				)}
+				{(store.archiveError || store.error || !store.loaded) && (
+					<Button
+						className="text-xs"
+						disabled={store.archiveSaving || store.busy}
+						onClick={() => void store.load()}
+					>
+						Обновить состояние
+					</Button>
 				)}
 			</section>
 		);

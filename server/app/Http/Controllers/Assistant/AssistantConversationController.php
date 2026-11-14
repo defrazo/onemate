@@ -19,6 +19,19 @@ class AssistantConversationController extends Controller
         return response()->json($service->newConversation($request->user()));
     }
 
+    public function resume(Request $request, string $conversation, AssistantService $service): ConversationSnapshotResource
+    {
+        $this->authorizeAssistant($request);
+
+        $data = $request->validate([
+            'expected_active_conversation_id' => ['present', 'nullable', 'uuid'],
+        ]);
+
+        return new ConversationSnapshotResource(
+            $service->resumeConversation($request->user(), $conversation, $data['expected_active_conversation_id']),
+        );
+    }
+
     public function index(Request $request, AssistantService $service): AnonymousResourceCollection
     {
         $this->authorizeAssistant($request);
