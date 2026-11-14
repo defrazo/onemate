@@ -8,6 +8,7 @@ import {
 	type DashboardLayout,
 	DEFAULT_THEME,
 	normalizeDashboardLayout,
+	normalizeWidgetSlots,
 	type Theme,
 	type WidgetId,
 	type WidgetSlot,
@@ -245,6 +246,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	async updateWidgetSlots(slots: WidgetSlot[]): Promise<void> {
+		slots = normalizeWidgetSlots(slots) ?? createDefaultSlots();
+
 		const userId = this.userStore.id;
 		if (!userId || this.arraysEqual(this.profile?.widgets_slots, slots)) return;
 
@@ -293,7 +296,11 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	private applyProfile(profile: UserProfile): void {
-		this.profile = { ...profile, widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence) };
+		this.profile = {
+			...profile,
+			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
+			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
+		};
 		this.profileReady = true;
 	}
 
@@ -304,6 +311,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			...(patch.widgets_sequence !== undefined && {
 				widgets_sequence: normalizeDashboardLayout(patch.widgets_sequence),
 			}),
+			...(patch.widgets_slots !== undefined && { widgets_slots: normalizeWidgetSlots(patch.widgets_slots) }),
 		};
 	}
 

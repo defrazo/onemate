@@ -7,6 +7,7 @@ import type { ModalStore } from '@/features/modal';
 import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
 import type { NotifyStore } from '@/features/toast';
+import type { AssistantStore } from '@/widgets/assistant';
 import type { CalendarStore } from '@/widgets/calendar';
 import type { CloudStore } from '@/widgets/cloud';
 import type { CredentialsStore } from '@/widgets/credentials';
@@ -29,6 +30,7 @@ export type AllStores = {
 	notificationStore: NotificationStore;
 	themeStore: ThemeStore;
 
+	assistantStore: AssistantStore;
 	calendarStore: CalendarStore;
 	cloudStore: CloudStore;
 	credentialsStore: CredentialsStore;
@@ -46,6 +48,7 @@ export type InitKeys =
 	| 'deviceActivityStore'
 	| 'notificationStore'
 	| 'themeStore'
+	| 'assistantStore'
 	| 'calendarStore'
 	| 'cloudStore'
 	| 'credentialsStore'

@@ -58,6 +58,12 @@
 	--priority-medium: #58d889;
 	--priority-high: #fa6961;
 
+	/* Режимы (Assistant) */
+	--assistant-explain: #249fd6;
+	--assistant-improve: #25b982;
+	--assistant-translate: #e65e75;
+	--assistant-ideas: #cf62e2;
+
 	/* Палитра */
 	--palette-slate: #94a3b8;
 	--palette-rose: #fb7185;
@@ -128,6 +134,12 @@
 	--priority-low: #f8ab30;
 	--priority-medium: #319c58;
 	--priority-high: #d94d48;
+
+	/* Режимы (Assistant) */
+	--assistant-explain: #16769f;
+	--assistant-improve: #207a55;
+	--assistant-translate: #b7435d;
+	--assistant-ideas: #9735a8;
 
 	/* Палитра */
 	--palette-slate: #94a3b8;

@@ -10,6 +10,7 @@ export class StoreInitializer {
 		'notificationStore',
 		'themeStore',
 
+		'assistantStore',
 		'calendarStore',
 		'cloudStore',
 		'credentialsStore',

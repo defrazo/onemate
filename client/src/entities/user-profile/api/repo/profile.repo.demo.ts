@@ -1,4 +1,10 @@
-import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
+import {
+	type DashboardLayout,
+	normalizeDashboardLayout,
+	normalizeWidgetSlots,
+	type Theme,
+	type WidgetSlot,
+} from '@/shared/config';
 import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
@@ -11,11 +17,16 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 
 	async loadProfile(id: string): Promise<UserProfile> {
 		const stored = storage.get(key(id, 'profile'));
-		if (stored && typeof stored === 'object') return structuredClone(stored as UserProfile);
+		const hasStored = stored && typeof stored === 'object';
+		const profile = hasStored ? (stored as UserProfile) : await this.loadInitialProfile(id);
+		const normalized = {
+			...profile,
+			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
+			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
+		};
 
-		const initial = await this.loadInitialProfile(id);
-		storage.set(key(id, 'profile'), toPlain(initial));
-		return structuredClone(initial);
+		if (!hasStored) storage.set(key(id, 'profile'), toPlain(normalized));
+		return structuredClone(normalized);
 	}
 
 	async updateProfile(id: string, patch: UserProfilePatch): Promise<UserProfile> {

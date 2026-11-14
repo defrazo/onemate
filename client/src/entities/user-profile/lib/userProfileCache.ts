@@ -1,4 +1,4 @@
-import { normalizeDashboardLayout } from '@/shared/config';
+import { normalizeDashboardLayout, normalizeWidgetSlots } from '@/shared/config';
 import { readCache, writeCache } from '@/shared/lib/cache';
 
 import type { UserProfile } from '../model/types';
@@ -18,7 +18,7 @@ export const userProfileCache = {
 			avatar_url: ui.avatar_url as UserProfileCacheData['avatar_url'] | undefined,
 			widgets_sequence:
 				ui.widgets_sequence === undefined ? undefined : normalizeDashboardLayout(ui.widgets_sequence),
-			widgets_slots: ui.widgets_slots as UserProfileCacheData['widgets_slots'] | undefined,
+			widgets_slots: normalizeWidgetSlots(ui.widgets_slots),
 		};
 	},
 
@@ -40,7 +40,7 @@ export const userProfileCache = {
 		patch(userId, {
 			avatar_url: profile.avatar_url,
 			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
-			widgets_slots: profile.widgets_slots,
+			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
 		});
 	},
 };

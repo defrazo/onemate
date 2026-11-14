@@ -15,6 +15,7 @@ export class RootStore implements AllStores {
 	public readonly notificationStore: AllStores['notificationStore'];
 	public readonly themeStore: AllStores['themeStore'];
 
+	public readonly assistantStore: AllStores['assistantStore'];
 	public readonly calendarStore: AllStores['calendarStore'];
 	public readonly credentialsStore: AllStores['credentialsStore'];
 	public readonly cloudStore: AllStores['cloudStore'];
@@ -43,6 +44,7 @@ export class RootStore implements AllStores {
 		this.notificationStore = allStores.notificationStore;
 		this.themeStore = allStores.themeStore;
 
+		this.assistantStore = allStores.assistantStore;
 		this.calendarStore = allStores.calendarStore;
 		this.credentialsStore = allStores.credentialsStore;
 		this.cloudStore = allStores.cloudStore;

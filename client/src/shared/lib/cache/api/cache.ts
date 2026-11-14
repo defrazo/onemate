@@ -1,4 +1,4 @@
-import { WIDGETS } from '@/shared/config';
+import { migrateWidgetId, WIDGETS } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
 import { cacheKey, cleanupCache } from '../lib/utils';
@@ -32,10 +32,12 @@ export const clearCache = (id: string) => {
 	const choices =
 		selected && typeof selected === 'object' && !Array.isArray(selected)
 			? Object.fromEntries(
-					Object.entries(selected).filter(
-						([slot, widget]) =>
-							WIDGETS.some(({ id }) => id === slot) && WIDGETS.some(({ id }) => id === widget)
-					)
+					Object.entries(selected)
+						.map(([slot, widget]) => [migrateWidgetId(slot), migrateWidgetId(widget)])
+						.filter(
+							([slot, widget]) =>
+								WIDGETS.some(({ id }) => id === slot) && WIDGETS.some(({ id }) => id === widget)
+						)
 				)
 			: {};
 

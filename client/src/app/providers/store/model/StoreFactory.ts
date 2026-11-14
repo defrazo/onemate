@@ -8,6 +8,7 @@ import { ModalStore } from '@/features/modal';
 import { NotificationRepoRouting, NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
 import { NotifyStore } from '@/features/toast';
+import { AssistantRepoRouting, AssistantStore } from '@/widgets/assistant';
 import { CalendarStore } from '@/widgets/calendar';
 import { CloudRepoRouting, CloudStore } from '@/widgets/cloud';
 import { CredentialsRepoRouting, CredentialsStore } from '@/widgets/credentials';
@@ -54,6 +55,11 @@ export class StoreFactory {
 		const themeStore = new ThemeStore(userStore, userProfileStore);
 
 		// Widgets
+		const assistantStore = new AssistantStore(
+			userStore,
+			() => authStore.endSession(),
+			new AssistantRepoRouting(userStore)
+		);
 		const calendarStore = new CalendarStore();
 		const cloudStore = new CloudStore(userStore, new CloudRepoRouting(userStore));
 		const credentialsStore = new CredentialsStore(userStore, new CredentialsRepoRouting(userStore));
@@ -81,6 +87,7 @@ export class StoreFactory {
 			themeStore,
 
 			// Widgets
+			assistantStore,
 			calendarStore,
 			cloudStore,
 			credentialsStore,

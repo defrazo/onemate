@@ -10,6 +10,7 @@ export const FEATURES = {
 	todo: ['read', 'save', 'delete'],
 	kanban: ['read', 'save', 'delete'],
 	cloud: ['read', 'save', 'delete', 'upload', 'use'],
+	assistant: ['read', 'save', 'delete', 'use'],
 
 	device: ['read'],
 	translator: ['use'],
@@ -36,6 +37,7 @@ const baseACL = {
 		todo: { read: true, save: true, delete: true },
 		kanban: { read: true, save: true, delete: true },
 		cloud: { read: true, save: true, delete: true, upload: true, use: true },
+		assistant: { read: true, save: true, delete: true, use: true },
 
 		device: { read: true },
 		translator: { use: true },
@@ -54,6 +56,7 @@ const baseACL = {
 		todo: { read: true, save: true, delete: true },
 		kanban: { read: true, save: true, delete: true },
 		cloud: { read: true, save: false, delete: false, upload: false, use: false },
+		assistant: { read: false, save: false, delete: false, use: false },
 
 		device: { read: true },
 		translator: { use: false },
