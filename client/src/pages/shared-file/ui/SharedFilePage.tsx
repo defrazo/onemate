@@ -199,7 +199,7 @@ export const SharedFilePage = () => {
 	}, []);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center px-4 py-10 select-none">
+		<div className="page-safe-area flex min-h-dvh items-center justify-center select-none [--page-pad-y:2.5rem]">
 			<div className="core-surface core-pad flex w-full max-w-xl flex-col items-center gap-3 bg-(--bg-secondary) px-6 py-8 shadow-(--shadow-contrast) md:px-8">
 				<div className="flex size-16 items-center justify-center rounded-xl bg-(--accent-primary-muted)">
 					{status === 'loading' ? (

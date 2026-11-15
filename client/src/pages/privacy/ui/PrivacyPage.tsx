@@ -128,10 +128,7 @@ export const PrivacyPage = () => {
 						</li>
 						<li>
 							Настоящая Политика применяется совместно с{' '}
-							<a
-								className="text-(--accent-primary) hover:underline print:text-black"
-								href="/terms-of-service"
-							>
+							<a className="text-(--accent-primary) hover:underline print:text-black" href="/terms">
 								Условиями использования
 							</a>
 							.

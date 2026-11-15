@@ -30,7 +30,7 @@ export const BottomSheet = ({ onBack, onClose, children }: BottomSheetProps) => 
 			/>
 			<div
 				className={cn(
-					'fixed right-0 bottom-0 left-0 z-60 h-fit max-h-dvh rounded-t-xl bg-(--bg-secondary)',
+					'sheet-safe-area fixed right-0 bottom-0 left-0 z-60 h-fit rounded-t-xl bg-(--bg-secondary)',
 					isDragging ? 'overflow-hidden' : 'overflow-y-auto overscroll-contain'
 				)}
 				style={{

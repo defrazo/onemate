@@ -79,7 +79,7 @@ export const OAuthAuthorizePage = () => {
 
 	if (isDemo) {
 		return (
-			<div className="flex min-h-screen items-center justify-center px-4 select-none">
+			<div className="page-safe-area flex min-h-dvh items-center justify-center select-none">
 				<div className="core-surface core-pad flex w-full max-w-md flex-col items-center bg-(--bg-secondary) px-6 py-8 text-center shadow-(--shadow-contrast)">
 					<div className="mb-3 flex size-16 items-center justify-center rounded-full bg-(--bg-tertiary)">
 						<IconLockFilled className="size-8 text-(--status-warning)" />
@@ -95,7 +95,7 @@ export const OAuthAuthorizePage = () => {
 
 	if (isLoading || isError || !authorization) {
 		return (
-			<div className="flex min-h-screen items-center justify-center px-4 select-none">
+			<div className="page-safe-area flex min-h-dvh items-center justify-center select-none">
 				<div className="core-surface core-pad flex w-full max-w-md flex-col items-center bg-(--bg-secondary) px-6 py-8 text-center shadow-(--shadow-contrast)">
 					<div className="mb-3 flex size-16 items-center justify-center rounded-full bg-(--bg-tertiary)">
 						{isLoading ? (
@@ -118,7 +118,7 @@ export const OAuthAuthorizePage = () => {
 	}
 
 	return (
-		<div className="flex min-h-screen items-center justify-center px-4 select-none">
+		<div className="page-safe-area flex min-h-dvh items-center justify-center select-none">
 			<div className="core-surface core-pad flex w-full max-w-md flex-col items-center gap-3 bg-(--bg-secondary) px-6 py-8 text-center shadow-(--shadow-contrast)">
 				<div className="mb-1 flex size-16 items-center justify-center rounded-full bg-(--accent-primary-muted) text-(--accent-primary)">
 					<IconShieldCheck className="size-8" />
