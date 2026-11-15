@@ -6,6 +6,7 @@ export interface IActivityRepo {
 	loadActivityLog(userId: string): Promise<ActivityLog[]>;
 	saveActivityLog(userId: string, log: ActivityLogInput): Promise<ActivityLog>;
 	deleteActivityLog(userId: string): Promise<void>;
+	endOtherSessions(userId: string): Promise<void>;
 }
 
 export interface IDeviceProvider {

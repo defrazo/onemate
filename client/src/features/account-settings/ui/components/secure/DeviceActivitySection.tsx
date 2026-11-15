@@ -1,9 +1,10 @@
-import { useCallback, useEffect } from 'react';
+import { type ReactNode, useCallback, useEffect, useRef } from 'react';
 import {
 	IconClock,
 	IconCopy,
 	IconDeviceDesktop,
 	IconDeviceMobile,
+	IconLogout2,
 	IconMapPin,
 	IconPointFilled,
 	IconServer,
@@ -13,12 +14,50 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { fullDate } from '@/shared/lib/utils';
-import { Button, Divider, LoadingState, NoContent, Tooltip } from '@/shared/ui';
+import { Button, ConfirmDialog, Divider, LoadingState, NoContent, Tooltip } from '@/shared/ui';
 
 export const DeviceActivitySection = observer(() => {
 	const copy = useCopy();
 
-	const { deviceActivityStore: store, notifyStore } = useStore();
+	const { deviceActivityStore: store, notifyStore, modalStore, userStore } = useStore();
+
+	const ownedModal = useRef<ReactNode>(null);
+
+	useEffect(
+		() => () => {
+			if (ownedModal.current && modalStore.modal?.content === ownedModal.current) modalStore.closeModal();
+		},
+		[modalStore, userStore.id]
+	);
+
+	const confirmEndSessions = () => {
+		if (store.isEndingSessions || store.isLoading || userStore.userRole === 'demo') return;
+
+		const owner = userStore.id;
+
+		const content = (
+			<ConfirmDialog
+				confirmLabel="Завершить"
+				description="Вы выйдете из аккаунта на всех остальных устройствах. Текущая сессия останется активной."
+				title="Завершить другие сеансы?"
+				variant="danger"
+				onCancel={() => modalStore.closeModal()}
+				onConfirm={async () => {
+					modalStore.closeModal();
+					if (owner !== userStore.id) return;
+					try {
+						const completed = await store.endOtherSessions();
+						if (completed && owner === userStore.id)
+							notifyStore.setNotice('Другие сеансы завершены', 'success');
+					} catch {
+						if (owner === userStore.id) notifyStore.setNotice('Что-то пошло не так', 'error');
+					}
+				}}
+			/>
+		);
+		ownedModal.current = content;
+		modalStore.setModal(content);
+	};
 
 	const handleLoad = useCallback(() => {
 		void store
@@ -60,16 +99,16 @@ export const DeviceActivitySection = observer(() => {
 		}
 	};
 
-	if (!store.isReady || !store.isHistoryReady) return <LoadingState className="min-h-53.5 xl:min-h-28" />;
+	if (!store.isReady || !store.isHistoryReady) return <LoadingState className="min-h-fit xl:min-h-37" />;
 
 	return (
-		<section className="flex flex-col gap-4 lg:flex-row xl:gap-0">
-			<div className="flex flex-col gap-2.5 select-none xl:w-[45%]">
+		<section className="flex min-w-0 flex-col gap-4 xl:max-h-37 xl:flex-row xl:gap-0">
+			<div className="flex flex-col gap-2.5 select-none xl:w-[50%]">
 				<h3 className="text-xs text-(--text-secondary)">Это устройство</h3>
 				<div className="flex flex-col gap-2.5 xl:min-w-0 xl:flex-1 xl:justify-between">
-					<div className="flex items-center xl:gap-3">
+					<div className="flex flex-col items-stretch gap-3 xl:flex-row xl:items-center">
 						<div className="flex min-w-0 items-center gap-2">
-							<div className="flex size-15 shrink-0 items-center justify-center rounded-xl bg-(--status-success-muted) text-(--status-success) xl:size-10">
+							<div className="flex size-15 shrink-0 items-center justify-center rounded-md bg-(--status-success-muted) text-(--status-success) xl:size-10">
 								{store.isMobile ? (
 									<IconDeviceMobile className="size-9 xl:size-5.5" />
 								) : (
@@ -79,14 +118,6 @@ export const DeviceActivitySection = observer(() => {
 							<div className="flex min-w-0 flex-col">
 								<div className="flex gap-2 xl:hidden">
 									<span className="text-sm text-(--text-disabled)">Текущая сессия</span>
-									<Button
-										centerIcon={<IconCopy className="size-4" />}
-										disabled={!store.currentActivity}
-										padding="none"
-										type="button"
-										variant="icon"
-										onClick={handleCopySession}
-									/>
 								</div>
 								<div className="flex items-center gap-1">
 									<span className="text-sm font-semibold">{store.browser}</span>
@@ -105,19 +136,9 @@ export const DeviceActivitySection = observer(() => {
 								</div>
 							</div>
 						</div>
-						<Button
-							className="mr-4 hidden flex-1 border border-(--border-contrast)/15 text-xs active:scale-90 xl:block"
-							disabled={!store.currentActivity}
-							padding="sm"
-							type="button"
-							variant="tone"
-							onClick={handleCopySession}
-						>
-							Скопировать
-						</Button>
 					</div>
-					<div className="hidden min-w-0 items-center justify-between pr-4 xl:flex">
-						<div className="flex max-w-1/2 min-w-0 flex-col">
+					<div className="hidden grid-cols-2 gap-2 xl:grid xl:pr-4">
+						<div className="flex min-w-0 flex-col">
 							<span className="text-xs text-(--text-disabled)">Местоположение</span>
 							<Tooltip content={store.region}>
 								<span className="truncate text-sm font-medium">{store.city}</span>
@@ -128,15 +149,38 @@ export const DeviceActivitySection = observer(() => {
 							<span className="font-mono text-sm">{store.ip}</span>
 						</div>
 					</div>
+					<div className="grid grid-cols-2 gap-2 xl:pr-4">
+						<Button
+							className="flex-1 rounded-md border border-(--border-contrast)/15 text-xs active:scale-90"
+							disabled={!store.currentActivity}
+							leftIcon={<IconCopy className="size-4" />}
+							padding="sm"
+							type="button"
+							variant="toneStrong"
+							onClick={handleCopySession}
+						>
+							Скопировать
+						</Button>
+						<Button
+							className="flex-1 flex-nowrap rounded-md text-xs hover:bg-(--danger-hover) hover:text-(--text-on-accent)"
+							disabled={store.isEndingSessions || store.isLoading || userStore.userRole === 'demo'}
+							leftIcon={<IconLogout2 className="size-4" />}
+							padding="sm"
+							variant="toneStrong"
+							onClick={confirmEndSessions}
+						>
+							{store.isEndingSessions ? 'Завершаем…' : 'Завершить другие'}
+						</Button>
+					</div>
 				</div>
 			</div>
 			<Divider className="hidden xl:block" direction="Y" />
-			<div className="group flex flex-1 flex-col gap-1 select-none xl:ml-2">
+			<div className="group flex min-h-0 min-w-0 flex-col gap-1 select-none xl:ml-2 xl:flex-1">
 				<div className="flex items-center justify-between xl:ml-2">
 					<h3 className="text-xs font-medium text-(--text-secondary)">История</h3>
 					<Button
 						className="text-xs text-(--text-secondary) transition-[color,opacity] group-hover:opacity-100 hover:text-(--danger) xl:opacity-0"
-						disabled={!store.isHistoryReady || store.isLoading}
+						disabled={!store.isHistoryReady || store.isLoading || store.isEndingSessions}
 						padding="none"
 						variant="custom"
 						onClick={handleClearActivity}
@@ -144,7 +188,7 @@ export const DeviceActivitySection = observer(() => {
 						Очистить
 					</Button>
 				</div>
-				<div className="core-scrollbar max-h-23 overflow-y-auto overscroll-contain">
+				<div className="core-scrollbar max-h-36 min-h-0 overflow-y-auto overscroll-contain xl:max-h-none xl:flex-1">
 					<div className="flex flex-col gap-1">
 						{store.activityLog.length === 0 && (
 							<NoContent description="Записи появятся здесь" title="История пуста" />

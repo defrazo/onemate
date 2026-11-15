@@ -34,4 +34,9 @@ export class ActivityRepoRouting extends BaseRouting implements IActivityRepo {
 		this.checkPermission('activity', 'delete');
 		return this.getTargetRepo().deleteActivityLog(id);
 	}
+
+	async endOtherSessions(id: string): Promise<void> {
+		this.checkPermission('user', 'save');
+		return this.getTargetRepo().endOtherSessions(id);
+	}
 }

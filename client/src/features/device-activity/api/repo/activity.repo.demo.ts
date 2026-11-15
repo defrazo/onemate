@@ -1,3 +1,4 @@
+import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { generateUUID, key, randomNumber, toPlain } from '@/shared/lib/utils';
 
@@ -30,6 +31,10 @@ export class ActivityRepoDemo implements IActivityRepo {
 
 	async deleteActivityLog(id: string): Promise<void> {
 		storage.remove(key(id, 'activity'));
+	}
+
+	async endOtherSessions(): Promise<void> {
+		throw new RestrictedAccess();
 	}
 
 	private getDefault(id: string): ActivityLog[] {

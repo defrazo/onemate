@@ -29,6 +29,7 @@ use App\Http\Controllers\User\UserCredentialController;
 use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
+use App\Http\Controllers\User\UserSessionController;
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureNotDemo;
@@ -124,6 +125,7 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/activity', [UserAuthLogController::class, 'index']);
             Route::post('/activity', [UserAuthLogController::class, 'store'])->middleware('throttle:10,1');
             Route::delete('/activity', [UserAuthLogController::class, 'destroy']);
+            Route::delete('/sessions/others', [UserSessionController::class, 'destroyOthers'])->middleware(EnsureNotDemo::class);
 
             // Credentials
             Route::prefix('credentials')->group(function () {

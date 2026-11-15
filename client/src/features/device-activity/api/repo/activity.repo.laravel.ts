@@ -25,4 +25,8 @@ export class ActivityRepoLaravel implements IActivityRepo {
 	async deleteActivityLog(_id: string): Promise<void> {
 		await api.delete('/user/activity');
 	}
+
+	async endOtherSessions(_id: string): Promise<void> {
+		await api.delete('/user/sessions/others');
+	}
 }

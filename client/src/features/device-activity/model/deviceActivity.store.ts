@@ -18,6 +18,7 @@ export class DeviceActivityStore extends AsyncStore {
 	activityLog: ActivityLog[] = [];
 	deviceInfo: DeviceData | null = null;
 	isHistoryReady = false;
+	isEndingSessions = false;
 
 	get isReady(): boolean {
 		return this.deviceInfo !== null;
@@ -92,6 +93,28 @@ export class DeviceActivityStore extends AsyncStore {
 		});
 	}
 
+	async endOtherSessions(): Promise<boolean> {
+		const userId = this.userStore.id;
+		if (!userId || this.isLoading || this.isEndingSessions) return false;
+
+		const generation = this.generation;
+		runInAction(() => (this.isEndingSessions = true));
+
+		try {
+			await this.repo.endOtherSessions(userId);
+			if (!this.isCurrentSession(userId, generation)) return false;
+
+			const activityLog = await this.repo.loadActivityLog(userId);
+			if (!this.isCurrentSession(userId, generation)) return false;
+
+			runInAction(() => this.applyActivityLog(activityLog));
+
+			return true;
+		} finally {
+			if (this.isCurrentSession(userId, generation)) runInAction(() => (this.isEndingSessions = false));
+		}
+	}
+
 	private async loadDeviceInfo(userId: string): Promise<void> {
 		const generation = this.generation;
 		const deviceInfo = await this.provider.getDeviceData();
@@ -160,6 +183,7 @@ export class DeviceActivityStore extends AsyncStore {
 			activityLog: observable,
 			deviceInfo: observable,
 			isHistoryReady: observable,
+			isEndingSessions: observable,
 
 			isReady: computed,
 			ip: computed,
@@ -220,6 +244,7 @@ export class DeviceActivityStore extends AsyncStore {
 	}
 
 	protected reset(): void {
+		this.isEndingSessions = false;
 		this.generation++;
 		this.initializing = null;
 
