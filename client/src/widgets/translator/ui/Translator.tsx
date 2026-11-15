@@ -1,20 +1,24 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
-import { Divider } from '@/shared/ui';
 
 import { TRANSLATE_DELAY } from '../model/constants';
-import { Controls, TranslateField } from './components';
+import { Controls, History, TranslateField } from './components';
 
 export const Translator = observer(() => {
 	const location = useLocation();
 
 	const { notifyStore, translatorStore: store } = useStore();
+	const [historyOpen, setHistoryOpen] = useState(false);
 
 	useEffect(() => {
-		if (!store.sourceText.trim()) return;
+		store.init();
+	}, [store]);
+
+	useEffect(() => {
+		if (!store.shouldAutoTranslate || !store.sourceText.trim()) return;
 
 		let active = true;
 
@@ -30,7 +34,7 @@ export const Translator = observer(() => {
 			active = false;
 			clearTimeout(timeout);
 		};
-	}, [store.sourceText, store.sourceLang, store.targetLang, store, notifyStore]);
+	}, [store.sourceText, store.sourceLang, store.targetLang, store.shouldAutoTranslate, store, notifyStore]);
 
 	useEffect(() => {
 		store.checkAvailability();
@@ -44,13 +48,29 @@ export const Translator = observer(() => {
 		return () => store.destroy();
 	}, [store]);
 
+	if (historyOpen)
+		return (
+			<History
+				onBack={() => setHistoryOpen(false)}
+				onRestore={(entry) => {
+					store.restoreHistory(entry);
+					setHistoryOpen(false);
+				}}
+			/>
+		);
+
 	return (
-		<div className="flex min-h-0 flex-1 flex-col">
+		<div className="flex min-h-0 flex-1 flex-col gap-2">
 			<Controls />
-			<div className="flex min-h-0 flex-1 flex-col gap-1 xl:flex-row xl:gap-0">
+			<div className="flex min-h-0 flex-1 flex-col gap-1 xl:flex-row xl:gap-2">
 				<TranslateField side="source" />
-				<Divider className="mt-4 self-stretch bg-(--tone-strong)" direction="Y" margX="xs" />
-				<TranslateField side="target" />
+				<TranslateField
+					side="target"
+					onHistory={() => {
+						store.loadHistory();
+						setHistoryOpen(true);
+					}}
+				/>
 			</div>
 		</div>
 	);

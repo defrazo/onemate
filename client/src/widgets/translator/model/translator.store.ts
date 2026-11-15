@@ -1,12 +1,15 @@
-import { action, computed, makeObservable, observable, runInAction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
+import type { IBaseUserPort, IUserRoutingPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
+import { generateUUID } from '@/shared/lib/utils';
 
+import { readTranslationHistory, writeTranslationHistory } from '../lib/history';
 import { availableLanguages } from '../lib/languages';
 import { PRIORITY_LANGUAGES, TRANSLATOR_MAX_LENGTH } from './constants';
 import { createDefaultTranslator } from './defaults';
 import type { TranslatorAvailability, TranslatorProvider } from './ports';
-import type { Language, Textbox } from './types';
+import type { Language, Textbox, TranslationHistoryEntry } from './types';
 
 const SOURCE_IDX = 0;
 const TARGET_IDX = 1;
@@ -15,6 +18,18 @@ export class TranslatorStore extends AsyncStore {
 	private preparationAbort: AbortController | null = null;
 	private abort: AbortController | null = null;
 	private availabilityVersion = 0;
+	private historyTimer: ReturnType<typeof setTimeout> | null = null;
+	private historyReadyAt = 0;
+	private historyVersion = 0;
+	private historyResult: TranslationHistoryEntry | null = null;
+
+	history: TranslationHistoryEntry[] = [];
+	historyError: string | null = null;
+	shouldAutoTranslate = true;
+
+	get canUseHistory(): boolean {
+		return !!this.user.id && this.user.userRole !== 'demo';
+	}
 
 	private static readonly languagesCache: Language[] = Object.values(availableLanguages)
 		.map(({ name, code }) => ({
@@ -64,9 +79,33 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	setSourceText(value: string): void {
+		this.cancelHistory();
+		this.cancelRequest();
+		this.shouldAutoTranslate = true;
 		const text = value.slice(0, TRANSLATOR_MAX_LENGTH);
 
 		this.updateTextbox(SOURCE_IDX, 'text', text);
+
+		if (
+			(this.sourceLang === 'ru' && this.targetLang === 'en') ||
+			(this.sourceLang === 'en' && this.targetLang === 'ru')
+		) {
+			const letters = text.match(/\p{L}/gu) ?? [];
+
+			if (letters.length >= 3) {
+				const cyrillic = letters.filter((letter) => /\p{Script=Cyrillic}/u.test(letter)).length;
+				const latin = letters.filter((letter) => /\p{Script=Latin}/u.test(letter)).length;
+				const language = cyrillic / letters.length >= 0.7 ? 'ru' : latin / letters.length >= 0.7 ? 'en' : null;
+
+				if (language && language !== this.sourceLang) {
+					this.cancelPreparation();
+					this.cancelRequest();
+					this.updateTextbox(SOURCE_IDX, 'language', language);
+					this.updateTextbox(TARGET_IDX, 'language', language === 'ru' ? 'en' : 'ru');
+					this.updateTextbox(TARGET_IDX, 'text', '');
+				}
+			}
+		}
 
 		if (!text.trim()) {
 			this.cancelRequest();
@@ -76,6 +115,7 @@ export class TranslatorStore extends AsyncStore {
 
 	setSourceLanguage(language: string): void {
 		if (this.sourceLang === language) return;
+		this.shouldAutoTranslate = true;
 
 		this.cancelPreparation();
 		this.cancelRequest();
@@ -84,6 +124,7 @@ export class TranslatorStore extends AsyncStore {
 
 	setTargetLanguage(language: string): void {
 		if (this.targetLang === language) return;
+		this.shouldAutoTranslate = true;
 
 		this.cancelPreparation();
 		this.cancelRequest();
@@ -91,12 +132,15 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	clear(): void {
+		this.cancelHistory();
+		this.shouldAutoTranslate = true;
 		this.cancelRequest();
 		this.updateTextbox(SOURCE_IDX, 'text', '');
 		this.updateTextbox(TARGET_IDX, 'text', '');
 	}
 
 	swap(): void {
+		this.shouldAutoTranslate = true;
 		const [source, target] = this.textboxes;
 
 		this.cancelPreparation();
@@ -105,6 +149,38 @@ export class TranslatorStore extends AsyncStore {
 		this.textboxes = [
 			{ ...source, language: target.language, text: target.text },
 			{ ...target, language: source.language, text: source.text },
+		];
+	}
+
+	loadHistory(): void {
+		this.history = this.canUseHistory ? readTranslationHistory(this.user.id!) : [];
+	}
+
+	deleteHistory(id: string): void {
+		if (!this.canUseHistory) return;
+
+		this.cancelHistory();
+		this.saveHistory(readTranslationHistory(this.user.id!).filter((entry) => entry.id !== id));
+	}
+
+	clearHistory(): void {
+		this.cancelHistory();
+		this.saveHistory([]);
+	}
+
+	restoreHistory(entry: TranslationHistoryEntry): void {
+		if (!this.canUseHistory) return;
+
+		const saved = readTranslationHistory(this.user.id!).find((item) => item.id === entry.id);
+		if (!saved) return;
+
+		this.cancelPreparation();
+		this.cancelRequest();
+
+		this.shouldAutoTranslate = false;
+		this.textboxes = [
+			{ type: 'source', language: saved.source, text: saved.original },
+			{ type: 'target', language: saved.target, text: saved.translation },
 		];
 	}
 
@@ -176,18 +252,79 @@ export class TranslatorStore extends AsyncStore {
 		const controller = new AbortController();
 		this.abort = controller;
 
+		if (this.historyTimer) clearTimeout(this.historyTimer);
+		this.historyTimer = null;
+		this.historyResult = null;
+
+		const owner = this.canUseHistory ? this.user.id : null;
+		const historyVersion = this.historyVersion;
+		const original = this.sourceText;
+		const source = this.sourceLang;
+		const target = this.targetLang;
+
 		try {
 			await this.withLoading(async () => {
 				const result = await this.provider.translate({
-					text: this.sourceText,
-					source: this.sourceLang,
-					target: this.targetLang,
+					text: original,
+					source,
+					target,
 					signal: controller.signal,
 				});
 
-				if (controller.signal.aborted) return;
+				if (
+					controller.signal.aborted ||
+					original !== this.sourceText ||
+					source !== this.sourceLang ||
+					target !== this.targetLang
+				)
+					return;
 
-				if (result != null) this.updateTextbox(TARGET_IDX, 'text', result);
+				if (result != null) {
+					this.updateTextbox(TARGET_IDX, 'text', result);
+
+					if (
+						owner &&
+						owner === this.user.id &&
+						this.canUseHistory &&
+						historyVersion === this.historyVersion &&
+						result.trim()
+					) {
+						this.historyResult = {
+							id: generateUUID(),
+							source,
+							target,
+							original,
+							translation: result,
+							createdAt: Date.now(),
+						};
+
+						if (this.historyTimer) clearTimeout(this.historyTimer);
+						this.historyTimer = setTimeout(
+							() => {
+								this.historyTimer = null;
+								if (
+									owner !== this.user.id ||
+									!this.canUseHistory ||
+									controller.signal.aborted ||
+									!this.historyResult
+								)
+									return;
+
+								const entry = this.historyResult;
+
+								if (
+									entry.original !== this.sourceText ||
+									entry.source !== this.sourceLang ||
+									entry.target !== this.targetLang
+								)
+									return;
+
+								runInAction(() => this.saveHistory([entry, ...readTranslationHistory(owner)]));
+							},
+							Math.max(0, this.historyReadyAt - Date.now())
+						);
+					}
+				}
 			});
 		} catch (error) {
 			if (error instanceof DOMException && error.name === 'AbortError') return;
@@ -197,6 +334,27 @@ export class TranslatorStore extends AsyncStore {
 		}
 	}
 
+	private saveHistory(entries: TranslationHistoryEntry[]): void {
+		if (!this.canUseHistory) return;
+
+		try {
+			writeTranslationHistory(this.user.id!, entries);
+			this.history = readTranslationHistory(this.user.id!);
+			this.historyError = null;
+		} catch {
+			this.historyError = 'Не удалось сохранить историю переводов';
+		}
+	}
+
+	private cancelHistory(): void {
+		this.historyVersion++;
+		if (this.historyTimer) clearTimeout(this.historyTimer);
+
+		this.historyTimer = null;
+		this.historyResult = null;
+		this.historyReadyAt = Date.now() + 3000;
+	}
+
 	private updateTextbox<K extends keyof Textbox>(idx: number, key: K, value: Textbox[K]): void {
 		const updated = [...this.textboxes];
 		updated[idx] = { ...updated[idx], [key]: value };
@@ -204,6 +362,7 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	private cancelPreparation(): void {
+		this.cancelHistory();
 		this.availabilityVersion++;
 		this.preparationAbort?.abort();
 		this.preparationAbort = null;
@@ -218,7 +377,10 @@ export class TranslatorStore extends AsyncStore {
 		this.abort = null;
 	}
 
-	constructor(private readonly provider: TranslatorProvider) {
+	constructor(
+		private readonly provider: TranslatorProvider,
+		private readonly user: IBaseUserPort & Pick<IUserRoutingPort, 'userRole'>
+	) {
 		super();
 
 		makeObservable<this, 'updateTextbox' | 'cancelPreparation' | 'reset'>(this, {
@@ -226,6 +388,14 @@ export class TranslatorStore extends AsyncStore {
 			isPreparing: observable,
 			preparationProgress: observable,
 			textboxes: observable,
+			history: observable,
+			historyError: observable,
+			shouldAutoTranslate: observable,
+			canUseHistory: computed,
+			loadHistory: action,
+			deleteHistory: action,
+			clearHistory: action,
+			restoreHistory: action,
 
 			isReady: computed,
 			sourceLang: computed,
@@ -254,6 +424,17 @@ export class TranslatorStore extends AsyncStore {
 	init(): void {
 		if (this.inited) return;
 		this.inited = true;
+
+		this.track(
+			reaction(
+				() => [this.user.id, this.user.userRole],
+				() => {
+					this.reset();
+					this.loadHistory();
+				},
+				{ fireImmediately: true }
+			)
+		);
 	}
 
 	destroy(): void {
@@ -266,5 +447,8 @@ export class TranslatorStore extends AsyncStore {
 		this.cancelPreparation();
 		this.cancelRequest();
 		this.textboxes = createDefaultTranslator();
+		this.shouldAutoTranslate = true;
+		this.history = [];
+		this.historyError = null;
 	}
 }

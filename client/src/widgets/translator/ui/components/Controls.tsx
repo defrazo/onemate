@@ -8,21 +8,21 @@ export const Controls = observer(() => {
 	const { translatorStore } = useStore();
 
 	return (
-		<div className="grid grid-cols-[1fr_auto_1fr]">
+		<div className="flex items-center justify-between gap-3">
 			<Select
 				hideChevron
 				keyBadge
 				align="start"
-				className="justify-center rounded-none border-b border-(--tone-strong) text-sm transition-colors group-hover:border-(--accent-primary) aria-expanded:border-(--accent-primary)"
+				className="justify-center text-sm aria-expanded:border-(--accent-primary)"
 				listPlacement="start"
 				options={translatorStore.languages}
 				value={translatorStore.sourceLang}
-				variant="custom"
+				variant="tone"
 				onChange={translatorStore.setSourceLanguage}
 			/>
 			<Button
 				centerIcon={<IconArrowsExchange className="size-4 group-active/switcher:scale-90" />}
-				className="group/switcher mx-4 my-auto h-6 w-8"
+				className="group/switcher size-8 shrink-0 rounded-full"
 				padding="none"
 				title="Поменять языки местами"
 				variant="accent"
@@ -32,11 +32,11 @@ export const Controls = observer(() => {
 				hideChevron
 				keyBadge
 				align="start"
-				className="justify-center rounded-none border-b border-(--tone-strong) text-sm transition-colors group-hover:border-(--accent-primary) aria-expanded:border-(--accent-primary)"
+				className="justify-center text-sm aria-expanded:border-(--accent-primary)"
 				listPlacement="end"
 				options={translatorStore.languages}
 				value={translatorStore.targetLang}
-				variant="custom"
+				variant="tone"
 				onChange={translatorStore.setTargetLanguage}
 			/>
 		</div>
