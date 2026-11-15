@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { formatFixed } from '@/shared/lib/utils';
-import { BackButton, Button, Select } from '@/shared/ui';
+import { Button, Select, ViewHeader } from '@/shared/ui';
 
 import { formatSummatorSummary, sumCurrencies } from '../../lib/sum';
 import { MAX_ROWS } from '../../model/constants';
@@ -63,14 +63,8 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 
 	return (
 		<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-			<div className="flex shrink-0 items-center justify-between gap-2">
-				<BackButton title="Вернуться к конвертеру" onClick={onBack} />
-				<div className="flex min-w-0 items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary)">
-					<IconCalculator className="size-4 shrink-0" />
-					<span className="trim text-sm">Сумматор валют</span>
-				</div>
-			</div>
-			<div className="mt-2 flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto">
+			<ViewHeader className="mb-2" icon={IconCalculator} title="Сумматор валют" onBack={onBack} />
+			<div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto">
 				{value.rows.map((row, idx) => (
 					<SummatorRow
 						key={row.id}
@@ -117,6 +111,7 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 						listPlacement="end"
 						listWidth={240}
 						options={currencyStore.currencyOptions}
+						selectedLabel="value"
 						value={value.target}
 						variant="tone"
 						onChange={(target) => onChange({ ...value, target })}

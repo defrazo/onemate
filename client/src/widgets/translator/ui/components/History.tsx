@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { pluralize, shortDateTime } from '@/shared/lib/utils';
-import { BackButton, Button, ConfirmDialog, Divider, NoContent } from '@/shared/ui';
+import { Button, ConfirmDialog, Divider, NoContent, ViewHeader } from '@/shared/ui';
 
 import type { TranslationHistoryEntry } from '../../model/types';
 
@@ -53,13 +53,7 @@ export const History = observer(({ onBack, onRestore }: HistoryProps) => {
 
 	return (
 		<div className="flex min-h-0 min-w-0 flex-1 flex-col gap-2">
-			<div className="flex shrink-0 items-center justify-between gap-2">
-				<BackButton title="Вернуться к переводчику" onClick={onBack} />
-				<div className="flex min-w-0 items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary)">
-					<IconHistory className="size-4 shrink-0" />
-					<span className="trim text-sm">История переводов</span>
-				</div>
-			</div>
+			<ViewHeader className="mb-2" icon={IconHistory} title="История переводов" onBack={onBack} />
 			{store.historyError && (
 				<span className="text-xs text-(--status-error)" role="alert">
 					{store.historyError}

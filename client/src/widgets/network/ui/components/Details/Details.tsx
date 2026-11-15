@@ -3,13 +3,12 @@ import { IconRefresh, IconReport, IconRoute, IconServer, IconSettings, IconWorld
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+import { Button, ViewHeader } from '@/shared/ui';
 
 import { getCheckViaLabel, getResponseTimeClass, getStatusCodeClass } from '../../../lib/utils';
 import type { MonitoredService, MonitoringHistory } from '../../../model/types';
 import { Metric } from '../Metric';
 import { StatusDot } from '../StatusDot';
-import { ViewHeader } from '../ViewHeader';
 import { History } from './History';
 
 interface DetailsProps {

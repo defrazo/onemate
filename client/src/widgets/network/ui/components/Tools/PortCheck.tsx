@@ -11,7 +11,7 @@ import {
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Divider, Input, InputLabel, SegmentedControl } from '@/shared/ui';
+import { Divider, Input, InputLabel, SegmentedControl, ViewHeader } from '@/shared/ui';
 
 import { getCheckViaLabel, getResponseTimeClass, portResultToCopy } from '../../../lib/utils';
 import type { CheckVia, PortCheckResult } from '../../../model/types';
@@ -19,7 +19,6 @@ import { CopyButton } from '../CopyButton';
 import { Metric } from '../Metric';
 import { StatusDot } from '../StatusDot';
 import { SubmitButton } from '../SubmitButton';
-import { ViewHeader } from '../ViewHeader';
 
 export const PortCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();

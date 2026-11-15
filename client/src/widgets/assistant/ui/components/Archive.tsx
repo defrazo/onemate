@@ -1,7 +1,7 @@
 import { IconFolderSearch, IconHistory, IconInbox, IconPin, IconPinFilled, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
-import { BackButton, Button, Divider, Input, LoadingState, NoContent } from '@/shared/ui';
+import { Button, Divider, Input, LoadingState, NoContent, ViewHeader } from '@/shared/ui';
 
 import type { AssistantStore } from '../../model/assistant.store';
 
@@ -18,13 +18,7 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 
 	return (
 		<section aria-label="Архив Mate AI" className="flex min-h-0 min-w-0 flex-1 flex-col gap-2 overflow-hidden">
-			<div className="mb-2.5 flex shrink-0 items-center justify-between gap-2">
-				<BackButton onClick={store.returnActive} />
-				<div className="flex items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary)">
-					<IconHistory className="size-4" />
-					<span className="trim text-sm">Архив диалогов</span>
-				</div>
-			</div>
+			<ViewHeader className="mb-2" icon={IconHistory} title="Архив диалогов" onBack={store.returnActive} />
 			<Input
 				aria-label="Поиск по названию диалога"
 				disabled={store.archiveSaving}
@@ -81,7 +75,9 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 							/>
 							<Button
 								aria-label="Удалить диалог"
-								centerIcon={<IconTrash className="size-4" />}
+								centerIcon={
+									<IconTrash className="size-4 transition-colors hover:text-(--status-error)" />
+								}
 								disabled={busy}
 								padding="none"
 								variant="icon"

@@ -10,11 +10,10 @@ import {
 } from '@tabler/icons-react';
 
 import { useStore } from '@/app/providers';
-import { Button, Input, InputLabel, LengthHint, SegmentedControl, Tooltip } from '@/shared/ui';
+import { Button, Input, InputLabel, LengthHint, SegmentedControl, Tooltip, ViewHeader } from '@/shared/ui';
 
 import { LIMITS } from '../../model/constants';
 import type { CheckVia, MonitoringType } from '../../model/types';
-import { ViewHeader } from './ViewHeader';
 
 export const AddService = ({ onBack, onCreated }: { onBack: () => void; onCreated: () => void }) => {
 	const { networkStore, notifyStore } = useStore();

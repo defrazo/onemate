@@ -3,7 +3,7 @@ import { IconAlertCircle, IconCertificate, IconLink, IconServer, IconX } from '@
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Divider, Input, InputLabel } from '@/shared/ui';
+import { Divider, Input, InputLabel, ViewHeader } from '@/shared/ui';
 
 import { getDaysRemaining, sslResultToCopy } from '../../../lib/utils';
 import type { SslCheckResult } from '../../../model/types';
@@ -11,7 +11,6 @@ import { CopyButton } from '../CopyButton';
 import { Metric } from '../Metric';
 import { StatusDot } from '../StatusDot';
 import { SubmitButton } from '../SubmitButton';
-import { ViewHeader } from '../ViewHeader';
 
 export const SslCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();

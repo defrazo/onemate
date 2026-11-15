@@ -7,4 +7,3 @@ export { Settings } from './Settings';
 export { StatusDot } from './StatusDot';
 export { SubmitButton } from './SubmitButton';
 export { Tools } from './Tools/Tools';
-export { ViewHeader } from './ViewHeader';
