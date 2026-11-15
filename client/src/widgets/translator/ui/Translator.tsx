@@ -3,6 +3,7 @@ import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { Divider } from '@/shared/ui';
 
 import { TRANSLATE_DELAY } from '../model/constants';
 import { Controls, History, TranslateField } from './components';
@@ -64,6 +65,7 @@ export const Translator = observer(() => {
 			<Controls />
 			<div className="flex min-h-0 flex-1 flex-col gap-1 xl:flex-row xl:gap-2">
 				<TranslateField side="source" />
+				<Divider className="mt-2" direction="Y" />
 				<TranslateField
 					side="target"
 					onHistory={() => {

@@ -45,26 +45,34 @@ export const Messages = ({
 	onRetry,
 }: MessagesProps) => {
 	const copy = useCopy();
+
+	const [showDown, setShowDown] = useState(false);
+
 	const list = useRef<HTMLDivElement>(null);
 	const anchor = useRef<{ id: string; top: number } | null>(null);
 	const previousLastId = useRef<string | null>(null);
 	const previousSubmittedId = useRef(submittedMessageId);
 	const manual = useRef(false);
-	const [showDown, setShowDown] = useState(false);
+
 	const updateDown = () => {
 		const element = list.current;
 		if (element) setShowDown(element.scrollHeight - element.scrollTop - element.clientHeight > 48);
 	};
+
 	useLayoutEffect(() => {
 		if (loadingHistory) return;
+
 		const element = list.current;
 		if (!element) return;
+
 		if (anchor.current) {
 			const previous = anchor.current;
 			const item = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
 				(node) => node.dataset.messageId === previous.id
 			);
+
 			if (item) element.scrollTop += item.getBoundingClientRect().top - previous.top;
+
 			anchor.current = null;
 		} else {
 			const submitted =
@@ -72,26 +80,32 @@ export const Messages = ({
 					? messages.find((message) => message.id === submittedMessageId)
 					: undefined;
 			const target = submitted ?? messageScrollTarget(previousLastId.current, messages, manual.current);
+
 			if (submitted) manual.current = false;
+
 			if (target === 'end') element.scrollTop = element.scrollHeight;
 			else if (target) {
 				const item = Array.from(element.querySelectorAll<HTMLElement>('[data-message-id]')).find(
 					(node) => node.dataset.messageId === target.id
 				);
+
 				if (item) element.scrollTop += item.getBoundingClientRect().top - element.getBoundingClientRect().top;
 			}
 		}
+
 		previousLastId.current = messages.at(-1)?.id ?? null;
 		previousSubmittedId.current = submittedMessageId;
+
 		if (!messages.length) manual.current = false;
+
 		updateDown();
 	}, [messages, loadingHistory, submittedMessageId]);
+
 	return (
 		<div className="relative flex min-h-0 min-w-0 flex-1 flex-col">
 			<div
 				ref={list}
 				aria-busy={phase === 'loading' || phase === 'generating'}
-				// className="min-h-0 min-w-0 flex-1 scrollbar-none space-y-2 overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg pb-10 select-text [overflow-anchor:none]"
 				className="core-scrollbar min-h-0 min-w-0 flex-1 space-y-2 overflow-x-hidden overflow-y-auto overscroll-contain rounded-lg select-text [overflow-anchor:none]"
 				onKeyDown={(event) => {
 					if (['ArrowUp', 'ArrowDown', 'PageUp', 'PageDown', 'Home', 'End', ' '].includes(event.key))
@@ -221,7 +235,7 @@ export const Messages = ({
 						)}
 					</article>
 				))}
-				{phase === 'loading' && <LoadingState size="md" />}
+				{phase === 'loading' && <LoadingState size="lg" />}
 				{phase === 'error' && error && (
 					<span className="text-sm text-(--status-error)/80" role="alert">
 						{error}

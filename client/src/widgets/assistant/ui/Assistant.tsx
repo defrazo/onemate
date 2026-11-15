@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
-import { BackButton, Button, ConfirmDialog, LoadingState, Tooltip } from '@/shared/ui';
+import { BackButton, Button, ConfirmDialog, LoadingState, SyncIndicator, Tooltip } from '@/shared/ui';
 
 import { Archive, Composer, Limits, Messages, ModeSelector, SubmissionError } from './components';
 
@@ -237,6 +237,7 @@ export const Assistant = observer(() => {
 				onSend={() => void store.send()}
 				onStop={() => void store.stop()}
 			/>
+			{store.isSyncing && <SyncIndicator />}
 		</section>
 	);
 });

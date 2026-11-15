@@ -137,6 +137,7 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 				this.connectedApps = apps;
 				this.isConnectedAppsLoaded = true;
 			});
+		} catch {
 		} finally {
 			runInAction(() => (this.isConnectedAppsLoading = false));
 		}

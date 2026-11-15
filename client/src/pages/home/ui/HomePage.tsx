@@ -49,7 +49,7 @@ export const HomePage = observer(() => {
 					Личное пространство для работы, идей и повседневных инструментов
 				</p>
 				<Button
-					className="mt-8 h-9"
+					className="mt-8 h-9 text-(--text-on-accent)"
 					loading={authStore.isLoading}
 					loadingText="Открываем..."
 					padding="lg"

@@ -264,7 +264,7 @@ export const SharedFilePage = () => {
 						</div>
 						<div className="flex w-full flex-col gap-2 md:flex-row">
 							<a
-								className="flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-colors hover:bg-(--accent-primary-hover) xl:max-w-60"
+								className="mx-auto flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-colors hover:bg-(--accent-primary-hover) xl:max-w-60"
 								href={downloadUrl}
 							>
 								<IconDownload className="size-4" />

@@ -25,8 +25,8 @@ export const TranslateField = observer(({ side, onHistory }: TranslateFieldProps
 		<div className="flex min-w-0 flex-1 flex-col gap-2 border-(--border-primary)">
 			<Textarea
 				className={cn(
-					'block h-full min-h-0 flex-1 scrollbar-none overflow-auto p-2 hover:border-transparent',
-					!isSource && 'text-(--text-primary)'
+					'block h-full min-h-0 flex-1 scrollbar-none overflow-auto p-2 hover:border-transparent focus:border-transparent',
+					!isSource && 'text-(--text-primary) caret-transparent'
 				)}
 				maxLength={isSource ? TRANSLATOR_MAX_LENGTH : undefined}
 				name={`${side}-textbox`}
@@ -34,7 +34,7 @@ export const TranslateField = observer(({ side, onHistory }: TranslateFieldProps
 				readOnly={!isSource}
 				resize="none"
 				value={text}
-				variant="tone"
+				variant="custom"
 				wrapperClassName="min-h-0 flex-1"
 				onChange={isSource ? (e) => translatorStore.setSourceText(e.target.value) : undefined}
 			/>

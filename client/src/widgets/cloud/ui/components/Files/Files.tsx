@@ -65,17 +65,14 @@ export const Files = observer(
 
 		const handleDragLeave = (event: DragEvent<HTMLDivElement>) => {
 			event.preventDefault();
-
 			if (!event.dataTransfer.types.includes('Files')) return;
 
 			dragCounter.current = Math.max(0, dragCounter.current - 1);
-
 			if (dragCounter.current === 0) setIsDragging(false);
 		};
 
 		const handleDragOver = (event: DragEvent<HTMLDivElement>) => {
 			event.preventDefault();
-
 			event.dataTransfer.dropEffect = canUpload ? 'copy' : 'none';
 		};
 

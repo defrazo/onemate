@@ -67,7 +67,7 @@ export class StoreFactory {
 		const networkStore = new NetworkStore(userStore, new NetworkRepoRouting(userStore));
 		const notesStore = createNotesStore({ userStore, authStore, modalStore, notifyStore });
 		const todoStore = new TodoStore(userStore, new TodoRepoRouting(userStore));
-		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore));
+		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore), userStore);
 		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
 
 		return {

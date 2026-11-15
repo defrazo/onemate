@@ -79,12 +79,15 @@ export class TranslatorStore extends AsyncStore {
 	}
 
 	setSourceText(value: string): void {
+		const text = value.slice(0, TRANSLATOR_MAX_LENGTH);
+		if (text === this.sourceText) return;
+
 		this.cancelHistory();
 		this.cancelRequest();
 		this.shouldAutoTranslate = true;
-		const text = value.slice(0, TRANSLATOR_MAX_LENGTH);
 
 		this.updateTextbox(SOURCE_IDX, 'text', text);
+		this.updateTextbox(TARGET_IDX, 'text', '');
 
 		if (
 			(this.sourceLang === 'ru' && this.targetLang === 'en') ||
@@ -105,11 +108,6 @@ export class TranslatorStore extends AsyncStore {
 					this.updateTextbox(TARGET_IDX, 'text', '');
 				}
 			}
-		}
-
-		if (!text.trim()) {
-			this.cancelRequest();
-			this.updateTextbox(TARGET_IDX, 'text', '');
 		}
 	}
 

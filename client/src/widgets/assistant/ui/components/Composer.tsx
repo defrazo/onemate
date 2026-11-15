@@ -56,6 +56,7 @@ export const Composer = ({
 					placeholder={metadata.placeholder}
 					rows={1}
 					value={value}
+					variant="toneStrong"
 					onChange={(event) => onChange(event.target.value)}
 					onKeyDown={(event) => {
 						if (event.key !== 'Enter' || event.shiftKey || event.nativeEvent.isComposing) return;

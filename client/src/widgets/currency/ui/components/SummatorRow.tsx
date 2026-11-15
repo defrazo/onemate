@@ -37,6 +37,7 @@ export const SummatorRow = ({ row, index, options, inputRef, onChange, onRemove 
 				listPlacement="end"
 				listWidth={240}
 				options={options}
+				selectedLabel="value"
 				value={row.code}
 				variant="tone"
 				onChange={(code) => onChange(row.id, { code })}

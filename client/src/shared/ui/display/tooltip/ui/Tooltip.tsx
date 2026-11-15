@@ -9,6 +9,7 @@ import { useTooltip } from '../model/useTooltip';
 interface TooltipProps {
 	content?: ReactNode;
 	className?: string;
+	contentClassName?: string;
 	children: ReactNode;
 	preferredPlacements?: Placement[];
 	offset?: number;
@@ -24,6 +25,7 @@ interface TooltipContentProps extends Omit<TooltipProps, 'content'> {
 const TooltipContent = ({
 	content,
 	className,
+	contentClassName,
 	children,
 	preferredPlacements = DEFAULT_PLACEMENTS,
 	offset = 8,
@@ -35,7 +37,10 @@ const TooltipContent = ({
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block"
+			className={cn(
+				'fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block',
+				contentClassName
+			)}
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>

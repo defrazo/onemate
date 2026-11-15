@@ -17,7 +17,7 @@ export const Controls = observer(() => {
 				listPlacement="start"
 				options={translatorStore.languages}
 				value={translatorStore.sourceLang}
-				variant="tone"
+				variant="toneStrong"
 				onChange={translatorStore.setSourceLanguage}
 			/>
 			<Button
@@ -36,7 +36,7 @@ export const Controls = observer(() => {
 				listPlacement="end"
 				options={translatorStore.languages}
 				value={translatorStore.targetLang}
-				variant="tone"
+				variant="toneStrong"
 				onChange={translatorStore.setTargetLanguage}
 			/>
 		</div>

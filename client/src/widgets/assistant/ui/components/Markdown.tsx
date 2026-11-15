@@ -112,7 +112,7 @@ const CodeBlock = ({ code, language }: { code: string; language: string }) => {
 					Копировать код
 				</Button>
 			</div>
-			<pre tabIndex={0}>
+			<pre className="core-scrollbar" tabIndex={0}>
 				<code>{highlighted}</code>
 			</pre>
 		</div>

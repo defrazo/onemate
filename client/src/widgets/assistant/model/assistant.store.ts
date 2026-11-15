@@ -84,6 +84,16 @@ export class AssistantStore extends BaseStore {
 		return this.controller !== null;
 	}
 
+	get isSyncing(): boolean {
+		return (
+			this.phase === 'loading' ||
+			this.phase === 'generating' ||
+			this.phase === 'stopping' ||
+			this.busy ||
+			this.archiveSaving
+		);
+	}
+
 	get phase(): AssistantPhase {
 		if (this.loading && !this.loaded) return 'loading';
 		if (this.stopping || (this.generation?.status === 'cancelled' && this.generating)) return 'stopping';
@@ -857,6 +867,7 @@ export class AssistantStore extends BaseStore {
 
 			generating: computed,
 			busy: computed,
+			isSyncing: computed,
 			phase: computed,
 			visibleMessages: computed,
 			canSend: computed,
