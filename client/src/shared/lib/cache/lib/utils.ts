@@ -13,7 +13,5 @@ const cleanupSection = (section?: CacheSection): CacheSection | undefined => {
 
 export const cleanupCache = (cache: Cache): Cache => {
 	const ui = cleanupSection(cache.ui);
-	const auth = cleanupSection(cache.auth);
-
-	return { ts: cache.ts, ...(ui && { ui }), ...(auth && { auth }) };
+	return { ts: cache.ts, ...(ui && { ui }) };
 };

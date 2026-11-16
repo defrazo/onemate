@@ -16,7 +16,7 @@ import {
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import { userProfileCache, type UserProfileCacheData } from '../lib/userProfileCache';
+import { type PendingProfileData, userProfileCache, type UserProfileCacheData } from '../lib/userProfileCache';
 import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from './defaults';
 import type { IUserProfileRepo, IUserProfileThemePort } from './ports';
 import type { Gender, UserProfile, UserProfilePatch } from './types';
@@ -27,6 +27,12 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	private readonly widgetSequenceUpdate = new Debouncer();
 	private readonly widgetSlotsUpdate = new Debouncer();
 	private readonly locationUpdate = new Debouncer();
+	private readonly changedFields = new Map<keyof UserProfile, number>();
+
+	private generation = 0;
+	private profileVersion = 0;
+	private locationVersion = 0;
+	private pendingProfile: PendingProfileData = {};
 
 	profile: UserProfile | null = null;
 
@@ -124,33 +130,43 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	private async load(userId: string): Promise<void> {
-		if (this.isLoading) return;
+		const generation = this.generation;
 
 		await this.withLoading(async () => {
-			const cachedProfile = userProfileCache.read(userId);
-
-			const results = await Promise.allSettled([
-				this.loadProfile(userId, cachedProfile),
-				this.loadLocation(userId),
-			]);
+			const results = await Promise.allSettled([this.loadProfile(userId), this.loadLocation(userId)]);
 
 			for (const result of results) {
-				if (result.status === 'rejected') handleError(result.reason);
+				if (this.current(userId, generation) && result.status === 'rejected') handleError(result.reason);
 			}
 		});
 	}
 
-	private async loadProfile(userId: string, cached?: Partial<UserProfileCacheData> | null): Promise<void> {
+	private async loadProfile(userId: string): Promise<void> {
+		const generation = this.generation;
+		const version = this.profileVersion;
+		const pending = { ...this.pendingProfile };
 		const server = await this.repo.loadProfile(userId);
 
-		const profile: UserProfile = { ...createDefaultProfile(), ...server, ...this.resolveCachedProfile(cached) };
+		if (!this.current(userId, generation)) return;
+
+		const profile: UserProfile = {
+			...createDefaultProfile(),
+			...server,
+			...pending,
+			...this.pendingProfile,
+			...this.changesSince(version),
+		};
 
 		this.applyProfile(profile);
-		userProfileCache.sync(userId, profile);
+		userProfileCache.sync(userId, server);
 	}
 
 	private async loadLocation(userId: string): Promise<void> {
+		const generation = this.generation;
+		const version = this.locationVersion;
 		const location = await this.locationRepo.load(userId);
+
+		if (!this.current(userId, generation) || version !== this.locationVersion) return;
 
 		this.applyLocation(location);
 	}
@@ -174,9 +190,12 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		if (!userId || this.profile?.avatar_url === avatar) return;
 
 		this.patchProfile({ avatar_url: avatar });
+		this.pendingProfile.avatar_url = avatar;
 		userProfileCache.setAvatar(userId, avatar);
 
-		this.scheduleServerUpdate(this.avatarUpdate, 500, userId, () => this.repo.updateAvatar(userId, avatar));
+		this.scheduleServerUpdate(this.avatarUpdate, 500, userId, () => this.repo.updateAvatar(userId, avatar), {
+			avatar_url: avatar,
+		});
 	}
 
 	async updateTheme(theme: Theme): Promise<void> {
@@ -184,8 +203,10 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		if (!userId || this.profile?.theme === theme) return;
 
 		this.patchProfile({ theme });
+		this.pendingProfile.theme = theme;
+		userProfileCache.setTheme(userId, theme);
 
-		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme));
+		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme), { theme });
 	}
 
 	async updateNotification(patch: UserProfilePatch): Promise<void> {
@@ -231,17 +252,28 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 		if (!unchanged) {
 			this.patchProfile({ widgets_sequence: widgets });
+			this.pendingProfile.widgets_sequence = widgets;
+
 			userProfileCache.setWidgets(userId, widgets);
 		}
 
 		if (immediate) {
 			this.widgetSequenceUpdate.cancel();
+			const generation = this.generation;
+
 			await this.repo.updateWidgets(userId, widgets);
+
+			if (this.current(userId, generation)) this.confirmPending(userId, { widgets_sequence: widgets });
+
 			return;
 		}
 
-		this.scheduleServerUpdate(this.widgetSequenceUpdate, 3000, userId, () =>
-			this.repo.updateWidgets(userId, widgets)
+		this.scheduleServerUpdate(
+			this.widgetSequenceUpdate,
+			3000,
+			userId,
+			() => this.repo.updateWidgets(userId, widgets),
+			{ widgets_sequence: widgets }
 		);
 	}
 
@@ -252,15 +284,19 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		if (!userId || this.arraysEqual(this.profile?.widgets_slots, slots)) return;
 
 		this.patchProfile({ widgets_slots: slots });
+		this.pendingProfile.widgets_slots = slots;
 		userProfileCache.setSlots(userId, slots);
 
-		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots));
+		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots), {
+			widgets_slots: slots,
+		});
 	}
 
 	setLocation(city: City): void {
 		if (this.currentLocation && isSameCity(this.currentLocation, city)) return;
 
 		const userId = this.userStore.id;
+		this.locationVersion++;
 		this.applyLocation(city);
 		if (!userId) return;
 
@@ -269,6 +305,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 	async deleteLocation(): Promise<void> {
 		const userId = this.userStore.id;
+		this.locationVersion++;
 
 		this.locationUpdate.cancel();
 		this.applyLocation(null);
@@ -280,9 +317,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 	private hydrateFromCache(userId: string): void {
 		const cached = userProfileCache.read(userId);
-		if (!cached) return;
-
-		this.patchProfile(this.resolveCachedProfile(cached));
+		this.pendingProfile = userProfileCache.readPending(userId);
+		this.patchProfile({ ...this.resolveCachedProfile(cached), ...this.pendingProfile });
 	}
 
 	private resolveCachedProfile(cached?: Partial<UserProfileCacheData> | null): Partial<UserProfile> {
@@ -305,6 +341,9 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	private patchProfile(patch: Partial<UserProfile>): void {
+		const version = ++this.profileVersion;
+		for (const field of Object.keys(patch) as (keyof UserProfile)[]) this.changedFields.set(field, version);
+
 		this.profile = {
 			...(this.profile ?? createDefaultProfile()),
 			...patch,
@@ -324,12 +363,30 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		debouncer: Debouncer,
 		delay: number,
 		userId: string,
-		operation: () => Promise<void>
+		operation: () => Promise<void>,
+		saved?: PendingProfileData
 	): void {
+		const generation = this.generation;
+
 		debouncer.schedule(() => {
-			if (this.userStore.id !== userId) return;
-			void operation().catch(handleError);
+			if (!this.current(userId, generation)) return;
+
+			void operation()
+				.then(() => {
+					if (saved && this.current(userId, generation)) this.confirmPending(userId, saved);
+				})
+				.catch((error) => {
+					if (this.current(userId, generation)) handleError(error);
+				});
 		}, delay);
+	}
+
+	private confirmPending(userId: string, saved: PendingProfileData): void {
+		for (const field of Object.keys(saved) as (keyof PendingProfileData)[]) {
+			if (JSON.stringify(this.pendingProfile[field]) === JSON.stringify(saved[field]))
+				delete this.pendingProfile[field];
+		}
+		userProfileCache.confirm(userId, saved);
 	}
 
 	private arraysEqual(a?: string[] | null, b?: string[] | null): boolean {
@@ -351,13 +408,44 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		const userId = this.userStore.id;
 		if (!userId || this.isLoading) return;
 
+		const generation = this.generation;
+		const version = this.profileVersion;
+
 		await this.withLoading(async () => {
-			const updated = await save(userId, patch);
-			const nextProfile = { ...createDefaultProfile(), ...updated };
+			const pending = { ...this.pendingProfile };
+
+			let updated: UserProfile;
+
+			try {
+				updated = await save(userId, patch);
+			} catch (error) {
+				if (this.current(userId, generation)) throw error;
+				return;
+			}
+			if (!this.current(userId, generation)) return;
+			const nextProfile = {
+				...createDefaultProfile(),
+				...updated,
+				...pending,
+				...this.pendingProfile,
+				...this.changesSince(version),
+			};
 
 			this.applyProfile(nextProfile);
-			userProfileCache.sync(userId, nextProfile);
+			userProfileCache.sync(userId, updated);
 		});
+	}
+
+	private current(userId: string, generation: number): boolean {
+		return this.inited && this.userStore.id === userId && this.generation === generation;
+	}
+
+	private changesSince(version: number): Partial<UserProfile> {
+		return Object.fromEntries(
+			[...this.changedFields]
+				.filter(([, changed]) => changed > version)
+				.map(([field]) => [field, this.profile?.[field]])
+		);
 	}
 
 	constructor(
@@ -421,10 +509,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			reaction(
 				() => this.userStore.id,
 				(userId) => {
-					if (!userId) {
-						this.reset();
-						return;
-					}
+					this.reset();
+					if (!userId) return;
 
 					this.hydrateFromCache(userId);
 					void this.load(userId);
@@ -435,11 +521,16 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	override destroy(): void {
-		this.cancelPendingUpdates();
+		this.reset();
 		super.destroy();
 	}
 
 	protected reset(): void {
+		this.generation++;
+		this.pendingProfile = {};
+		this.changedFields.clear();
+		this.profileVersion = 0;
+		this.locationVersion = 0;
 		this.cancelPendingUpdates();
 
 		this.profile = null;

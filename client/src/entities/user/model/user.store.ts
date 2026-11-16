@@ -4,7 +4,6 @@ import { clearCache } from '@/shared/lib/cache';
 import { clearDemoStorage } from '@/shared/lib/storage';
 import { BaseStore } from '@/shared/lib/store';
 
-import { userCache } from '../lib/userCache';
 import type { Role } from './acl';
 import type { IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort } from './ports';
 import type { ConnectedApp, User } from './types';
@@ -66,9 +65,6 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 		if (!user) return;
 
 		this.lastId = user.id;
-
-		userCache.setUserId(user.id);
-		userCache.setDeletedAt(user.id, user.deleted_at);
 	}
 
 	clearSession(): void {
