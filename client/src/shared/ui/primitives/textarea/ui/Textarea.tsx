@@ -87,7 +87,7 @@ export const Textarea = ({
 
 	return (
 		<div className={cn('relative min-h-0 w-full', wrapperClassName)}>
-			{leftIcon && <span className="absolute top-2 left-1.5 z-10 flex h-6 items-center">{leftIcon}</span>}
+			{leftIcon && <span className="absolute top-1.5 left-1.5 z-10 flex h-6 items-center">{leftIcon}</span>}
 			<textarea
 				{...props}
 				ref={setRef}

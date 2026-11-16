@@ -35,6 +35,7 @@ export class AssistantStore extends BaseStore {
 	private archiveController: AbortController | null = null;
 	private searchTimer: ReturnType<typeof setTimeout> | null = null;
 	private refreshActive = false;
+	private pendingStopId: string | null = null;
 	private resumeRequest: { id: string; expectedActiveId: string | null } | null = null;
 
 	searchEnabled = false;
@@ -336,18 +337,16 @@ export class AssistantStore extends BaseStore {
 	}
 
 	async stop(): Promise<void> {
-		if (!this.available() || !this.generation || !this.generating || this.busy) return;
+		if (!this.available() || !this.generation || !this.generating) return;
+		if (!['queued', 'running'].includes(this.generation.status)) return;
 
+		const id = this.generation.id;
+		if (this.pendingStopId === id || this.stopping) return;
+
+		this.pendingStopId = id;
 		this.stopping = true;
 
-		await this.perform(
-			(signal) => this.repo.cancel(this.generation!.id, signal),
-			(g) => this.applyGeneration(g)
-		);
-
-		runInAction(() => {
-			if (!this.busy) this.stopping = false;
-		});
+		if (!this.busy) await this.flushPendingStop();
 	}
 
 	async newConversation(): Promise<void> {
@@ -657,6 +656,7 @@ export class AssistantStore extends BaseStore {
 					this.archiveController = null;
 					this.archiveLoading = false;
 					this.archiveSaving = false;
+					this.resumeOperations();
 				});
 		}
 	}
@@ -667,6 +667,55 @@ export class AssistantStore extends BaseStore {
 		this.archiveController?.abort();
 		this.archiveController = null;
 		this.archiveLoading = false;
+	}
+
+	private async flushPendingStop(): Promise<void> {
+		const id = this.pendingStopId;
+		if (!id || this.busy || this.archiveSaving) return;
+
+		if (
+			!this.available() ||
+			!this.generating ||
+			this.generation?.id !== id ||
+			!['queued', 'running'].includes(this.generation.status)
+		) {
+			this.pendingStopId = null;
+			this.stopping = false;
+			this.resumeOperations();
+			return;
+		}
+
+		this.pendingStopId = null;
+		this.stopping = true;
+
+		const owner = this.owner;
+		const operation = this.perform(
+			(signal) => this.repo.cancel(id, signal),
+			(generation) => this.applyGeneration(generation)
+		);
+
+		const controller = this.controller;
+
+		try {
+			await operation;
+		} finally {
+			if (this.owner === owner && controller && !controller.signal.aborted)
+				runInAction(() => (this.stopping = false));
+		}
+	}
+
+	private resumeOperations(): void {
+		if (!this.available() || this.busy || this.archiveSaving) return;
+
+		if (this.pendingStopId) {
+			void this.flushPendingStop();
+			return;
+		}
+
+		if (this.refreshActive) {
+			this.refreshActive = false;
+			void this.load();
+		} else this.schedule();
 	}
 
 	private async poll(): Promise<void> {
@@ -689,7 +738,7 @@ export class AssistantStore extends BaseStore {
 		this.timer = null;
 
 		const controller = new AbortController();
-		this.controller = controller;
+		runInAction(() => (this.controller = controller));
 
 		const owner = this.owner;
 
@@ -744,15 +793,15 @@ export class AssistantStore extends BaseStore {
 
 			if (status === 401 || status === 419) this.endSession();
 		} finally {
-			if (this.controller === controller)
+			if (this.controller === controller) {
 				runInAction(() => {
 					this.controller = null;
-
-					if (this.refreshActive) {
-						this.refreshActive = false;
-						void this.load();
-					} else this.schedule();
+					this.loading = false;
+					this.loadingHistory = false;
+					this.saving = false;
+					this.resumeOperations();
 				});
+			}
 		}
 	}
 
@@ -808,6 +857,8 @@ export class AssistantStore extends BaseStore {
 		this.cancelArchiveRead();
 		this.archiveSaving = false;
 		this.refreshActive = false;
+		this.pendingStopId = null;
+		this.stopping = false;
 		if (this.timer) clearTimeout(this.timer);
 		this.timer = null;
 		this.controller?.abort();
@@ -830,6 +881,8 @@ export class AssistantStore extends BaseStore {
 			| 'applyArchivedPage'
 			| 'applyGeneration'
 			| 'merge'
+			| 'resumeOperations'
+			| 'flushPendingStop'
 		>(this, {
 			searchEnabled: observable,
 			limits: observable,
@@ -904,6 +957,8 @@ export class AssistantStore extends BaseStore {
 			applyActiveSnapshot: action,
 			applyGeneration: action,
 			merge: action,
+			resumeOperations: action,
+			flushPendingStop: action,
 			reset: action,
 		});
 	}

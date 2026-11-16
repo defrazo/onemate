@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { type RefObject, useEffect } from 'react';
 import {
 	autoUpdate,
 	flip,
@@ -13,14 +13,21 @@ import {
 import { IconGauge } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
+import { useStore } from '@/app/providers';
 import { Button, LoadingState } from '@/shared/ui';
 
-import type { AssistantStore } from '../../model/assistant.store';
 import { LIMITS } from '../../model/constants';
 
 const formatNumber = (value: number) => value.toLocaleString('ru-RU');
 
-export const Limits = observer(({ store }: { store: AssistantStore }) => {
+interface LimitsProps {
+	mobile?: boolean;
+	anchorRef?: RefObject<HTMLDivElement | null>;
+}
+
+export const Limits = observer(({ mobile = false, anchorRef }: LimitsProps) => {
+	const { assistantStore: store } = useStore();
+
 	useEffect(() => () => store.setLimitsOpen(false), [store]);
 
 	const { refs, floatingStyles, context } = useFloating({
@@ -31,6 +38,12 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 		whileElementsMounted: autoUpdate,
 		middleware: [offset(6), flip({ padding: 8 }), shift({ padding: 8 })],
 	});
+
+	useEffect(() => {
+		if (!mobile) return;
+
+		refs.setPositionReference(anchorRef?.current ?? null);
+	}, [mobile, anchorRef, refs]);
 
 	const { getReferenceProps, getFloatingProps } = useInteractions([
 		useClick(context),
@@ -73,15 +86,17 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 
 	return (
 		<>
-			<Button
-				{...getReferenceProps()}
-				ref={refs.setReference}
-				aria-label="Лимиты Mate AI"
-				centerIcon={<IconGauge className="size-6 xl:size-4" />}
-				className="size-7 rounded-md"
-				padding="none"
-				variant="iconSurface"
-			/>
+			{!mobile && (
+				<Button
+					{...getReferenceProps()}
+					ref={refs.setReference}
+					aria-label="Лимиты Mate AI"
+					centerIcon={<IconGauge className="size-6 lg:size-5 xl:size-4" />}
+					className="size-7 rounded-md"
+					padding="none"
+					variant="iconSurface"
+				/>
+			)}
 			{store.limitsOpen && (
 				<div
 					{...getFloatingProps()}

@@ -24,22 +24,38 @@ export const ModeSelector = ({ value, onChange }: ModeSelectorProps) => (
 						</div>
 					}
 				>
-					<Button
-						active={selected}
-						aria-label={title}
-						centerIcon={selected ? undefined : <Icon className="size-6 xl:size-4" />}
-						className={cn(
-							'h-7 w-fit min-w-7 rounded-md px-2 text-xs transition-none',
-							selected && 'min-w-24 text-(--text-on-accent)! active:scale-[0.97]',
-							selected && color
-						)}
-						leftIcon={selected ? <Icon className="size-6 xl:size-4" /> : undefined}
-						padding="none"
-						variant={selected ? 'custom' : 'iconSurface'}
-						onClick={() => onChange(id)}
-					>
-						{selected && title}
-					</Button>
+					<>
+						<Button
+							active={selected}
+							aria-label={title}
+							centerIcon={<Icon className="size-5" />}
+							className={cn(
+								'h-7 min-w-7 rounded-md text-xs transition-none',
+								selected && 'text-(--text-on-accent)! active:scale-[0.97]',
+								selected && color,
+								'max-lg:hidden xl:hidden'
+							)}
+							padding="none"
+							variant={selected ? 'custom' : 'iconSurface'}
+							onClick={() => onChange(id)}
+						/>
+						<Button
+							active={selected}
+							aria-label={title}
+							centerIcon={selected ? undefined : <Icon className="size-5.5" />}
+							className={cn(
+								'h-7 min-w-7 rounded-md px-2 text-xs transition-none lg:hidden xl:flex',
+								selected && 'min-w-24 text-(--text-on-accent)! active:scale-[0.97]',
+								selected && color
+							)}
+							leftIcon={selected ? <Icon className="size-6" /> : undefined}
+							padding="none"
+							variant={selected ? 'custom' : 'iconSurface'}
+							onClick={() => onChange(id)}
+						>
+							{selected && title}
+						</Button>
+					</>
 				</Tooltip>
 			);
 		})}

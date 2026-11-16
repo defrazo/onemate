@@ -38,7 +38,7 @@ export const TranslateField = observer(({ side, onHistory }: TranslateFieldProps
 				wrapperClassName="min-h-0 flex-1"
 				onChange={isSource ? (e) => translatorStore.setSourceText(e.target.value) : undefined}
 			/>
-			<div className={cn('flex h-6 items-center justify-between', isSource ? 'pr-2' : 'pl-2')}>
+			<div className="flex h-6 items-center justify-between">
 				<div className="flex items-center gap-2">
 					{isSource && (
 						<div className="flex h-6 items-center justify-center gap-1 rounded-md bg-(--accent-primary-muted) px-2 text-xs text-(--accent-primary) tabular-nums">
@@ -75,7 +75,7 @@ export const TranslateField = observer(({ side, onHistory }: TranslateFieldProps
 				<div className="pointer-events-auto flex h-full items-center gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
-							centerIcon={<IconX className="size-5 hover:text-(--danger) xl:size-4" stroke={3} />}
+							centerIcon={<IconX className="size-5 hover:text-(--danger) xl:size-4" />}
 							disabled={!text}
 							padding="none"
 							title="Очистить"

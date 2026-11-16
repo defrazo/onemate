@@ -151,8 +151,7 @@ export const Credentials = observer(() => {
 								}}
 							/>
 							<Button
-								centerIcon={<IconX className="size-4" />}
-								className="size-6 shrink-0"
+								centerIcon={<IconX className="size-5 shrink-0 xl:size-4" />}
 								padding="none"
 								title="Закрыть поиск"
 								variant="icon"
@@ -169,7 +168,7 @@ export const Credentials = observer(() => {
 							</div>
 							<div className="flex items-center gap-3">
 								<Button
-									centerIcon={<IconSearch className="size-4" />}
+									centerIcon={<IconSearch className="size-5 xl:size-4" />}
 									padding="none"
 									title="Поиск аккаунтов"
 									variant="icon"

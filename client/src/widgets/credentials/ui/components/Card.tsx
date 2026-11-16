@@ -19,7 +19,7 @@ interface CardProps {
 }
 
 const ACTION_CLASS =
-	'opacity-0 transition-[color,opacity] group-hover/credential:opacity-100 group-focus-within/credential:opacity-100 [@media(hover:none)]:opacity-100';
+	'opacity-0 transition-[color,opacity] [@media(hover:hover)]:group-hover/credential:opacity-100 focus-visible:opacity-100 [@media(hover:none)]:opacity-100';
 
 export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) => {
 	const copy = useCopy();
@@ -124,7 +124,6 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 		>
 			<Button
 				className="min-w-0 flex-1 flex-col items-start gap-1 text-sm"
-				disabled={disabled}
 				padding="none"
 				tabIndex={-1}
 				variant="custom"
@@ -156,7 +155,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 					<span
 						aria-hidden="true"
 						className={cn(
-							'h-1 w-3 rounded-full transition-opacity',
+							'hidden h-1 w-3 rounded-full transition-opacity lg:block',
 							!sortingDisabled &&
 								'group-focus-within/credential:opacity-0 group-hover/credential:opacity-0 [@media(hover:none)]:opacity-0',
 							isDragging && 'opacity-0'
@@ -167,7 +166,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 						<Button
 							centerIcon={<IconGripHorizontal className="size-4" />}
 							className={cn(
-								'hidden cursor-grab touch-none active:cursor-grabbing lg:absolute',
+								'absolute hidden cursor-grab touch-none active:cursor-grabbing lg:block',
 								ACTION_CLASS,
 								isDragging && 'opacity-100'
 							)}
@@ -185,7 +184,6 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 						<Button
 							centerIcon={<IconCopy className="size-5 xl:size-4" />}
 							className={ACTION_CLASS}
-							disabled={disabled}
 							padding="none"
 							title="Копировать логин"
 							variant="icon"
@@ -208,7 +206,6 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 									)
 								}
 								className={ACTION_CLASS}
-								disabled={disabled || requesting}
 								padding="none"
 								title={password === null ? 'Показать пароль на 60 секунд' : 'Скрыть пароль'}
 								variant="icon"
@@ -220,7 +217,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 							<Button
 								centerIcon={<IconCopy className="size-5 xl:size-4" />}
 								className={ACTION_CLASS}
-								disabled={disabled || requesting}
+								disabled={requesting}
 								padding="none"
 								title="Копировать пароль"
 								variant="icon"

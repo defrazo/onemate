@@ -102,7 +102,7 @@ export const AddItem = observer(({ list, onAdded }: { list: TodoList; onAdded?: 
 						text.trim() && (
 							<Button
 								aria-label="Добавить пункт"
-								centerIcon={<IconCheck className="size-4" />}
+								centerIcon={<IconCheck className="size-6 xl:size-4" />}
 								disabled={isDisabled || !text.trim()}
 								padding="none"
 								title="Добавить пункт"

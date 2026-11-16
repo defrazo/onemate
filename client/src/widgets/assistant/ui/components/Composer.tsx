@@ -13,7 +13,6 @@ interface ComposerProps {
 	value: string;
 	phase: AssistantPhase;
 	canSend: boolean;
-	canStop: boolean;
 	onChange: (value: string) => void;
 	onSend: () => void;
 	onStop: () => void;
@@ -25,7 +24,6 @@ export const Composer = ({
 	value,
 	phase,
 	canSend: allowed,
-	canStop,
 	onChange,
 	onSend,
 	onStop,
@@ -91,7 +89,7 @@ export const Composer = ({
 					!generating && metadata.color,
 					!generating && 'text-(--text-on-accent)!'
 				)}
-				disabled={generating ? !canStop || phase === 'stopping' : !canSend}
+				disabled={!generating && !canSend}
 				padding="none"
 				type={generating ? 'button' : 'submit'}
 				variant={generating ? 'accent' : 'custom'}

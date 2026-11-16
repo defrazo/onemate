@@ -27,7 +27,7 @@ export const Modal = observer(({ children, onClose }: ModalProps) => {
 						onClick={onClose}
 					/>
 				)}
-				<div className="core-scrollbar min-h-0 overflow-y-auto overscroll-contain">{children}</div>
+				<div className="core-scrollbar min-h-0 overscroll-contain">{children}</div>
 			</div>
 		</div>,
 		document.body

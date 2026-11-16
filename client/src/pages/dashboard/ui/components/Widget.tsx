@@ -58,7 +58,7 @@ export const Widget = memo(({ items, activeId, onSelect }: WidgetProps) => {
 								<Button
 									aria-selected={active.id === item.id}
 									className={cn(
-										'trim text-lg font-bold select-none md:mr-auto md:ml-0',
+										'trim text-lg font-bold select-none md:mr-auto md:ml-0 lg:text-base xl:text-lg',
 										active.id === item.id ? 'text-(--text-primary)' : 'text-(--text-disabled)/70'
 									)}
 									padding="none"

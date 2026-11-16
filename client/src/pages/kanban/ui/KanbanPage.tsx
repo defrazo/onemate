@@ -191,6 +191,18 @@ export const KanbanPage = () => {
 	const isLoading = loading || !!view?.loading;
 	const hasError = error || !!view?.loadError;
 
+	if (isLoading || hasError)
+		return (
+			<LoadingError
+				error={hasError}
+				size="lg"
+				onRetry={() => {
+					if (error) void initialize();
+					else void reloadBoard();
+				}}
+			/>
+		);
+
 	return (
 		<section className="flex size-full min-h-0 min-w-0 flex-col gap-4">
 			{view && (
@@ -236,19 +248,6 @@ export const KanbanPage = () => {
 					id="kanban"
 					inert={!!(view?.conflict || isLoading)}
 				/>
-				{(isLoading || hasError) && (
-					<div className="absolute inset-0 flex items-center justify-center">
-						<LoadingError
-							error={hasError}
-							message="Не удалось загрузить доску"
-							size="lg"
-							onRetry={() => {
-								if (error) void initialize();
-								else void reloadBoard();
-							}}
-						/>
-					</div>
-				)}
 			</div>
 		</section>
 	);

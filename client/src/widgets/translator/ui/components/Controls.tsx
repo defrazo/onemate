@@ -15,6 +15,7 @@ export const Controls = observer(() => {
 				align="start"
 				className="justify-center text-sm aria-expanded:border-(--accent-primary)"
 				listPlacement="start"
+				listWidth={200}
 				options={translatorStore.languages}
 				value={translatorStore.sourceLang}
 				variant="toneStrong"
@@ -22,7 +23,7 @@ export const Controls = observer(() => {
 			/>
 			<Button
 				centerIcon={<IconArrowsExchange className="size-5 group-active/switcher:scale-90 xl:size-4" />}
-				className="group/switcher size-8 shrink-0 rounded-full"
+				className="group/switcher size-6 shrink-0 rounded-lg"
 				padding="none"
 				title="Поменять языки местами"
 				variant="accent"
@@ -34,6 +35,7 @@ export const Controls = observer(() => {
 				align="start"
 				className="justify-center text-sm aria-expanded:border-(--accent-primary)"
 				listPlacement="end"
+				listWidth={200}
 				options={translatorStore.languages}
 				value={translatorStore.targetLang}
 				variant="toneStrong"

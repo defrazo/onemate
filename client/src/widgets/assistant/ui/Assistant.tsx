@@ -7,7 +7,7 @@ import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { BackButton, Button, ConfirmDialog, LoadingState, SyncIndicator, Tooltip } from '@/shared/ui';
 
-import { Archive, Composer, Limits, Messages, ModeSelector, SubmissionError } from './components';
+import { Archive, Composer, Limits, Messages, MobileActions, ModeSelector, SubmissionError } from './components';
 
 export const Assistant = observer(() => {
 	const { isMobile } = useResponsive();
@@ -15,10 +15,10 @@ export const Assistant = observer(() => {
 	const { userStore, modalStore, assistantStore: store } = useStore();
 
 	const ownedModal = useRef<ReactNode>(null);
+	const actionsRef = useRef<HTMLDivElement>(null);
 
 	const recovery = store.submissionRecovery;
 	const generating = store.phase === 'stopping' || store.generating;
-	const canStop = !store.busy && store.generating && store.generation?.status !== 'cancelled';
 
 	const confirmDelete = (id: string) => {
 		const owner = userStore.id;
@@ -85,7 +85,7 @@ export const Assistant = observer(() => {
 					</Button>
 					<Button
 						aria-label="Удалить диалог"
-						className="lg:h-6text-xs h-8 rounded-md"
+						className="h-8 rounded-md text-xs lg:h-6"
 						disabled={!conversation || store.archiveSaving || store.archiveLoading}
 						leftIcon={<IconTrash className="size-5 xl:size-4" />}
 						padding="sm"
@@ -139,56 +139,75 @@ export const Assistant = observer(() => {
 
 	return (
 		<section aria-label="Mate AI" className="flex min-h-0 min-w-0 flex-1 flex-col gap-1.5 overflow-hidden">
-			<div className="mt-0.5 flex shrink-0 flex-col flex-wrap items-center justify-between gap-2 xl:flex-row">
+			<div className="mt-0.5 flex shrink-0 flex-wrap items-center justify-between gap-2 xl:flex-row">
 				<ModeSelector value={store.mode} onChange={store.setMode} />
-				<div className="ml-auto flex items-center gap-3 xl:gap-1">
-					{userStore.userRole === 'admin' && (
-						<Tooltip
-							content={
-								store.searchEnabled
-									? 'Выключить поиск в интернете'
-									: 'Разрешить поиск в интернете. Расход токенов значительно увеличится'
-							}
-							contentClassName="max-w-70"
-						>
+				{isMobile ? (
+					<>
+						<MobileActions
+							anchorRef={actionsRef}
+							canNewConversation={store.canSend}
+							isAdmin={userStore.userRole === 'admin'}
+							searchEnabled={store.searchEnabled}
+							onNewConversation={() => void store.newConversation()}
+							onOpenArchive={store.openArchive}
+							onOpenLimits={() => store.setLimitsOpen(true)}
+							onToggleSearch={() => store.setSearchEnabled(!store.searchEnabled)}
+						/>
+						<Limits mobile anchorRef={actionsRef} />
+					</>
+				) : (
+					<div className="ml-auto flex items-center gap-3 border-(--border-primary) not-lg:border-t not-lg:pt-2 lg:gap-1">
+						{userStore.userRole === 'admin' && (
+							<Tooltip
+								content={
+									store.searchEnabled
+										? 'Выключить поиск в интернете'
+										: 'Разрешить поиск в интернете. Расход токенов значительно увеличится'
+								}
+								contentClassName="max-w-70"
+							>
+								<Button
+									aria-checked={store.searchEnabled}
+									aria-label="Поиск в интернете"
+									centerIcon={<IconWorld className="size-6 lg:size-5 xl:size-4" />}
+									className={cn(
+										'size-7 rounded-md',
+										store.searchEnabled && 'text-(--accent-primary)!'
+									)}
+									padding="none"
+									role="switch"
+									variant="iconSurface"
+									onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+								/>
+							</Tooltip>
+						)}
+						<Tooltip content="Лимиты и ограничения">
+							<Limits />
+						</Tooltip>
+						<Tooltip content="Архив диалогов">
 							<Button
-								aria-checked={store.searchEnabled}
-								aria-label="Поиск в интернете"
-								centerIcon={<IconWorld className="size-6 xl:size-4" />}
-								className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
+								aria-label="Архив диалогов"
+								centerIcon={<IconHistory className="size-6 lg:size-5 xl:size-4" />}
+								className="size-7"
 								padding="none"
-								role="switch"
 								variant="iconSurface"
-								onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+								onClick={store.openArchive}
 							/>
 						</Tooltip>
-					)}
-					<Tooltip content="Лимиты и ограничения">
-						<Limits store={store} />
-					</Tooltip>
-					<Tooltip content="Архив диалогов">
-						<Button
-							aria-label="Архив диалогов"
-							centerIcon={<IconHistory className="size-6 xl:size-4" />}
-							className="size-7"
-							padding="none"
-							variant="iconSurface"
-							onClick={store.openArchive}
-						/>
-					</Tooltip>
-					<Tooltip content="Новый диалог">
-						<Button
-							aria-label="Новый диалог"
-							centerIcon={<IconMessagePlus className="size-6 xl:size-4" />}
-							className="size-7 rounded-md"
-							disabled={!store.canSend}
-							padding="none"
-							title="Новый диалог"
-							variant="iconSurface"
-							onClick={() => void store.newConversation()}
-						/>
-					</Tooltip>
-				</div>
+						<Tooltip content="Новый диалог">
+							<Button
+								aria-label="Новый диалог"
+								centerIcon={<IconMessagePlus className="size-6 lg:size-5 xl:size-4" />}
+								className="size-7 rounded-md"
+								disabled={!store.canSend}
+								padding="none"
+								title="Новый диалог"
+								variant="iconSurface"
+								onClick={() => void store.newConversation()}
+							/>
+						</Tooltip>
+					</div>
+				)}
 			</div>
 			<Messages
 				before={store.before}
@@ -225,7 +244,6 @@ export const Assistant = observer(() => {
 			)}
 			<Composer
 				canSend={store.canSend}
-				canStop={canStop}
 				mode={store.mode}
 				phase={store.phase}
 				recovery={

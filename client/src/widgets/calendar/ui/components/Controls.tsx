@@ -37,18 +37,21 @@ export const Controls = observer(() => {
 				: 'Введите количество дней';
 
 	return (
-		<div className="flex min-w-0 flex-col text-sm">
+		<div className="flex min-w-0 shrink-0 flex-col text-sm not-lg:min-h-24">
 			<SegmentedControl className="mb-1.5 w-full" options={modes} value={store.mode} onChange={store.setMode} />
-			<div aria-live="polite" className="flex min-h-7 min-w-0 items-center justify-center gap-2">
+			<div
+				aria-live="polite"
+				className="flex min-h-7 min-w-0 flex-1 items-center justify-center gap-2 text-xs md:text-sm"
+			>
 				{store.mode === 'after' ? (
 					<>
-						<span className="-mr-px shrink-0 text-sm text-(--text-secondary)">
+						<span className="-mr-px shrink-0 text-(--text-secondary)">
 							{formatCalendarDate(store.afterStart, store.today)} +
 						</span>
 						<Input
 							aria-describedby={countError ? errorId : undefined}
 							aria-label="Количество дней"
-							className="number-no-spinner h-6 w-11 shrink-0 px-2 text-center text-sm"
+							className="number-no-spinner h-6 w-11 shrink-0 px-2 text-center"
 							error={countError}
 							fullWidth={false}
 							id={countId}
@@ -62,17 +65,17 @@ export const Controls = observer(() => {
 							variant="ghost"
 							onChange={(event) => store.setDayCount(event.target.value)}
 						/>
-						<span className="shrink-0 text-sm text-(--text-secondary)">дн.</span>
+						<span className="shrink-0 text-(--text-secondary)">дн.</span>
 						{countError ? (
-							<span className="text-xs text-(--status-error)" id={errorId} role="alert">
+							<span className="text-(--status-error)" id={errorId} role="alert">
 								Введите целое число от 0 до {MAX_DAY_COUNT}
 							</span>
 						) : store.productionLimitation ? (
-							<span className="text-xs text-(--status-error)" role="alert">
+							<span className="text-(--status-error)" role="alert">
 								{store.productionLimitation}
 							</span>
 						) : afterEnd && store.dayCount !== '' ? (
-							<span className="min-w-0 text-sm text-(--text-secondary)">
+							<span className="min-w-0 text-(--text-secondary)">
 								={' '}
 								<span className="text-(--text-primary)">
 									{formatCalendarDate(afterEnd, store.today)}
@@ -81,7 +84,7 @@ export const Controls = observer(() => {
 						) : null}
 					</>
 				) : calculation ? (
-					<span className="min-w-0 text-center text-sm text-(--text-secondary)">
+					<span className="min-w-0 text-center text-(--text-secondary)">
 						{calculation.prefix && (
 							<>
 								{calculation.prefix}
@@ -92,7 +95,7 @@ export const Controls = observer(() => {
 						{calculation.suffix && ` ${calculation.suffix}`}
 					</span>
 				) : (
-					<span className="min-w-0 text-center text-sm text-(--text-secondary)">
+					<span className="min-w-0 text-center text-(--text-secondary)">
 						{store.productionLimitation ?? hint}
 					</span>
 				)}
@@ -107,7 +110,7 @@ export const Controls = observer(() => {
 					/>
 				)}
 			</div>
-			<div className="flex min-w-0 items-center justify-between gap-2">
+			<div className="flex min-w-0 items-center justify-between gap-2 not-md:mt-1">
 				<Checkbox
 					checked={store.includeWeekends}
 					className="text-xs text-(--text-tertiary)"

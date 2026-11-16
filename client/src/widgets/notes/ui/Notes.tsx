@@ -120,7 +120,7 @@ export const Notes = observer(() => {
 						)}
 					</List>
 					{searchOpen ? (
-						<div ref={searchRef} className="flex shrink-0 items-center gap-1">
+						<div ref={searchRef} className="mt-auto flex shrink-0 items-center gap-1">
 							<Input
 								autoFocus
 								className="h-6 min-w-0 flex-1 rounded-md pl-2 text-sm"
@@ -135,8 +135,7 @@ export const Notes = observer(() => {
 								}}
 							/>
 							<Button
-								centerIcon={<IconX className="size-4" />}
-								className="size-6 shrink-0"
+								centerIcon={<IconX className="size-5 shrink-0 xl:size-4" />}
 								padding="none"
 								title="Закрыть поиск"
 								variant="icon"
@@ -153,7 +152,7 @@ export const Notes = observer(() => {
 							</div>
 							<div className="flex items-center gap-3">
 								<Button
-									centerIcon={<IconSearch className="size-4" />}
+									centerIcon={<IconSearch className="size-5 xl:size-4" />}
 									padding="none"
 									title="Поиск заметок"
 									variant="icon"

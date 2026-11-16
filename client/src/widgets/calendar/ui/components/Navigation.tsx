@@ -66,8 +66,8 @@ export const Navigation = observer(() => {
 			<Tooltip className="absolute top-1/2 right-8 -translate-y-1/2" content="Включить калькулятор дат">
 				<Button
 					active={store.isControlsOpen}
-					centerIcon={<IconCalendarWeek className="size-5 xl:size-4" />}
-					className="size-6 rounded-md aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
+					centerIcon={<IconCalendarWeek className="size-6 xl:size-4" />}
+					className="aria-pressed:text-(--accent-primary) xl:size-6 xl:rounded-md xl:aria-pressed:bg-(--tone-strong)"
 					padding="none"
 					title="Калькулятор дат"
 					variant="iconSurface"
@@ -87,9 +87,9 @@ export const Navigation = observer(() => {
 					active={productionActive}
 					aria-busy={store.productionStatus === 'loading'}
 					aria-label={productionLabel}
-					centerIcon={<IconCalendarCheck className="size-5 xl:size-4" />}
+					centerIcon={<IconCalendarCheck className="size-6 xl:size-4" />}
 					className={cn(
-						'size-6 rounded-md aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-secondary)',
+						'aria-pressed:text-(--accent-secondary) xl:size-6 xl:rounded-md xl:aria-pressed:bg-(--tone-strong)',
 						store.productionStatus === 'error' && 'text-(--status-error)/50'
 					)}
 					padding="none"

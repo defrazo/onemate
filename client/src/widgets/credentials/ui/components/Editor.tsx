@@ -117,9 +117,9 @@ export const Editor = observer(() => {
 						title="Цвет аккаунта"
 						onChange={(color) => store.updateField('color', color)}
 					/>
-					<div className="flex h-8 items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary) lg:h-6">
+					<div className="flex h-8 max-w-35 items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary) lg:h-6 xl:max-w-45">
 						<IconKey className="size-5 shrink-0 xl:size-4" />
-						<span className="trim text-sm text-(--accent-primary)">
+						<span className="truncate text-sm text-(--accent-primary)">
 							{store.editingId ? draft.service.trim() || 'Аккаунт' : 'Новый аккаунт'}
 						</span>
 					</div>

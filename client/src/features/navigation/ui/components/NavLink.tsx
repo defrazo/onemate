@@ -29,7 +29,7 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 				className={cn(
 					'flex shrink-0 items-center justify-center',
 					isPrimary
-						? 'size-10 rounded-full bg-(--accent-primary) text-(--text-on-accent) shadow-md ring-4 ring-(--bg-tertiary)'
+						? 'size-10 rounded-full bg-(--accent-primary) text-(--text-on-accent) shadow-md ring-4 ring-(--tone) backdrop-blur-md'
 						: isMobile
 							? 'size-5'
 							: 'size-5'
