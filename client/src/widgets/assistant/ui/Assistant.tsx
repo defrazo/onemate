@@ -3,12 +3,15 @@ import { IconHistory, IconMessagePlus, IconMessages, IconTrash, IconWorld } from
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { BackButton, Button, ConfirmDialog, LoadingState, SyncIndicator, Tooltip } from '@/shared/ui';
 
 import { Archive, Composer, Limits, Messages, ModeSelector, SubmissionError } from './components';
 
 export const Assistant = observer(() => {
+	const { isMobile } = useResponsive();
+
 	const { userStore, modalStore, assistantStore: store } = useStore();
 
 	const ownedModal = useRef<ReactNode>(null);
@@ -71,27 +74,27 @@ export const Assistant = observer(() => {
 				<div className="flex shrink-0 items-center gap-2">
 					<BackButton className="min-w-0" onBack="Назад" onClick={store.openArchive} />
 					<Button
-						className="ml-auto rounded-md text-xs"
+						className="ml-auto h-8 rounded-md text-xs lg:h-6"
 						disabled={!store.canResumeConversation}
-						leftIcon={<IconMessages className="size-4" />}
+						leftIcon={<IconMessages className="size-5 xl:size-4" />}
 						padding="sm"
 						variant="accent"
 						onClick={() => void store.resumeConversation()}
 					>
-						Продолжить диалог
+						{isMobile ? 'Продолжить' : 'Продолжить диалог'}
 					</Button>
 					<Button
 						aria-label="Удалить диалог"
-						className="rounded-md text-xs"
+						className="lg:h-6text-xs h-8 rounded-md"
 						disabled={!conversation || store.archiveSaving || store.archiveLoading}
-						leftIcon={<IconTrash className="size-4" />}
+						leftIcon={<IconTrash className="size-5 xl:size-4" />}
 						padding="sm"
 						variant="danger"
 						onClick={() => {
 							if (conversation) confirmDelete(conversation.id);
 						}}
 					>
-						Удалить диалог
+						{isMobile ? 'Удалить' : 'Удалить диалог'}
 					</Button>
 				</div>
 				<span
@@ -136,54 +139,56 @@ export const Assistant = observer(() => {
 
 	return (
 		<section aria-label="Mate AI" className="flex min-h-0 min-w-0 flex-1 flex-col gap-1.5 overflow-hidden">
-			<div className="mt-0.5 flex shrink-0 flex-wrap items-center justify-between gap-1">
+			<div className="mt-0.5 flex shrink-0 flex-col flex-wrap items-center justify-between gap-2 xl:flex-row">
 				<ModeSelector value={store.mode} onChange={store.setMode} />
-				{userStore.userRole === 'admin' && (
-					<Tooltip
-						content={
-							store.searchEnabled
-								? 'Выключить поиск в интернете'
-								: 'Разрешить поиск в интернете. Расход токенов значительно увеличится.'
-						}
-						contentClassName="max-w-70"
-					>
+				<div className="ml-auto flex items-center gap-3 xl:gap-1">
+					{userStore.userRole === 'admin' && (
+						<Tooltip
+							content={
+								store.searchEnabled
+									? 'Выключить поиск в интернете'
+									: 'Разрешить поиск в интернете. Расход токенов значительно увеличится'
+							}
+							contentClassName="max-w-70"
+						>
+							<Button
+								aria-checked={store.searchEnabled}
+								aria-label="Поиск в интернете"
+								centerIcon={<IconWorld className="size-6 xl:size-4" />}
+								className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
+								padding="none"
+								role="switch"
+								variant="iconSurface"
+								onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+							/>
+						</Tooltip>
+					)}
+					<Tooltip content="Лимиты и ограничения">
+						<Limits store={store} />
+					</Tooltip>
+					<Tooltip content="Архив диалогов">
 						<Button
-							aria-checked={store.searchEnabled}
-							aria-label="Поиск в интернете"
-							centerIcon={<IconWorld className="size-4" />}
-							className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
+							aria-label="Архив диалогов"
+							centerIcon={<IconHistory className="size-6 xl:size-4" />}
+							className="size-7"
 							padding="none"
-							role="switch"
 							variant="iconSurface"
-							onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+							onClick={store.openArchive}
 						/>
 					</Tooltip>
-				)}
-				<Tooltip content="Лимиты и ограничения">
-					<Limits store={store} />
-				</Tooltip>
-				<Tooltip content="Архив диалогов">
-					<Button
-						aria-label="Архив диалогов"
-						centerIcon={<IconHistory className="size-4" />}
-						className="size-7"
-						padding="none"
-						variant="iconSurface"
-						onClick={store.openArchive}
-					/>
-				</Tooltip>
-				<Tooltip content="Новый диалог">
-					<Button
-						aria-label="Новый диалог"
-						centerIcon={<IconMessagePlus className="size-4" />}
-						className="size-7 rounded-md"
-						disabled={!store.canSend}
-						padding="none"
-						title="Новый диалог"
-						variant="iconSurface"
-						onClick={() => void store.newConversation()}
-					/>
-				</Tooltip>
+					<Tooltip content="Новый диалог">
+						<Button
+							aria-label="Новый диалог"
+							centerIcon={<IconMessagePlus className="size-6 xl:size-4" />}
+							className="size-7 rounded-md"
+							disabled={!store.canSend}
+							padding="none"
+							title="Новый диалог"
+							variant="iconSurface"
+							onClick={() => void store.newConversation()}
+						/>
+					</Tooltip>
+				</div>
 			</div>
 			<Messages
 				before={store.before}

@@ -4,6 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
+import { generateUUID } from '@/shared/lib/utils';
 import { Button, LoadingError, Tooltip } from '@/shared/ui';
 
 import type { SummatorState } from '../model/types';
@@ -22,7 +23,7 @@ export const Currency = observer(() => {
 			(current) =>
 				current ?? {
 					rows: [currencyStore.baseCode, currencyStore.targetCode].map((code) => ({
-						id: crypto.randomUUID(),
+						id: generateUUID(),
 						code,
 						amount: '',
 					})),
@@ -46,8 +47,8 @@ export const Currency = observer(() => {
 			<div className="flex shrink-0 justify-end">
 				<Tooltip content="Сумматор валют">
 					<Button
-						centerIcon={<IconCalculator className="size-4" />}
-						className="size-6 rounded-md"
+						centerIcon={<IconCalculator className="size-6 xl:size-4" />}
+						className="rounded-md xl:size-6"
 						padding="none"
 						title="Сумматор валют"
 						variant="iconSurface"

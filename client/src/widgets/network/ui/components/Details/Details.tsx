@@ -102,7 +102,7 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 							{service.name}
 						</span>
 						<Button
-							centerIcon={<IconSettings className="size-4.5" />}
+							centerIcon={<IconSettings className="size-5 xl:size-4.5" />}
 							padding="none"
 							title="Настройки мониторинга"
 							variant="icon"
@@ -140,7 +140,9 @@ export const Details = ({ service, onBack, onSettings }: DetailsProps) => {
 					<div className="mx-auto flex items-center gap-1.5">
 						<span className="trim text-xs tabular-nums xl:text-sm">{lastChecked}</span>
 						<Button
-							centerIcon={<IconRefresh className={cn('size-4', isChecking && 'animate-spin')} />}
+							centerIcon={
+								<IconRefresh className={cn('size-5 xl:size-4', isChecking && 'animate-spin')} />
+							}
 							disabled={isChecking}
 							padding="none"
 							title="Проверить сейчас"

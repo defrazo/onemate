@@ -55,7 +55,10 @@ export const ColorPicker = ({ color, disabled = false, title = 'Цвет', size 
 				variant="custom"
 				onClick={() => setOpen((value) => !value)}
 			>
-				<span className="size-4 rounded-full" style={{ backgroundColor: COLOR_PALETTE[color].value }} />
+				<span
+					className="size-5 rounded-full xl:size-4"
+					style={{ backgroundColor: COLOR_PALETTE[color].value }}
+				/>
 			</Button>
 			{open && !disabled && (
 				<div
@@ -74,7 +77,7 @@ export const ColorPicker = ({ color, disabled = false, title = 'Цвет', size 
 									aria-pressed={selected}
 									centerIcon={
 										<span
-											className="flex size-4 items-center justify-center rounded-full"
+											className="flex size-5 items-center justify-center rounded-full xl:size-4"
 											style={{ backgroundColor: config.value }}
 										>
 											{selected && <IconCheck className="size-3 text-white" />}

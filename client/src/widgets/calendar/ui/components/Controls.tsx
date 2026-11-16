@@ -65,7 +65,7 @@ export const Controls = observer(() => {
 						<span className="shrink-0 text-sm text-(--text-secondary)">дн.</span>
 						{countError ? (
 							<span className="text-xs text-(--status-error)" id={errorId} role="alert">
-								Целое число: 0–{MAX_DAY_COUNT}
+								Введите целое число от 0 до {MAX_DAY_COUNT}
 							</span>
 						) : store.productionLimitation ? (
 							<span className="text-xs text-(--status-error)" role="alert">
@@ -98,7 +98,7 @@ export const Controls = observer(() => {
 				)}
 				{result && (
 					<Button
-						centerIcon={<IconCopy className="size-4" />}
+						centerIcon={<IconCopy className="size-5 xl:size-4" />}
 						className="shrink-0"
 						padding="none"
 						title="Скопировать результат"

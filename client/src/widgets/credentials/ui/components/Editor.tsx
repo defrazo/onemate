@@ -117,8 +117,8 @@ export const Editor = observer(() => {
 						title="Цвет аккаунта"
 						onChange={(color) => store.updateField('color', color)}
 					/>
-					<div className="flex items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary)">
-						<IconKey className="size-4 shrink-0" />
+					<div className="flex h-8 items-center gap-1.5 rounded-md bg-(--accent-primary-muted) px-2 py-1 text-(--accent-primary) lg:h-6">
+						<IconKey className="size-5 shrink-0 xl:size-4" />
 						<span className="trim text-sm text-(--accent-primary)">
 							{store.editingId ? draft.service.trim() || 'Аккаунт' : 'Новый аккаунт'}
 						</span>
@@ -167,7 +167,11 @@ export const Editor = observer(() => {
 						<Button
 							aria-label={passwordTitle}
 							centerIcon={
-								showPassword ? <IconEyeOff className="size-4" /> : <IconEye className="size-4" />
+								showPassword ? (
+									<IconEyeOff className="size-5 xl:size-4" />
+								) : (
+									<IconEye className="size-5 xl:size-4" />
+								)
 							}
 							className="mr-0.5"
 							disabled={!draft.password || store.isLoading}
@@ -194,7 +198,7 @@ export const Editor = observer(() => {
 						draft.url.trim() ? (
 							<Button
 								aria-label="Открыть ссылку"
-								centerIcon={<IconExternalLink className="size-4" />}
+								centerIcon={<IconExternalLink className="size-5 xl:size-4" />}
 								className="mr-0.5"
 								padding="none"
 								title="Открыть ссылку"
@@ -251,7 +255,7 @@ export const Editor = observer(() => {
 				<div className="ml-auto flex items-center gap-2">
 					<Button
 						aria-label="Копировать всё"
-						centerIcon={<IconCopy className="size-4" />}
+						centerIcon={<IconCopy className="size-5 xl:size-4" />}
 						className="size-7"
 						disabled={store.isLoading}
 						padding="none"

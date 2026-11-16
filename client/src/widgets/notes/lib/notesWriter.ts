@@ -3,6 +3,23 @@ import { generateUUID } from '@/shared/lib/utils';
 
 const SESSION_KEY = `${LS_PREFIX}notes_writer`;
 
+const isLocalDevelopment = (): boolean => {
+	if (typeof location === 'undefined' || location.protocol !== 'http:') return false;
+
+	const host = location.hostname;
+	if (host === 'localhost' || host === '[::1]') return true;
+
+	const parts = host.split('.').map(Number);
+	if (parts.length !== 4 || parts.some((part) => !Number.isInteger(part) || part < 0 || part > 255)) return false;
+
+	return (
+		parts[0] === 127 ||
+		parts[0] === 10 ||
+		(parts[0] === 172 && parts[1] >= 16 && parts[1] <= 31) ||
+		(parts[0] === 192 && parts[1] === 168)
+	);
+};
+
 interface WriterOwner {
 	stop: () => void;
 	done: Promise<void>;
@@ -34,12 +51,25 @@ export const acquireNotesWriter = (stop: () => void, preferred?: string) => {
 
 			if (released) return false;
 
+			if (!navigator.locks) {
+				if (import.meta.env.DEV && isLocalDevelopment()) {
+					writer = generateUUID();
+					held = approved = true;
+
+					void lifetime.then(() => {
+						held = false;
+						finish();
+					});
+
+					return true;
+				}
+				return false;
+			}
+
 			if (!preferred) {
 				const saved = sessionStorage.getItem(SESSION_KEY);
 				if (saved) writer = saved;
 			}
-
-			if (!navigator.locks) return false;
 
 			for (let attempt = 0; attempt < 2; attempt++) {
 				let granted!: (value: boolean) => void;

@@ -64,7 +64,7 @@ export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 	};
 
 	return (
-		<div className="flex flex-col gap-3 md:-mt-4 md:w-md">
+		<div className="flex flex-col gap-3 md:w-md">
 			<div className="flex items-center gap-3 select-none">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary)/12">
 					<IconShare className="size-5 text-(--accent-primary)" />

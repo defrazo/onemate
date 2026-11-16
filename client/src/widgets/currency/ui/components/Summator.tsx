@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { formatFixed } from '@/shared/lib/utils';
+import { formatFixed, generateUUID } from '@/shared/lib/utils';
 import { Button, Select, ViewHeader } from '@/shared/ui';
 
 import { formatSummatorSummary, sumCurrencies } from '../../lib/sum';
@@ -39,7 +39,7 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 	const addRow = () => {
 		if (value.rows.length >= MAX_ROWS) return;
 
-		const id = crypto.randomUUID();
+		const id = generateUUID();
 		newRowId.current = id;
 
 		onChange({ ...value, rows: [...value.rows, { id, amount: '', code: currencyStore.baseCode }] });
@@ -118,7 +118,7 @@ export const Summator = observer(({ value, onChange, onBack }: SummatorProps) =>
 					/>
 				</div>
 				<Button
-					centerIcon={<IconCopy className="size-4" />}
+					centerIcon={<IconCopy className="size-5 xl:size-4" />}
 					className="mb-0.5 size-6 shrink-0 opacity-70 transition-opacity hover:opacity-100"
 					padding="none"
 					title="Копировать сумму"

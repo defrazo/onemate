@@ -66,7 +66,7 @@ export const Navigation = observer(() => {
 			<Tooltip className="absolute top-1/2 right-8 -translate-y-1/2" content="Включить калькулятор дат">
 				<Button
 					active={store.isControlsOpen}
-					centerIcon={<IconCalendarWeek className="size-4" />}
+					centerIcon={<IconCalendarWeek className="size-5 xl:size-4" />}
 					className="size-6 rounded-md aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
 					padding="none"
 					title="Калькулятор дат"
@@ -87,7 +87,7 @@ export const Navigation = observer(() => {
 					active={productionActive}
 					aria-busy={store.productionStatus === 'loading'}
 					aria-label={productionLabel}
-					centerIcon={<IconCalendarCheck className="size-4" />}
+					centerIcon={<IconCalendarCheck className="size-5 xl:size-4" />}
 					className={cn(
 						'size-6 rounded-md aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-secondary)',
 						store.productionStatus === 'error' && 'text-(--status-error)/50'

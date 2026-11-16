@@ -23,14 +23,14 @@ export const ConfirmDialog = ({
 	onConfirm,
 	onCancel,
 }: ConfirmDialogProps) => (
-	<div className="core-gap flex flex-col select-none md:-mt-4 md:w-sm">
+	<div className="core-gap flex flex-col select-none md:w-sm">
 		<div className="flex gap-2">
 			<div
 				className={cn(
 					'flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12',
 					variant === 'danger'
 						? 'bg-(--status-error-muted) text-(--status-error)'
-						: 'bg-(--danger)/10 text-(--danger)'
+						: 'bg-(--danger-muted) text-(--danger)'
 				)}
 			>
 				<IconAlertTriangle className="size-5.5" />

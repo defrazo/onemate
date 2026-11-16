@@ -52,6 +52,7 @@ export const Composer = ({
 					autoResize
 					aria-label="Сообщение Mate AI"
 					className="block max-h-16 min-h-9 scrollbar-none py-2 pr-6 text-sm"
+					id="assistant-input"
 					maxLength={ASSISTANT_MAX_LENGTH}
 					placeholder={metadata.placeholder}
 					rows={1}
@@ -65,7 +66,7 @@ export const Composer = ({
 						handleSend();
 					}}
 				/>
-				<div className="absolute top-2 right-2">
+				<div className="top-2 right-2 hidden lg:absolute">
 					<Tooltip
 						content="Сообщения обрабатываются AI-провайдером. Не вводите секреты."
 						contentClassName="max-w-68"

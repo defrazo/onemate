@@ -75,7 +75,7 @@ export const TranslateField = observer(({ side, onHistory }: TranslateFieldProps
 				<div className="pointer-events-auto flex h-full items-center gap-3 transition-opacity group-hover:opacity-100 xl:opacity-0">
 					{isSource && (
 						<Button
-							centerIcon={<IconX className="size-5 hover:text-(--status-error) xl:size-4" stroke={3} />}
+							centerIcon={<IconX className="size-5 hover:text-(--danger) xl:size-4" stroke={3} />}
 							disabled={!text}
 							padding="none"
 							title="Очистить"

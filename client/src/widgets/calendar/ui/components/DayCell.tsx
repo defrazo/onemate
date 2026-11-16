@@ -60,7 +60,7 @@ export const DayCell = ({ date, range, highlightRange, productionYears, onSelect
 					className={cn(
 						'relative z-10 flex size-7 shrink-0 cursor-pointer items-center justify-center rounded-full font-mono tabular-nums',
 						'focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none',
-						!isSelected && !kind && isWeekend && 'text-(--priority-high)',
+						!isSelected && !kind && isWeekend && 'text-(--danger)',
 						kind && dayStyles[kind],
 						!inRange && !isSelected && 'hover:bg-(--accent-primary-muted) hover:text-(--accent-primary)',
 						isSelected &&

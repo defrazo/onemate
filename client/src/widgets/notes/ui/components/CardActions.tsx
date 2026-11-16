@@ -83,7 +83,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-5 xl:size-4" />}
-				className="transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
+				className="transition-[color,opacity] hover:text-(--danger) xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Удалить заметку"
 				variant="icon"

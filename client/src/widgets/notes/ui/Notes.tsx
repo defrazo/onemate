@@ -82,14 +82,14 @@ export const Notes = observer(() => {
 		<SyncIndicator />
 	) : store.conflict ? (
 		<div className="flex shrink-0 flex-wrap items-center justify-between gap-2 text-xs">
-			<span className="text-(--status-error)/80">Конфликт версий. Локальный черновик сохранён</span>
+			<span className="text-(--status-error)">Конфликт версий. Локальный черновик сохранён</span>
 			<Button className="h-6 text-xs" onClick={showConflict}>
 				Действия с черновиком
 			</Button>
 		</div>
 	) : store.syncError ? (
 		<div className="flex shrink-0 flex-wrap items-center justify-between gap-2 text-xs">
-			<span className="text-(--status-error)/80">{store.syncError.message}</span>
+			<span className="text-(--status-error)">{store.syncError.message}</span>
 			<Button
 				className="h-6 text-xs"
 				disabled={store.isLoading}
@@ -123,8 +123,9 @@ export const Notes = observer(() => {
 						<div ref={searchRef} className="flex shrink-0 items-center gap-1">
 							<Input
 								autoFocus
-								className="h-6 min-w-0 flex-1 text-sm"
+								className="h-6 min-w-0 flex-1 rounded-md pl-2 text-sm"
 								enterKeyHint="search"
+								id="notes-search"
 								placeholder="Поиск заметок..."
 								value={query}
 								variant="tone"

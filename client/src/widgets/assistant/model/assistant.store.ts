@@ -86,11 +86,12 @@ export class AssistantStore extends BaseStore {
 
 	get isSyncing(): boolean {
 		return (
-			this.phase === 'loading' ||
-			this.phase === 'generating' ||
-			this.phase === 'stopping' ||
-			this.busy ||
-			this.archiveSaving
+			this.loaded &&
+			(this.phase === 'loading' ||
+				this.phase === 'generating' ||
+				this.phase === 'stopping' ||
+				this.busy ||
+				this.archiveSaving)
 		);
 	}
 

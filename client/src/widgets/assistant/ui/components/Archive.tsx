@@ -1,7 +1,7 @@
 import { IconFolderSearch, IconHistory, IconInbox, IconPin, IconPinFilled, IconTrash } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
-import { Button, Divider, Input, LoadingState, NoContent, ViewHeader } from '@/shared/ui';
+import { Button, Input, LoadingState, NoContent, ViewHeader } from '@/shared/ui';
 
 import type { AssistantStore } from '../../model/assistant.store';
 
@@ -21,7 +21,9 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 			<ViewHeader className="mb-2" icon={IconHistory} title="Архив диалогов" onBack={store.returnActive} />
 			<Input
 				aria-label="Поиск по названию диалога"
+				className="mb-2"
 				disabled={store.archiveSaving}
+				id="archive-search"
 				maxLength={255}
 				padding="sm"
 				placeholder="Поиск по названию…"
@@ -29,7 +31,6 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 				variant="tone"
 				onChange={(event) => store.setSearch(event.target.value)}
 			/>
-			<Divider margY="sm" />
 			<div
 				aria-busy={busy}
 				className="min-h-0 flex-1 scrollbar-none space-y-2 overflow-y-auto overscroll-contain"
@@ -76,7 +77,7 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 							<Button
 								aria-label="Удалить диалог"
 								centerIcon={
-									<IconTrash className="size-4 transition-colors hover:text-(--status-error)" />
+									<IconTrash className="size-5 transition-colors hover:text-(--danger) xl:size-4" />
 								}
 								disabled={busy}
 								padding="none"
@@ -98,7 +99,7 @@ export const Archive = observer(({ store, onDelete }: ArchiveProps) => {
 				{store.archiveLoading && <LoadingState size="md" />}
 				{store.archiveError && (
 					<div className="flex items-center gap-2 text-xs" role="alert">
-						<span className="text-(--status-error)/70">{store.archiveError}</span>
+						<span className="text-(--status-error)">{store.archiveError}</span>
 						<Button
 							className="rounded-md"
 							disabled={busy}

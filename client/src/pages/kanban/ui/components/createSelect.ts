@@ -42,7 +42,7 @@ export const createSelect = <T extends SelectValue = number>(options: CreateSele
 
 	const arrow = document.createElement('div');
 	arrow.className =
-		'flex size-4 shrink-0 items-center justify-center text-(--text-disabled) transition-transform duration-200';
+		'flex size-5 xl:size-4 shrink-0 items-center justify-center text-(--text-disabled) transition-transform duration-200';
 	insertSvg(arrow, chevronDownIcon, 'size-3.5');
 
 	selected.append(selectedValue, arrow);

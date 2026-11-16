@@ -140,7 +140,8 @@ export const Credentials = observer(() => {
 						<div ref={searchRef} className="flex shrink-0 items-center gap-1">
 							<Input
 								autoFocus
-								className="h-6 min-w-0 flex-1 text-sm"
+								className="h-6 min-w-0 flex-1 rounded-md pl-2 text-sm"
+								id="credentials-search"
 								placeholder="Поиск аккаунтов..."
 								value={query}
 								variant="tone"
@@ -194,7 +195,7 @@ export const Credentials = observer(() => {
 			{store.isLoading && <SyncIndicator />}
 			{store.error && (
 				<div className="flex shrink-0 flex-wrap items-center justify-between gap-2 text-xs">
-					<span className="text-(--status-error)/80">{store.error.message}</span>
+					<span className="text-(--status-error)">{store.error.message}</span>
 					{store.conflict ? (
 						<Button className="h-6 text-xs" onClick={reload}>
 							Загрузить с сервера

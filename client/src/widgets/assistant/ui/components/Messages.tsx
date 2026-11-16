@@ -144,7 +144,7 @@ export const Messages = ({
 					</Button>
 				)}
 				{historyError && (
-					<span className="text-xs text-(--status-error)/70" role="alert">
+					<span className="text-xs text-(--status-error)" role="alert">
 						{historyError}
 					</span>
 				)}
@@ -174,7 +174,7 @@ export const Messages = ({
 										<Tooltip content="Сгенерировать заново">
 											<Button
 												aria-label="Сгенерировать заново"
-												centerIcon={<IconRefresh className="size-3.5" />}
+												centerIcon={<IconRefresh className="size-5 xl:size-3.5" />}
 												className="size-6 rounded-md"
 												disabled={!canRetry}
 												padding="none"
@@ -187,7 +187,7 @@ export const Messages = ({
 								<Tooltip content="Копировать">
 									<Button
 										aria-label="Копировать сообщение"
-										centerIcon={<IconCopy className="size-3.5" />}
+										centerIcon={<IconCopy className="size-5 xl:size-3.5" />}
 										className="size-6 rounded-md"
 										padding="none"
 										title="Копировать"
@@ -237,7 +237,7 @@ export const Messages = ({
 				))}
 				{phase === 'loading' && <LoadingState size="lg" />}
 				{phase === 'error' && error && (
-					<span className="text-sm text-(--status-error)/80" role="alert">
+					<span className="text-sm text-(--status-error)" role="alert">
 						{error}
 					</span>
 				)}

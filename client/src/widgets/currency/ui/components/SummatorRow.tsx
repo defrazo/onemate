@@ -22,6 +22,7 @@ export const SummatorRow = ({ row, index, options, inputRef, onChange, onRemove 
 				ref={inputRef}
 				aria-label={`Сумма ${index + 1}`}
 				className="h-8 min-w-0 border-none bg-transparent text-right text-sm"
+				id={`currency-${index}`}
 				inputMode="decimal"
 				placeholder="0"
 				value={row.amount}
@@ -45,7 +46,7 @@ export const SummatorRow = ({ row, index, options, inputRef, onChange, onRemove 
 		</div>
 		<Button
 			aria-label={`Удалить строку ${index + 1}`}
-			centerIcon={<IconX className="size-4" />}
+			centerIcon={<IconX className="size-5 xl:size-4" />}
 			className="mt-1 size-6 shrink-0"
 			padding="none"
 			title="Удалить строку"

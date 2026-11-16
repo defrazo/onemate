@@ -72,7 +72,7 @@ export const ListDialog = ({
 	};
 
 	return (
-		<form className="core-gap flex flex-col select-none md:-mt-4 md:w-103.5" onSubmit={handleSubmit}>
+		<form className="core-gap flex flex-col select-none md:w-103.5" onSubmit={handleSubmit}>
 			<div className="flex gap-2">
 				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12 text-(--accent-primary)">
 					<Icon className="size-5.5" />

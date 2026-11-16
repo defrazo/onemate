@@ -43,7 +43,7 @@ export const Weather = observer(() => {
 					centerIcon={
 						<IconRefresh
 							className={cn(
-								'size-4 opacity-0',
+								'size-5 opacity-0 xl:size-4',
 								weatherStore.isInitialized && 'opacity-100',
 								weatherStore.isRefreshing && 'animate-spin'
 							)}

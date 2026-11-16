@@ -27,13 +27,13 @@ export const ModeSelector = ({ value, onChange }: ModeSelectorProps) => (
 					<Button
 						active={selected}
 						aria-label={title}
-						centerIcon={selected ? undefined : <Icon className="size-4" />}
+						centerIcon={selected ? undefined : <Icon className="size-6 xl:size-4" />}
 						className={cn(
 							'h-7 w-fit min-w-7 rounded-md px-2 text-xs transition-none',
 							selected && 'min-w-24 text-(--text-on-accent)! active:scale-[0.97]',
 							selected && color
 						)}
-						leftIcon={selected ? <Icon className="size-4" /> : undefined}
+						leftIcon={selected ? <Icon className="size-6 xl:size-4" /> : undefined}
 						padding="none"
 						variant={selected ? 'custom' : 'iconSurface'}
 						onClick={() => onChange(id)}

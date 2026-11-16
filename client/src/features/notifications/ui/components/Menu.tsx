@@ -58,8 +58,7 @@ export const Menu = observer(() => {
 					)}
 					{store.notifications.length > 0 && (
 						<Button
-							centerIcon={<IconTrash className="size-5 xl:size-4" />}
-							className="hover:text-(--status-error)"
+							centerIcon={<IconTrash className="size-5 hover:text-(--danger) xl:size-4" />}
 							padding="none"
 							title="Удалить все"
 							type="button"

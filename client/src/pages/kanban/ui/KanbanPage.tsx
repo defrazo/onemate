@@ -223,7 +223,7 @@ export const KanbanPage = () => {
 			)}
 			{view?.conflict && (
 				<div className="flex items-center justify-between gap-3 text-sm text-(--status-error)" role="alert">
-					<span>Доска изменилась. Обновите её перед продолжением.</span>
+					<span>Доска изменилась. Обновите её перед продолжением</span>
 					<Button className="h-8" disabled={view.loading} onClick={() => void reloadBoard()}>
 						Обновить доску
 					</Button>

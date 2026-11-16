@@ -77,7 +77,7 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 				{...getReferenceProps()}
 				ref={refs.setReference}
 				aria-label="Лимиты Mate AI"
-				centerIcon={<IconGauge className="size-4" />}
+				centerIcon={<IconGauge className="size-6 xl:size-4" />}
 				className="size-7 rounded-md"
 				padding="none"
 				variant="iconSurface"
@@ -95,7 +95,7 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 						{!data && store.limitsLoading && <LoadingState className="mr-auto" size="xs" />}
 					</div>
 					{metrics.map(({ label, used, limit, partial }) => {
-						const formattedUsed = used === null ? '–' : `${partial ? '≥ ' : ''}${formatNumber(used)}`;
+						const formattedUsed = used === null ? '0' : `${partial ? '≥ ' : ''}${formatNumber(used)}`;
 						const progress = used === null ? 0 : Math.min(100, Math.max(0, (used / limit) * 100));
 
 						return (
@@ -137,7 +137,7 @@ export const Limits = observer(({ store }: { store: AssistantStore }) => {
 						</span>
 					)}
 					{!data && !store.limitsLoading && store.limitsError && (
-						<span className="text-xs text-(--status-error)/70" role="alert">
+						<span className="text-xs text-(--status-error)" role="alert">
 							Не удалось обновить
 						</span>
 					)}

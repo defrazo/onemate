@@ -41,7 +41,7 @@ export const Card = ({ service, disabled = false, onClick }: CardProps) => {
 	const renderStatus = () => {
 		if (!service.isActive) return <span className="text-sm text-(--text-disabled)">Отключено</span>;
 		if (service.lastStatus === null) return <span className="text-sm text-(--text-disabled)">Ожидает</span>;
-		if (service.lastStatus === 'down') return <span className="text-sm text-(--status-error)">Недоступен</span>;
+		if (service.lastStatus === 'down') return <span className="text-sm text-(--danger)">Недоступен</span>;
 
 		if (service.lastResponseTime !== null) {
 			return (

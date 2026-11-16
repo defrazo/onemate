@@ -108,10 +108,10 @@ export const ListActions = ({ title, hide, disabled = false, onEdit, onDelete, o
 							className={cn(
 								'h-9 justify-start rounded-md bg-transparent px-2.5 py-1.5 text-sm text-(--text-secondary) lg:h-7',
 								danger
-									? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
+									? 'hover:bg-(--danger-muted) hover:text-(--danger)'
 									: 'hover:bg-(--tone-strong-hover) hover:text-(--text-primary)'
 							)}
-							leftIcon={<Icon className="size-4 shrink-0" />}
+							leftIcon={<Icon className="size-5 shrink-0 xl:size-4" />}
 							padding="none"
 							role="menuitem"
 							onClick={() => {

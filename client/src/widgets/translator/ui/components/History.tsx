@@ -100,7 +100,7 @@ export const History = observer(({ onBack, onRestore }: HistoryProps) => {
 								centerIcon={
 									<IconTrash className="size-5 transition-[color,opacity] xl:size-4 xl:opacity-0 xl:group-hover/item:opacity-100" />
 								}
-								className="hover:text-(--status-error)"
+								className="hover:text-(--danger)"
 								padding="none"
 								variant="icon"
 								onClick={() => store.deleteHistory(entry.id)}

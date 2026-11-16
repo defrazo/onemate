@@ -3,6 +3,7 @@ import { IconActivityHeartbeat, IconLayoutKanban } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
+import { useResponsive } from '@/shared/lib/hooks';
 import { Checkbox, Divider, LoadingState, Switch } from '@/shared/ui';
 
 type NotificationKey =
@@ -38,6 +39,8 @@ const sources = [
 }[];
 
 export const NotificationsSection = observer(() => {
+	const { isMobile } = useResponsive();
+
 	const { notificationStore, notifyStore, userProfileStore } = useStore();
 
 	const [loading, setLoading] = useState<Partial<Record<NotificationKey, boolean>>>({});
@@ -81,9 +84,11 @@ export const NotificationsSection = observer(() => {
 			</div>
 			<Divider className="hidden xl:block" />
 			<div className="flex flex-col gap-1">
-				<div className="grid grid-cols-[minmax(0,1fr)_88px_64px] items-end gap-2 pb-1 xl:pr-3">
+				<div className="grid grid-cols-[minmax(0,1fr)_30px_64px] items-end gap-2 pb-1 lg:grid-cols-[minmax(0,1fr)_88px_64px] xl:pr-3">
 					<span className="text-xs text-(--text-secondary)">Источники</span>
-					<span className="text-center text-xs text-(--text-secondary)">В приложении</span>
+					<span className="text-center text-xs text-(--text-secondary)">
+						{isMobile ? 'Сайт' : 'В приложении'}
+					</span>
 					<span className="text-center text-xs text-(--text-secondary)">Email</span>
 				</div>
 				{sources.map((source) => {
@@ -92,7 +97,7 @@ export const NotificationsSection = observer(() => {
 					return (
 						<div
 							key={source.key}
-							className="grid grid-cols-[minmax(0,1fr)_88px_64px] items-center gap-2 py-1 xl:rounded-lg xl:px-3 xl:transition-colors xl:hover:bg-(--tone-hover)"
+							className="grid grid-cols-[minmax(0,1fr)_30px_64px] items-center gap-2 py-1 lg:grid-cols-[minmax(0,1fr)_88px_64px] xl:rounded-lg xl:px-3 xl:transition-colors xl:hover:bg-(--tone-hover)"
 						>
 							<div className="flex min-w-0 items-center gap-2">
 								<Icon className="size-5 shrink-0 text-(--accent-primary)" />

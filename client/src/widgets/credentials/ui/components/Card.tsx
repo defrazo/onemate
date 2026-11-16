@@ -136,7 +136,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 				<span className="mb-1 max-w-full min-w-0 truncate font-bold">{entry.service}</span>
 				<span
 					className={cn(
-						'h-6 max-w-full min-w-0 truncate leading-7',
+						'h-6 max-w-full min-w-0 truncate leading-7 not-lg:mb-3',
 						entry.login ? 'text-(--text-secondary)' : 'text-(--text-disabled)'
 					)}
 				>
@@ -167,7 +167,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 						<Button
 							centerIcon={<IconGripHorizontal className="size-4" />}
 							className={cn(
-								'absolute cursor-grab touch-none active:cursor-grabbing',
+								'hidden cursor-grab touch-none active:cursor-grabbing lg:absolute',
 								ACTION_CLASS,
 								isDragging && 'opacity-100'
 							)}
@@ -180,10 +180,10 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 						/>
 					)}
 				</div>
-				<div className="flex h-5 items-center">
+				<div className="flex h-5 items-center not-lg:mb-3">
 					{entry.login && (
 						<Button
-							centerIcon={<IconCopy className="size-4" />}
+							centerIcon={<IconCopy className="size-5 xl:size-4" />}
 							className={ACTION_CLASS}
 							disabled={disabled}
 							padding="none"
@@ -202,9 +202,9 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 							<Button
 								centerIcon={
 									password === null ? (
-										<IconEye className="size-4" />
+										<IconEye className="size-5 xl:size-4" />
 									) : (
-										<IconEyeOff className="size-4" />
+										<IconEyeOff className="size-5 xl:size-4" />
 									)
 								}
 								className={ACTION_CLASS}
@@ -218,7 +218,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 								}}
 							/>
 							<Button
-								centerIcon={<IconCopy className="size-4" />}
+								centerIcon={<IconCopy className="size-5 xl:size-4" />}
 								className={ACTION_CLASS}
 								disabled={disabled || requesting}
 								padding="none"

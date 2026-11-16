@@ -85,12 +85,10 @@ export const PrimaryEmail = observer(() => {
 					variant="tone"
 					onChange={(e) => setMainEmail(e.target.value)}
 				/>
-
 				{isEmailPending && (
 					<p className="text-xs text-(--text-secondary) select-none">Новый e-mail ожидает подтверждения</p>
 				)}
-
-				<Collapse open={showEmailChange}>
+				<Collapse open={showEmailChange && !!mainEmail}>
 					<div className="flex flex-col gap-2">
 						<PasswordInput
 							autoComplete="off"

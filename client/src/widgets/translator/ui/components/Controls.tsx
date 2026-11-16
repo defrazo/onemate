@@ -21,7 +21,7 @@ export const Controls = observer(() => {
 				onChange={translatorStore.setSourceLanguage}
 			/>
 			<Button
-				centerIcon={<IconArrowsExchange className="size-4 group-active/switcher:scale-90" />}
+				centerIcon={<IconArrowsExchange className="size-5 group-active/switcher:scale-90 xl:size-4" />}
 				className="group/switcher size-8 shrink-0 rounded-full"
 				padding="none"
 				title="Поменять языки местами"

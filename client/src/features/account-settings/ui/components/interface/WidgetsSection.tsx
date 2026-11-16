@@ -13,7 +13,7 @@ type WidgetDraft = { primary: WidgetId; secondary: WidgetId | '' };
 const widgetOptions = WIDGETS.map(({ id, icon: Icon, title }) => ({
 	value: id,
 	label: title,
-	icon: <Icon className="size-4 shrink-0 text-(--accent-primary)" />,
+	icon: <Icon className="size-5 shrink-0 text-(--accent-primary) xl:size-4" />,
 }));
 
 const getDraft = (slot: readonly WidgetId[]): WidgetDraft => ({ primary: slot[0], secondary: slot[1] ?? '' });
@@ -141,22 +141,24 @@ export const WidgetsSection = observer(() => {
 							onClick={() => handleSelectPosition(idx)}
 						>
 							<div className="flex min-w-0 items-center gap-2">
-								{primary && <primary.icon className="size-4 shrink-0 text-(--accent-primary)" />}
+								{primary && (
+									<primary.icon className="size-5 shrink-0 text-(--accent-primary) xl:size-4" />
+								)}
 								<span className="trim text-sm font-semibold">{primary?.title}</span>
 							</div>
 							{secondary ? (
 								<div className="flex min-w-0 items-center gap-2">
-									<secondary.icon className="size-4 shrink-0 text-(--accent-primary)" />
+									<secondary.icon className="size-5 shrink-0 text-(--accent-primary) xl:size-4" />
 									<span className="trim text-sm text-(--text-secondary)">{secondary.title}</span>
 								</div>
 							) : isSelected ? (
 								<div className="flex min-w-0 items-center gap-2">
-									<IconPlus className="size-4 shrink-0 text-(--accent-primary)/70" />
+									<IconPlus className="size-5 shrink-0 text-(--accent-primary)/70 xl:size-4" />
 									<span className="trim text-sm text-(--accent-primary)/70">Добавить виджет</span>
 								</div>
 							) : (
 								<div className="flex min-w-0 items-center gap-2">
-									<IconPlus className="size-4 shrink-0 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary)/70" />
+									<IconPlus className="size-5 shrink-0 text-(--text-secondary) transition-colors group-hover:text-(--accent-primary)/70 xl:size-4" />
 									<span className="trim text-sm text-(--accent-primary)/70 opacity-0 transition-opacity group-hover:opacity-100">
 										Добавить виджет
 									</span>
