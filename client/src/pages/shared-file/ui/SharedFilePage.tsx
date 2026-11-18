@@ -270,8 +270,8 @@ export const SharedFilePage = () => {
 								<IconDownload className="size-4" />
 								Скачать файл
 							</a>
-							<div className="flex flex-1 items-center gap-2">
-								{previewType && (
+							{previewType && (
+								<div className="flex flex-1 items-center gap-2">
 									<Button
 										className="h-8 min-w-0 flex-1"
 										variant="toneStrong"
@@ -279,18 +279,18 @@ export const SharedFilePage = () => {
 									>
 										{showPreview ? 'Скрыть просмотр' : 'Предпросмотр'}
 									</Button>
-								)}
-								{previewType === 'text' && (
-									<Button
-										centerIcon={<IconCopy className="size-4" />}
-										className="size-8 shrink-0"
-										disabled={file.size > MAX_TEXT_BYTES}
-										title="Копировать текст"
-										variant="toneStrong"
-										onClick={() => void handleCopyText()}
-									/>
-								)}
-							</div>
+									{previewType === 'text' && (
+										<Button
+											centerIcon={<IconCopy className="size-4" />}
+											className="size-8 shrink-0"
+											disabled={file.size > MAX_TEXT_BYTES}
+											title="Копировать текст"
+											variant="toneStrong"
+											onClick={() => void handleCopyText()}
+										/>
+									)}
+								</div>
+							)}
 						</div>
 						{showPreview && (
 							<div className="relative w-full min-w-0 overflow-hidden rounded-xl bg-(--bg-tertiary)">

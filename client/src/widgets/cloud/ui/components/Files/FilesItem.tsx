@@ -280,7 +280,7 @@ const ItemData = ({
 }: ItemDataProps) => {
 	return (
 		<>
-			<div className="flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-(--tone-strong)">
+			<div className="flex size-8.5 shrink-0 items-center justify-center rounded-lg border border-(--tone-strong) bg-(--tone-strong)">
 				{selectionMode ? (
 					selected ? (
 						<IconSquareCheck className="size-5 text-(--accent-primary)" />
