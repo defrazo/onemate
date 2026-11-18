@@ -1,4 +1,4 @@
-import type { DashboardLayout, WidgetId, WidgetSlot } from '@/shared/config';
+import type { DashboardLayout, WidgetId, WidgetSlot } from './widgets';
 
 export type UserProfile = {
 	user_id?: string;

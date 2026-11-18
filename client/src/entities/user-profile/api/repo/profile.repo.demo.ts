@@ -1,17 +1,17 @@
-import {
-	type DashboardLayout,
-	normalizeDashboardLayout,
-	normalizeWidgetSlots,
-	type Theme,
-	type WidgetId,
-	type WidgetSlot,
-} from '@/shared/config';
+import type { Theme } from '@/shared/config';
 import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
 import type { IUserProfileRepo } from '../../model/ports';
 import type { UserProfile, UserProfilePatch } from '../../model/types';
+import {
+	type DashboardLayout,
+	normalizeDashboardLayout,
+	normalizeWidgetSlots,
+	type WidgetId,
+	type WidgetSlot,
+} from '../../model/widgets';
 
 export class ProfileRepoDemo implements IUserProfileRepo {
 	constructor(private readonly loadInitialProfile: (id: string) => Promise<UserProfile>) {}

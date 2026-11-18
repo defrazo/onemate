@@ -3,7 +3,8 @@ import { IconInfoCircle, IconPlus } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { createDefaultDashboardLayout, type WidgetId, WIDGETS } from '@/shared/config';
+import { createDefaultDashboardLayout, type WidgetId } from '@/entities/user-profile';
+import { WIDGETS } from '@/shared/config';
 import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, Checkbox, Collapse, ConfirmDialog, Select, Tooltip } from '@/shared/ui';

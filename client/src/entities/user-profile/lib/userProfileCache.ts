@@ -1,7 +1,7 @@
-import { normalizeDashboardLayout, normalizeMobileWidgets, normalizeWidgetSlots } from '@/shared/config';
 import { readCache, writeCache } from '@/shared/lib/cache';
 
 import type { UserProfile } from '../model/types';
+import { normalizeDashboardLayout, normalizeMobileWidgets, normalizeWidgetSlots } from '../model/widgets';
 
 export type UserProfileCacheData = Pick<
 	UserProfile,

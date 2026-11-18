@@ -1,9 +1,10 @@
 import type { UserStore } from '@/entities/user';
-import type { DashboardLayout, Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import type { Theme } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
 import type { IUserProfileRepo } from '../../model/ports';
 import type { UserProfile, UserProfilePatch } from '../../model/types';
+import type { DashboardLayout, WidgetId, WidgetSlot } from '../../model/widgets';
 import { ProfileRepoDemo } from './profile.repo.demo';
 import { ProfileRepoLaravel } from './profile.repo.laravel';
 

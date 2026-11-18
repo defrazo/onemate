@@ -1,4 +1,4 @@
-import { migrateWidgetId, WIDGETS } from '@/shared/config';
+import { WIDGETS } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
 import { cacheKey, cleanupCache } from '../lib/utils';
@@ -40,32 +40,24 @@ export const clearCache = (id: string) => {
 	const notes = cached?.ui?.notes;
 	const pending = cached?.ui?.profile_pending;
 
-	const legacyProfile = Object.fromEntries(
-		['avatar_url', 'widgets_sequence', 'widgets_slots']
-			.filter((field) => cached?.ui?.[field] !== undefined)
-			.map((field) => [field, cached!.ui![field]])
-	);
-
 	const choices =
 		selected && typeof selected === 'object' && !Array.isArray(selected)
 			? Object.fromEntries(
-					Object.entries(selected)
-						.map(([slot, widget]) => [migrateWidgetId(slot), migrateWidgetId(widget)])
-						.filter(
-							([slot, widget]) =>
-								WIDGETS.some(({ id }) => id === slot) && WIDGETS.some(({ id }) => id === widget)
-						)
+					Object.entries(selected).filter(
+						([slot, widget]) =>
+							WIDGETS.some(({ id }) => id === slot) && WIDGETS.some(({ id }) => id === widget)
+					)
 				)
 			: {};
 
 	const ui = {
-		...legacyProfile,
 		...(Object.keys(choices).length && { dashboardActiveWidgets: choices }),
 		...(notes && typeof notes === 'object' && 'dirty' in notes && notes.dirty === true ? { notes } : {}),
 		...(pending && typeof pending === 'object' && !Array.isArray(pending) && Object.keys(pending).length
 			? { profile_pending: pending }
 			: {}),
 	};
+
 	try {
 		if (Object.keys(ui).length) storage.set(cacheKey(id), { ts: Date.now(), ui });
 		else storage.remove(cacheKey(id));
