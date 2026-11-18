@@ -1,7 +1,7 @@
 import { IconLayoutGridAdd } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 
-import type { WidgetId, WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
 import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 

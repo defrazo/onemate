@@ -4,24 +4,22 @@ import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AVATAR_ENTRIES, type AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import {
-	type DashboardLayout,
-	DEFAULT_THEME,
-	normalizeDashboardLayout,
-	normalizeMobileWidgets,
-	normalizeWidgetSlots,
-	type Theme,
-	type WidgetId,
-	WIDGETS,
-	type WidgetSlot,
-} from '@/shared/config';
+import { DEFAULT_THEME, type Theme, WIDGETS } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
 import { type PendingProfileData, userProfileCache, type UserProfileCacheData } from '../lib/userProfileCache';
-import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from './defaults';
+import { createDefaultDashboardLayout, createDefaultProfile, createDefaultSlots } from './defaults';
 import type { IUserProfileRepo, IUserProfileThemePort } from './ports';
 import type { Gender, UserProfile, UserProfilePatch } from './types';
+import {
+	type DashboardLayout,
+	normalizeDashboardLayout,
+	normalizeMobileWidgets,
+	normalizeWidgetSlots,
+	type WidgetId,
+	type WidgetSlot,
+} from './widgets';
 
 export class UserProfileStore extends AsyncStore implements IUserProfileThemePort {
 	private readonly avatarUpdate = new Debouncer();
@@ -120,7 +118,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	get widgets(): DashboardLayout {
-		return this.profile?.widgets_sequence ?? createDefaultWidgets();
+		return this.profile?.widgets_sequence ?? createDefaultDashboardLayout();
 	}
 
 	get mobileWidgets(): WidgetId[] {

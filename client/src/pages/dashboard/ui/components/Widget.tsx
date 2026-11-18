@@ -3,7 +3,7 @@ import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { IconGripHorizontal } from '@tabler/icons-react';
 
-import type { WidgetId } from '@/shared/config';
+import type { WidgetId } from '@/entities/user-profile';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider, Tooltip } from '@/shared/ui';
 
@@ -74,7 +74,7 @@ export const Widget = memo(({ items, activeId, onSelect }: WidgetProps) => {
 				)}
 				<Button
 					centerIcon={<IconGripHorizontal className="size-4" />}
-					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100"
+					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100 focus-visible:ring-0"
 					padding="none"
 					title="Переместить"
 					variant="icon"

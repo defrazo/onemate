@@ -1,15 +1,11 @@
-import { migrateWidgetId, type WidgetId } from '@/shared/config';
+import type { WidgetId } from '@/entities/user-profile';
 import { readCache, writeCache } from '@/shared/lib/cache';
 
 export type ActiveWidgets = Partial<Record<WidgetId, WidgetId>>;
 
 export const normalizeActiveWidgets = (layout: readonly (readonly WidgetId[])[], value: unknown): ActiveWidgets => {
-	const saved =
-		value && typeof value === 'object' && !Array.isArray(value)
-			? Object.fromEntries(
-					Object.entries(value).map(([key, selected]) => [migrateWidgetId(key), migrateWidgetId(selected)])
-				)
-			: {};
+	const saved: Record<string, unknown> =
+		value && typeof value === 'object' && !Array.isArray(value) ? (value as Record<string, unknown>) : {};
 
 	return Object.fromEntries(
 		layout.flatMap((slot) => {

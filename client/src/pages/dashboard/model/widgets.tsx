@@ -1,6 +1,7 @@
 import type { ReactNode } from 'react';
 
-import { type WidgetId, WIDGETS } from '@/shared/config';
+import type { WidgetId } from '@/entities/user-profile';
+import { WIDGETS } from '@/shared/config';
 import { Assistant, ASSISTANT_TIP } from '@/widgets/assistant';
 import { Calculator, CALCULATOR_TIP } from '@/widgets/calculator';
 import { Calendar, CALENDAR_TIP } from '@/widgets/calendar';

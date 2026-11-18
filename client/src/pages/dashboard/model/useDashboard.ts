@@ -3,9 +3,11 @@ import { type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-ki
 import { arrayMove } from '@dnd-kit/sortable';
 
 import { useStore } from '@/app/providers';
-import { EMPTY_WIDGET_SLOT, type WidgetId, WIDGETS, type WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
+import { EMPTY_WIDGET_SLOT, WIDGETS } from '@/shared/config';
 
 import { normalizeActiveWidgets, readActiveWidgets, saveActiveWidgets } from './dashboardCache';
+import { resolveMobileSlots } from './resolveMobileSlots';
 import type { SwitcherOption, WidgetItem } from './types';
 import { widgets } from './widgets';
 
@@ -52,14 +54,14 @@ export const useDashboard = () => {
 	};
 
 	const rowIds = layout.map((slot) => slot[0]);
-	const slots = store.slots;
+
+	const slots = resolveMobileSlots(store.slots, store.mobileWidgets);
 
 	const widgetMap = new Map<WidgetId, WidgetItem>(widgets.map((widget) => [widget.id, widget]));
 
-	const options: SwitcherOption[] = WIDGETS.map(({ id, icon }) => ({
-		value: id,
-		label: createElement(icon, { className: 'size-8', stroke: 2 }),
-	}));
+	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => store.mobileWidgets.includes(id)).map(
+		({ id, icon }) => ({ value: id, label: createElement(icon, { className: 'size-8', stroke: 2 }) })
+	);
 
 	const widgetsOrder = layout.map((slot) => slot.map((id) => widgetMap.get(id)!));
 
@@ -69,6 +71,8 @@ export const useDashboard = () => {
 	};
 
 	const setSlot = (idx: number, widgetId: WidgetId) => {
+		if (!store.mobileWidgets.includes(widgetId)) return;
+
 		const newSlots = [...slots];
 		const conflictIdx = newSlots.indexOf(widgetId);
 

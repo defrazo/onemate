@@ -1,6 +1,7 @@
 import { useEffect, useRef } from 'react';
 
-import { EMPTY_WIDGET_SLOT, type WidgetId, type WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
+import { EMPTY_WIDGET_SLOT } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 
 import type { SwitcherOption } from '../../model/types';
@@ -19,7 +20,6 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 	useEffect(() => {
 		const list = listRef.current;
 		const switcher = switcherRef.current;
-
 		if (!list || !switcher) return;
 
 		let frameId = 0;
