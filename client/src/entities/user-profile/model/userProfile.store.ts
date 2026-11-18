@@ -1,4 +1,4 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
@@ -8,9 +8,11 @@ import {
 	type DashboardLayout,
 	DEFAULT_THEME,
 	normalizeDashboardLayout,
+	normalizeMobileWidgets,
 	normalizeWidgetSlots,
 	type Theme,
 	type WidgetId,
+	WIDGETS,
 	type WidgetSlot,
 } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
@@ -29,12 +31,16 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	private readonly locationUpdate = new Debouncer();
 	private readonly changedFields = new Map<keyof UserProfile, number>();
 
+	private mobileWidgetsSave: Promise<void> = Promise.resolve();
+
 	private generation = 0;
 	private profileVersion = 0;
 	private locationVersion = 0;
 	private pendingProfile: PendingProfileData = {};
+	private initializing: Promise<void> | null = null;
 
 	profile: UserProfile | null = null;
+	loadError: Error | null = null;
 
 	private currentLocation: City | null = null;
 	private profileReady = false;
@@ -117,6 +123,10 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		return this.profile?.widgets_sequence ?? createDefaultWidgets();
 	}
 
+	get mobileWidgets(): WidgetId[] {
+		return normalizeMobileWidgets(this.profile?.mobile_widgets) ?? WIDGETS.map(({ id }) => id);
+	}
+
 	get slots(): WidgetSlot[] {
 		return this.profile?.widgets_slots ?? createDefaultSlots();
 	}
@@ -129,11 +139,38 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		this.patchProfile({ password_changed_at: new Date().toISOString() });
 	}
 
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!this.inited || !userId || (this.isReady && this.isLocationReady)) return Promise.resolve();
+		if (this.initializing) return this.initializing;
+
+		const generation = this.generation;
+		runInAction(() => (this.loadError = null));
+
+		const promise = this.load(userId).catch((error) => {
+			if (this.current(userId, generation))
+				runInAction(() => (this.loadError = error instanceof Error ? error : new Error(String(error))));
+			throw error;
+		});
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
+	}
+
 	private async load(userId: string): Promise<void> {
 		const generation = this.generation;
 
 		await this.withLoading(async () => {
-			const results = await Promise.allSettled([this.loadProfile(userId), this.loadLocation(userId)]);
+			const results = await Promise.allSettled([
+				this.isReady ? Promise.resolve() : this.loadProfile(userId),
+				this.isLocationReady ? Promise.resolve() : this.loadLocation(userId),
+			]);
 
 			for (const result of results) {
 				if (this.current(userId, generation) && result.status === 'rejected') handleError(result.reason);
@@ -277,6 +314,35 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		);
 	}
 
+	async updateMobileWidgets(value: WidgetId[]): Promise<void> {
+		const userId = this.userStore.id;
+		const widgets = normalizeMobileWidgets(value);
+		if (!userId || !this.isReady || !widgets) return;
+
+		const generation = this.generation;
+
+		this.patchProfile({ mobile_widgets: widgets });
+		this.pendingProfile.mobile_widgets = widgets;
+
+		userProfileCache.setMobileWidgets(userId, widgets);
+
+		const save = this.mobileWidgetsSave.then(async () => {
+			if (!this.current(userId, generation)) return;
+
+			await this.repo.updateMobileWidgets(userId, widgets);
+
+			if (this.current(userId, generation)) this.confirmPending(userId, { mobile_widgets: widgets });
+		});
+
+		this.mobileWidgetsSave = save.catch(() => {});
+
+		try {
+			await save;
+		} catch (error) {
+			if (this.current(userId, generation)) throw error;
+		}
+	}
+
 	async updateWidgetSlots(slots: WidgetSlot[]): Promise<void> {
 		slots = normalizeWidgetSlots(slots) ?? createDefaultSlots();
 
@@ -326,6 +392,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 		return {
 			...(cached.avatar_url !== undefined && { avatar_url: cached.avatar_url }),
+			...(cached.mobile_widgets !== undefined && { mobile_widgets: cached.mobile_widgets }),
 			...(cached.widgets_sequence !== undefined && { widgets_sequence: cached.widgets_sequence }),
 			...(cached.widgets_slots !== undefined && { widgets_slots: cached.widgets_slots }),
 		};
@@ -334,6 +401,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	private applyProfile(profile: UserProfile): void {
 		this.profile = {
 			...profile,
+			mobile_widgets: normalizeMobileWidgets(profile.mobile_widgets),
 			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
 			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
 		};
@@ -467,6 +535,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			| 'reset'
 		>(this, {
 			profile: observable,
+			loadError: observable,
 			currentLocation: observable,
 			locationReady: observable,
 
@@ -491,6 +560,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			theme: computed,
 			widgets: computed,
 			slots: computed,
+			mobileWidgets: computed,
 			passwordChangedAt: computed,
 
 			applyProfile: action,
@@ -513,7 +583,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 					if (!userId) return;
 
 					this.hydrateFromCache(userId);
-					void this.load(userId);
+					void this.ensureLoaded().catch(() => {});
 				},
 				{ fireImmediately: true }
 			)
@@ -527,6 +597,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 	protected reset(): void {
 		this.generation++;
+		this.initializing = null;
+		this.loadError = null;
 		this.pendingProfile = {};
 		this.changedFields.clear();
 		this.profileVersion = 0;

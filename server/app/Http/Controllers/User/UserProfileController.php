@@ -47,6 +47,8 @@ class UserProfileController extends Controller
                 Rule::in(['light', 'dark']),
             ],
 
+            'mobile_widgets' => ['sometimes', 'nullable', 'array', 'list', 'min:1', 'max:11'],
+            'mobile_widgets.*' => ['string', 'distinct', Rule::in(['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo', 'credentials', 'assistant'])],
             'widgets_sequence' => $this->widgetSequenceRules(),
 
             'widgets_slots' => ['sometimes', 'nullable', 'array'],
@@ -110,6 +112,8 @@ class UserProfileController extends Controller
     public function updateWidgets(Request $request): JsonResponse
     {
         $data = $request->validate([
+            'mobile_widgets' => ['sometimes', 'nullable', 'array', 'list', 'min:1', 'max:11'],
+            'mobile_widgets.*' => ['string', 'distinct', Rule::in(['calculator', 'calendar', 'weather', 'notes', 'currency', 'translator', 'network', 'cloud', 'todo', 'credentials', 'assistant'])],
             'widgets_sequence' => $this->widgetSequenceRules(),
             'widgets_slots' => ['nullable', 'array'],
             'widgets_slots.*' => ['string'],

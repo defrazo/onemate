@@ -1,4 +1,4 @@
-import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
+import type { DashboardLayout, Theme, WidgetId, WidgetSlot } from '@/shared/config';
 
 import type { UserProfile, UserProfilePatch } from './types';
 
@@ -15,6 +15,7 @@ export interface IUserProfileRepo {
 	updateAvatar(id: string, avatar: string): Promise<void>;
 	updateTheme(id: string, theme: Theme): Promise<void>;
 	updateWidgets(id: string, widgets: DashboardLayout): Promise<void>;
+	updateMobileWidgets(id: string, widgets: WidgetId[]): Promise<void>;
 	updateSlots(id: string, slots: WidgetSlot[]): Promise<void>;
 	updateNotification(id: string, patch: UserProfilePatch): Promise<UserProfile>;
 }

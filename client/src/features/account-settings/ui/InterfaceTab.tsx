@@ -9,10 +9,11 @@ import { AppearanceSection, LanguageSection, NotificationsSection, WidgetsSectio
 export const InterfaceTab = observer(() => {
 	return (
 		<div className="core-gap flex flex-col">
-			<div className="core-surface-contrast hidden flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast) lg:flex">
+			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconCategory} title="Виджеты" />
 				<WidgetsSection />
 			</div>
+			<Divider className="mb-1 md:hidden" />
 			<div className="core-surface-contrast flex flex-col gap-2 bg-(--bg-secondary) md:p-3 md:shadow-(--shadow-contrast)">
 				<SectionHeader icon={IconAdjustmentsHorizontal} title="Внешний вид" />
 				<AppearanceSection />

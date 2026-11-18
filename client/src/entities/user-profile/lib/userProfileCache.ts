@@ -1,9 +1,12 @@
-import { normalizeDashboardLayout, normalizeWidgetSlots } from '@/shared/config';
+import { normalizeDashboardLayout, normalizeMobileWidgets, normalizeWidgetSlots } from '@/shared/config';
 import { readCache, writeCache } from '@/shared/lib/cache';
 
 import type { UserProfile } from '../model/types';
 
-export type UserProfileCacheData = Pick<UserProfile, 'avatar_url' | 'widgets_sequence' | 'widgets_slots'>;
+export type UserProfileCacheData = Pick<
+	UserProfile,
+	'avatar_url' | 'widgets_sequence' | 'widgets_slots' | 'mobile_widgets'
+>;
 export type PendingProfileData = Partial<UserProfileCacheData & Pick<UserProfile, 'theme'>>;
 
 const patch = (userId: string, data: Partial<UserProfileCacheData>) => {
@@ -24,6 +27,7 @@ export const userProfileCache = {
 		if (!ui) return null;
 
 		return {
+			mobile_widgets: ui.mobile_widgets === undefined ? undefined : normalizeMobileWidgets(ui.mobile_widgets),
 			avatar_url: ui.avatar_url as UserProfileCacheData['avatar_url'] | undefined,
 			widgets_sequence:
 				ui.widgets_sequence === undefined ? undefined : normalizeDashboardLayout(ui.widgets_sequence),
@@ -40,6 +44,7 @@ export const userProfileCache = {
 		const data = value as Record<string, unknown>;
 
 		return {
+			...(Array.isArray(data.mobile_widgets) && { mobile_widgets: normalizeMobileWidgets(data.mobile_widgets) }),
 			...(typeof data.avatar_url === 'string' && { avatar_url: data.avatar_url }),
 			...(Array.isArray(data.widgets_sequence) && {
 				widgets_sequence: normalizeDashboardLayout(data.widgets_sequence),
@@ -78,6 +83,10 @@ export const userProfileCache = {
 		patch(userId, { widgets_sequence: widgets });
 	},
 
+	setMobileWidgets(userId: string, widgets: UserProfile['mobile_widgets']) {
+		patch(userId, { mobile_widgets: widgets });
+	},
+
 	setSlots(userId: string, slots: UserProfile['widgets_slots']) {
 		patch(userId, { widgets_slots: slots });
 	},
@@ -86,6 +95,7 @@ export const userProfileCache = {
 		writeCache(userId, {
 			ui: {
 				profile_confirmed: {
+					mobile_widgets: normalizeMobileWidgets(profile.mobile_widgets),
 					avatar_url: profile.avatar_url,
 					widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
 					widgets_slots: normalizeWidgetSlots(profile.widgets_slots),

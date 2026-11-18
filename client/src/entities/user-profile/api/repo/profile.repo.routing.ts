@@ -1,5 +1,5 @@
 import type { UserStore } from '@/entities/user';
-import type { DashboardLayout, Theme, WidgetSlot } from '@/shared/config';
+import type { DashboardLayout, Theme, WidgetId, WidgetSlot } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
 import type { IUserProfileRepo } from '../../model/ports';
@@ -49,6 +49,11 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 	async updateWidgets(id: string, widgets: DashboardLayout): Promise<void> {
 		this.checkPermission('profile', 'save');
 		return this.getTargetRepo().updateWidgets(id, widgets);
+	}
+
+	async updateMobileWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+		this.checkPermission('profile', 'save');
+		return this.getTargetRepo().updateMobileWidgets(id, widgets);
 	}
 
 	async updateSlots(id: string, slots: WidgetSlot[]): Promise<void> {

@@ -3,6 +3,7 @@ import {
 	normalizeDashboardLayout,
 	normalizeWidgetSlots,
 	type Theme,
+	type WidgetId,
 	type WidgetSlot,
 } from '@/shared/config';
 import { RestrictedAccess } from '@/shared/lib/errors';
@@ -55,6 +56,11 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 	async updateWidgets(id: string, widgets: DashboardLayout): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_sequence: widgets }));
+	}
+
+	async updateMobileWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+		const profile = await this.loadProfile(id);
+		storage.set(key(id, 'profile'), toPlain({ ...profile, mobile_widgets: widgets }));
 	}
 
 	async updateSlots(id: string, slots: WidgetSlot[]): Promise<void> {
