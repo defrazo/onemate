@@ -38,7 +38,6 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/invite/verify', [AuthController::class, 'verifyInvite'])->middleware('throttle:5,1');
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
-Route::get('/auth/session', [AuthController::class, 'session'])->middleware('throttle:60,1');
 
 Route::middleware('web')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');

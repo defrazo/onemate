@@ -11,7 +11,7 @@ import { desktopUserLinks } from '../model/menuItems';
 export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) => {
 	const navigate = useNavigate();
 
-	const { authStore, modalStore } = useStore();
+	const { authStore, modalStore, notifyStore } = useStore();
 
 	const handleNavigate = (to: string) => {
 		modalStore.closeModal();
@@ -20,10 +20,14 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 	};
 
 	const handleLogout = async () => {
-		if (!(await authStore.logout())) return;
+		try {
+			if (!(await authStore.logout())) return;
 
-		modalStore.closeModal();
-		navigate('/');
+			modalStore.closeModal();
+			navigate('/');
+		} catch {
+			notifyStore.setNotice('Не удалось подтвердить выход. Попробуйте снова', 'error');
+		}
 	};
 
 	return (

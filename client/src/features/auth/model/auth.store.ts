@@ -1,6 +1,7 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import axios from 'axios';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import type { IUserAuthPort } from '@/entities/user';
+import type { IUserAuthPort, User } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
 import { authApi } from '../api/auth';
@@ -9,6 +10,7 @@ import type { IAuthDevicePort } from './ports';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	private authVersion = 0;
+	private initPromise: Promise<void> | null = null;
 	private logoutPromise: Promise<boolean> | null = null;
 	private logoutGuard: (userId: string) => Promise<'saved' | 'discard' | false> = async () => 'saved';
 	private discardNotes: (userId: string) => void = () => {};
@@ -143,15 +145,12 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		const decision = await this.logoutGuard(userId);
 		if (!decision || this.userStore.id !== userId) return false;
 
-		try {
-			await authApi.logout();
+		await authApi.logout();
 
-			authChannel.postMessage({ type: 'logout', userId, discardNotes: decision === 'discard' });
-		} finally {
-			if (this.userStore.id === userId) {
-				if (decision === 'discard') this.discardNotes(userId);
-				this.endSession();
-			}
+		authChannel.postMessage({ type: 'logout', userId, discardNotes: decision === 'discard' });
+		if (this.userStore.id === userId) {
+			if (decision === 'discard') this.discardNotes(userId);
+			this.endSession();
 		}
 
 		return true;
@@ -165,15 +164,16 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 
 	private async checkAuth(): Promise<void> {
 		const version = this.authVersion;
-		const { authenticated, user } = await authApi.getSession();
+		let user: User | null;
 
-		if (version !== this.authVersion) return;
-
-		if (!authenticated || !user) {
-			this.userStore.setUser(null);
-			return;
+		try {
+			user = (await authApi.getCurrentUser()).user;
+		} catch (error) {
+			if (!axios.isAxiosError(error) || error.response?.status !== 401) throw error;
+			user = null;
 		}
 
+		if (version !== this.authVersion) return;
 		this.userStore.setUser(user);
 	}
 
@@ -205,19 +205,38 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		});
 	}
 
-	async init(): Promise<void> {
-		if (this.inited) return;
+	init(): Promise<void> {
+		if (this.initPromise) return this.initPromise;
+		if (this.inited) return Promise.resolve();
+
 		this.inited = true;
 
-		authChannel.addEventListener('message', this.handleAuthMessage);
+		runInAction(() => (this.isInitializing = true));
 
+		authChannel.addEventListener('message', this.handleAuthMessage);
 		this.track(() => authChannel.removeEventListener('message', this.handleAuthMessage));
 
-		try {
-			await this.checkAuth();
-		} finally {
-			this.isInitializing = false;
-		}
+		const promise = this.checkAuth()
+			.catch((error) => {
+				if (this.initPromise === promise) super.destroy();
+				throw error;
+			})
+			.finally(
+				action(() => {
+					if (this.initPromise !== promise) return;
+					this.initPromise = null;
+					this.isInitializing = false;
+				})
+			);
+		this.initPromise = promise;
+
+		return promise;
+	}
+
+	override destroy(): void {
+		this.authVersion++;
+		this.initPromise = null;
+		super.destroy();
 	}
 
 	protected reset(): void {

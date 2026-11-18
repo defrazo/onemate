@@ -12,7 +12,7 @@ import { mobileUserMenuLinks, profileTabs } from '../model/menuItems';
 export const MobileUserMenu = observer(() => {
 	const navigate = useNavigate();
 
-	const { authStore, modalStore } = useStore();
+	const { authStore, modalStore, notifyStore } = useStore();
 
 	const handleNavigate = (to: string) => {
 		modalStore.closeModal();
@@ -20,10 +20,14 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	const handleLogout = async () => {
-		if (!(await authStore.logout())) return;
+		try {
+			if (!(await authStore.logout())) return;
 
-		modalStore.closeModal();
-		navigate('/');
+			modalStore.closeModal();
+			navigate('/');
+		} catch {
+			notifyStore.setNotice('Не удалось подтвердить выход. Попробуйте снова', 'error');
+		}
 	};
 
 	const openProfileTab = (tab: TabId) => {
