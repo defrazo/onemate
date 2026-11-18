@@ -10,12 +10,18 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     libzip-dev \
     libonig-dev \
+    libpng-dev \
+    libjpeg62-turbo-dev \
+    libwebp-dev \
+    && docker-php-ext-configure gd --with-jpeg --with-webp \
     && docker-php-ext-install \
     pdo \
     pdo_pgsql \
     mbstring \
     zip \
     pcntl \
+    gd \
+    exif \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 

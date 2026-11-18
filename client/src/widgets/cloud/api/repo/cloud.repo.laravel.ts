@@ -27,6 +27,11 @@ export class CloudRepoLaravel implements ICloudRepo {
 		});
 	}
 
+	async getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null> {
+		const { data } = await api.get<Blob>(`/cloud/files/${id}/thumbnail`, { responseType: 'blob', signal });
+		return data;
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		const { data } = await api.get<Blob>(`/cloud/files/${id}/download`, { responseType: 'blob' });
 		return data;

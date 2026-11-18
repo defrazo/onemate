@@ -202,6 +202,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::post('/files', [CloudFileController::class, 'store']);
             Route::delete('/files', [CloudFileController::class, 'destroyMany']);
+            Route::get('/files/{id}/thumbnail', [CloudFileController::class, 'thumbnail'])->whereUuid('id');
             Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
             Route::patch('/files/{id}', [CloudFileController::class, 'update']);
             Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);

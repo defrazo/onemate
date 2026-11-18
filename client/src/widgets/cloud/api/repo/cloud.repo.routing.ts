@@ -31,6 +31,11 @@ export class CloudRepoRouting implements ICloudRepo {
 		return this.getTargetRepo().load();
 	}
 
+	async getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null> {
+		this.checkPermission('cloud', 'read');
+		return this.getTargetRepo().getThumbnail(id, signal);
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		this.checkPermission('cloud', 'read');
 		return this.getTargetRepo().getPreview(id);

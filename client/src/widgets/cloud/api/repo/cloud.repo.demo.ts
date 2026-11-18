@@ -26,6 +26,10 @@ export class CloudRepoDemo implements ICloudRepo {
 		};
 	}
 
+	async getThumbnail(_id: string, _signal?: AbortSignal): Promise<Blob | null> {
+		return null;
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		const path = DEMO_FILE_PATHS[id];
 		if (!path) throw new Error('Файл не найден');

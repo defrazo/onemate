@@ -288,6 +288,10 @@ export class CloudStore extends AsyncStore {
 		await this.repo.downloadMany(ids);
 	}
 
+	async getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null> {
+		return this.repo.getThumbnail(id, signal);
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		return this.repo.getPreview(id);
 	}
