@@ -50,7 +50,6 @@ export const Currency = observer(() => {
 						centerIcon={<IconCalculator className="size-6 xl:size-4" />}
 						className="rounded-md xl:size-6"
 						padding="none"
-						title="Сумматор валют"
 						variant="iconSurface"
 						onClick={openSummator}
 					/>

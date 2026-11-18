@@ -11,7 +11,7 @@ export const UserAvatar = observer(({ className }: { className?: string }) => {
 		<Thumbnail
 			alt={userStore.username}
 			className={cn('size-full', className)}
-			isLoading={!userProfileStore.isReady}
+			isLoading={!userProfileStore.isReady && !userProfileStore.loadError}
 			src={userProfileStore.avatar}
 		/>
 	);

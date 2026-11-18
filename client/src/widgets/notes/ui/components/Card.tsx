@@ -32,6 +32,7 @@ export const Card = observer(({ id, color, sortingDisabled = false }: CardProps)
 		>
 			<button
 				className="flex min-w-0 flex-1 cursor-pointer flex-col text-left"
+				tabIndex={-1}
 				type="button"
 				onClick={() => notesStore.openNote(id)}
 			>

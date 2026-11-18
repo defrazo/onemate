@@ -198,10 +198,9 @@ export const Assistant = observer(() => {
 							<Button
 								aria-label="Новый диалог"
 								centerIcon={<IconMessagePlus className="size-6 lg:size-5 xl:size-4" />}
-								className="size-7 rounded-md"
+								className="size-7"
 								disabled={!store.canSend}
 								padding="none"
-								title="Новый диалог"
 								variant="iconSurface"
 								onClick={() => void store.newConversation()}
 							/>

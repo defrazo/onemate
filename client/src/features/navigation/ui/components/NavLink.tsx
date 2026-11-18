@@ -43,7 +43,15 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 
 	if (item.external) {
 		return (
-			<a className={className} href={item.to} rel="noopener noreferrer" target="_blank">
+			<a
+				className={cn(
+					'focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none',
+					className
+				)}
+				href={item.to}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
 				{content}
 			</a>
 		);

@@ -29,7 +29,12 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 
 	return (
 		<div className="group relative border-b border-(--border-primary) transition-colors last:border-b-0 hover:bg-(--tone-hover)">
-			<button className="w-full min-w-0 py-2 pr-3 pl-2 text-left" type="button" onClick={handleClick}>
+			<button
+				className="w-full min-w-0 py-2 pr-3 pl-2 text-left"
+				tabIndex={-1}
+				type="button"
+				onClick={handleClick}
+			>
 				<div className="relative flex min-w-0 flex-1 flex-col gap-1 pl-3">
 					<span className={cn('text-sm text-(--text-primary)', isUnread && 'font-semibold')}>
 						{notification.title}

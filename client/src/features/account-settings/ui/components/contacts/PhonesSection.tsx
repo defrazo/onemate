@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { Collapse, LoadingState, PhoneInput } from '@/shared/ui';
+import { Collapse, LoadingError, PhoneInput } from '@/shared/ui';
 
 import { normalizeArray, withEmptySlot } from '../../../lib/utils';
 import { FormActions } from '../FormActions';
@@ -69,7 +69,16 @@ export const PhonesSection = observer(() => {
 		}
 	};
 
-	if (!userProfileStore.isReady) return <LoadingState className="xl:min-h-10.5" />;
+	if (!userProfileStore.isReady)
+		return (
+			<div className="xl:min-h-10.5">
+				<LoadingError
+					error={!!userProfileStore.loadError}
+					message="Не удалось загрузить профиль"
+					onRetry={() => void userProfileStore.ensureLoaded().catch(() => {})}
+				/>
+			</div>
+		);
 
 	return (
 		<div className="flex flex-col gap-1">

@@ -26,7 +26,7 @@ export const AppearanceSection = observer(() => {
 						<button
 							key={value}
 							className={cn(
-								'flex cursor-pointer items-center gap-2 rounded-md px-3 text-sm transition-colors',
+								'flex cursor-pointer items-center gap-2 rounded-md px-3 text-sm transition-colors focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none',
 								isActive
 									? 'bg-(--accent-primary) text-(--text-on-accent)'
 									: 'hover:text-(--accent-primary)'

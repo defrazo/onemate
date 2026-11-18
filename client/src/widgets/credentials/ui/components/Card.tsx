@@ -166,7 +166,7 @@ export const Card = observer(({ entry, disabled, sortingDisabled }: CardProps) =
 						<Button
 							centerIcon={<IconGripHorizontal className="size-4" />}
 							className={cn(
-								'absolute hidden cursor-grab touch-none active:cursor-grabbing lg:block',
+								'absolute hidden cursor-grab touch-none focus-visible:ring-0 active:cursor-grabbing lg:block',
 								ACTION_CLASS,
 								isDragging && 'opacity-100'
 							)}

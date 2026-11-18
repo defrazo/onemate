@@ -191,64 +191,70 @@ export const KanbanPage = () => {
 	const isLoading = loading || !!view?.loading;
 	const hasError = error || !!view?.loadError;
 
-	if (isLoading || hasError)
-		return (
-			<LoadingError
-				error={hasError}
-				size="lg"
-				onRetry={() => {
-					if (error) void initialize();
-					else void reloadBoard();
-				}}
-			/>
-		);
-
 	return (
-		<section className="flex size-full min-h-0 min-w-0 flex-col gap-4">
-			{view && (
-				<div className="flex min-w-0 items-center gap-3">
-					<div className="min-w-0 flex-1">
-						<WorkspaceTabs
-							activeId={view.activeBoardId ?? undefined}
-							canCreate={view.canCreateBoard && !loading}
-							canDelete={view.canDeleteBoard}
-							createLabel="Добавить доску"
-							disabled={isLoading || view.savingBoard || error}
-							editValue={draft}
-							editingId={editingId}
-							items={view.boards}
-							label="Доски Kanban"
-							maxItems={LIMITS.MAX_BOARDS}
-							maxTitleLength={LIMITS.BOARD_TITLE}
-							saving={view.savingBoard}
-							onCreate={openCreateDialog}
-							onDelete={openDeleteDialog}
-							onEditCancel={cancelRename}
-							onEditChange={setDraft}
-							onEditConfirm={() => void confirmRename()}
-							onRename={startRename}
-							onSelect={selectBoard}
-						/>
+		<section className="relative flex size-full min-h-0 min-w-0 flex-col gap-4">
+			{!isLoading && !hasError && view && (
+				<>
+					<div className="flex min-w-0 items-center gap-3">
+						<div className="min-w-0 flex-1">
+							<WorkspaceTabs
+								activeId={view.activeBoardId ?? undefined}
+								canCreate={view.canCreateBoard}
+								canDelete={view.canDeleteBoard}
+								createLabel="Добавить доску"
+								disabled={view.savingBoard}
+								editValue={draft}
+								editingId={editingId}
+								items={view.boards}
+								label="Доски Kanban"
+								maxItems={LIMITS.MAX_BOARDS}
+								maxTitleLength={LIMITS.BOARD_TITLE}
+								saving={view.savingBoard}
+								onCreate={openCreateDialog}
+								onDelete={openDeleteDialog}
+								onEditCancel={cancelRename}
+								onEditChange={setDraft}
+								onEditConfirm={() => void confirmRename()}
+								onRename={startRename}
+								onSelect={selectBoard}
+							/>
+						</div>
+						{view.isSyncing && <SyncIndicator className="static bg-transparent" />}
 					</div>
-					{view.isSyncing && <SyncIndicator className="static bg-transparent" />}
-				</div>
-			)}
-			{view?.conflict && (
-				<div className="flex items-center justify-between gap-3 text-sm text-(--status-error)" role="alert">
-					<span>Доска изменилась. Обновите её перед продолжением</span>
-					<Button className="h-8" disabled={view.loading} onClick={() => void reloadBoard()}>
-						Обновить доску
-					</Button>
-				</div>
+					{view.conflict && (
+						<div
+							className="flex items-center justify-between gap-3 text-sm text-(--status-error)"
+							role="alert"
+						>
+							<span>Доска изменилась. Обновите её перед продолжением</span>
+
+							<Button className="h-8" disabled={view.loading} onClick={() => void reloadBoard()}>
+								Обновить доску
+							</Button>
+						</div>
+					)}
+				</>
 			)}
 			<div aria-busy={isLoading} className="relative min-h-0 flex-1">
 				<div
 					ref={kanbanRef}
 					className="size-full overflow-hidden"
 					id="kanban"
-					inert={!!(view?.conflict || isLoading)}
+					inert={!!(view?.conflict || isLoading || hasError)}
 				/>
 			</div>
+			{(isLoading || hasError) && (
+				<div className="absolute inset-0 z-10 flex items-center justify-center bg-(--background)">
+					<LoadingError
+						error={hasError}
+						size="lg"
+						onRetry={() => {
+							if (error) void initialize();
+							else void reloadBoard();
+						}}
+					/>
+				</div>
+			)}
 		</section>
 	);
 };

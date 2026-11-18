@@ -27,7 +27,11 @@ export const variants: Record<Component, Record<string, string>> = {
 			'rounded-lg bg-transparent text-(--text-secondary)',
 			'hover:bg-(--tone-strong) hover:text-(--accent-primary) active:scale-90'
 		),
-		icon: cn('text-(--text-secondary)', 'hover:text-(--accent-primary) active:scale-90'),
+		icon: cn(
+			'text-(--text-secondary)',
+			'hover:text-(--accent-primary) active:scale-90',
+			'focus-visible:rounded-md'
+		),
 		custom: 'rounded-lg text-(--text-primary)',
 	},
 	input: {

@@ -58,7 +58,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 				{!sortingDisabled && (
 					<Button
 						centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
-						className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 active:cursor-grabbing"
+						className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 focus-visible:ring-0 active:cursor-grabbing"
 						padding="none"
 						title="Переместить"
 						variant="icon"

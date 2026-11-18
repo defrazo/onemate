@@ -42,7 +42,10 @@ export const Navigation = observer(() => {
 				variant="iconSurface"
 				onClick={store.prevMonth}
 			/>
-			<Tooltip content="Текущий месяц">
+			<Tooltip
+				className="rounded-lg focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none"
+				content="Текущий месяц"
+			>
 				<Button
 					aria-label="Перейти к текущему месяцу"
 					className="trim mx-auto font-semibold hover:text-(--accent-primary-hover)"
@@ -66,10 +69,10 @@ export const Navigation = observer(() => {
 			<Tooltip className="absolute top-1/2 right-8 -translate-y-1/2" content="Включить калькулятор дат">
 				<Button
 					active={store.isControlsOpen}
+					aria-label="Калькулятор дат"
 					centerIcon={<IconCalendarWeek className="size-6 xl:size-4" />}
 					className="aria-pressed:text-(--accent-primary) xl:size-6 xl:rounded-md xl:aria-pressed:bg-(--tone-strong)"
 					padding="none"
-					title="Калькулятор дат"
 					variant="iconSurface"
 					onClick={store.toggleControls}
 				/>
@@ -93,7 +96,6 @@ export const Navigation = observer(() => {
 						store.productionStatus === 'error' && 'text-(--status-error)/50'
 					)}
 					padding="none"
-					title={productionLabel}
 					variant="iconSurface"
 					onClick={store.toggleProduction}
 				/>

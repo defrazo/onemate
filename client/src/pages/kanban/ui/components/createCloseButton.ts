@@ -4,6 +4,7 @@ import { insertSvg } from '../../lib/utils';
 export const createCloseButton = (onClose: () => void) => {
 	const button = document.createElement('button');
 	button.type = 'button';
+	button.tabIndex = -1;
 	button.title = 'Закрыть';
 	button.setAttribute('aria-label', 'Закрыть');
 	button.className =

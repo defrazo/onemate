@@ -14,7 +14,7 @@ type CreateButtonProps = {
 };
 
 const base =
-	'inline-flex cursor-pointer items-center justify-center rounded-lg transition-colors select-none disabled:pointer-events-none disabled:opacity-50';
+	'inline-flex cursor-pointer items-center justify-center focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none rounded-lg transition-colors select-none disabled:pointer-events-none disabled:opacity-50';
 
 const variants: Record<ButtonVariant, string> = {
 	primary: 'bg-(--accent-primary) text-(--text-on-accent) hover:bg-(--accent-primary-hover)',

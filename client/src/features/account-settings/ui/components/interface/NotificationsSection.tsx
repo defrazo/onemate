@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useResponsive } from '@/shared/lib/hooks';
-import { Checkbox, Divider, LoadingState, Switch } from '@/shared/ui';
+import { Checkbox, Divider, LoadingError, Switch } from '@/shared/ui';
 
 type NotificationKey =
 	| 'network_notifications_enabled'
@@ -70,7 +70,16 @@ export const NotificationsSection = observer(() => {
 		}
 	};
 
-	if (!userProfileStore.isReady) return <LoadingState className="min-h-45 xl:min-h-40" />;
+	if (!userProfileStore.isReady)
+		return (
+			<div className="min-h-45 xl:min-h-40">
+				<LoadingError
+					error={!!userProfileStore.loadError}
+					message="Не удалось загрузить профиль"
+					onRetry={() => void userProfileStore.ensureLoaded().catch(() => {})}
+				/>
+			</div>
+		);
 
 	return (
 		<section className="flex flex-col gap-3 select-none xl:min-h-40">
@@ -114,6 +123,7 @@ export const NotificationsSection = observer(() => {
 									checked={userProfileStore.profile?.[source.key] ?? true}
 									className="has-checked:[&_svg]:text-(--accent-primary)"
 									disabled={userProfileStore.isLoading || !!loading[source.key]}
+									size={isMobile ? 'lg' : 'md'}
 									onChange={(enabled) => void handleSourceChange(source.key, enabled)}
 								/>
 							</div>
@@ -123,6 +133,7 @@ export const NotificationsSection = observer(() => {
 									checked={userProfileStore.profile?.[source.emailKey] ?? false}
 									className="has-checked:[&_svg]:text-(--accent-primary)"
 									disabled={userProfileStore.isLoading || !!loading[source.emailKey]}
+									size={isMobile ? 'lg' : 'md'}
 									onChange={(enabled) => void handleSourceChange(source.emailKey, enabled)}
 								/>
 							</div>

@@ -35,7 +35,7 @@ export const AppShell = ({
 	const showMobileTabBar = isMobile && !isTablet;
 
 	return (
-		<div className="app-shell relative flex min-h-dvh flex-col">
+		<div className={cn('app-shell relative flex min-h-dvh flex-col', showMobileTabBar && 'pb-0')}>
 			{background}
 			<div
 				className={cn(

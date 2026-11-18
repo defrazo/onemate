@@ -32,7 +32,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	addButton.type = 'button';
 	addButton.title = 'Добавить задачу';
 	addButton.className =
-		'mr-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover:opacity-100';
+		'mr-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none xl:opacity-0 xl:group-hover:opacity-100';
 	insertSvg(addButton, addIcon, 'size-5 xl:size-4.5');
 
 	// === SETTINGS BUTTON ===
@@ -40,7 +40,7 @@ export const createColumnHeader = ({ column, tasksCount, isMoving, onAdd, onEdit
 	settingsButton.type = 'button';
 	settingsButton.title = 'Настройки колонки';
 	settingsButton.className =
-		'ml-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) xl:opacity-0 xl:group-hover/header:opacity-100';
+		'ml-auto cursor-pointer text-(--text-secondary) transition-[color,opacity] hover:text-(--accent-primary-hover) focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none xl:opacity-0 xl:group-hover/header:opacity-100';
 	insertSvg(settingsButton, settingsIcon, 'size-5 xl:size-4.5');
 
 	// === COUNTER ===

@@ -188,7 +188,10 @@ export const DeviceActivitySection = observer(() => {
 						Очистить
 					</Button>
 				</div>
-				<div className="core-scrollbar max-h-36 min-h-0 overflow-y-auto overscroll-contain xl:max-h-none xl:flex-1">
+				<div
+					className="core-scrollbar max-h-36 min-h-0 overflow-y-auto overscroll-contain xl:max-h-none xl:flex-1"
+					tabIndex={-1}
+				>
 					<div className="flex flex-col gap-1">
 						{store.activityLog.length === 0 && (
 							<NoContent description="Записи появятся здесь" title="История пуста" />

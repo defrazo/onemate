@@ -130,7 +130,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 	}, [isAdding]);
 
 	return (
-		<article
+		<div
 			ref={setCardRef}
 			aria-label={list.title}
 			className={cn(
@@ -146,6 +146,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					{...attributes}
 					{...listeners}
 					aria-label={`Переместить список «${list.title}»`}
+					tabIndex={-1}
 				>
 					<span
 						className={cn('ml-0.5 h-1 w-3 shrink-0 rounded-full', isCompleted && 'opacity-40')}
@@ -269,6 +270,6 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					</div>
 				</footer>
 			)}
-		</article>
+		</div>
 	);
 });

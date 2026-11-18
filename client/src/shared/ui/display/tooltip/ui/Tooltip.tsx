@@ -64,7 +64,6 @@ const TooltipContent = ({
 			<div
 				ref={triggerRef}
 				className={cn('inline-flex cursor-help', className)}
-				tabIndex={0}
 				onBlur={() => setShow(false)}
 				onFocus={() => setShow(true)}
 				onMouseEnter={() => setShow(true)}

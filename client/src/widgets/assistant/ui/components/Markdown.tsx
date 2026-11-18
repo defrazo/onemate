@@ -60,7 +60,10 @@ export const MarkdownBlock = memo(({ content }: { content: string }) => (
 				img: () => null,
 
 				table: ({ children }) => (
-					<div className="assistant-table-scroll core-scrollbar" tabIndex={0}>
+					<div
+						className="assistant-table-scroll core-scrollbar focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none"
+						tabIndex={0}
+					>
 						<table>{children}</table>
 					</div>
 				),

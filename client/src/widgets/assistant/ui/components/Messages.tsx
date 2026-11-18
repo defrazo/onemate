@@ -156,7 +156,7 @@ export const Messages = ({
 					/>
 				)}
 				{messages.map((message) => (
-					<article
+					<div
 						key={message.id}
 						className={cn(
 							'min-w-0 rounded-lg p-2 text-sm',
@@ -178,23 +178,20 @@ export const Messages = ({
 												className="size-6 rounded-md"
 												disabled={!canRetry}
 												padding="none"
-												title="Сгенерировать заново"
 												variant="iconSurface"
 												onClick={() => onRegenerate(message.generation!.id)}
 											/>
 										</Tooltip>
 									)}
-								<Tooltip content="Копировать">
-									<Button
-										aria-label="Копировать сообщение"
-										centerIcon={<IconCopy className="size-5 xl:size-3.5" />}
-										className="size-6 rounded-md"
-										padding="none"
-										title="Копировать"
-										variant="iconSurface"
-										onClick={() => copy(message.content)}
-									/>
-								</Tooltip>
+								<Button
+									aria-label="Копировать сообщение"
+									centerIcon={<IconCopy className="size-5 xl:size-3.5" />}
+									className="size-6 rounded-md"
+									padding="none"
+									title="Копировать сообщение"
+									variant="iconSurface"
+									onClick={() => copy(message.content)}
+								/>
 								{!readOnly && message.role === 'user' && recovery?.messageId === message.id && (
 									<SubmissionError
 										disabled={recovery.disabled}
@@ -233,7 +230,7 @@ export const Messages = ({
 									)}
 							</footer>
 						)}
-					</article>
+					</div>
 				))}
 				{phase === 'loading' && <LoadingState size="lg" />}
 				{phase === 'error' && error && (

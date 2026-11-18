@@ -61,7 +61,7 @@ export const createColumnProperties = ({
 		button.title = columnColor;
 		button.dataset.color = columnColor;
 		button.className =
-			'relative size-5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-[transform,border-color] duration-150 hover:scale-110 hover:border-(--tone-strong-hover)';
+			'relative size-5 shrink-0 cursor-pointer rounded-full border-2 border-transparent transition-[transform,border-color] duration-150 hover:scale-110 hover:border-(--tone-strong-hover) focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none';
 
 		const dot = document.createElement('span');
 		dot.className = 'absolute inset-0.5 rounded-full';
