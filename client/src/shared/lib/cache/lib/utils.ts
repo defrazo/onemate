@@ -1,6 +1,6 @@
 import { LS_PREFIX } from '@/shared/config';
 
-import type { Cache, CacheSection } from '../model';
+import type { Cache, CacheSection } from '../model/types';
 
 export const cacheKey = (id: string) => `${LS_PREFIX}cache_${id}`;
 
@@ -13,7 +13,5 @@ const cleanupSection = (section?: CacheSection): CacheSection | undefined => {
 
 export const cleanupCache = (cache: Cache): Cache => {
 	const ui = cleanupSection(cache.ui);
-	const auth = cleanupSection(cache.auth);
-
-	return { ts: cache.ts, ...(ui && { ui }), ...(auth && { auth }) };
+	return { ts: cache.ts, ...(ui && { ui }) };
 };

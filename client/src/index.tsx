@@ -1,6 +1,6 @@
 import { createRoot } from 'react-dom/client';
 
-import { StartupProvider } from '@/app/providers';
+import { StartupProvider } from '@/app/providers/startup';
 
 import '@/shared/styles/index.css';
 

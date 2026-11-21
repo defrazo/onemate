@@ -6,7 +6,8 @@ import { APP_NAME } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { type AppNotification, notificationConfig } from '../../model';
+import { notificationConfig } from '../../model/config';
+import type { AppNotification } from '../../model/types';
 
 export const Item = observer(({ notification }: { notification: AppNotification }) => {
 	const { notificationStore: store, notifyStore } = useStore();
@@ -28,7 +29,12 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 
 	return (
 		<div className="group relative border-b border-(--border-primary) transition-colors last:border-b-0 hover:bg-(--tone-hover)">
-			<button className="w-full min-w-0 py-2 pr-3 pl-2 text-left" type="button" onClick={handleClick}>
+			<button
+				className="w-full min-w-0 py-2 pr-3 pl-2 text-left"
+				tabIndex={-1}
+				type="button"
+				onClick={handleClick}
+			>
 				<div className="relative flex min-w-0 flex-1 flex-col gap-1 pl-3">
 					<span className={cn('text-sm text-(--text-primary)', isUnread && 'font-semibold')}>
 						{notification.title}
@@ -54,7 +60,7 @@ export const Item = observer(({ notification }: { notification: AppNotification 
 				</div>
 			</button>
 			<Button
-				centerIcon={<IconX className="size-4.5 xl:size-4" />}
+				centerIcon={<IconX className="size-5 xl:size-4" />}
 				className="absolute top-1.5 right-2 transition-[color,opacity] group-hover:opacity-100 xl:opacity-0"
 				padding="none"
 				title="Удалить уведомление"

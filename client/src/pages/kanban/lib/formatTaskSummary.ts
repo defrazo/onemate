@@ -1,4 +1,5 @@
-import { TASK_PRIORITY, TASK_STATUS, type TaskPriority, type TaskStatus } from '../model';
+import { TASK_PRIORITY, TASK_STATUS } from '../model/constants';
+import type { TaskPriority, TaskStatus } from '../model/types';
 
 type TaskSummary = {
 	title: string;

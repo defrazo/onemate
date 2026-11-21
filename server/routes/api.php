@@ -1,5 +1,9 @@
 <?php
 
+use App\Http\Controllers\Assistant\AssistantConversationController;
+use App\Http\Controllers\Assistant\AssistantGenerationController;
+use App\Http\Controllers\Assistant\AssistantLimitsController;
+use App\Http\Controllers\Assistant\AssistantMessageController;
 use App\Http\Controllers\Auth\AuthController;
 use App\Http\Controllers\Auth\EmailVerificationController;
 use App\Http\Controllers\Auth\OAuthAuthorizationController;
@@ -21,9 +25,11 @@ use App\Http\Controllers\Todo\TodoController;
 use App\Http\Controllers\User\ConnectedAppsController;
 use App\Http\Controllers\User\UserAccountController;
 use App\Http\Controllers\User\UserAuthLogController;
+use App\Http\Controllers\User\UserCredentialController;
 use App\Http\Controllers\User\UserLocationController;
 use App\Http\Controllers\User\UserNoteController;
 use App\Http\Controllers\User\UserProfileController;
+use App\Http\Controllers\User\UserSessionController;
 use App\Http\Middleware\EnsureAccountIsActive;
 use App\Http\Middleware\EnsureAdmin;
 use App\Http\Middleware\EnsureNotDemo;
@@ -32,7 +38,6 @@ use Illuminate\Support\Facades\Route;
 // Auth
 Route::post('/invite/verify', [AuthController::class, 'verifyInvite'])->middleware('throttle:5,1');
 Route::post('/register', [AuthController::class, 'register'])->middleware('throttle:5,1');
-Route::get('/auth/session', [AuthController::class, 'session'])->middleware('throttle:60,1');
 
 Route::middleware('web')->group(function () {
     Route::post('/login', [AuthController::class, 'login'])->middleware('throttle:10,1');
@@ -64,10 +69,14 @@ Route::prefix('network')->group(function () {
 });
 
 // Cloud
-Route::prefix('cloud/shared')->middleware('throttle:60,1')->group(function () {
-    Route::get('/{token}', [CloudShareController::class, 'show']);
-    Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
-    Route::get('/{token}/download', [CloudShareController::class, 'download']);
+Route::prefix('cloud')->middleware('throttle:60,1')->group(function () {
+    Route::get('/short/{code}', [CloudShareController::class, 'redirect'])
+        ->where('code', 'f[a-f0-9]{15}');
+    Route::prefix('shared')->group(function () {
+        Route::get('/{token}', [CloudShareController::class, 'show']);
+        Route::get('/{token}/preview', [CloudShareController::class, 'preview']);
+        Route::get('/{token}/download', [CloudShareController::class, 'download']);
+    });
 });
 
 // Authenticated
@@ -115,9 +124,23 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::get('/activity', [UserAuthLogController::class, 'index']);
             Route::post('/activity', [UserAuthLogController::class, 'store'])->middleware('throttle:10,1');
             Route::delete('/activity', [UserAuthLogController::class, 'destroy']);
+            Route::delete('/sessions/others', [UserSessionController::class, 'destroyOthers'])->middleware(EnsureNotDemo::class);
+
+            // Credentials
+            Route::prefix('credentials')->group(function () {
+                Route::get('/', [UserCredentialController::class, 'index']);
+                Route::post('/initialize', [UserCredentialController::class, 'initialize']);
+                Route::post('/', [UserCredentialController::class, 'store']);
+                Route::patch('/order', [UserCredentialController::class, 'reorder']);
+                Route::get('/{credential}/password', [UserCredentialController::class, 'password'])->whereUuid('credential')->middleware('throttle:60,1');
+                Route::get('/{credential}', [UserCredentialController::class, 'show'])->whereUuid('credential');
+                Route::patch('/{credential}', [UserCredentialController::class, 'update'])->whereUuid('credential');
+                Route::delete('/{credential}', [UserCredentialController::class, 'destroy'])->whereUuid('credential');
+            });
 
             // Notes
             Route::get('/notes', [UserNoteController::class, 'index']);
+            Route::post('/notes/initialize', [UserNoteController::class, 'initialize']);
             Route::put('/notes', [UserNoteController::class, 'replace']);
         });
 
@@ -179,6 +202,7 @@ Route::middleware('auth:sanctum')->group(function () {
 
             Route::post('/files', [CloudFileController::class, 'store']);
             Route::delete('/files', [CloudFileController::class, 'destroyMany']);
+            Route::get('/files/{id}/thumbnail', [CloudFileController::class, 'thumbnail'])->whereUuid('id');
             Route::get('/files/{id}/download', [CloudFileController::class, 'download']);
             Route::patch('/files/{id}', [CloudFileController::class, 'update']);
             Route::delete('/files/{id}', [CloudFileController::class, 'destroy']);
@@ -195,5 +219,27 @@ Route::middleware('auth:sanctum')->group(function () {
             Route::delete('/', [NotificationController::class, 'destroyAll']);
             Route::delete('/{notification}', [NotificationController::class, 'destroy']);
         });
+
+        // Assistant
+        Route::prefix('assistant')
+            ->middleware(EnsureNotDemo::class)
+            ->group(function () {
+                Route::post('/messages', AssistantMessageController::class)->middleware('throttle:10,1');
+                Route::get('/active', [AssistantConversationController::class, 'active']);
+                Route::get('/limits', AssistantLimitsController::class);
+
+                Route::post('/conversations/new', [AssistantConversationController::class, 'store']);
+                Route::get('/conversations', [AssistantConversationController::class, 'index']);
+                Route::post('/conversations/{conversation}/resume', [AssistantConversationController::class, 'resume'])->whereUuid('conversation');
+                Route::patch('/conversations/{conversation}/pin', [AssistantConversationController::class, 'pin'])->whereUuid('conversation');
+                Route::delete('/conversations/{conversation}', [AssistantConversationController::class, 'destroy'])->whereUuid('conversation');
+                Route::get('/conversations/{conversation}/messages', [AssistantConversationController::class, 'messages'])->whereUuid('conversation');
+
+                Route::get('/generations/{generation}', AssistantGenerationController::class)->whereUuid('generation');
+                Route::post('/generations/{generation}/cancel', [AssistantGenerationController::class, 'cancel'])->whereUuid('generation');
+                Route::post('/generations/{generation}/retry', [AssistantGenerationController::class, 'retry'])->whereUuid('generation')->middleware('throttle:10,1');
+                Route::post('/generations/{generation}/regenerate', [AssistantGenerationController::class, 'regenerate'])->whereUuid('generation')->middleware('throttle:10,1');
+            });
+
     });
 });

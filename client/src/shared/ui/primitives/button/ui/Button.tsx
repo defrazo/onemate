@@ -2,7 +2,8 @@ import type { ButtonHTMLAttributes, ReactNode, Ref } from 'react';
 
 import { type Padding, resolveStyles, type variants } from '@/shared/lib/design';
 import { cn } from '@/shared/lib/utils';
-import { Spinner } from '@/shared/ui';
+
+import { Spinner } from '../../../feedback/loader/ui/Spinner';
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
 	ref?: Ref<HTMLButtonElement>;
@@ -61,14 +62,14 @@ export const Button = ({
 		>
 			{loading ? (
 				<>
-					<Spinner className="mr-2 size-4 border-2 border-(--accent-secondary) border-t-(--text-disabled)" />
+					<Spinner className="mr-1.5 size-4 border-2 border-(--accent-secondary) border-t-(--text-disabled)" />
 					{loadingText ?? centerIcon ?? children}
 				</>
 			) : (
 				<>
-					{leftIcon && <span className="mr-2">{leftIcon}</span>}
+					{leftIcon && <span className="mr-1.5">{leftIcon}</span>}
 					{centerIcon ? <span>{centerIcon}</span> : children}
-					{rightIcon && <span className="ml-2">{rightIcon}</span>}
+					{rightIcon && <span className="ml-1.5">{rightIcon}</span>}
 				</>
 			)}
 		</button>

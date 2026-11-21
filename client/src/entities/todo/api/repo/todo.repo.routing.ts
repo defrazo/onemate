@@ -1,8 +1,10 @@
 import { PermissionService, type UserStore } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { ItemChanges, ITodoRepo, ListChanges, TodoCanvas } from '../../model';
-import { TodoRepoDemo, TodoRepoLaravel } from '.';
+import type { ITodoRepo } from '../../model/ports';
+import type { ItemChanges, ListChanges, TodoCanvas } from '../../model/types';
+import { TodoRepoDemo } from './todo.repo.demo';
+import { TodoRepoLaravel } from './todo.repo.laravel';
 
 export class TodoRepoRouting implements ITodoRepo {
 	private readonly realRepo: ITodoRepo;

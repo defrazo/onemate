@@ -1,4 +1,4 @@
-import type { COLUMN_COLORS, TASK_PRIORITY, TASK_STATUS } from '.';
+import type { COLUMN_COLORS, TASK_PRIORITY, TASK_STATUS } from './constants';
 
 export type Task = {
 	id: string;
@@ -50,11 +50,7 @@ export type DbColumn = {
 	position: number;
 };
 
-export type TaskStatusConfig = {
-	label: string;
-	color: string;
-	halo?: boolean;
-};
+export type { TaskStatusConfig } from './constants';
 
 export type ColumnColor = keyof typeof COLUMN_COLORS;
 

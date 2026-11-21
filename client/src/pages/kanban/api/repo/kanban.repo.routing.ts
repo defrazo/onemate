@@ -1,8 +1,10 @@
 import { PermissionService, type Role, type UserStore } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { CreateColumnInput, CreateTaskInput, IKanbanRepo } from '../../model';
-import { KanbanRepoDemo, KanbanRepoLaravel } from '.';
+import type { IKanbanRepo } from '../../model/ports';
+import type { CreateColumnInput, CreateTaskInput } from '../../model/types';
+import { KanbanRepoDemo } from './kanban.repo.demo';
+import { KanbanRepoLaravel } from './kanban.repo.laravel';
 
 export class KanbanRepoRouting implements IKanbanRepo {
 	private readonly realRepo: IKanbanRepo;

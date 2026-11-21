@@ -13,7 +13,8 @@ import {
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { buttons, type ButtonValue } from '../../model';
+import { buttons } from '../../model/buttons';
+import type { ButtonValue } from '../../model/types';
 
 const getButtonContent = (value: ButtonValue, label?: string) => {
 	switch (value) {

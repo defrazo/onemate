@@ -2,6 +2,8 @@
 
 namespace App\Models\User;
 
+use App\Models\Assistant\AiConversation;
+use App\Models\Assistant\AiGeneration;
 use App\Models\Cloud\CloudFile;
 use App\Models\Kanban\KanbanBoard;
 use App\Models\Kanban\KanbanColumn;
@@ -24,7 +26,7 @@ use Illuminate\Notifications\Notifiable;
 use Laravel\Passport\HasApiTokens;
 
 #[Fillable(['username', 'email', 'password', 'role', 'privacy_accepted_at'])]
-#[Hidden(['password', 'remember_token'])]
+#[Hidden(['password', 'remember_token', 'notes_revision', 'credentials_revision'])]
 class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens;
@@ -53,6 +55,21 @@ class User extends Authenticatable implements MustVerifyEmail
     public function notes(): HasMany
     {
         return $this->hasMany(UserNote::class);
+    }
+
+    public function credentials(): HasMany
+    {
+        return $this->hasMany(UserCredential::class);
+    }
+
+    public function aiConversations(): HasMany
+    {
+        return $this->hasMany(AiConversation::class);
+    }
+
+    public function aiGenerations(): HasMany
+    {
+        return $this->hasMany(AiGeneration::class);
     }
 
     public function locations(): HasMany

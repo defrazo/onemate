@@ -8,7 +8,7 @@ import type { ReactElement } from 'react';
 import { useStore } from '@/app/providers';
 import { LoadingState, NoContent } from '@/shared/ui';
 
-import type { Note } from '../../model';
+import type { Note } from '../../model/types';
 
 interface ListProps {
 	notes: Note[];
@@ -17,7 +17,7 @@ interface ListProps {
 }
 
 export const List = observer(({ notes, sortingDisabled, children }: ListProps) => {
-	const sensors = useSensors(useSensor(PointerSensor));
+	const sensors = useSensors(useSensor(PointerSensor, { activationConstraint: { distance: 4 } }));
 
 	const { notesStore } = useStore();
 
@@ -49,7 +49,7 @@ export const List = observer(({ notes, sortingDisabled, children }: ListProps) =
 						title="Ничего не найдено"
 					/>
 				) : (
-					<div className="flex min-h-0 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
+					<div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
 						{notes.map((note) => children(note))}
 					</div>
 				)}

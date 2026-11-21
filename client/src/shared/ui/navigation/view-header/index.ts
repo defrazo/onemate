@@ -1,0 +1,1 @@
+export { ViewHeader } from './ui';

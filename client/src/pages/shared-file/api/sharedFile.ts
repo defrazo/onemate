@@ -1,4 +1,4 @@
-import type { SharedFile } from '../model';
+import type { SharedFile } from '../model/types';
 
 export class SharedFileNotFoundError extends Error {
 	constructor() {

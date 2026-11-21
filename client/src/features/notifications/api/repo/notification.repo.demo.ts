@@ -1,7 +1,8 @@
 import { RestrictedAccess } from '@/shared/lib/errors';
 
-import type { AppNotification, INotificationRepo } from '../../model';
-import { demoNotifications } from '..';
+import type { INotificationRepo } from '../../model/ports';
+import type { AppNotification } from '../../model/types';
+import { demoNotifications } from '../demoNotifications';
 
 export class NotificationRepoDemo implements INotificationRepo {
 	async getNotifications(): Promise<AppNotification[]> {

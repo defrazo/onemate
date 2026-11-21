@@ -4,10 +4,10 @@ import { observer } from 'mobx-react-lite';
 import { QRCodeSVG } from 'qrcode.react';
 
 import { useStore } from '@/app/providers';
-import { cn } from '@/shared/lib/utils';
-import { Button, Switch } from '@/shared/ui';
+import { cn, formatFileSize } from '@/shared/lib/utils';
+import { Button, Input, Switch } from '@/shared/ui';
 
-import { formatFileSize, getFileIcon } from '../../../lib';
+import { getFileIcon } from '../../../lib/getFileIcon';
 
 export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 	const { cloudStore, notifyStore } = useStore();
@@ -64,7 +64,7 @@ export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 	};
 
 	return (
-		<div className="flex flex-col gap-3 md:-mt-4 md:w-md">
+		<div className="flex flex-col gap-3 md:w-md">
 			<div className="flex items-center gap-3 select-none">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary)/12">
 					<IconShare className="size-5 text-(--accent-primary)" />
@@ -102,13 +102,16 @@ export const ShareDialog = observer(({ fileId }: { fileId: string }) => {
 				</div>
 				{publicUrl && (
 					<>
-						<div className="flex min-w-0 items-center gap-1 rounded-lg bg-(--tone) p-1">
-							<span
-								className="min-w-0 flex-1 truncate px-2 text-xs text-(--text-secondary)"
-								title={publicUrl}
-							>
-								{publicUrl}
-							</span>
+						<div className="flex min-w-0 items-center gap-1 rounded-lg p-1">
+							<Input
+								readOnly
+								className="h-8 rounded-md text-(--text-secondary)"
+								padding="sm"
+								tabIndex={-1}
+								type="text"
+								value={publicUrl}
+								variant="tone"
+							/>
 							<Button
 								centerIcon={<IconCopy className="size-4" />}
 								className="size-8 shrink-0 rounded-md bg-(--tone-strong) hover:bg-(--tone-strong-hover) disabled:opacity-50"

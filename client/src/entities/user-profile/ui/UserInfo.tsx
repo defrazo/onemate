@@ -1,9 +1,10 @@
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { UserAvatar } from '@/entities/user-profile';
 import { useCopy } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
+
+import { UserAvatar } from './UserAvatar';
 
 export const UserInfo = observer(({ className }: { className?: string }) => {
 	const copy = useCopy();

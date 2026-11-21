@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { ActivityLog, IActivityRepo } from '../../model';
+import type { IActivityRepo } from '../../model/ports';
+import type { ActivityLog } from '../../model/types';
 
 type ActivityListResponse = {
 	logs: ActivityLog[];
@@ -23,5 +24,9 @@ export class ActivityRepoLaravel implements IActivityRepo {
 
 	async deleteActivityLog(_id: string): Promise<void> {
 		await api.delete('/user/activity');
+	}
+
+	async endOtherSessions(_id: string): Promise<void> {
+		await api.delete('/user/sessions/others');
 	}
 }

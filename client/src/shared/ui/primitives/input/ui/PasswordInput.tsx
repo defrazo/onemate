@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
 import { IconEye, IconEyeClosed, IconLockFilled } from '@tabler/icons-react';
 
-import { Input, InputLabel } from '.';
+import { Input } from './Input';
+import { InputLabel } from './InputLabel';
 
 export const PasswordInput = (props: React.ComponentProps<typeof Input>) => {
 	const [showPassword, setShowPassword] = useState(false);

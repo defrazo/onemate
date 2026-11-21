@@ -1,5 +1,5 @@
-import type { ResultItem } from '../model';
-import { isBalancedExpression } from '.';
+import type { ResultItem } from '../model/types';
+import { isBalancedExpression } from './expression';
 
 export const formatNumber = (value: number) => {
 	if (!Number.isFinite(value)) return 'Error';

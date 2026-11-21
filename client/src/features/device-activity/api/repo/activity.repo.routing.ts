@@ -1,8 +1,10 @@
 import type { UserStore } from '@/entities/user';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { ActivityLog, IActivityRepo } from '../../model';
-import { ActivityRepoDemo, ActivityRepoLaravel } from '.';
+import type { IActivityRepo } from '../../model/ports';
+import type { ActivityLog } from '../../model/types';
+import { ActivityRepoDemo } from './activity.repo.demo';
+import { ActivityRepoLaravel } from './activity.repo.laravel';
 
 export class ActivityRepoRouting extends BaseRouting implements IActivityRepo {
 	private readonly realRepo: IActivityRepo;
@@ -31,5 +33,10 @@ export class ActivityRepoRouting extends BaseRouting implements IActivityRepo {
 	async deleteActivityLog(id: string): Promise<void> {
 		this.checkPermission('activity', 'delete');
 		return this.getTargetRepo().deleteActivityLog(id);
+	}
+
+	async endOtherSessions(id: string): Promise<void> {
+		this.checkPermission('user', 'save');
+		return this.getTargetRepo().endOtherSessions(id);
 	}
 }

@@ -2,14 +2,13 @@ import { api, csrf } from '@/shared/api';
 
 import type {
 	AuthResponse,
-	AuthSessionResponse,
 	ForgotPasswordPayload,
 	LoginPayload,
 	OAuthAuthorization,
 	RegisterPayload,
 	ResetPasswordPayload,
 	VerifyInviteResponse,
-} from '.';
+} from './types';
 
 export const authApi = {
 	async verifyInvite(inviteCode: string): Promise<VerifyInviteResponse> {
@@ -34,11 +33,6 @@ export const authApi = {
 	async login(payload: LoginPayload): Promise<AuthResponse> {
 		await csrf();
 		const { data } = await api.post<AuthResponse>('/login', payload);
-		return data;
-	},
-
-	async getSession(): Promise<AuthSessionResponse> {
-		const { data } = await api.get<AuthSessionResponse>('/auth/session');
 		return data;
 	},
 

@@ -1,4 +1,4 @@
-import type { Currency } from '.';
+import type { Currency } from './types';
 
 const DEFAULT_CURRENCIES: Currency[] = [
 	{ type: 'base', code: 'USD', value: 1 },

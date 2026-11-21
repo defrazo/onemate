@@ -32,7 +32,7 @@ export const PendingEmailDialog = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-3 md:-mt-4 md:w-md">
+		<div className="flex flex-col gap-3 md:w-md">
 			<div className="flex gap-2">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-(--accent-primary)/12">
 					<IconMailCheck className="size-6 text-(--accent-primary)" />
@@ -55,7 +55,7 @@ export const PendingEmailDialog = () => {
 				</div>
 			</div>
 			<div className="flex gap-2 rounded-lg border border-(--border-contrast)/15 bg-(--tone) px-3 py-2 select-none">
-				<IconMailForward className="mt-0.5 size-4.5 shrink-0 text-(--accent-primary) opacity-50" />
+				<IconMailForward className="mt-0.5 size-5 shrink-0 text-(--accent-primary) opacity-50 xl:size-4.5" />
 				<p className="text-sm leading-tight text-(--text-secondary) opacity-70">
 					Для завершения смены адреса перейдите по ссылке в письме, отправленном на текущую почту.
 				</p>

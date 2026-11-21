@@ -1,4 +1,5 @@
-import { createButton, createDialog } from '.';
+import { createButton } from './createButton';
+import { createDialog } from './createDialog';
 
 type CreateConfirmDialogProps = {
 	title: string;

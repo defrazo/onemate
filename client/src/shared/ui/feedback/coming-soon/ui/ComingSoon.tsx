@@ -3,7 +3,9 @@ import type { ReactNode } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { APP_NAME } from '@/shared/config';
-import { Button, Link } from '@/shared/ui';
+
+import { Button } from '../../../primitives/button/ui/Button';
+import { Link } from '../../../primitives/link/ui/Link';
 
 interface ComingSoonProps {
 	title?: string;

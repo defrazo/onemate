@@ -1,12 +1,11 @@
 import { Fragment } from 'react';
 import { IconChevronDown, IconCloud } from '@tabler/icons-react';
 
-import { cn, fullDate } from '@/shared/lib/utils';
+import { cn, formatFileSize, fullDate } from '@/shared/lib/utils';
 import { Button, Collapse } from '@/shared/ui';
-import { formatFileSize } from '@/widgets/cloud';
 
-import type { MonitoringData } from '../../api';
-import { MetricGroups } from '.';
+import type { MonitoringData } from '../../api/monitoring';
+import { MetricGroups } from './MetricGroups';
 
 type MonitoringUser = MonitoringData['users'][number];
 

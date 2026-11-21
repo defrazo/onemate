@@ -1,10 +1,9 @@
 export { AddService } from './AddService';
 export { CopyButton } from './CopyButton';
-export { Details } from './Details';
-export { List } from './List';
+export { Details } from './Details/Details';
+export { List } from './List/List';
 export { Metric } from './Metric';
 export { Settings } from './Settings';
 export { StatusDot } from './StatusDot';
 export { SubmitButton } from './SubmitButton';
-export { Tools } from './Tools';
-export { ViewHeader } from './ViewHeader';
+export { Tools } from './Tools/Tools';

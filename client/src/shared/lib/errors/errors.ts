@@ -39,3 +39,16 @@ export class PermissionError extends Error {
 		this.name = 'PermissionError';
 	}
 }
+
+export class CredentialsConflictError extends Error {
+	constructor() {
+		super('Аккаунты были изменены в другом месте');
+		this.name = 'CredentialsConflictError';
+	}
+}
+
+export class NotesConflictError extends Error {
+	constructor(readonly currentRevision: number) {
+		super('Заметки были изменены в другом месте');
+	}
+}

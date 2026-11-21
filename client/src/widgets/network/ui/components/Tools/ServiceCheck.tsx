@@ -3,7 +3,7 @@ import { IconAlertCircle, IconLink, IconRoute, IconWorld, IconWorldCheck, IconX 
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { Divider, Input, InputLabel, SegmentedControl } from '@/shared/ui';
+import { Divider, Input, InputLabel, SegmentedControl, ViewHeader } from '@/shared/ui';
 
 import {
 	getCheckViaLabel,
@@ -11,9 +11,12 @@ import {
 	getServiceStatusClass,
 	getStatusCodeClass,
 	serviceResultToCopy,
-} from '../../../lib';
-import type { CheckVia, ServiceCheckResult } from '../../../model';
-import { CopyButton, Metric, StatusDot, SubmitButton, ViewHeader } from '..';
+} from '../../../lib/utils';
+import type { CheckVia, ServiceCheckResult } from '../../../model/types';
+import { CopyButton } from '../CopyButton';
+import { Metric } from '../Metric';
+import { StatusDot } from '../StatusDot';
+import { SubmitButton } from '../SubmitButton';
 
 export const ServiceCheck = ({ onBack }: { onBack: () => void }) => {
 	const copy = useCopy();

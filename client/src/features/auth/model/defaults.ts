@@ -1,4 +1,4 @@
-import type { AuthData } from '.';
+import type { AuthData } from './types';
 
 const DEFAULT_AUTHFORM: AuthData = {
 	username: '',

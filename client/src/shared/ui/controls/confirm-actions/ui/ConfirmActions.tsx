@@ -1,7 +1,8 @@
 import { IconCheck, IconX } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../primitives/button/ui/Button';
 
 interface ConfirmActionsProps {
 	confirmLabel?: string;

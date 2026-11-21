@@ -1,4 +1,4 @@
-import type { CalcButton } from '.';
+import type { CalcButton } from './types';
 
 export const buttons: CalcButton[] = [
 	{ value: 'C', label: 'C', type: 'operator' },

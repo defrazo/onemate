@@ -1,4 +1,4 @@
-import type { WidgetId, WidgetSlot } from '@/shared/config';
+import type { DashboardLayout, WidgetId, WidgetSlot } from './widgets';
 
 export type UserProfile = {
 	user_id?: string;
@@ -10,7 +10,8 @@ export type UserProfile = {
 	phones?: string[] | null;
 	additional_emails?: string[] | null;
 	theme?: 'light' | 'dark';
-	widgets_sequence?: WidgetId[] | null;
+	widgets_sequence?: DashboardLayout | null;
+	mobile_widgets?: WidgetId[] | null;
 	widgets_slots?: WidgetSlot[] | null;
 	network_notifications_enabled?: boolean;
 	kanban_notifications_enabled?: boolean;

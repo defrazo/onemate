@@ -5,7 +5,7 @@ import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import { SortMenu } from '.';
+import { SortMenu } from './SortMenu';
 
 interface FilesToolbarProps {
 	searchOpen: boolean;

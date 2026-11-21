@@ -4,13 +4,18 @@ import { action, computed, makeObservable, observable, reaction, runInAction } f
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import type { CloudData, CloudFile, CloudSort, ICloudRepo } from '.';
-import { CLOUD_STORAGE_BYTES } from '.';
+import { CLOUD_STORAGE_BYTES } from './constants';
+import type { ICloudRepo } from './ports';
+import type { CloudData, CloudFile, CloudSort } from './types';
 
 const TEXT_SAVE_DELAY = 3000;
+const SUPPORTED_THUMBNAIL_TYPE = 'image/webp';
 
 export class CloudStore extends AsyncStore {
 	private readonly textDebouncer = new Debouncer();
+	private readonly thumbnails = new Map<string, string>();
+	private readonly thumbnailRequests = new Map<string, Promise<string | null>>();
+	private readonly thumbnailVersions = new Map<string, number>();
 	private initializing: Promise<void> | null = null;
 	private uploadController: AbortController | null = null;
 
@@ -94,6 +99,10 @@ export class CloudStore extends AsyncStore {
 			this.isResolvingTextConflict ||
 			(this.isTextDirty && !this.textSaveError && !this.textConflict)
 		);
+	}
+
+	getCachedThumbnail(id: string): string | null {
+		return this.thumbnails.get(id) ?? null;
 	}
 
 	setSearchQuery(value: string): void {
@@ -206,12 +215,12 @@ export class CloudStore extends AsyncStore {
 		let uploadedBytes = 0;
 
 		try {
-			for (const [index, file] of files.entries()) {
+			for (const [idx, file] of files.entries()) {
 				if (controller.signal.aborted) break;
 				if (!userId || !this.isCurrentSession(userId, session)) return;
 
 				runInAction(() => {
-					this.uploadFileIndex = index + 1;
+					this.uploadFileIndex = idx + 1;
 					this.uploadFileName = file.name;
 					this.uploadFileSize = file.size;
 					this.uploadLoadedBytes = 0;
@@ -287,6 +296,57 @@ export class CloudStore extends AsyncStore {
 		await this.repo.downloadMany(ids);
 	}
 
+	async getThumbnail(id: string): Promise<string | null> {
+		const cached = this.getCachedThumbnail(id);
+		if (cached) return cached;
+
+		const pending = this.thumbnailRequests.get(id);
+		if (pending) return pending;
+
+		const session = this.session;
+		const version = this.thumbnailVersions.get(id) ?? 0;
+
+		const userId = this.userStore.id;
+		if (!userId) return null;
+
+		const request = (async () => {
+			let url: string | null = null;
+
+			try {
+				const blob = await this.repo.getThumbnail(id);
+
+				if (!blob || blob.type !== SUPPORTED_THUMBNAIL_TYPE) return null;
+				if (!this.isCurrentSession(userId, session)) return null;
+
+				url = URL.createObjectURL(blob);
+
+				const image = new Image();
+				image.src = url;
+				await image.decode();
+
+				if (!this.isCurrentSession(userId, session)) return null;
+				if (!this.files.some((file) => file.id === id)) return null;
+				if ((this.thumbnailVersions.get(id) ?? 0) !== version) return null;
+
+				this.thumbnails.set(id, url);
+
+				return url;
+			} catch {
+				return null;
+			} finally {
+				if (url && this.thumbnails.get(id) !== url) URL.revokeObjectURL(url);
+			}
+		})();
+
+		this.thumbnailRequests.set(id, request);
+
+		try {
+			return await request;
+		} finally {
+			if (this.thumbnailRequests.get(id) === request) this.thumbnailRequests.delete(id);
+		}
+	}
+
 	async getPreview(id: string): Promise<Blob> {
 		return this.repo.getPreview(id);
 	}
@@ -317,6 +377,7 @@ export class CloudStore extends AsyncStore {
 	async delete(id: string): Promise<void> {
 		await this.withFileSync(async () => {
 			await this.repo.delete(id);
+			this.clearThumbnail(id);
 			await this.refresh();
 		});
 	}
@@ -326,6 +387,9 @@ export class CloudStore extends AsyncStore {
 
 		await this.withFileSync(async () => {
 			await this.repo.deleteMany(ids);
+
+			for (const id of ids) this.clearThumbnail(id);
+
 			await this.refresh();
 		});
 	}
@@ -477,6 +541,24 @@ export class CloudStore extends AsyncStore {
 		}
 	}
 
+	private clearThumbnail(id: string): void {
+		this.thumbnailVersions.set(id, (this.thumbnailVersions.get(id) ?? 0) + 1);
+		this.thumbnailRequests.delete(id);
+
+		const url = this.thumbnails.get(id);
+		if (url) URL.revokeObjectURL(url);
+
+		this.thumbnails.delete(id);
+	}
+
+	private clearThumbnails(): void {
+		for (const id of this.thumbnails.keys()) {
+			this.clearThumbnail(id);
+		}
+
+		this.thumbnailVersions.clear();
+	}
+
 	private async persistText(userId: string, session: number): Promise<void> {
 		const snapshot = this.text;
 		const revision = this.textRevision;
@@ -561,7 +643,7 @@ export class CloudStore extends AsyncStore {
 	}
 
 	private async withFileSync<T>(operation: () => Promise<T>): Promise<T> {
-		this.isUpdatingFiles = true;
+		runInAction(() => (this.isUpdatingFiles = true));
 
 		try {
 			return await operation();
@@ -653,6 +735,8 @@ export class CloudStore extends AsyncStore {
 
 	protected reset(): void {
 		this.initializing = null;
+		this.clearThumbnails();
+		this.thumbnailRequests.clear();
 
 		this.uploadController?.abort();
 		this.uploadController = null;

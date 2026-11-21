@@ -3,8 +3,11 @@
 namespace App\Http\Controllers\Cloud;
 
 use App\Http\Controllers\Controller;
+use App\Models\Cloud\CloudFile;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
@@ -63,11 +66,34 @@ class CloudFileController extends Controller
             }
         });
 
+        $this->createThumbnail($cloudFile, $file);
+
         return response()->json([
             'id' => $cloudFile->id,
             'name' => $cloudFile->name,
             'size' => $cloudFile->size,
         ], 201);
+    }
+
+    public function thumbnail(Request $request, string $id): Response
+    {
+        $file = $request->user()->cloudFiles()->findOrFail($id);
+        $contents = null;
+
+        try {
+            $contents = Storage::disk(config('cloud.disk'))->get($this->thumbnailPath($file));
+        } catch (\Throwable) {
+        }
+
+        if (!is_string($contents) || $contents === '') {
+            return response('', 204);
+        }
+
+        return response($contents, 200, [
+            'Content-Type' => 'image/webp',
+            'X-Content-Type-Options' => 'nosniff',
+            'Cache-Control' => 'private, no-store',
+        ]);
     }
 
     public function download(Request $request, string $id): StreamedResponse
@@ -256,6 +282,7 @@ class CloudFileController extends Controller
         $path = $file->path;
 
         $file->delete();
+        $this->deleteThumbnail($file);
 
         try {
             if ($disk->exists($path) && !$disk->delete($path)) {
@@ -303,6 +330,8 @@ class CloudFileController extends Controller
         });
 
         foreach ($files as $file) {
+            $this->deleteThumbnail($file);
+
             try {
                 if ($disk->exists($file->path) && !$disk->delete($file->path)) {
                     throw new \RuntimeException('Не удалось удалить файл из хранилища');
@@ -319,6 +348,113 @@ class CloudFileController extends Controller
         return response()->json([
             'message' => 'Файлы удалены',
         ]);
+    }
+
+    private function thumbnailPath(CloudFile $file): string
+    {
+        return "cloud/{$file->user_id}/thumbnails/{$file->id}.webp";
+    }
+
+    private function deleteThumbnail(CloudFile $file): void
+    {
+        try {
+            Storage::disk(config('cloud.disk'))->delete($this->thumbnailPath($file));
+        } catch (\Throwable) {
+        }
+    }
+
+    private function createThumbnail(CloudFile $file, UploadedFile $upload): void
+    {
+        $image = null;
+        $thumbnail = null;
+        $stream = null;
+
+        try {
+            if (!function_exists('imagewebp') || $file->size > 10 * 1024 * 1024) {
+                return;
+            }
+
+            $path = $upload->getRealPath();
+            $info = @getimagesize($path);
+            $decoders = [
+                'image/jpeg' => 'imagecreatefromjpeg',
+                'image/png' => 'imagecreatefrompng',
+                'image/webp' => 'imagecreatefromwebp',
+            ];
+            $decoder = $decoders[$file->mime_type] ?? null;
+
+            if (!$info || !$decoder || !function_exists($decoder)
+                || ($info['mime'] ?? null) !== $file->mime_type
+                || $info[0] < 1 || $info[1] < 1 || $info[0] * $info[1] > 8_000_000) {
+                return;
+            }
+
+            $image = @$decoder($path);
+
+            if (!$image) {
+                return;
+            }
+
+            if ($file->mime_type === 'image/jpeg' && function_exists('exif_read_data')) {
+                $exif = @exif_read_data($path);
+                $orientation = (int) ($exif['Orientation'] ?? 1);
+                $angle = match ($orientation) {
+                    3, 4 => 180,
+                    5, 6 => -90,
+                    7, 8 => 90,
+                    default => 0,
+                };
+
+                if ($angle !== 0) {
+                    $rotated = imagerotate($image, $angle, 0);
+
+                    if (!$rotated) {
+                        return;
+                    }
+                    imagedestroy($image);
+                    $image = $rotated;
+                }
+
+                if (in_array($orientation, [2, 4, 5, 7], true)) {
+                    imageflip($image, IMG_FLIP_HORIZONTAL);
+                }
+            }
+
+            $width = imagesx($image);
+            $height = imagesy($image);
+            $side = min($width, $height);
+            $thumbnail = imagecreatetruecolor(96, 96);
+
+            imagealphablending($thumbnail, false);
+            imagesavealpha($thumbnail, true);
+
+            if (!imagecopyresampled($thumbnail, $image, 0, 0,
+                (int) floor(($width - $side) / 2), (int) floor(($height - $side) / 2),
+                96, 96, $side, $side)) {
+                return;
+            }
+
+            $stream = fopen('php://temp', 'w+b');
+
+            if ($stream === false || !imagewebp($thumbnail, $stream, 80)) {
+                return;
+            }
+            rewind($stream);
+            Storage::disk(config('cloud.disk'))->put($this->thumbnailPath($file), $stream, ['visibility' => 'private']);
+        } catch (\Throwable) {
+        } finally {
+            if ($image instanceof \GdImage) {
+                imagedestroy($image);
+            }
+
+            if ($thumbnail instanceof \GdImage) {
+                imagedestroy($thumbnail);
+            }
+
+            if (is_resource($stream)) {
+                fclose($stream);
+            }
+        }
     }
 
     private function normalizeArchiveFilename(string $name): string

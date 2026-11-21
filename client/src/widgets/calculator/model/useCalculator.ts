@@ -1,19 +1,9 @@
 import { useState } from 'react';
 
-import {
-	backspace,
-	calculateResult,
-	canCalculate,
-	closeBracket,
-	digit,
-	isNumberLike,
-	mathDot,
-	mathOperation,
-	openBracket,
-	plusMinus,
-	stripOuterParens,
-} from '../lib';
-import type { ButtonValue, CalcDigit, ResultItem } from '.';
+import { calculateResult } from '../lib/calculate';
+import { canCalculate, isNumberLike, stripOuterParens } from '../lib/expression';
+import { backspace, closeBracket, digit, mathDot, mathOperation, openBracket, plusMinus } from '../lib/input';
+import type { ButtonValue, CalcDigit, ResultItem } from './types';
 
 const isDigit = (value: ButtonValue): value is CalcDigit => /^\d$/.test(value);
 

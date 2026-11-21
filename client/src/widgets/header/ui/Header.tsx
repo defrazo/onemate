@@ -34,7 +34,7 @@ export const Header = observer(() => {
 				)}
 				{!isMobile && (
 					<>
-						<Divider direction="Y" />
+						<Divider className="bg-(--border-tone)" direction="Y" />
 						<DateTime />
 					</>
 				)}

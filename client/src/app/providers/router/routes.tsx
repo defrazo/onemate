@@ -1,12 +1,16 @@
 import { lazy } from 'react';
 import type { RouteObject } from 'react-router-dom';
 
-import { Layout, StaticPageLayout } from '@/app/layouts';
 import { ProfileNav } from '@/features/account-settings';
 import { DemoPage } from '@/pages/demo';
 import { APP_NAME } from '@/shared/config';
 
-import { ActiveAccountRoute, DeletedAccountRoute, GuardedRoute, PublicRoute } from '.';
+import { Layout } from '../../layouts/Layout';
+import { StaticPageLayout } from '../../layouts/StaticPageLayout';
+import { ActiveAccountRoute } from './ActiveAccountRoute';
+import { DeletedAccountRoute } from './DeletedAccountRoute';
+import { GuardedRoute } from './GuardedRoute';
+import { PublicRoute } from './PublicRoute';
 
 const AboutPage = lazy(() => import('@/pages/about').then((m) => ({ default: m.AboutPage })));
 const AccountProfilePage = lazy(() =>

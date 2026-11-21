@@ -1,9 +1,12 @@
 import { isAxiosError } from 'axios';
 
-import { BoardRevisionConflictError } from '../api';
-import { MESSAGES, notifier, now } from '../lib';
-import type { Column, ColumnColor, IKanbanRepo, KanbanBoard, KanbanSnapshot, Task, TaskPriority, TaskStatus } from '.';
-import { LIMITS } from '.';
+import { BoardRevisionConflictError } from '../api/errors';
+import { MESSAGES } from '../lib/messages';
+import { notifier } from '../lib/notifier';
+import { now } from '../lib/utils';
+import { LIMITS } from './constants';
+import type { IKanbanRepo } from './ports';
+import type { Column, ColumnColor, KanbanBoard, KanbanSnapshot, Task, TaskPriority, TaskStatus } from './types';
 
 type ColumnListener = (columns: Column[]) => void;
 type TaskListener = (tasks: Task[]) => void;
@@ -427,7 +430,7 @@ export const createState = (repo: IKanbanRepo) => {
 				const updated = [...withoutMoved];
 				updated.splice(clampedIdx, 0, column);
 
-				columns = updated.map((item, index) => ({ ...item, position: (index + 1) * 1000 }));
+				columns = updated.map((item, idx) => ({ ...item, position: (idx + 1) * 1000 }));
 
 				notifyColumns();
 				if (!context.current()) return;

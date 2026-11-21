@@ -2,7 +2,7 @@ import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
-import type { ResultItem } from '../../model';
+import type { ResultItem } from '../../model/types';
 
 export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => void }) => {
 	const { isMobile } = useResponsive();
@@ -20,7 +20,7 @@ export const Log = ({ result, onClear }: { result: ResultItem[]; onClear: () => 
 				) : (
 					<div className="flex min-h-0 flex-1 flex-col gap-1">
 						<Button
-							className="w-fit text-xs text-(--text-secondary) opacity-70 hover:text-(--status-error)"
+							className="w-fit text-xs text-(--text-secondary) opacity-70 hover:text-(--danger)"
 							padding="none"
 							title="Очистить историю"
 							variant="custom"

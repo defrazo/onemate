@@ -1,30 +1,69 @@
-import { createElement } from 'react';
+import { createElement, useEffect, useState } from 'react';
 import { type DragEndEvent, PointerSensor, useSensor, useSensors } from '@dnd-kit/core';
 import { arrayMove } from '@dnd-kit/sortable';
 
 import { useStore } from '@/app/providers';
-import { EMPTY_WIDGET_SLOT, type WidgetId, WIDGETS, type WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
+import { EMPTY_WIDGET_SLOT, WIDGETS } from '@/shared/config';
 
-import { type SwitcherOption, type WidgetItem, widgets } from '.';
+import { normalizeActiveWidgets, readActiveWidgets, saveActiveWidgets } from './dashboardCache';
+import { resolveMobileSlots } from './resolveMobileSlots';
+import type { SwitcherOption, WidgetItem } from './types';
+import { widgets } from './widgets';
 
 export const useDashboard = () => {
 	const sensors = useSensors(useSensor(PointerSensor));
 
-	const { userProfileStore: store } = useStore();
+	const { userProfileStore: store, userStore } = useStore();
 
-	const rowIds = store.widgets;
-	const slots = store.slots;
+	const userId = userStore.id;
+	const [selection, setSelection] = useState(() => ({ userId, choices: readActiveWidgets(userId) }));
+
+	const layout = store.widgets;
+	const profileMatchesUser = !store.profile?.user_id || store.profile.user_id === userId;
+	const activeWidgets = normalizeActiveWidgets(
+		layout,
+		selection.userId === userId ? selection.choices : readActiveWidgets(userId)
+	);
+
+	useEffect(() => {
+		if (!userId || userStore.id !== userId || !store.isReady || !profileMatchesUser) return;
+
+		saveActiveWidgets(userId, activeWidgets);
+
+		setSelection((previous) =>
+			previous.userId === userId && JSON.stringify(previous.choices) === JSON.stringify(activeWidgets)
+				? previous
+				: { userId, choices: activeWidgets }
+		);
+	}, [activeWidgets, userId, userStore, store, store.isReady, profileMatchesUser]);
+
+	const selectWidget = (slot: WidgetId, widget: WidgetId) => {
+		if (
+			!userId ||
+			userStore.id !== userId ||
+			!profileMatchesUser ||
+			!layout.some((items) => items[0] === slot && items.includes(widget))
+		)
+			return;
+
+		const choices = { ...activeWidgets, [slot]: widget };
+
+		setSelection({ userId, choices });
+		saveActiveWidgets(userId, choices);
+	};
+
+	const rowIds = layout.map((slot) => slot[0]);
+
+	const slots = resolveMobileSlots(store.slots, store.mobileWidgets);
 
 	const widgetMap = new Map<WidgetId, WidgetItem>(widgets.map((widget) => [widget.id, widget]));
 
-	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => rowIds.includes(id)).map(({ id, icon }) => ({
-		value: id,
-		label: createElement(icon, { className: 'size-7', stroke: 2 }),
-	}));
+	const options: SwitcherOption[] = WIDGETS.filter(({ id }) => store.mobileWidgets.includes(id)).map(
+		({ id, icon }) => ({ value: id, label: createElement(icon, { className: 'size-8', stroke: 2 }) })
+	);
 
-	const widgetsOrder = rowIds
-		.map((id) => widgetMap.get(id))
-		.filter((widget): widget is WidgetItem => widget !== undefined);
+	const widgetsOrder = layout.map((slot) => slot.map((id) => widgetMap.get(id)!));
 
 	const getSlotContent = (slot: WidgetSlot) => {
 		if (slot === EMPTY_WIDGET_SLOT) return null;
@@ -32,6 +71,8 @@ export const useDashboard = () => {
 	};
 
 	const setSlot = (idx: number, widgetId: WidgetId) => {
+		if (!store.mobileWidgets.includes(widgetId)) return;
+
 		const newSlots = [...slots];
 		const conflictIdx = newSlots.indexOf(widgetId);
 
@@ -53,8 +94,19 @@ export const useDashboard = () => {
 
 		if (oldIdx === -1 || newIdx === -1) return;
 
-		void store.updateWidgetSequence(arrayMove(rowIds, oldIdx, newIdx));
+		void store.updateWidgetSequence(arrayMove(layout, oldIdx, newIdx));
 	};
 
-	return { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd };
+	return {
+		sensors,
+		rowIds,
+		widgetsOrder,
+		slots,
+		options,
+		getSlotContent,
+		setSlot,
+		handleDragEnd,
+		activeWidgets,
+		selectWidget,
+	};
 };

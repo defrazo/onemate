@@ -5,8 +5,9 @@ import { useStore } from '@/app/providers';
 import { useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input } from '@/shared/ui';
 
-import { normalizeArray, withEmptySlot } from '../../../lib';
-import { FormActions, RemoveButton } from '..';
+import { normalizeArray, withEmptySlot } from '../../../lib/utils';
+import { FormActions } from '../FormActions';
+import { RemoveButton } from '../RemoveButton';
 
 const MAX_EMAILS = 3;
 

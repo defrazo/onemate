@@ -5,7 +5,18 @@ use App\Jobs\CheckOverdueKanbanTasks;
 use App\Jobs\CleanupNotifications;
 use App\Models\Network\MonitoredService;
 use App\Models\Network\MonitoringCheck;
+use App\Services\Assistant\AssistantService;
 use Illuminate\Support\Facades\Schedule;
+
+Schedule::call(fn () => app(AssistantService::class)->recoverExpired())
+    ->name('recover-assistant-generations')
+    ->everyMinute()
+    ->withoutOverlapping();
+
+Schedule::call(fn () => app(AssistantService::class)->cleanupArchives())
+    ->name('cleanup-assistant-archive')
+    ->weeklyOn(0, '04:00')
+    ->withoutOverlapping();
 
 Schedule::call(function () {
     MonitoredService::query()

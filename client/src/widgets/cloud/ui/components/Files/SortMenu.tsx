@@ -6,7 +6,7 @@ import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
 
-import type { CloudSort } from '../../../model';
+import type { CloudSort } from '../../../model/types';
 
 const SORT_OPTIONS: { value: CloudSort; label: string }[] = [
 	{ value: 'newest', label: 'Сначала новые' },

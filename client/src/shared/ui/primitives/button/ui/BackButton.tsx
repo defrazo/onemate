@@ -1,7 +1,8 @@
 import { IconArrowLeft } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from './Button';
 
 interface BackButtonProps {
 	onBack?: string;

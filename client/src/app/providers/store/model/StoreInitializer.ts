@@ -1,22 +1,24 @@
-import type { AllStores, InitKeys } from '.';
+import type { AllStores, InitKeys } from './types';
 
-type LifecycleStore = {
-	init?: () => void;
-	destroy?: () => void;
-};
+type LifecycleStore = { init?: () => void; destroy?: () => void };
 
 export class StoreInitializer {
 	private static readonly REACTIVE_STORES: ReadonlyArray<InitKeys> = [
+		'userProfileStore',
+
+		'deviceActivityStore',
 		'notificationStore',
 		'themeStore',
-		'userProfileStore',
-		'deviceActivityStore',
+
+		'assistantStore',
+		'calendarStore',
 		'cloudStore',
+		'credentialsStore',
+		'currencyStore',
 		'networkStore',
-		'weatherStore',
 		'notesStore',
 		'todoStore',
-		'currencyStore',
+		'weatherStore',
 	] as const;
 
 	static async initializeStores(stores: AllStores): Promise<void> {

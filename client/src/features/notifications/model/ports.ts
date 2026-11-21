@@ -1,4 +1,4 @@
-import type { AppNotification } from '.';
+import type { AppNotification } from './types';
 
 export interface INotificationRepo {
 	getNotifications(): Promise<AppNotification[]>;

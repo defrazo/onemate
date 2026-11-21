@@ -8,29 +8,32 @@ import { ModalStore } from '@/features/modal';
 import { NotificationRepoRouting, NotificationStore } from '@/features/notifications';
 import { ThemeStore } from '@/features/theme-switcher';
 import { NotifyStore } from '@/features/toast';
+import { AssistantRepoRouting, AssistantStore } from '@/widgets/assistant';
+import { CalendarStore } from '@/widgets/calendar';
 import { CloudRepoRouting, CloudStore } from '@/widgets/cloud';
+import { CredentialsRepoRouting, CredentialsStore } from '@/widgets/credentials';
 import { CurrencyStore } from '@/widgets/currency';
 import { NetworkRepoRouting, NetworkStore } from '@/widgets/network';
-import { NotesRepoRouting, NotesStore } from '@/widgets/notes';
 import { TranslatorProviderRouting, TranslatorStore } from '@/widgets/translator';
 import { WeatherStore } from '@/widgets/weather';
 
-import type { AllStores, CoreStores } from '.';
+import { createNotesStore } from './createNotesStore';
+import type { AllStores, CoreStores } from './types';
 
 export class StoreFactory {
 	static createCore(): CoreStores {
+		const modalStore = new ModalStore();
+		const notifyStore = new NotifyStore();
 		const userStore = new UserStore();
+
 		const userRepo = new UserRepoRouting(userStore);
 		userStore.setRepo(userRepo);
 
-		const notifyStore = new NotifyStore();
-		const modalStore = new ModalStore();
-
-		return { userStore, notifyStore, modalStore };
+		return { modalStore, notifyStore, userStore };
 	}
 
 	static createAllStores(): AllStores {
-		const { userStore, notifyStore, modalStore } = this.createCore();
+		const { modalStore, notifyStore, userStore } = this.createCore();
 
 		// Entities
 		const userProfileStore = new UserProfileStore(
@@ -40,50 +43,60 @@ export class StoreFactory {
 		);
 
 		// Features
-		const authStore = new AuthStore(userStore);
 		const authFormStore = new AuthFormStore();
-		const themeStore = new ThemeStore(userStore, userProfileStore);
-		const notificationStore = new NotificationStore(userStore, new NotificationRepoRouting(userStore));
+		const authStore = new AuthStore(userStore);
 		const deviceActivityStore = new DeviceActivityStore(
 			userStore,
 			authStore,
 			new ActivityRepoRouting(userStore),
 			new DeviceProviderRouting(userStore)
 		);
+		const notificationStore = new NotificationStore(userStore, new NotificationRepoRouting(userStore));
+		const themeStore = new ThemeStore(userStore, userProfileStore);
 
 		// Widgets
-		const networkStore = new NetworkStore(userStore, new NetworkRepoRouting(userStore));
+		const assistantStore = new AssistantStore(
+			userStore,
+			() => authStore.endSession(),
+			new AssistantRepoRouting(userStore)
+		);
+		const calendarStore = new CalendarStore();
 		const cloudStore = new CloudStore(userStore, new CloudRepoRouting(userStore));
-		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
-		const notesStore = new NotesStore(userStore, new NotesRepoRouting(userStore));
-		const todoStore = new TodoStore(userStore, new TodoRepoRouting(userStore));
+		const credentialsStore = new CredentialsStore(userStore, new CredentialsRepoRouting(userStore));
 		const currencyStore = new CurrencyStore(userStore);
-		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore));
+		const networkStore = new NetworkStore(userStore, new NetworkRepoRouting(userStore));
+		const notesStore = createNotesStore({ userStore, authStore, modalStore, notifyStore });
+		const todoStore = new TodoStore(userStore, new TodoRepoRouting(userStore));
+		const translatorStore = new TranslatorStore(new TranslatorProviderRouting(userStore), userStore);
+		const weatherStore = new WeatherStore(userStore, new UserLocationRepoRouting(userStore, 'weather'));
 
 		return {
 			// Core
-			userStore,
-			notifyStore,
 			modalStore,
+			notifyStore,
+			userStore,
 
 			// Entities
 			userProfileStore,
 
 			// Features
-			authStore,
 			authFormStore,
-			themeStore,
-			notificationStore,
+			authStore,
 			deviceActivityStore,
+			notificationStore,
+			themeStore,
 
 			// Widgets
+			assistantStore,
+			calendarStore,
 			cloudStore,
+			credentialsStore,
+			currencyStore,
 			networkStore,
-			weatherStore,
 			notesStore,
 			todoStore,
-			currencyStore,
 			translatorStore,
+			weatherStore,
 		};
 	}
 }

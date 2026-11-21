@@ -1,6 +1,6 @@
 import * as Weather from '@/shared/assets/icons/weather';
 
-import type { ConditionCode } from '../model';
+import type { ConditionCode } from '../model/types';
 
 export const conditionIcons: Record<'light' | 'dark', Record<ConditionCode, string> & { default: string }> = {
 	light: {

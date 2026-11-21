@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo, UploadProgress } from '../../model';
+import type { ICloudRepo } from '../../model/ports';
+import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from '../../model/types';
 
 export class CloudRepoLaravel implements ICloudRepo {
 	async load(): Promise<CloudData> {
@@ -24,6 +25,11 @@ export class CloudRepoLaravel implements ICloudRepo {
 				});
 			},
 		});
+	}
+
+	async getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null> {
+		const { data } = await api.get<Blob>(`/cloud/files/${id}/thumbnail`, { responseType: 'blob', signal });
+		return data;
 	}
 
 	async getPreview(id: string): Promise<Blob> {

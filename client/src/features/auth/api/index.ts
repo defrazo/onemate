@@ -1,2 +1,2 @@
-export * from './auth';
-export type * from './types';
+export { authApi } from './auth';
+export type { OAuthAuthorization } from './types';

@@ -1,16 +1,17 @@
 import { generateUUID } from '@/shared/lib/utils';
 
-import { now } from '../../lib';
+import { now } from '../../lib/utils';
+import { LIMITS } from '../../model/constants';
+import { getDefaultColumns, getDefaultTasks } from '../../model/defaults';
+import type { IKanbanRepo } from '../../model/ports';
 import type {
 	CreateColumnInput,
 	CreateTaskInput,
 	DeletedKanbanBoard,
-	IKanbanRepo,
 	KanbanBoards,
 	KanbanSnapshot,
-} from '../../model';
-import { getDefaultColumns, getDefaultTasks, LIMITS } from '../../model';
-import { BoardRevisionConflictError } from '..';
+} from '../../model/types';
+import { BoardRevisionConflictError } from '../errors';
 
 export class KanbanRepoDemo implements IKanbanRepo {
 	private boards: KanbanSnapshot[] = [];
@@ -80,7 +81,7 @@ export class KanbanRepoDemo implements IKanbanRepo {
 			if (columnIds.length !== snapshot.columns.length || new Set(columnIds).size !== columnIds.length)
 				throw new Error('Некорректный порядок колонок');
 
-			columnIds.forEach((id, index) => (this.findColumn(snapshot, id).position = (index + 1) * 1000));
+			columnIds.forEach((id, idx) => (this.findColumn(snapshot, id).position = (idx + 1) * 1000));
 		});
 	}
 

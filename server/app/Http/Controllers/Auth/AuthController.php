@@ -37,17 +37,6 @@ class AuthController extends Controller
         ]);
     }
 
-    public function session(Request $request): JsonResponse
-    {
-        /** @var User|null $user */
-        $user = $request->user('sanctum');
-
-        return response()->json([
-            'authenticated' => $user !== null,
-            'user' => $user,
-        ]);
-    }
-
     public function register(Request $request): JsonResponse
     {
         $validator = Validator::make($request->all(), [

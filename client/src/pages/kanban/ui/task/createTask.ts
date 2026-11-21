@@ -1,9 +1,15 @@
 import { cn } from '@/shared/lib/utils';
 
-import { calendarDueIcon, calendarIcon, createSvg, deleteIcon, deviceUtils, insertSvg } from '../../lib';
-import type { createState, Task } from '../../model';
+import { deviceUtils } from '../../lib/device';
+import { calendarDueIcon, calendarIcon, deleteIcon } from '../../lib/icons';
+import { createSvg, insertSvg } from '../../lib/utils';
+import type { createState } from '../../model/state';
+import type { Task } from '../../model/types';
 import { createConfirmDialog } from '../components';
-import { createTaskHeader, createTaskMeta, editTask, viewTask } from '.';
+import { createTaskHeader } from './createTaskHeader';
+import { createTaskMeta } from './createTaskMeta';
+import { editTask } from './edit/editTask';
+import { viewTask } from './view/viewTask';
 
 export const createTask = (task: Task, state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;

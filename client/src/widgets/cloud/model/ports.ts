@@ -1,7 +1,8 @@
-import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from '.';
+import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from './types';
 
 export interface ICloudRepo {
 	load(): Promise<CloudData>;
+	getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null>;
 	getPreview(id: string): Promise<Blob>;
 	upload(file: File, onProgress: (progress: UploadProgress) => void, signal?: AbortSignal): Promise<void>;
 	download(id: string): Promise<void>;

@@ -1,10 +1,10 @@
 import { useEffect, useState } from 'react';
 import { IconAlertCircle } from '@tabler/icons-react';
 
-import { App } from '@/app/App';
 import { APP_NAME } from '@/shared/config';
 import { Button, SplashScreen } from '@/shared/ui';
 
+import { App } from '../../App';
 import { getRootStore, StoreProvider } from '../store';
 
 const rootStore = getRootStore();
@@ -42,7 +42,7 @@ const AppInitializer = () => {
 					<div className="flex size-10 items-center justify-center rounded-md bg-(--status-error-muted)">
 						<IconAlertCircle className="size-6 text-(--status-error)" />
 					</div>
-					<h2 className="text-xl font-semibold">{`Не удалось загрузить ${APP_NAME}`}</h2>
+					<h2 className="text-lg font-semibold md:text-xl">{`Не удалось загрузить ${APP_NAME}`}</h2>
 					{error?.message && (
 						<div className="w-full rounded-xl bg-(--tone) px-3 py-2.5">
 							<p className="flex flex-col text-xs wrap-break-word">

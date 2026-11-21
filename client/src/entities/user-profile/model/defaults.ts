@@ -1,15 +1,13 @@
-import { DEFAULT_THEME, type WidgetId, type WidgetSlot } from '@/shared/config';
+import { DEFAULT_THEME } from '@/shared/config';
 
-import type { UserProfile } from '.';
-
-const clone = <T>(v: T): T =>
-	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));
-
-const DEFAULT_WIDGETS = ['cloud', 'calendar', 'notes', 'currency', 'weather', 'todo'] as const;
-export const createDefaultWidgets = (): WidgetId[] => [...DEFAULT_WIDGETS];
+import type { UserProfile } from './types';
+import type { DashboardLayout, WidgetId, WidgetSlot } from './widgets';
 
 const DEFAULT_SLOTS = ['calendar', 'weather', 'currency', 'notes'] as const;
 export const createDefaultSlots = (): WidgetSlot[] => [...DEFAULT_SLOTS];
+
+const DEFAULT_DASHBOARD_WIDGETS: WidgetId[] = ['cloud', 'calendar', 'notes', 'currency', 'weather', 'todo'];
+export const createDefaultDashboardLayout = (): DashboardLayout => DEFAULT_DASHBOARD_WIDGETS.map((id) => [id]);
 
 const DEFAULT_PROFILE: UserProfile = {
 	avatar_url: null,
@@ -20,7 +18,7 @@ const DEFAULT_PROFILE: UserProfile = {
 	phones: [''],
 	additional_emails: [''],
 	theme: DEFAULT_THEME,
-	widgets_sequence: createDefaultWidgets(),
+	widgets_sequence: createDefaultDashboardLayout(),
 	widgets_slots: createDefaultSlots(),
 	network_notifications_enabled: true,
 	kanban_notifications_enabled: true,
@@ -39,7 +37,7 @@ const DEMO_PROFILE: UserProfile = {
 	phones: ['+7 (000) 000-00-00', ''],
 	additional_emails: ['demo2@example.com', ''],
 	theme: DEFAULT_THEME,
-	widgets_sequence: createDefaultWidgets(),
+	widgets_sequence: createDefaultDashboardLayout(),
 	widgets_slots: createDefaultSlots(),
 	network_notifications_enabled: true,
 	kanban_notifications_enabled: true,
@@ -48,3 +46,6 @@ const DEMO_PROFILE: UserProfile = {
 	password_changed_at: null,
 };
 export const createDemoProfile = (): UserProfile => clone(DEMO_PROFILE);
+
+const clone = <T>(v: T): T =>
+	typeof structuredClone === 'function' ? structuredClone(v) : JSON.parse(JSON.stringify(v));

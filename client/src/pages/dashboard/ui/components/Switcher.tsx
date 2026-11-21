@@ -1,9 +1,10 @@
 import { useEffect, useRef } from 'react';
 
-import { EMPTY_WIDGET_SLOT, type WidgetId, type WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
+import { EMPTY_WIDGET_SLOT } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 
-import type { SwitcherOption } from '../../model';
+import type { SwitcherOption } from '../../model/types';
 
 interface SwitcherProps {
 	options: SwitcherOption[];
@@ -19,7 +20,6 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 	useEffect(() => {
 		const list = listRef.current;
 		const switcher = switcherRef.current;
-
 		if (!list || !switcher) return;
 
 		let frameId = 0;
@@ -59,11 +59,8 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 	}, [options, value]);
 
 	return (
-		<div className="z-0 flex rounded-xl border-(--border-primary) bg-(--bg-primary) p-1">
-			<div
-				ref={listRef}
-				className="relative flex flex-1 items-center justify-between gap-1 py-1 whitespace-nowrap"
-			>
+		<div className="flex h-13 shrink-0 snap-x snap-proximity scrollbar-none overflow-x-auto rounded-xl border-(--border-primary) bg-(--bg-primary) p-1">
+			<div ref={listRef} className="relative flex flex-1 items-center justify-between gap-1 py-1">
 				<div
 					ref={switcherRef}
 					className="absolute top-0 left-0 z-0 rounded-lg bg-(--accent-primary-muted) transition-[transform,width,opacity] duration-300 ease-out"
@@ -78,7 +75,10 @@ export const Switcher = ({ options, value, onChange }: SwitcherProps) => {
 							ref={(element) => {
 								optionRefs.current[option.value] = element;
 							}}
-							className={cn('px-2', isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)')}
+							className={cn(
+								'h-full snap-start px-2',
+								isActive ? 'text-(--accent-primary)' : 'text-(--text-secondary)'
+							)}
 							role="tab"
 							type="button"
 							onClick={() => onChange(option.value)}

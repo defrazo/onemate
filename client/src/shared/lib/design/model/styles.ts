@@ -1,7 +1,9 @@
 import { cn } from '@/shared/lib/utils';
 
-import { base, paddings, variants } from '../lib';
-import type { Component, Padding, VariantMap } from '.';
+import { base } from '../lib/base';
+import { paddings } from '../lib/paddings';
+import { variants } from '../lib/variants';
+import type { Component, Padding, VariantMap } from './types';
 
 interface StyleParams<T extends Component> {
 	component: T;

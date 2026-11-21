@@ -1,7 +1,9 @@
 import { api } from '@/shared/api';
-import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import type { Theme } from '@/shared/config';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
+import type { DashboardLayout, WidgetId, WidgetSlot } from '../../model/widgets';
 
 type ProfileResponse = {
 	profile: UserProfile;
@@ -31,8 +33,12 @@ export class ProfileRepoLaravel implements IUserProfileRepo {
 		return data.profile;
 	}
 
-	async updateWidgets(_id: string, widgets: WidgetId[]): Promise<void> {
+	async updateWidgets(_id: string, widgets: DashboardLayout): Promise<void> {
 		await api.patch('/user/profile/widgets', { widgets_sequence: widgets });
+	}
+
+	async updateMobileWidgets(_id: string, widgets: WidgetId[]): Promise<void> {
+		await api.patch('/user/profile/widgets', { mobile_widgets: widgets });
 	}
 
 	async updateSlots(_id: string, slots: WidgetSlot[]): Promise<void> {

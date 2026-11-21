@@ -27,9 +27,9 @@ class TodoRequest extends FormRequest
                 'canvas_id' => ['sometimes', 'required', 'uuid'],
             ],
             'moveList' => ['slot' => ['required', 'integer', 'between:0,15']],
-            'storeItem' => ['text' => ['required', 'string', 'max:50']],
+            'storeItem' => ['text' => ['required', 'string', 'max:100']],
             'updateItem' => [
-                'text' => ['sometimes', 'required', 'string', 'max:50'],
+                'text' => ['sometimes', 'required', 'string', 'max:100'],
                 'is_completed' => ['sometimes', 'required', 'boolean'],
             ],
             'moveItem' => [

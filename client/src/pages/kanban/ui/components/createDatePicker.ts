@@ -1,6 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 
-import { dateIcon, insertSvg } from '../../lib';
+import { dateIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 type CreateDatePickerProps = {
 	value?: string | null;
@@ -46,6 +47,7 @@ export const createDatePicker = ({
 	// === CLEAR BUTTON ===
 	const clearButton = document.createElement('button');
 	clearButton.type = 'button';
+	clearButton.tabIndex = -1;
 	clearButton.title = 'Очистить дату';
 	clearButton.textContent = '×';
 	clearButton.className = cn(

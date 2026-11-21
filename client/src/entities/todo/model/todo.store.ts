@@ -3,8 +3,10 @@ import { action, computed, makeObservable, observable, reaction, runInAction } f
 import type { IBaseUserPort } from '@/entities/user';
 import { BaseStore } from '@/shared/lib/store';
 
-import { todoCache, todoChannel } from '../lib';
-import type { ItemChanges, ITodoRepo, ListChanges, TodoCanvas, TodoList } from '.';
+import { todoChannel } from '../lib/todo-channel';
+import { todoCache } from '../lib/todoCache';
+import type { ITodoRepo } from './ports';
+import type { ItemChanges, ListChanges, TodoCanvas, TodoList } from './types';
 
 export class TodoStore extends BaseStore {
 	private readonly controllers = new Set<AbortController>();

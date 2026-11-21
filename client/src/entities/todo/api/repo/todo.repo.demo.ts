@@ -1,14 +1,10 @@
 import type { User } from '@/entities/user';
 import { generateUUID } from '@/shared/lib/utils';
 
-import {
-	getDefaultTodoCanvases,
-	type ItemChanges,
-	type ITodoRepo,
-	type ListChanges,
-	TODO_LIMITS,
-	type TodoCanvas,
-} from '../../model';
+import { TODO_LIMITS } from '../../model/constants';
+import { getDefaultTodoCanvases } from '../../model/defaults';
+import type { ITodoRepo } from '../../model/ports';
+import type { ItemChanges, ListChanges, TodoCanvas } from '../../model/types';
 
 export class TodoRepoDemo implements ITodoRepo {
 	private canvases: TodoCanvas[] = [];
@@ -67,7 +63,7 @@ export class TodoRepoDemo implements ITodoRepo {
 
 	private freeSlot(canvas: TodoCanvas): number {
 		const used = new Set(canvas.lists.map((list) => list.slot));
-		const slot = Array.from({ length: 16 }, (_, index) => index).find((value) => !used.has(value));
+		const slot = Array.from({ length: 16 }, (_, idx) => idx).find((value) => !used.has(value));
 
 		if (slot === undefined) throw new Error('Нет свободных слотов');
 		return slot;
@@ -75,8 +71,8 @@ export class TodoRepoDemo implements ITodoRepo {
 
 	private normalize(listId: string): void {
 		const { list } = this.list(listId);
-		list.items.forEach((item, index) => {
-			item.position = index;
+		list.items.forEach((item, idx) => {
+			item.position = idx;
 		});
 	}
 

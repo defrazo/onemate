@@ -66,8 +66,10 @@ export const TodoPage = observer(() => {
 				onSubmit={async (title) => {
 					const ids = new Set(todoStore.canvases.map((entry) => entry.id));
 					if (!(await handleSave(() => todoStore.createCanvas(title)))) return false;
+
 					const created = todoStore.canvases.find((entry) => !ids.has(entry.id));
 					if (created) handleSelectCanvas(created.id);
+
 					return true;
 				}}
 			/>

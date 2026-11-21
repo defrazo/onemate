@@ -1,19 +1,27 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { observer } from 'mobx-react-lite';
 import { useLocation } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
+import { useResponsive } from '@/shared/lib/hooks';
+import { Divider } from '@/shared/ui';
 
-import { TRANSLATE_DELAY } from '../model';
-import { Controls, TranslateField } from './components';
+import { TRANSLATE_DELAY } from '../model/constants';
+import { Controls, History, TranslateField } from './components';
 
 export const Translator = observer(() => {
 	const location = useLocation();
+	const { isMobile, isTablet } = useResponsive();
 
 	const { notifyStore, translatorStore: store } = useStore();
+	const [historyOpen, setHistoryOpen] = useState(false);
 
 	useEffect(() => {
-		if (!store.sourceText.trim()) return;
+		store.init();
+	}, [store]);
+
+	useEffect(() => {
+		if (!store.shouldAutoTranslate || !store.sourceText.trim()) return;
 
 		let active = true;
 
@@ -29,7 +37,11 @@ export const Translator = observer(() => {
 			active = false;
 			clearTimeout(timeout);
 		};
-	}, [store.sourceText, store.sourceLang, store.targetLang, store, notifyStore]);
+	}, [store.sourceText, store.sourceLang, store.targetLang, store.shouldAutoTranslate, store, notifyStore]);
+
+	useEffect(() => {
+		store.checkAvailability();
+	}, [store.sourceLang, store.targetLang, store]);
 
 	useEffect(() => {
 		return () => store.reset();
@@ -39,12 +51,30 @@ export const Translator = observer(() => {
 		return () => store.destroy();
 	}, [store]);
 
+	if (historyOpen)
+		return (
+			<History
+				onBack={() => setHistoryOpen(false)}
+				onRestore={(entry) => {
+					store.restoreHistory(entry);
+					setHistoryOpen(false);
+				}}
+			/>
+		);
+
 	return (
-		<div className="flex min-h-0 flex-1 flex-col">
+		<div className="flex min-h-0 flex-1 flex-col gap-2">
 			<Controls />
-			<div className="grid min-h-0 flex-1 grid-cols-1 gap-2 xl:grid-cols-2 xl:gap-0">
+			<div className="flex min-h-0 flex-1 flex-col gap-1 lg:flex-row xl:gap-2">
 				<TranslateField side="source" />
-				<TranslateField side="target" />
+				<Divider className="mt-2" direction={isMobile || isTablet ? 'X' : 'Y'} />
+				<TranslateField
+					side="target"
+					onHistory={() => {
+						store.loadHistory();
+						setHistoryOpen(true);
+					}}
+				/>
 			</div>
 		</div>
 	);

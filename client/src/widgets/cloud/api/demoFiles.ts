@@ -1,4 +1,4 @@
-import type { CloudFile } from '../model';
+import type { CloudFile } from '../model/types';
 
 export const CLOUD_DEMO_FILES: CloudFile[] = [
 	{

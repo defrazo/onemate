@@ -1,8 +1,10 @@
 import { type Feature, type IUserRoutingPort, type Operation, PermissionService } from '@/entities/user';
 import { PermissionError } from '@/shared/lib/errors';
 
-import type { CloudData, CloudFilePatch, CloudTextData, ICloudRepo, UploadProgress } from '../../model';
-import { CloudRepoDemo, CloudRepoLaravel } from '.';
+import type { ICloudRepo } from '../../model/ports';
+import type { CloudData, CloudFilePatch, CloudTextData, UploadProgress } from '../../model/types';
+import { CloudRepoDemo } from './cloud.repo.demo';
+import { CloudRepoLaravel } from './cloud.repo.laravel';
 
 export class CloudRepoRouting implements ICloudRepo {
 	private readonly realRepo: ICloudRepo;
@@ -27,6 +29,11 @@ export class CloudRepoRouting implements ICloudRepo {
 	async load(): Promise<CloudData> {
 		this.checkPermission('cloud', 'read');
 		return this.getTargetRepo().load();
+	}
+
+	async getThumbnail(id: string, signal?: AbortSignal): Promise<Blob | null> {
+		this.checkPermission('cloud', 'read');
+		return this.getTargetRepo().getThumbnail(id, signal);
 	}
 
 	async getPreview(id: string): Promise<Blob> {

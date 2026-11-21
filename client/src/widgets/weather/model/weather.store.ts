@@ -5,9 +5,9 @@ import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { fetchWeatherData } from '../api';
-import { weatherCache } from '../lib';
-import type { CurrentType, ForecastType, View } from '.';
+import { fetchWeatherData } from '../api/fetchWeatherData';
+import { weatherCache } from '../lib/weatherCache';
+import type { CurrentType, ForecastType, View } from './types';
 
 export class WeatherStore extends AsyncStore {
 	private initializing: Promise<void> | null = null;

@@ -1,6 +1,3 @@
-export * from './constants';
-export * from './defaults';
-export * from './notes.store';
-export type * from './ports';
-export * from './tip';
-export type * from './types';
+export { NotesStore } from './notes.store';
+export { NOTES_TIP } from './tip';
+export type { Note } from './types';

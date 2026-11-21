@@ -7,7 +7,10 @@ import type { ModalStore } from '@/features/modal';
 import type { NotificationStore } from '@/features/notifications';
 import type { ThemeStore } from '@/features/theme-switcher';
 import type { NotifyStore } from '@/features/toast';
+import type { AssistantStore } from '@/widgets/assistant';
+import type { CalendarStore } from '@/widgets/calendar';
 import type { CloudStore } from '@/widgets/cloud';
+import type { CredentialsStore } from '@/widgets/credentials';
 import type { CurrencyStore } from '@/widgets/currency';
 import type { NetworkStore } from '@/widgets/network';
 import type { NotesStore } from '@/widgets/notes';
@@ -15,36 +18,45 @@ import type { TranslatorStore } from '@/widgets/translator';
 import type { WeatherStore } from '@/widgets/weather';
 
 export type AllStores = {
-	userStore: UserStore;
-	notifyStore: NotifyStore;
 	modalStore: ModalStore;
+	notifyStore: NotifyStore;
+	userStore: UserStore;
+
 	userProfileStore: UserProfileStore;
-	authStore: AuthStore;
+
 	authFormStore: AuthFormStore;
-	themeStore: ThemeStore;
-	notificationStore: NotificationStore;
+	authStore: AuthStore;
 	deviceActivityStore: DeviceActivityStore;
+	notificationStore: NotificationStore;
+	themeStore: ThemeStore;
+
+	assistantStore: AssistantStore;
+	calendarStore: CalendarStore;
 	cloudStore: CloudStore;
+	credentialsStore: CredentialsStore;
+	currencyStore: CurrencyStore;
 	networkStore: NetworkStore;
-	weatherStore: WeatherStore;
 	notesStore: NotesStore;
 	todoStore: TodoStore;
-	currencyStore: CurrencyStore;
 	translatorStore: TranslatorStore;
+	weatherStore: WeatherStore;
 };
 
 export type InitKeys =
-	| 'themeStore'
-	| 'notificationStore'
 	| 'userProfileStore'
 	| 'authStore'
 	| 'deviceActivityStore'
+	| 'notificationStore'
+	| 'themeStore'
+	| 'assistantStore'
+	| 'calendarStore'
 	| 'cloudStore'
+	| 'credentialsStore'
+	| 'currencyStore'
 	| 'networkStore'
-	| 'weatherStore'
 	| 'notesStore'
 	| 'todoStore'
-	| 'currencyStore';
+	| 'weatherStore';
 
 export interface CoreStores {
 	readonly userStore: UserStore;

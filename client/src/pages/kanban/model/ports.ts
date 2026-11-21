@@ -1,4 +1,4 @@
-import type { CreateColumnInput, CreateTaskInput, DeletedKanbanBoard, KanbanBoards, KanbanSnapshot } from '.';
+import type { CreateColumnInput, CreateTaskInput, DeletedKanbanBoard, KanbanBoards, KanbanSnapshot } from './types';
 
 export interface IKanbanRepo {
 	fetchBoards(): Promise<KanbanBoards>;

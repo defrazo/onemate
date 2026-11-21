@@ -1,3 +1,1 @@
-export * from './modal.store';
-export type * from './types';
-export * from './useDragger';
+export { ModalStore } from './modal.store';

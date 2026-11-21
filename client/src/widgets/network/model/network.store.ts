@@ -3,18 +3,18 @@ import { action, makeObservable, observable, reaction, runInAction } from 'mobx'
 import type { IBaseUserPort } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { networkCache } from '../lib';
+import { networkCache } from '../lib/networkCache';
+import type { INetworkRepo } from './ports';
 import type {
 	CheckVia,
 	CreateMonitoredService,
-	INetworkRepo,
 	MonitoredService,
 	MonitoringHistory,
 	PortCheckResult,
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '.';
+} from './types';
 
 export class NetworkStore extends AsyncStore {
 	private initializing: Promise<void> | null = null;
@@ -49,7 +49,14 @@ export class NetworkStore extends AsyncStore {
 		if (cached && this.userStore.id === userId) this.applyServices(cached.services);
 
 		await this.withLoading(async () => {
-			const services = await this.repo.loadServices();
+			let services: MonitoredService[];
+
+			try {
+				services = await this.repo.loadServices();
+			} catch (error) {
+				if (this.current(userId, generation)) throw error;
+				return;
+			}
 
 			if (this.userStore.id !== userId || this.generation !== generation) return;
 
@@ -63,44 +70,58 @@ export class NetworkStore extends AsyncStore {
 	}
 
 	async addService(data: CreateMonitoredService): Promise<MonitoredService> {
-		const service = await this.repo.createService(data);
-
-		this.prependService(service);
-		this.persistCache();
-
-		return service;
+		return this.change(
+			() => this.repo.createService(data),
+			(service) => this.prependService(service)
+		);
 	}
 
 	async checkMonitoredService(id: number): Promise<MonitoredService> {
-		const service = await this.repo.checkMonitoredService(id);
-
-		this.replaceService(service);
-		this.persistCache();
-
-		return service;
+		return this.change(
+			() => this.repo.checkMonitoredService(id),
+			(service) => this.replaceService(service)
+		);
 	}
 
 	async updateService(id: number, data: UpdateMonitoredService): Promise<MonitoredService> {
-		const service = await this.repo.updateService(id, data);
-
-		this.replaceService(service);
-		this.persistCache();
-
-		return service;
+		return this.change(
+			() => this.repo.updateService(id, data),
+			(service) => this.replaceService(service)
+		);
 	}
 
 	async deleteService(id: number): Promise<void> {
-		await this.repo.deleteService(id);
+		await this.change(
+			() => this.repo.deleteService(id),
+			() => this.removeService(id)
+		);
+	}
 
-		this.removeService(id);
-		this.persistCache();
+	private async change<T>(operation: () => Promise<T>, apply: (result: T) => void): Promise<T> {
+		const userId = this.userStore.id;
+		const generation = this.generation;
+		const result = await operation();
+
+		if (this.current(userId, generation)) {
+			runInAction(() => apply(result));
+			this.persistCache(userId, generation);
+		}
+
+		return result;
+	}
+
+	private current(userId: string | null, generation: number): boolean {
+		return this.inited && !!userId && this.userStore.id === userId && this.generation === generation;
 	}
 
 	async updateOrder(services: MonitoredService[]): Promise<void> {
 		if (this.isReordering) return;
 
+		const userId = this.userStore.id;
+		const generation = this.generation;
+
 		const previous = [...this.services];
-		const next = services.map((service, index) => ({ ...service, orderIdx: index }));
+		const next = services.map((service, idx) => ({ ...service, orderIdx: idx }));
 
 		this.isReordering = true;
 		this.services = next;
@@ -109,14 +130,15 @@ export class NetworkStore extends AsyncStore {
 		try {
 			await this.repo.reorderServices(next.map((service) => service.id));
 		} catch (error) {
-			runInAction(() => {
-				this.services = previous;
-				this.persistCache();
-			});
+			if (this.current(userId, generation))
+				runInAction(() => {
+					this.services = previous;
+					this.persistCache();
+				});
 
 			throw error;
 		} finally {
-			runInAction(() => (this.isReordering = false));
+			if (this.current(userId, generation)) runInAction(() => (this.isReordering = false));
 		}
 	}
 
@@ -150,9 +172,8 @@ export class NetworkStore extends AsyncStore {
 		this.services = this.services.filter((service) => service.id !== id);
 	}
 
-	private persistCache(): void {
-		const userId = this.userStore.id;
-		if (!userId) return;
+	private persistCache(userId = this.userStore.id, generation = this.generation): void {
+		if (!userId || !this.current(userId, generation)) return;
 
 		networkCache.write(userId, this.services);
 	}
@@ -199,5 +220,10 @@ export class NetworkStore extends AsyncStore {
 		this.isReordering = false;
 
 		this.setError(null);
+	}
+
+	override destroy(): void {
+		this.reset();
+		super.destroy();
 	}
 }

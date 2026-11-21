@@ -1,7 +1,7 @@
 import { API_URLS } from '@/shared/config';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
-import type { CBRDailyResponse, RatesResponse } from '../model';
+import type { CBRDailyResponse, RatesResponse } from '../model/types';
 
 export const fetchRates = async (): Promise<RatesResponse | null> => {
 	try {

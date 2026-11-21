@@ -1,6 +1,6 @@
 import { dateOffset } from '@/shared/lib/utils';
 
-import type { AppNotification } from '../model';
+import type { AppNotification } from '../model/types';
 
 export const demoNotifications: AppNotification[] = [
 	{

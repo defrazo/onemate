@@ -1,12 +1,12 @@
 import { IconLayoutGridAdd } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 
-import type { WidgetId, WidgetSlot } from '@/shared/config';
+import type { WidgetId, WidgetSlot } from '@/entities/user-profile';
 import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 
-import type { SwitcherOption } from '../../model';
-import { Switcher } from '.';
+import type { SwitcherOption } from '../../model/types';
+import { Switcher } from './Switcher';
 
 interface SlotProps {
 	options: SwitcherOption[];

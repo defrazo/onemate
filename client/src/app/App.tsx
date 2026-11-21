@@ -6,7 +6,10 @@ import { ModalManager } from '@/features/modal';
 import { DemoBanner } from '@/pages/demo';
 import { useResponsive } from '@/shared/lib/hooks';
 
-import { NotificationsProvider, RouterProvider, useStore } from './providers';
+import { useStore } from './providers';
+import { NotificationsProvider } from './providers/notifications';
+import { RouterProvider } from './providers/router';
+import { PwaUpdatePrompt } from './pwa/PwaUpdatePrompt';
 
 export const App = observer(() => {
 	const { isDesktop } = useResponsive();
@@ -19,6 +22,7 @@ export const App = observer(() => {
 				{userStore.id && userStore.userRole === 'demo' && <DemoBanner />}
 				<RouterProvider />
 				<ModalManager />
+				<PwaUpdatePrompt />
 				<Toaster duration={5000} position={isDesktop ? 'bottom-right' : 'top-right'} />
 			</NotificationsProvider>
 		</BrowserRouter>

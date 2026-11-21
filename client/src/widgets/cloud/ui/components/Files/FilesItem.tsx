@@ -13,12 +13,17 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
-import { cn } from '@/shared/lib/utils';
+import { cn, formatFileSize } from '@/shared/lib/utils';
 import { Button, ConfirmDialog, Input } from '@/shared/ui';
 
-import { formatFileSize, getFileIcon, getFileNameParts, getPreviewType } from '../../../lib';
-import type { CloudFile } from '../../../model';
-import { FilesItemActions, PreviewDialog, ShareDialog } from '.';
+import { getFileIcon } from '../../../lib/getFileIcon';
+import { getPreviewType } from '../../../lib/getPreviewType';
+import { getFileNameParts } from '../../../lib/utils';
+import type { CloudFile } from '../../../model/types';
+import { FilesItemActions } from './FilesItemActions';
+import { FileThumbnail } from './FileThumbnail';
+import { PreviewDialog } from './PreviewDialog';
+import { ShareDialog } from './ShareDialog';
 
 interface FilesItem {
 	file: CloudFile;
@@ -138,6 +143,7 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 					<ItemData
 						selectionMode
 						date={date}
+						file={file}
 						icon={FileIcon}
 						name={file.name}
 						selected={selected}
@@ -145,7 +151,7 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 					/>
 				) : isEditing ? (
 					<div className="flex min-w-0 flex-1 items-center gap-2">
-						<ItemData partial date={date} icon={FileIcon} name={file.name} size={file.size} />
+						<ItemData partial date={date} file={file} icon={FileIcon} name={file.name} size={file.size} />
 						<Input
 							autoFocus
 							className="min-w-0 flex-1 bg-transparent pl-1.5 text-sm outline-none not-lg:py-0.5"
@@ -177,11 +183,11 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 						variant="custom"
 						onClick={handlePreview}
 					>
-						<ItemData date={date} icon={FileIcon} name={file.name} size={file.size} />
+						<ItemData date={date} file={file} icon={FileIcon} name={file.name} size={file.size} />
 					</Button>
 				) : (
 					<div className="flex min-w-0 flex-1 items-center gap-2">
-						<ItemData date={date} icon={FileIcon} name={file.name} size={file.size} />
+						<ItemData date={date} file={file} icon={FileIcon} name={file.name} size={file.size} />
 					</div>
 				)}
 				{selectionMode ? null : isEditing ? (
@@ -252,6 +258,7 @@ export const FilesItem = observer(({ file, selectionMode, selected, onSelect }: 
 });
 
 interface ItemDataProps {
+	file: CloudFile;
 	icon: Icon;
 	name: string;
 	size: number;
@@ -262,6 +269,7 @@ interface ItemDataProps {
 }
 
 const ItemData = ({
+	file,
 	icon: Icon,
 	name,
 	size,
@@ -272,7 +280,7 @@ const ItemData = ({
 }: ItemDataProps) => {
 	return (
 		<>
-			<div className="flex size-8.5 shrink-0 items-center justify-center rounded-lg bg-(--tone-strong)">
+			<div className="flex size-8.5 shrink-0 items-center justify-center rounded-lg border border-(--tone-strong) bg-(--tone-strong)">
 				{selectionMode ? (
 					selected ? (
 						<IconSquareCheck className="size-5 text-(--accent-primary)" />
@@ -280,7 +288,7 @@ const ItemData = ({
 						<IconSquare className="size-5 text-(--text-secondary) transition-colors group-hover/file:text-(--accent-primary)" />
 					)
 				) : (
-					<Icon className="size-5 text-(--accent-primary)" />
+					<FileThumbnail file={file} icon={Icon} />
 				)}
 			</div>
 			{!partial && (

@@ -1,6 +1,6 @@
 import { getRandomPaletteColor } from '@/shared/lib/utils';
 
-import type { Note } from '.';
+import type { Note } from './types';
 
 type NoteTemplate = Omit<Note, 'id' | 'user_id' | 'created_at' | 'updated_at'>;
 

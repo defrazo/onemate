@@ -1,4 +1,4 @@
-import { AbortRequestError, ApiError, EmptyResultError, NetworkError, RestrictedAccess } from '.';
+import { AbortRequestError, ApiError, EmptyResultError, NetworkError, RestrictedAccess } from './errors';
 
 export const handleError = (error: unknown): never => {
 	if (error instanceof AbortRequestError) throw error;

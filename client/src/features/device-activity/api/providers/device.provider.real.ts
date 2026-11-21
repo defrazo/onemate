@@ -2,7 +2,8 @@ import type { City } from '@/entities/city';
 import { api } from '@/shared/api';
 import { getBrowserInfo } from '@/shared/lib/utils';
 
-import type { DeviceData, IDeviceProvider } from '../../model';
+import type { IDeviceProvider } from '../../model/ports';
+import type { DeviceData } from '../../model/types';
 
 export class DeviceProviderApi implements IDeviceProvider {
 	async getDeviceData(): Promise<DeviceData> {

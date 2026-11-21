@@ -7,12 +7,12 @@ import { UserInfo } from '@/entities/user-profile';
 import { accountSettingsTabs, type TabId } from '@/features/account-settings';
 import { Button, Divider } from '@/shared/ui';
 
-import { mobileUserMenuLinks, profileTabs } from '../model';
+import { mobileUserMenuLinks, profileTabs } from '../model/menuItems';
 
 export const MobileUserMenu = observer(() => {
 	const navigate = useNavigate();
 
-	const { authStore, modalStore } = useStore();
+	const { authStore, modalStore, notifyStore } = useStore();
 
 	const handleNavigate = (to: string) => {
 		modalStore.closeModal();
@@ -20,9 +20,14 @@ export const MobileUserMenu = observer(() => {
 	};
 
 	const handleLogout = async () => {
-		await authStore.logout();
-		modalStore.closeModal();
-		navigate('/');
+		try {
+			if (!(await authStore.logout())) return;
+
+			modalStore.closeModal();
+			navigate('/');
+		} catch {
+			notifyStore.setNotice('Не удалось подтвердить выход. Попробуйте снова', 'error');
+		}
 	};
 
 	const openProfileTab = (tab: TabId) => {
@@ -66,6 +71,7 @@ export const MobileUserMenu = observer(() => {
 			<Button
 				className="h-10 justify-start active:bg-(--tone-strong) active:text-(--accent-primary)"
 				leftIcon={<IconLogout2 className="size-4.5" />}
+				loading={authStore.isLoggingOut}
 				padding="sm"
 				variant="custom"
 				onClick={handleLogout}

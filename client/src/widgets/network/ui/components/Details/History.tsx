@@ -2,9 +2,10 @@ import { IconChartLine, IconHistory, IconLoader2, IconPower } from '@tabler/icon
 
 import { cn } from '@/shared/lib/utils';
 
-import { getUptimeClass } from '../../../lib';
-import type { MonitoringHistory } from '../../../model';
-import { HistoryState, TimeChart } from '.';
+import { getUptimeClass } from '../../../lib/utils';
+import type { MonitoringHistory } from '../../../model/types';
+import { HistoryState } from './HistoryState';
+import { TimeChart } from './TimeChart';
 
 interface HistoryProps {
 	history: MonitoringHistory | null;
@@ -55,7 +56,7 @@ export const History = ({ history, isActive, isLoading, isError }: HistoryProps)
 				</div>
 				{!isActive && (
 					<div className="absolute -top-0.5 left-1/2 flex -translate-x-1/2 flex-col items-center text-[10px] text-(--text-secondary)">
-						<div className="flex size-5 items-center justify-center rounded-md bg-(--danger)/10">
+						<div className="flex size-5 items-center justify-center rounded-md bg-(--danger-muted)">
 							<IconPower className="size-3 text-(--danger)" />
 						</div>
 						Мониторинг выключен

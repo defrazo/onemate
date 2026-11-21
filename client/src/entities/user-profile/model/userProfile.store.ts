@@ -1,16 +1,25 @@
-import { action, computed, makeObservable, observable, reaction } from 'mobx';
+import { action, computed, makeObservable, observable, reaction, runInAction } from 'mobx';
 
 import { type City, isSameCity } from '@/entities/city';
 import type { IBaseUserPort } from '@/entities/user';
 import type { IUserLocationRepo } from '@/entities/user-location';
 import { AVATAR_ENTRIES, type AvatarId, AVATARS } from '@/shared/assets/images/avatars';
-import { DEFAULT_THEME, type Theme, type WidgetId, type WidgetSlot } from '@/shared/config';
+import { DEFAULT_THEME, type Theme, WIDGETS } from '@/shared/config';
 import { handleError } from '@/shared/lib/errors';
 import { AsyncStore, Debouncer } from '@/shared/lib/store';
 
-import { userProfileCache, type UserProfileCacheData } from '../lib';
-import type { Gender, IUserProfileRepo, IUserProfileThemePort, UserProfile, UserProfilePatch } from '.';
-import { createDefaultProfile, createDefaultSlots, createDefaultWidgets } from '.';
+import { type PendingProfileData, userProfileCache, type UserProfileCacheData } from '../lib/userProfileCache';
+import { createDefaultDashboardLayout, createDefaultProfile, createDefaultSlots } from './defaults';
+import type { IUserProfileRepo, IUserProfileThemePort } from './ports';
+import type { Gender, UserProfile, UserProfilePatch } from './types';
+import {
+	type DashboardLayout,
+	normalizeDashboardLayout,
+	normalizeMobileWidgets,
+	normalizeWidgetSlots,
+	type WidgetId,
+	type WidgetSlot,
+} from './widgets';
 
 export class UserProfileStore extends AsyncStore implements IUserProfileThemePort {
 	private readonly avatarUpdate = new Debouncer();
@@ -18,8 +27,18 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	private readonly widgetSequenceUpdate = new Debouncer();
 	private readonly widgetSlotsUpdate = new Debouncer();
 	private readonly locationUpdate = new Debouncer();
+	private readonly changedFields = new Map<keyof UserProfile, number>();
+
+	private mobileWidgetsSave: Promise<void> = Promise.resolve();
+
+	private generation = 0;
+	private profileVersion = 0;
+	private locationVersion = 0;
+	private pendingProfile: PendingProfileData = {};
+	private initializing: Promise<void> | null = null;
 
 	profile: UserProfile | null = null;
+	loadError: Error | null = null;
 
 	private currentLocation: City | null = null;
 	private profileReady = false;
@@ -98,8 +117,12 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		return this.profile?.theme ?? DEFAULT_THEME;
 	}
 
-	get widgets(): WidgetId[] {
-		return this.profile?.widgets_sequence ?? createDefaultWidgets();
+	get widgets(): DashboardLayout {
+		return this.profile?.widgets_sequence ?? createDefaultDashboardLayout();
+	}
+
+	get mobileWidgets(): WidgetId[] {
+		return normalizeMobileWidgets(this.profile?.mobile_widgets) ?? WIDGETS.map(({ id }) => id);
 	}
 
 	get slots(): WidgetSlot[] {
@@ -114,34 +137,71 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		this.patchProfile({ password_changed_at: new Date().toISOString() });
 	}
 
+	ensureLoaded(): Promise<void> {
+		const userId = this.userStore.id;
+		if (!this.inited || !userId || (this.isReady && this.isLocationReady)) return Promise.resolve();
+		if (this.initializing) return this.initializing;
+
+		const generation = this.generation;
+		runInAction(() => (this.loadError = null));
+
+		const promise = this.load(userId).catch((error) => {
+			if (this.current(userId, generation))
+				runInAction(() => (this.loadError = error instanceof Error ? error : new Error(String(error))));
+			throw error;
+		});
+		this.initializing = promise;
+
+		void promise
+			.finally(() => {
+				if (this.initializing === promise) this.initializing = null;
+			})
+			.catch(() => {});
+
+		return promise;
+	}
+
 	private async load(userId: string): Promise<void> {
-		if (this.isLoading) return;
+		const generation = this.generation;
 
 		await this.withLoading(async () => {
-			const cachedProfile = userProfileCache.read(userId);
-
 			const results = await Promise.allSettled([
-				this.loadProfile(userId, cachedProfile),
-				this.loadLocation(userId),
+				this.isReady ? Promise.resolve() : this.loadProfile(userId),
+				this.isLocationReady ? Promise.resolve() : this.loadLocation(userId),
 			]);
 
 			for (const result of results) {
-				if (result.status === 'rejected') handleError(result.reason);
+				if (this.current(userId, generation) && result.status === 'rejected') handleError(result.reason);
 			}
 		});
 	}
 
-	private async loadProfile(userId: string, cached?: Partial<UserProfileCacheData> | null): Promise<void> {
+	private async loadProfile(userId: string): Promise<void> {
+		const generation = this.generation;
+		const version = this.profileVersion;
+		const pending = { ...this.pendingProfile };
 		const server = await this.repo.loadProfile(userId);
 
-		const profile: UserProfile = { ...createDefaultProfile(), ...server, ...this.resolveCachedProfile(cached) };
+		if (!this.current(userId, generation)) return;
+
+		const profile: UserProfile = {
+			...createDefaultProfile(),
+			...server,
+			...pending,
+			...this.pendingProfile,
+			...this.changesSince(version),
+		};
 
 		this.applyProfile(profile);
-		userProfileCache.sync(userId, profile);
+		userProfileCache.sync(userId, server);
 	}
 
 	private async loadLocation(userId: string): Promise<void> {
+		const generation = this.generation;
+		const version = this.locationVersion;
 		const location = await this.locationRepo.load(userId);
+
+		if (!this.current(userId, generation) || version !== this.locationVersion) return;
 
 		this.applyLocation(location);
 	}
@@ -165,9 +225,12 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		if (!userId || this.profile?.avatar_url === avatar) return;
 
 		this.patchProfile({ avatar_url: avatar });
+		this.pendingProfile.avatar_url = avatar;
 		userProfileCache.setAvatar(userId, avatar);
 
-		this.scheduleServerUpdate(this.avatarUpdate, 500, userId, () => this.repo.updateAvatar(userId, avatar));
+		this.scheduleServerUpdate(this.avatarUpdate, 500, userId, () => this.repo.updateAvatar(userId, avatar), {
+			avatar_url: avatar,
+		});
 	}
 
 	async updateTheme(theme: Theme): Promise<void> {
@@ -175,47 +238,129 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		if (!userId || this.profile?.theme === theme) return;
 
 		this.patchProfile({ theme });
+		this.pendingProfile.theme = theme;
+		userProfileCache.setTheme(userId, theme);
 
-		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme));
+		this.scheduleServerUpdate(this.themeUpdate, 500, userId, () => this.repo.updateTheme(userId, theme), { theme });
 	}
 
 	async updateNotification(patch: UserProfilePatch): Promise<void> {
 		await this.saveProfile(patch, (id, data) => this.repo.updateNotification(id, data));
 	}
 
-	async updateWidgetSequence(widgets: WidgetId[]): Promise<void> {
+	async setSlotWidgets(index: number, primary: WidgetId, secondary: WidgetId | ''): Promise<void> {
+		const widgets = normalizeDashboardLayout(this.widgets);
+		const slot = widgets[index];
+
+		if (!slot || (secondary && secondary === primary)) return;
+
+		const previousPrimary = slot[0];
+
+		if (previousPrimary !== primary) {
+			for (const other of widgets) {
+				if (other[0] === primary) other[0] = previousPrimary;
+				else if (other[1] === primary) other[1] = previousPrimary;
+			}
+
+			slot[0] = primary;
+		}
+
+		for (const other of widgets) {
+			if (other !== slot && other[1] === secondary) other.splice(1, 1);
+		}
+
+		if (secondary) {
+			if (widgets.some((other) => other !== slot && other[0] === secondary)) return;
+			slot[1] = secondary;
+		} else slot.splice(1, 1);
+
+		await this.updateWidgetSequence(widgets, true);
+	}
+
+	async updateWidgetSequence(value: DashboardLayout, immediate = false): Promise<void> {
 		const userId = this.userStore.id;
-		if (!userId || this.arraysEqual(this.profile?.widgets_sequence, widgets)) return;
+		const widgets = normalizeDashboardLayout(value);
+		if (!userId) return;
 
-		this.patchProfile({ widgets_sequence: widgets });
-		userProfileCache.setWidgets(userId, widgets);
+		const unchanged = JSON.stringify(this.widgets) === JSON.stringify(widgets);
+		if (unchanged && !immediate) return;
 
-		this.scheduleServerUpdate(this.widgetSequenceUpdate, 2000, userId, () =>
-			this.repo.updateWidgets(userId, widgets)
+		if (!unchanged) {
+			this.patchProfile({ widgets_sequence: widgets });
+			this.pendingProfile.widgets_sequence = widgets;
+
+			userProfileCache.setWidgets(userId, widgets);
+		}
+
+		if (immediate) {
+			this.widgetSequenceUpdate.cancel();
+			const generation = this.generation;
+
+			await this.repo.updateWidgets(userId, widgets);
+
+			if (this.current(userId, generation)) this.confirmPending(userId, { widgets_sequence: widgets });
+
+			return;
+		}
+
+		this.scheduleServerUpdate(
+			this.widgetSequenceUpdate,
+			3000,
+			userId,
+			() => this.repo.updateWidgets(userId, widgets),
+			{ widgets_sequence: widgets }
 		);
 	}
 
+	async updateMobileWidgets(value: WidgetId[]): Promise<void> {
+		const userId = this.userStore.id;
+		const widgets = normalizeMobileWidgets(value);
+		if (!userId || !this.isReady || !widgets) return;
+
+		const generation = this.generation;
+
+		this.patchProfile({ mobile_widgets: widgets });
+		this.pendingProfile.mobile_widgets = widgets;
+
+		userProfileCache.setMobileWidgets(userId, widgets);
+
+		const save = this.mobileWidgetsSave.then(async () => {
+			if (!this.current(userId, generation)) return;
+
+			await this.repo.updateMobileWidgets(userId, widgets);
+
+			if (this.current(userId, generation)) this.confirmPending(userId, { mobile_widgets: widgets });
+		});
+
+		this.mobileWidgetsSave = save.catch(() => {});
+
+		try {
+			await save;
+		} catch (error) {
+			if (this.current(userId, generation)) throw error;
+		}
+	}
+
 	async updateWidgetSlots(slots: WidgetSlot[]): Promise<void> {
+		slots = normalizeWidgetSlots(slots) ?? createDefaultSlots();
+
 		const userId = this.userStore.id;
 		if (!userId || this.arraysEqual(this.profile?.widgets_slots, slots)) return;
 
 		this.patchProfile({ widgets_slots: slots });
+		this.pendingProfile.widgets_slots = slots;
 		userProfileCache.setSlots(userId, slots);
 
-		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots));
-	}
-
-	async replaceWidget(currentId: WidgetId, nextId: WidgetId): Promise<void> {
-		const widgets = this.widgets.map((id) => (id === currentId ? nextId : id));
-		const slots = this.slots.map((id) => (id === currentId ? nextId : id));
-
-		await Promise.all([this.updateWidgetSequence(widgets), this.updateWidgetSlots(slots)]);
+		this.scheduleServerUpdate(this.widgetSlotsUpdate, 2000, userId, () => this.repo.updateSlots(userId, slots), {
+			widgets_slots: slots,
+		});
 	}
 
 	setLocation(city: City): void {
 		if (this.currentLocation && isSameCity(this.currentLocation, city)) return;
 
 		const userId = this.userStore.id;
+		this.locationVersion++;
 		this.applyLocation(city);
 		if (!userId) return;
 
@@ -224,6 +369,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 	async deleteLocation(): Promise<void> {
 		const userId = this.userStore.id;
+		this.locationVersion++;
 
 		this.locationUpdate.cancel();
 		this.applyLocation(null);
@@ -235,9 +381,8 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 	private hydrateFromCache(userId: string): void {
 		const cached = userProfileCache.read(userId);
-		if (!cached) return;
-
-		this.patchProfile(this.resolveCachedProfile(cached));
+		this.pendingProfile = userProfileCache.readPending(userId);
+		this.patchProfile({ ...this.resolveCachedProfile(cached), ...this.pendingProfile });
 	}
 
 	private resolveCachedProfile(cached?: Partial<UserProfileCacheData> | null): Partial<UserProfile> {
@@ -245,18 +390,34 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 
 		return {
 			...(cached.avatar_url !== undefined && { avatar_url: cached.avatar_url }),
+			...(cached.mobile_widgets !== undefined && { mobile_widgets: cached.mobile_widgets }),
 			...(cached.widgets_sequence !== undefined && { widgets_sequence: cached.widgets_sequence }),
 			...(cached.widgets_slots !== undefined && { widgets_slots: cached.widgets_slots }),
 		};
 	}
 
 	private applyProfile(profile: UserProfile): void {
-		this.profile = profile;
+		this.profile = {
+			...profile,
+			mobile_widgets: normalizeMobileWidgets(profile.mobile_widgets),
+			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
+			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
+		};
 		this.profileReady = true;
 	}
 
 	private patchProfile(patch: Partial<UserProfile>): void {
-		this.profile = { ...(this.profile ?? createDefaultProfile()), ...patch };
+		const version = ++this.profileVersion;
+		for (const field of Object.keys(patch) as (keyof UserProfile)[]) this.changedFields.set(field, version);
+
+		this.profile = {
+			...(this.profile ?? createDefaultProfile()),
+			...patch,
+			...(patch.widgets_sequence !== undefined && {
+				widgets_sequence: normalizeDashboardLayout(patch.widgets_sequence),
+			}),
+			...(patch.widgets_slots !== undefined && { widgets_slots: normalizeWidgetSlots(patch.widgets_slots) }),
+		};
 	}
 
 	private applyLocation(location: City | null): void {
@@ -268,12 +429,30 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		debouncer: Debouncer,
 		delay: number,
 		userId: string,
-		operation: () => Promise<void>
+		operation: () => Promise<void>,
+		saved?: PendingProfileData
 	): void {
+		const generation = this.generation;
+
 		debouncer.schedule(() => {
-			if (this.userStore.id !== userId) return;
-			void operation().catch(handleError);
+			if (!this.current(userId, generation)) return;
+
+			void operation()
+				.then(() => {
+					if (saved && this.current(userId, generation)) this.confirmPending(userId, saved);
+				})
+				.catch((error) => {
+					if (this.current(userId, generation)) handleError(error);
+				});
 		}, delay);
+	}
+
+	private confirmPending(userId: string, saved: PendingProfileData): void {
+		for (const field of Object.keys(saved) as (keyof PendingProfileData)[]) {
+			if (JSON.stringify(this.pendingProfile[field]) === JSON.stringify(saved[field]))
+				delete this.pendingProfile[field];
+		}
+		userProfileCache.confirm(userId, saved);
 	}
 
 	private arraysEqual(a?: string[] | null, b?: string[] | null): boolean {
@@ -295,13 +474,44 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 		const userId = this.userStore.id;
 		if (!userId || this.isLoading) return;
 
+		const generation = this.generation;
+		const version = this.profileVersion;
+
 		await this.withLoading(async () => {
-			const updated = await save(userId, patch);
-			const nextProfile = { ...createDefaultProfile(), ...updated };
+			const pending = { ...this.pendingProfile };
+
+			let updated: UserProfile;
+
+			try {
+				updated = await save(userId, patch);
+			} catch (error) {
+				if (this.current(userId, generation)) throw error;
+				return;
+			}
+			if (!this.current(userId, generation)) return;
+			const nextProfile = {
+				...createDefaultProfile(),
+				...updated,
+				...pending,
+				...this.pendingProfile,
+				...this.changesSince(version),
+			};
 
 			this.applyProfile(nextProfile);
-			userProfileCache.sync(userId, nextProfile);
+			userProfileCache.sync(userId, updated);
 		});
+	}
+
+	private current(userId: string, generation: number): boolean {
+		return this.inited && this.userStore.id === userId && this.generation === generation;
+	}
+
+	private changesSince(version: number): Partial<UserProfile> {
+		return Object.fromEntries(
+			[...this.changedFields]
+				.filter(([, changed]) => changed > version)
+				.map(([field]) => [field, this.profile?.[field]])
+		);
 	}
 
 	constructor(
@@ -323,6 +533,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			| 'reset'
 		>(this, {
 			profile: observable,
+			loadError: observable,
 			currentLocation: observable,
 			locationReady: observable,
 
@@ -347,6 +558,7 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			theme: computed,
 			widgets: computed,
 			slots: computed,
+			mobileWidgets: computed,
 			passwordChangedAt: computed,
 
 			applyProfile: action,
@@ -365,13 +577,11 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 			reaction(
 				() => this.userStore.id,
 				(userId) => {
-					if (!userId) {
-						this.reset();
-						return;
-					}
+					this.reset();
+					if (!userId) return;
 
 					this.hydrateFromCache(userId);
-					void this.load(userId);
+					void this.ensureLoaded().catch(() => {});
 				},
 				{ fireImmediately: true }
 			)
@@ -379,11 +589,18 @@ export class UserProfileStore extends AsyncStore implements IUserProfileThemePor
 	}
 
 	override destroy(): void {
-		this.cancelPendingUpdates();
+		this.reset();
 		super.destroy();
 	}
 
 	protected reset(): void {
+		this.generation++;
+		this.initializing = null;
+		this.loadError = null;
+		this.pendingProfile = {};
+		this.changedFields.clear();
+		this.profileVersion = 0;
+		this.locationVersion = 0;
 		this.cancelPendingUpdates();
 
 		this.profile = null;

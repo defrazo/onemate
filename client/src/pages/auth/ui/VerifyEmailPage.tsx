@@ -59,7 +59,7 @@ export const VerifyEmailPage = () => {
 	}, [id, hash, expires, signature, isPending, query, authStore, userStore]);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center px-4 select-none">
+		<div className="page-safe-area flex min-h-dvh items-center justify-center select-none">
 			<div className="core-surface core-pad flex w-full max-w-md flex-col items-center bg-(--bg-secondary) px-2 py-5 text-center shadow-(--shadow-contrast) md:px-6 md:py-8">
 				<div
 					className={cn(

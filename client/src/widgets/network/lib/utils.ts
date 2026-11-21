@@ -1,4 +1,4 @@
-import type { CheckVia, PortCheckResult, ServiceCheckResult, SslCheckResult } from '../model';
+import type { CheckVia, PortCheckResult, ServiceCheckResult, SslCheckResult } from '../model/types';
 
 export const getResponseTimeClass = (responseTime: number | null) => {
 	if (responseTime === null) return 'text-(--text-disabled)';

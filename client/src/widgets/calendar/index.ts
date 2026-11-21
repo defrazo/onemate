@@ -1,2 +1,2 @@
-export { CALENDAR_TIP } from './model';
+export { CALENDAR_TIP, CalendarStore } from './model';
 export { Calendar } from './ui';

@@ -4,8 +4,9 @@ import type { IBaseUserPort } from '@/entities/user';
 import { storage } from '@/shared/lib/storage';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { showBrowserNotification } from '../lib';
-import type { AppNotification, INotificationRepo } from '.';
+import { showBrowserNotification } from '../lib/utils';
+import type { INotificationRepo } from './ports';
+import type { AppNotification } from './types';
 
 const BROWSER_NOTIFICATIONS_KEY = 'browser-notifications-enabled';
 
@@ -13,7 +14,7 @@ export class NotificationStore extends AsyncStore {
 	notifications: AppNotification[] = [];
 	isLoaded = false;
 
-	browserNotificationsEnabled = storage.get(BROWSER_NOTIFICATIONS_KEY) !== false;
+	browserNotificationsEnabled = true;
 
 	get unreadCount(): number {
 		return this.notifications.filter((notification) => notification.readAt === null).length;
@@ -25,7 +26,9 @@ export class NotificationStore extends AsyncStore {
 
 	async setBrowserNotificationsEnabled(enabled: boolean): Promise<void> {
 		this.browserNotificationsEnabled = enabled;
-		storage.set(BROWSER_NOTIFICATIONS_KEY, enabled);
+		try {
+			storage.set(BROWSER_NOTIFICATIONS_KEY, enabled);
+		} catch {}
 
 		if (enabled && this.browserNotificationsSupported && Notification.permission === 'default')
 			await Notification.requestPermission();
@@ -108,6 +111,10 @@ export class NotificationStore extends AsyncStore {
 		private readonly repo: INotificationRepo
 	) {
 		super();
+
+		try {
+			this.browserNotificationsEnabled = storage.get(BROWSER_NOTIFICATIONS_KEY) !== false;
+		} catch {}
 
 		makeObservable<this, 'reset'>(this, {
 			notifications: observable,

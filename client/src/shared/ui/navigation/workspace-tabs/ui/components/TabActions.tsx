@@ -3,7 +3,8 @@ import { createPortal } from 'react-dom';
 import { IconDots, IconEdit, IconTrash } from '@tabler/icons-react';
 
 import { cn } from '@/shared/lib/utils';
-import { Button } from '@/shared/ui';
+
+import { Button } from '../../../../primitives/button/ui/Button';
 
 interface TabActionsProps {
 	title: string;
@@ -116,7 +117,7 @@ export const TabActions = ({ title, disabled = false, canDelete, className, onRe
 									className={cn(
 										'flex h-9 w-full cursor-pointer items-center gap-2 rounded-md px-2.5 py-1.5 text-sm text-(--text-secondary) transition-colors lg:h-7',
 										danger
-											? 'hover:bg-(--danger)/10 hover:text-(--status-error)/80'
+											? 'hover:bg-(--danger-muted) hover:text-(--danger)'
 											: 'hover:bg-(--tone-strong-hover) hover:text-(--text-primary)'
 									)}
 									type="button"
@@ -125,7 +126,7 @@ export const TabActions = ({ title, disabled = false, canDelete, className, onRe
 										onClick();
 									}}
 								>
-									<Icon className="size-4 shrink-0" />
+									<Icon className="size-5 shrink-0 xl:size-4" />
 									<span className="trim">{label}</span>
 								</button>
 							);

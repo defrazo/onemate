@@ -6,12 +6,12 @@ import { useStore } from '@/app/providers';
 import { UserInfo } from '@/entities/user-profile';
 import { Button, Divider } from '@/shared/ui';
 
-import { desktopUserLinks } from '../model';
+import { desktopUserLinks } from '../model/menuItems';
 
 export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) => {
 	const navigate = useNavigate();
 
-	const { authStore, modalStore } = useStore();
+	const { authStore, modalStore, notifyStore } = useStore();
 
 	const handleNavigate = (to: string) => {
 		modalStore.closeModal();
@@ -20,9 +20,14 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 	};
 
 	const handleLogout = async () => {
-		await authStore.logout();
-		modalStore.closeModal();
-		navigate('/');
+		try {
+			if (!(await authStore.logout())) return;
+
+			modalStore.closeModal();
+			navigate('/');
+		} catch {
+			notifyStore.setNotice('Не удалось подтвердить выход. Попробуйте снова', 'error');
+		}
 	};
 
 	return (
@@ -47,6 +52,7 @@ export const DesktopUserMenu = observer(({ onClose }: { onClose: () => void }) =
 			<Button
 				className="mt-1 h-8 justify-start bg-transparent"
 				leftIcon={<IconLogout2 className="size-4.5" />}
+				loading={authStore.isLoggingOut}
 				padding="sm"
 				variant="tone"
 				onClick={handleLogout}

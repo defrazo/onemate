@@ -2,12 +2,9 @@ import { API_URLS, env } from '@/shared/config';
 import { ApiError, handleError } from '@/shared/lib/errors';
 import { convertDate, dayOfWeek, formatDate } from '@/shared/lib/utils';
 
-import type { CurrentType, ForecastApiItem, ForecastType } from '../model';
+import type { CurrentType, ForecastApiItem, ForecastType } from '../model/types';
 
-type WeatherData = {
-	weather: CurrentType | null;
-	forecast: ForecastType[];
-};
+type WeatherData = { weather: CurrentType | null; forecast: ForecastType[] };
 
 // Получение текущей погоды и прогноза на 5 дней по координатам
 export const fetchWeatherData = async (lat: number, lon: number): Promise<WeatherData> => {

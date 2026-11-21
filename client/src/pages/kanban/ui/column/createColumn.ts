@@ -1,7 +1,9 @@
-import { deviceUtils } from '../../lib';
-import type { Column, ColumnColor, createState } from '../../model';
-import { editTask } from '..';
-import { createColumnHeader, editColumn } from '.';
+import { deviceUtils } from '../../lib/device';
+import type { createState } from '../../model/state';
+import type { Column, ColumnColor } from '../../model/types';
+import { editTask } from '../task/edit/editTask';
+import { createColumnHeader } from './createColumnHeader';
+import { editColumn } from './edit/editColumn';
 
 export const createColumn = (column: Column, state: ReturnType<typeof createState>) => {
 	let isDestroyed = false;

@@ -1,7 +1,7 @@
 import type { Icon } from '@tabler/icons-react';
 import type { ReactNode } from 'react';
 
-import type { WidgetId } from '@/shared/config';
+import type { WidgetId } from '@/entities/user-profile';
 
 export type WidgetItem = {
 	id: WidgetId;

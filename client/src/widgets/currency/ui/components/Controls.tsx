@@ -10,7 +10,7 @@ export const Controls = observer(() => {
 	return (
 		<div className="absolute top-1/2 left-4 flex h-6 w-fit -translate-y-3 rounded-lg bg-(--bg-secondary)">
 			<Button
-				centerIcon={<IconArrowsExchange className="size-4 group-active/swap:scale-90" />}
+				centerIcon={<IconArrowsExchange className="size-5 group-active/swap:scale-90 xl:size-4" />}
 				className="group/swap w-13 rounded-l-lg rounded-r-none"
 				padding="none"
 				title="Поменять местами"
@@ -18,7 +18,7 @@ export const Controls = observer(() => {
 				onClick={() => currencyStore.swapCurrencies()}
 			/>
 			<Button
-				centerIcon={<IconEraser className="size-4 group-active/clear:scale-90" />}
+				centerIcon={<IconEraser className="size-5 group-active/clear:scale-90 xl:size-4" />}
 				className="group/clear w-13 rounded-l-none rounded-r-lg border-y border-r border-(--accent-primary)/70 bg-(--accent-primary-muted) text-(--accent-primary) hover:bg-(--accent-primary)/20"
 				disabled={currencyStore.isDefault}
 				padding="none"

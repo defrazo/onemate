@@ -28,7 +28,8 @@ export const DeletedAccountPage = observer(() => {
 	};
 
 	const handleExit = async () => {
-		await authStore.logout();
+		if (!(await authStore.logout())) return;
+
 		navigate('/');
 	};
 
@@ -65,6 +66,7 @@ export const DeletedAccountPage = observer(() => {
 					<Button
 						className="h-8 min-w-56"
 						leftIcon={<IconLogout className="size-4" />}
+						loading={authStore.isLoggingOut}
 						variant="ghost"
 						onClick={handleExit}
 					>

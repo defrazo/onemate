@@ -6,9 +6,9 @@ import type { CSSProperties } from 'react';
 import { cn } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
 
-import { getCheckViaLabel, getResponseTimeClass } from '../../../lib';
-import type { MonitoredService } from '../../../model';
-import { StatusDot } from '..';
+import { getCheckViaLabel, getResponseTimeClass } from '../../../lib/utils';
+import type { MonitoredService } from '../../../model/types';
+import { StatusDot } from '../StatusDot';
 
 interface CardProps {
 	service: MonitoredService;
@@ -41,7 +41,7 @@ export const Card = ({ service, disabled = false, onClick }: CardProps) => {
 	const renderStatus = () => {
 		if (!service.isActive) return <span className="text-sm text-(--text-disabled)">Отключено</span>;
 		if (service.lastStatus === null) return <span className="text-sm text-(--text-disabled)">Ожидает</span>;
-		if (service.lastStatus === 'down') return <span className="text-sm text-(--status-error)">Недоступен</span>;
+		if (service.lastStatus === 'down') return <span className="text-sm text-(--danger)">Недоступен</span>;
 
 		if (service.lastResponseTime !== null) {
 			return (
@@ -94,7 +94,7 @@ export const Card = ({ service, disabled = false, onClick }: CardProps) => {
 							<AddressIcon className="size-3.5 shrink-0" />
 							<span className="mt-px truncate">{address}</span>
 							<Divider
-								className="my-auto hidden h-2.5 transition-opacity group-hover/service:opacity-100 lg:block xl:opacity-0"
+								className="my-auto hidden h-2.75 bg-(--border-tone-strong) transition-opacity group-hover/service:opacity-100 lg:block xl:opacity-0"
 								direction="Y"
 								margX="xs"
 							/>

@@ -1,4 +1,4 @@
-import type { City } from '.';
+import type { City } from './types';
 
 const DEFAULT_CITY: City = {
 	id: '',

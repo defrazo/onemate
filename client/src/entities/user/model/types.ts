@@ -1,4 +1,4 @@
-import type { Role } from '.';
+import type { Role } from './acl';
 
 export type User = {
 	id: string;

@@ -1,6 +1,6 @@
 import type { Icon } from '@tabler/icons-react';
 
-import { Button } from '@/shared/ui';
+import { Button } from '../../../primitives/button/ui/Button';
 
 interface EditorActionProps {
 	icon: Icon;

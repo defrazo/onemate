@@ -6,7 +6,7 @@ import { useStore } from '@/app/providers';
 import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel } from '@/shared/ui';
 
-import { emailCooldown } from '../../model';
+import { emailCooldown } from '../../model/emailCooldown';
 
 export const ResendEmailForm = observer(() => {
 	const { checkEmail } = useValidation();

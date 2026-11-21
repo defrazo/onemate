@@ -1,6 +1,7 @@
 import { api } from '@/shared/api';
 
-import type { ItemChanges, ITodoRepo, ListChanges, TodoCanvas } from '../../model';
+import type { ITodoRepo } from '../../model/ports';
+import type { ItemChanges, ListChanges, TodoCanvas } from '../../model/types';
 
 export class TodoRepoLaravel implements ITodoRepo {
 	async load(signal: AbortSignal): Promise<TodoCanvas[]> {

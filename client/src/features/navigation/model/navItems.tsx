@@ -5,7 +5,7 @@ import {
 	IconSquareCheckFilled,
 } from '@tabler/icons-react';
 
-import type { NavItem } from '.';
+import type { NavItem } from './types';
 
 export const navItems: NavItem[] = [
 	{ to: '/dashboard', icon: <IconLayoutDashboardFilled />, label: 'Dashboard', order: 3, primaryMobile: true },

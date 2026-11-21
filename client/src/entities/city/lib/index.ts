@@ -1,1 +1,1 @@
-export * from './utils';
+export { isSameCity } from './utils';

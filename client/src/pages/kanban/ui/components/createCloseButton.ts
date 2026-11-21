@@ -1,13 +1,15 @@
-import { closeIcon, insertSvg } from '../../lib';
+import { closeIcon } from '../../lib/icons';
+import { insertSvg } from '../../lib/utils';
 
 export const createCloseButton = (onClose: () => void) => {
 	const button = document.createElement('button');
 	button.type = 'button';
+	button.tabIndex = -1;
 	button.title = 'Закрыть';
 	button.setAttribute('aria-label', 'Закрыть');
 	button.className =
-		'ml-auto inline-flex size-7 shrink-0 cursor-pointer items-center justify-center text-(--text-secondary) transition-colors select-none hover:text-(--accent-primary-hover) disabled:pointer-events-none disabled:opacity-50';
-	insertSvg(button, closeIcon, 'size-4');
+		'ml-auto inline-flex size-7 shrink-0 cursor-pointer items-center justify-end text-(--text-secondary) transition-colors select-none hover:text-(--accent-primary-hover) disabled:pointer-events-none disabled:opacity-50';
+	insertSvg(button, closeIcon, 'size-5 xl:size-4');
 
 	button.addEventListener('click', onClose);
 

@@ -1,17 +1,23 @@
-import { action, computed, makeObservable, observable } from 'mobx';
+import axios from 'axios';
+import { action, computed, makeObservable, observable, runInAction } from 'mobx';
 
-import type { IUserAuthPort } from '@/entities/user';
+import type { IUserAuthPort, User } from '@/entities/user';
 import { AsyncStore } from '@/shared/lib/store';
 
-import { authApi } from '../api';
-import { authChannel } from '../lib';
-import type { IAuthDevicePort } from '.';
+import { authApi } from '../api/auth';
+import { authChannel } from '../lib/auth-channel';
+import type { IAuthDevicePort } from './ports';
 
 export class AuthStore extends AsyncStore implements IAuthDevicePort {
 	private authVersion = 0;
+	private initPromise: Promise<void> | null = null;
+	private logoutPromise: Promise<boolean> | null = null;
+	private logoutGuard: (userId: string) => Promise<'saved' | 'discard' | false> = async () => 'saved';
+	private discardNotes: (userId: string) => void = () => {};
 
 	isInitializing = true;
 	lastAuthTime = 0;
+	isLoggingOut = false;
 
 	get isReady(): boolean {
 		return !!this.userStore.id;
@@ -109,28 +115,65 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		});
 	}
 
-	async logout(): Promise<void> {
-		try {
-			await authApi.logout();
+	setLogoutGuard(
+		guard: (userId: string) => Promise<'saved' | 'discard' | false>,
+		discard: (userId: string) => void
+	): void {
+		this.logoutGuard = guard;
+		this.discardNotes = discard;
+	}
 
-			authChannel.postMessage({ type: 'logout' });
-		} finally {
-			this.userStore.clearSession();
-			this.reset();
+	logout(): Promise<boolean> {
+		if (this.logoutPromise) return this.logoutPromise;
+
+		this.isLoggingOut = true;
+		const promise = this.performLogout().finally(
+			action(() => {
+				this.logoutPromise = null;
+				this.isLoggingOut = false;
+			})
+		);
+		this.logoutPromise = promise;
+
+		return promise;
+	}
+
+	private async performLogout(): Promise<boolean> {
+		const userId = this.userStore.id;
+		if (!userId) return true;
+
+		const decision = await this.logoutGuard(userId);
+		if (!decision || this.userStore.id !== userId) return false;
+
+		await authApi.logout();
+
+		authChannel.postMessage({ type: 'logout', userId, discardNotes: decision === 'discard' });
+		if (this.userStore.id === userId) {
+			if (decision === 'discard') this.discardNotes(userId);
+			this.endSession();
 		}
+
+		return true;
+	}
+
+	endSession(): void {
+		this.authVersion++;
+		this.userStore.clearSession();
+		this.reset();
 	}
 
 	private async checkAuth(): Promise<void> {
 		const version = this.authVersion;
-		const { authenticated, user } = await authApi.getSession();
+		let user: User | null;
 
-		if (version !== this.authVersion) return;
-
-		if (!authenticated || !user) {
-			this.userStore.setUser(null);
-			return;
+		try {
+			user = (await authApi.getCurrentUser()).user;
+		} catch (error) {
+			if (!axios.isAxiosError(error) || error.response?.status !== 401) throw error;
+			user = null;
 		}
 
+		if (version !== this.authVersion) return;
 		this.userStore.setUser(user);
 	}
 
@@ -140,10 +183,10 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 
 	private readonly handleAuthMessage = (event: MessageEvent) => {
 		if (event.data?.type !== 'logout') return;
+		if (event.data.userId && event.data.userId !== this.userStore.id) return;
+		if (event.data.discardNotes && this.userStore.id) this.discardNotes(this.userStore.id);
 
-		this.authVersion++;
-		this.userStore.clearSession();
-		this.reset();
+		this.endSession();
 	};
 
 	constructor(private readonly userStore: IUserAuthPort) {
@@ -152,26 +195,48 @@ export class AuthStore extends AsyncStore implements IAuthDevicePort {
 		makeObservable<this, 'updateAuthTime' | 'reset'>(this, {
 			isInitializing: observable,
 			lastAuthTime: observable,
+			isLoggingOut: observable,
 			isReady: computed,
 
 			updateAuthTime: action,
 			reset: action,
+			logout: action,
+			endSession: action,
 		});
 	}
 
-	async init(): Promise<void> {
-		if (this.inited) return;
+	init(): Promise<void> {
+		if (this.initPromise) return this.initPromise;
+		if (this.inited) return Promise.resolve();
+
 		this.inited = true;
 
-		authChannel.addEventListener('message', this.handleAuthMessage);
+		runInAction(() => (this.isInitializing = true));
 
+		authChannel.addEventListener('message', this.handleAuthMessage);
 		this.track(() => authChannel.removeEventListener('message', this.handleAuthMessage));
 
-		try {
-			await this.checkAuth();
-		} finally {
-			this.isInitializing = false;
-		}
+		const promise = this.checkAuth()
+			.catch((error) => {
+				if (this.initPromise === promise) super.destroy();
+				throw error;
+			})
+			.finally(
+				action(() => {
+					if (this.initPromise !== promise) return;
+					this.initPromise = null;
+					this.isInitializing = false;
+				})
+			);
+		this.initPromise = promise;
+
+		return promise;
+	}
+
+	override destroy(): void {
+		this.authVersion++;
+		this.initPromise = null;
+		super.destroy();
 	}
 
 	protected reset(): void {

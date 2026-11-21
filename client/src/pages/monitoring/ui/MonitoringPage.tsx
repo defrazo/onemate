@@ -4,7 +4,7 @@ import { IconInfoCircle, IconUsers } from '@tabler/icons-react';
 import { usePageTitle } from '@/shared/lib/hooks';
 import { LoadingError, NoContent } from '@/shared/ui';
 
-import { getMonitoring, type MonitoringData } from '../api';
+import { getMonitoring, type MonitoringData } from '../api/monitoring';
 import { MetricGroups, UserRow } from './components';
 
 export const MonitoringPage = () => {

@@ -1,7 +1,8 @@
 import { SegmentedControl } from '@/shared/ui';
 
-import type { CloudTab } from '../../model';
-import { ClipboardToolbar, FilesToolbar } from '.';
+import type { CloudTab } from '../../model/types';
+import { ClipboardToolbar } from './Clipboard/ClipboardToolbar';
+import { FilesToolbar } from './Files/FilesToolbar';
 
 const CLOUD_TABS = [
 	{ value: 'files', label: 'Файлы' },

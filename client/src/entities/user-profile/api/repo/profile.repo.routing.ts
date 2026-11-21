@@ -1,9 +1,12 @@
 import type { UserStore } from '@/entities/user';
-import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import type { Theme } from '@/shared/config';
 import { BaseRouting } from '@/shared/lib/repository';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
-import { ProfileRepoDemo, ProfileRepoLaravel } from '.';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
+import type { DashboardLayout, WidgetId, WidgetSlot } from '../../model/widgets';
+import { ProfileRepoDemo } from './profile.repo.demo';
+import { ProfileRepoLaravel } from './profile.repo.laravel';
 
 export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo {
 	private readonly realRepo: IUserProfileRepo;
@@ -44,9 +47,14 @@ export class ProfileRepoRouting extends BaseRouting implements IUserProfileRepo 
 		return this.getTargetRepo().updateNotification(id, patch);
 	}
 
-	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+	async updateWidgets(id: string, widgets: DashboardLayout): Promise<void> {
 		this.checkPermission('profile', 'save');
 		return this.getTargetRepo().updateWidgets(id, widgets);
+	}
+
+	async updateMobileWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+		this.checkPermission('profile', 'save');
+		return this.getTargetRepo().updateMobileWidgets(id, widgets);
 	}
 
 	async updateSlots(id: string, slots: WidgetSlot[]): Promise<void> {

@@ -6,7 +6,7 @@ import { observer } from 'mobx-react-lite';
 import { usePageTitle, useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 
-import { useDashboard } from '../model';
+import { useDashboard } from '../model/useDashboard';
 import { Slot, Widget } from './components';
 
 export const DashboardPage = observer(() => {
@@ -14,7 +14,18 @@ export const DashboardPage = observer(() => {
 
 	const { isDesktop, isTablet, isMobileLandscape } = useResponsive();
 
-	const { sensors, rowIds, widgetsOrder, slots, options, getSlotContent, setSlot, handleDragEnd } = useDashboard();
+	const {
+		sensors,
+		rowIds,
+		widgetsOrder,
+		slots,
+		options,
+		getSlotContent,
+		setSlot,
+		handleDragEnd,
+		activeWidgets,
+		selectWidget,
+	} = useDashboard();
 
 	return (
 		<>
@@ -27,8 +38,13 @@ export const DashboardPage = observer(() => {
 						onDragEnd={handleDragEnd}
 					>
 						<SortableContext items={rowIds} strategy={rectSortingStrategy}>
-							{widgetsOrder.map((widget) => (
-								<Widget key={widget.id} {...widget} />
+							{widgetsOrder.map((items) => (
+								<Widget
+									key={items[0].id}
+									activeId={activeWidgets[items[0].id]}
+									items={items}
+									onSelect={(id) => selectWidget(items[0].id, id)}
+								/>
 							))}
 						</SortableContext>
 					</DndContext>

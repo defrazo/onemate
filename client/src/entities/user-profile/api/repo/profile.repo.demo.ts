@@ -1,20 +1,33 @@
-import type { Theme, WidgetId, WidgetSlot } from '@/shared/config';
+import type { Theme } from '@/shared/config';
 import { RestrictedAccess } from '@/shared/lib/errors';
 import { storage } from '@/shared/lib/storage';
 import { key, toPlain } from '@/shared/lib/utils';
 
-import type { IUserProfileRepo, UserProfile, UserProfilePatch } from '../../model';
+import type { IUserProfileRepo } from '../../model/ports';
+import type { UserProfile, UserProfilePatch } from '../../model/types';
+import {
+	type DashboardLayout,
+	normalizeDashboardLayout,
+	normalizeWidgetSlots,
+	type WidgetId,
+	type WidgetSlot,
+} from '../../model/widgets';
 
 export class ProfileRepoDemo implements IUserProfileRepo {
 	constructor(private readonly loadInitialProfile: (id: string) => Promise<UserProfile>) {}
 
 	async loadProfile(id: string): Promise<UserProfile> {
 		const stored = storage.get(key(id, 'profile'));
-		if (stored && typeof stored === 'object') return structuredClone(stored as UserProfile);
+		const hasStored = stored && typeof stored === 'object';
+		const profile = hasStored ? (stored as UserProfile) : await this.loadInitialProfile(id);
+		const normalized = {
+			...profile,
+			widgets_sequence: normalizeDashboardLayout(profile.widgets_sequence),
+			widgets_slots: normalizeWidgetSlots(profile.widgets_slots),
+		};
 
-		const initial = await this.loadInitialProfile(id);
-		storage.set(key(id, 'profile'), toPlain(initial));
-		return structuredClone(initial);
+		if (!hasStored) storage.set(key(id, 'profile'), toPlain(normalized));
+		return structuredClone(normalized);
 	}
 
 	async updateProfile(id: string, patch: UserProfilePatch): Promise<UserProfile> {
@@ -40,9 +53,14 @@ export class ProfileRepoDemo implements IUserProfileRepo {
 		throw new RestrictedAccess();
 	}
 
-	async updateWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+	async updateWidgets(id: string, widgets: DashboardLayout): Promise<void> {
 		const profile = await this.loadProfile(id);
 		storage.set(key(id, 'profile'), toPlain({ ...profile, widgets_sequence: widgets }));
+	}
+
+	async updateMobileWidgets(id: string, widgets: WidgetId[]): Promise<void> {
+		const profile = await this.loadProfile(id);
+		storage.set(key(id, 'profile'), toPlain({ ...profile, mobile_widgets: widgets }));
 	}
 
 	async updateSlots(id: string, slots: WidgetSlot[]): Promise<void> {

@@ -3,18 +3,16 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 import type { Gender } from '@/entities/user-profile';
-import { useResponsive } from '@/shared/lib/hooks';
 import { generateMonth, generateYears } from '@/shared/lib/utils';
 import { validateName, validateUsername } from '@/shared/lib/validators';
 import { Collapse, Input, Radio, Select } from '@/shared/ui';
 
-import { genderOptions, getAvailableDays } from '../../../lib';
-import type { PersonalDraft } from '../../../model';
-import { FormActions, RemoveButton } from '..';
+import { genderOptions, getAvailableDays } from '../../../lib/utils';
+import type { PersonalDraft } from '../../../model/types';
+import { FormActions } from '../FormActions';
+import { RemoveButton } from '../RemoveButton';
 
 export const PersonalDataSection = observer(() => {
-	const { isMobile, isTablet } = useResponsive();
-
 	const { notifyStore, userProfileStore, userStore } = useStore();
 
 	const createDraft = (): PersonalDraft => ({
@@ -164,8 +162,6 @@ export const PersonalDataSection = observer(() => {
 				<div className="flex flex-col gap-2 lg:flex-row">
 					<Select
 						clearable
-						direction={isMobile && !isTablet ? 'up' : 'down'}
-						listClassName="xl:max-h-50 2xl:max-h-56"
 						options={generateYears()}
 						placeholder="Год"
 						value={draft.birthYear}
@@ -174,8 +170,6 @@ export const PersonalDataSection = observer(() => {
 					/>
 					<Select
 						clearable
-						direction={isMobile && !isTablet ? 'up' : 'down'}
-						listClassName="xl:max-h-50 2xl:max-h-56"
 						options={generateMonth()}
 						placeholder="Месяц"
 						value={draft.birthMonth}
@@ -184,9 +178,7 @@ export const PersonalDataSection = observer(() => {
 					/>
 					<Select
 						clearable
-						direction={isMobile && !isTablet ? 'up' : 'down'}
 						disabled={!draft.birthYear || !draft.birthMonth}
-						listClassName="xl:max-h-50 2xl:max-h-56"
 						options={days.map((day) => ({ value: day, label: day }))}
 						placeholder="День"
 						value={draft.birthDay}

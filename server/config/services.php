@@ -1,6 +1,10 @@
 <?php
 
 return [
+    'groq' => [
+        'key' => env('GROQ_API_KEY'),
+    ],
+
     'check_proxy' => [
         'host' => env('CHECK_PROXY_HOST'),
         'port' => (int) env('CHECK_PROXY_PORT', 1080),

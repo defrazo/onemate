@@ -1,17 +1,11 @@
 import { PermissionError } from '@/shared/lib/errors';
 
-import type {
-	ConnectedApp,
-	ConnectedAppsResponse,
-	Feature,
-	IUserRepo,
-	IUserRoutingPort,
-	Operation,
-	Role,
-	User,
-} from '../../model';
-import { PermissionService } from '../../model';
-import { UserRepoDemo, UserRepoLaravel } from '.';
+import type { Feature, Operation, Role } from '../../model/acl';
+import { PermissionService } from '../../model/acl';
+import type { IUserRepo, IUserRoutingPort } from '../../model/ports';
+import type { ConnectedApp, ConnectedAppsResponse, User } from '../../model/types';
+import { UserRepoDemo } from './user.repo.demo';
+import { UserRepoLaravel } from './user.repo.laravel';
 
 export class UserRepoRouting implements IUserRepo {
 	private readonly realRepo: IUserRepo;

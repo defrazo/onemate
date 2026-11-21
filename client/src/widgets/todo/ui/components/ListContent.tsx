@@ -5,7 +5,9 @@ import { observer } from 'mobx-react-lite';
 import type { TodoList } from '@/entities/todo';
 import { NoContent } from '@/shared/ui';
 
-import { AddItem, ItemRow, Progress } from '.';
+import { AddItem } from './AddItem';
+import { ItemRow } from './ItemRow';
+import { Progress } from './Progress';
 
 export const ListContent = observer(({ list }: { list: TodoList }) => {
 	const [activeActionsId, setActiveActionsId] = useState<string | null>(null);

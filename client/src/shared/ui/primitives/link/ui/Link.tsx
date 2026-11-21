@@ -61,9 +61,9 @@ export const Link = ({
 				onClick?.(event);
 			}}
 		>
-			{leftIcon && <span className="mr-2">{leftIcon}</span>}
+			{leftIcon && <span className="mr-1.5">{leftIcon}</span>}
 			{centerIcon ? <span>{centerIcon}</span> : children}
-			{rightIcon && <span className="ml-2">{rightIcon}</span>}
+			{rightIcon && <span className="ml-1.5">{rightIcon}</span>}
 		</RouterLink>
 	);
 };

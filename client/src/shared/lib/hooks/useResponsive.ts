@@ -23,7 +23,8 @@
  *   return isMobile ? <MobileView /> : <DesktopView />;
  */
 
-import { useDeviceType, useOrientation } from '.';
+import { useDeviceType } from './useDeviceType';
+import { useOrientation } from './useOrientation';
 
 export const useResponsive = () => {
 	const device = useDeviceType();

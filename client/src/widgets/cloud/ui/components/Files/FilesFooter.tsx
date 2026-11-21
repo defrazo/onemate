@@ -2,10 +2,8 @@ import { IconUpload } from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
-import { pluralize } from '@/shared/lib/utils';
+import { formatFileSize, pluralize } from '@/shared/lib/utils';
 import { Button, Divider } from '@/shared/ui';
-
-import { formatFileSize } from '../../../lib';
 
 interface FilesFooterProps {
 	isDownloading: boolean;

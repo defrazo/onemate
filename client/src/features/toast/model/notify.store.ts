@@ -1,6 +1,7 @@
 import { action, makeObservable, observable } from 'mobx';
 
-import { type Notification, notify, type NotifyType } from '.';
+import { notify } from './notify';
+import type { Notification, NotifyType } from './types';
 
 const NOTICE_DURATION = 3000;
 

@@ -5,7 +5,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import type { PaletteColor } from '@/shared/config';
 
-import { CardActions } from '.';
+import { CardActions } from './CardActions';
 
 interface CardProps {
 	id: string;
@@ -31,11 +31,12 @@ export const Card = observer(({ id, color, sortingDisabled = false }: CardProps)
 			style={{ transform: CSS.Transform.toString(transform), transition, zIndex: isDragging ? 10 : 0 }}
 		>
 			<button
-				className="flex min-w-0 flex-1 cursor-pointer flex-col pl-1 text-left"
+				className="flex min-w-0 flex-1 cursor-pointer flex-col text-left"
+				tabIndex={-1}
 				type="button"
 				onClick={() => notesStore.openNote(id)}
 			>
-				<p className="line-clamp-3 text-sm leading-4.5 whitespace-pre-wrap text-(--text-primary) xl:line-clamp-4">
+				<p className="line-clamp-3 truncate text-sm leading-4.5 whitespace-pre-wrap text-(--text-primary) xl:line-clamp-4">
 					{note.text || 'Пустая заметка'}
 				</p>
 			</button>

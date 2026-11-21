@@ -55,7 +55,6 @@ class MonitoredServiceController extends Controller
                 'message' => $exception->getMessage(),
             ], 422);
         } catch (ConnectionException) {
-            // Сервис может быть временно недоступен
         }
 
         $attributes = [
@@ -177,7 +176,6 @@ class MonitoredServiceController extends Controller
             } catch (InvalidArgumentException $exception) {
                 abort(422, $exception->getMessage());
             } catch (ConnectionException) {
-                // Недоступный сервис сохраняется
             }
 
             $checkConfigChanged = $data['url'] !== $service->url;
@@ -194,7 +192,6 @@ class MonitoredServiceController extends Controller
             } catch (InvalidArgumentException $exception) {
                 abort(422, $exception->getMessage());
             } catch (ConnectionException) {
-                // Недоступный сервис сохраняется
             }
 
             $checkConfigChanged =

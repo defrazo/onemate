@@ -4,5 +4,4 @@ export { validateLogin } from './login';
 export { validateName } from './name';
 export { validatePassword } from './password';
 export { validatePhone } from './phone';
-export type * from './types';
 export { validateUsername } from './username';

@@ -5,8 +5,9 @@ import { useStore } from '@/app/providers';
 import { useCopy } from '@/shared/lib/hooks';
 import { Button, LoadingState } from '@/shared/ui';
 
-import { getPreviewType } from '../../../lib';
-import { CLOUD_PREVIEW_BYTES, CLOUD_TEXT_PREVIEW_BYTES, type CloudFile } from '../../../model';
+import { getPreviewType } from '../../../lib/getPreviewType';
+import { CLOUD_PREVIEW_BYTES, CLOUD_TEXT_PREVIEW_BYTES } from '../../../model/constants';
+import type { CloudFile } from '../../../model/types';
 
 export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 	const copy = useCopy();
@@ -76,7 +77,7 @@ export const PreviewDialog = ({ file }: { file: CloudFile }) => {
 	}, [file.id, file.size, cloudStore, notifyStore, type]);
 
 	return (
-		<div className="flex min-h-0 flex-col gap-3 md:-mt-4 md:w-2xl">
+		<div className="flex min-h-0 flex-col gap-3 md:w-2xl">
 			<div className="flex min-w-0 flex-col select-none">
 				<div className="flex items-center gap-2">
 					<h2 className="max-w-2/3 truncate font-semibold xl:text-lg">{file.name}</h2>

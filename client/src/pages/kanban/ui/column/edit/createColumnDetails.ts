@@ -1,4 +1,4 @@
-import { LIMITS } from '../../../model';
+import { LIMITS } from '../../../model/constants';
 
 export const createColumnDetails = ({ title: initialTitle, onChange }: { title: string; onChange: () => void }) => {
 	// === CONTAINER ===

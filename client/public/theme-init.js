@@ -1,5 +1,6 @@
 (function () {
 	const KEY = 'onemate_cache_ui';
+	const DEFAULT = 'dark';
 	const root = document.documentElement;
 
 	function applyTheme(theme) {
@@ -7,6 +8,8 @@
 		root.classList.add(theme + '-theme');
 		root.style.colorScheme = theme;
 	}
+
+	applyTheme(DEFAULT);
 
 	try {
 		const saved = JSON.parse(localStorage.getItem(KEY))?.theme;

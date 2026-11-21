@@ -3,11 +3,13 @@ import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 
-import { type Placement, useTooltip } from '../model';
+import type { Placement } from '../model/types';
+import { useTooltip } from '../model/useTooltip';
 
 interface TooltipProps {
 	content?: ReactNode;
 	className?: string;
+	contentClassName?: string;
 	children: ReactNode;
 	preferredPlacements?: Placement[];
 	offset?: number;
@@ -23,6 +25,7 @@ interface TooltipContentProps extends Omit<TooltipProps, 'content'> {
 const TooltipContent = ({
 	content,
 	className,
+	contentClassName,
 	children,
 	preferredPlacements = DEFAULT_PLACEMENTS,
 	offset = 8,
@@ -34,7 +37,10 @@ const TooltipContent = ({
 		<div
 			ref={tipRef}
 			aria-hidden={!show}
-			className="fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block"
+			className={cn(
+				'fixed z-100 hidden max-w-sm rounded-lg border border-(--border-primary) bg-(--bg-secondary) px-2.5 py-1.5 text-sm leading-snug text-(--text-primary) shadow-lg xl:block',
+				contentClassName
+			)}
 			role="tooltip"
 			style={{ top: coords.top, left: coords.left }}
 		>
@@ -58,7 +64,6 @@ const TooltipContent = ({
 			<div
 				ref={triggerRef}
 				className={cn('inline-flex cursor-help', className)}
-				tabIndex={0}
 				onBlur={() => setShow(false)}
 				onFocus={() => setShow(true)}
 				onMouseEnter={() => setShow(true)}

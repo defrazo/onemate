@@ -72,7 +72,7 @@ export const ListDialog = ({
 	};
 
 	return (
-		<form className="core-gap flex flex-col select-none md:-mt-4 md:w-103.5" onSubmit={handleSubmit}>
+		<form className="core-gap flex flex-col select-none md:w-103.5" onSubmit={handleSubmit}>
 			<div className="flex gap-2">
 				<div className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-(--accent-primary)/12 text-(--accent-primary)">
 					<Icon className="size-5.5" />
@@ -107,7 +107,7 @@ export const ListDialog = ({
 			</div>
 			{isList && (
 				<div className="flex flex-col rounded-lg border border-(--border-primary) bg-(--tone)">
-					<div className="group flex min-h-11 flex-wrap items-center gap-2 border-b border-(--border-primary) px-2 py-1.5 transition-colors hover:bg-(--tone-hover)">
+					<div className="group flex h-8 flex-wrap items-center gap-2 border-b border-(--border-primary) px-2 py-1.5 transition-colors hover:bg-(--tone-hover)">
 						<span className="flex size-5 shrink-0 items-center justify-center text-(--text-disabled) transition-colors group-hover:text-(--accent-primary)">
 							<IconPalette className="size-5" />
 						</span>
@@ -138,7 +138,7 @@ export const ListDialog = ({
 						</div>
 					</div>
 					{canvasId && canvases.length > 1 && (
-						<div className="group flex min-h-11 flex-wrap items-center gap-2 px-2 py-1.5 transition-colors hover:bg-(--tone-hover)">
+						<div className="group flex h-8 flex-wrap items-center gap-2 px-2 py-1.5 transition-colors hover:bg-(--tone-hover)">
 							<span className="flex size-5 shrink-0 items-center justify-center text-(--text-disabled) transition-colors group-hover:text-(--accent-primary)">
 								<IconLayoutGrid className="size-5" />
 							</span>

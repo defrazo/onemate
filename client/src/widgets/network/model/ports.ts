@@ -7,7 +7,7 @@ import type {
 	ServiceCheckResult,
 	SslCheckResult,
 	UpdateMonitoredService,
-} from '.';
+} from './types';
 
 export interface INetworkRepo {
 	loadServices(): Promise<MonitoredService[]>;

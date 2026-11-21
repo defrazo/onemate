@@ -7,8 +7,8 @@ import { cn } from '@/shared/lib/utils';
 import { validatePassword } from '@/shared/lib/validators';
 import { Collapse, PasswordInput, PasswordRules } from '@/shared/ui';
 
-import { useProfile } from '../../../model';
-import { FormActions } from '..';
+import { useProfile } from '../../../model/useProfile';
+import { FormActions } from '../FormActions';
 
 export const PasswordSection = observer(() => {
 	const { checkPassword } = useValidation();
@@ -80,7 +80,7 @@ export const PasswordSection = observer(() => {
 				<div className="flex flex-col gap-2">
 					<div className="relative">
 						<PasswordInput
-							autoComplete="new-password"
+							autoComplete="off"
 							id="new-password"
 							leftIcon={null}
 							name="new-password"

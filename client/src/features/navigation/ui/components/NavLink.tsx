@@ -1,7 +1,7 @@
 import { cn } from '@/shared/lib/utils';
 import { Link } from '@/shared/ui';
 
-import type { NavItem, NavVariant } from '../../model';
+import type { NavItem, NavVariant } from '../../model/types';
 
 interface NavLinkProps {
 	item: NavItem;
@@ -18,7 +18,7 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 		active ? 'text-(--accent-primary)' : 'text-(--text-primary)/80 hover:text-(--accent-primary)',
 		isMobile
 			? 'min-w-0 flex-1 flex-col gap-1 px-1 py-1 text-xs'
-			: 'gap-2 px-3 py-1.5 font-bold hover:bg-(--tone-strong-hover)',
+			: 'gap-2 px-3 py-1.5 font-bold hover:bg-(--tone-hover)',
 		!isMobile && active && 'bg-(--accent-primary)/12',
 		isPrimary && '-translate-y-2.5'
 	);
@@ -29,7 +29,7 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 				className={cn(
 					'flex shrink-0 items-center justify-center',
 					isPrimary
-						? 'size-10 rounded-full bg-(--accent-primary) text-(--text-on-accent) shadow-md ring-4 ring-(--bg-tertiary)'
+						? 'size-10 rounded-full bg-(--accent-primary) text-(--text-on-accent) shadow-md ring-4 ring-(--tone) backdrop-blur-md'
 						: isMobile
 							? 'size-5'
 							: 'size-5'
@@ -43,7 +43,15 @@ export const NavLink = ({ item, active, variant }: NavLinkProps) => {
 
 	if (item.external) {
 		return (
-			<a className={className} href={item.to} rel="noopener noreferrer" target="_blank">
+			<a
+				className={cn(
+					'focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none',
+					className
+				)}
+				href={item.to}
+				rel="noopener noreferrer"
+				target="_blank"
+			>
 				{content}
 			</a>
 		);

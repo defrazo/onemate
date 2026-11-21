@@ -14,12 +14,17 @@ import { useParams } from 'react-router-dom';
 
 import { useStore } from '@/app/providers';
 import { useCopy, usePageTitle } from '@/shared/lib/hooks';
+import { formatFileSize } from '@/shared/lib/utils';
 import { Button } from '@/shared/ui';
-import { formatFileSize } from '@/widgets/cloud';
 
-import { getSharedFile, getSharedFileDownloadUrl, getSharedFilePreviewUrl, SharedFileNotFoundError } from '../api';
-import { getPreviewType } from '../lib';
-import type { SharedFile } from '../model';
+import {
+	getSharedFile,
+	getSharedFileDownloadUrl,
+	getSharedFilePreviewUrl,
+	SharedFileNotFoundError,
+} from '../api/sharedFile';
+import { getPreviewType } from '../lib/utils';
+import type { SharedFile } from '../model/types';
 
 type Status = 'loading' | 'success' | 'not-found' | 'error';
 type PreviewStatus = 'idle' | 'loading' | 'success' | 'error';
@@ -194,7 +199,7 @@ export const SharedFilePage = () => {
 	}, []);
 
 	return (
-		<div className="flex min-h-screen items-center justify-center px-4 py-10 select-none">
+		<div className="page-safe-area flex min-h-dvh items-center justify-center select-none [--page-pad-y:2.5rem]">
 			<div className="core-surface core-pad flex w-full max-w-xl flex-col items-center gap-3 bg-(--bg-secondary) px-6 py-8 shadow-(--shadow-contrast) md:px-8">
 				<div className="flex size-16 items-center justify-center rounded-xl bg-(--accent-primary-muted)">
 					{status === 'loading' ? (
@@ -259,14 +264,14 @@ export const SharedFilePage = () => {
 						</div>
 						<div className="flex w-full flex-col gap-2 md:flex-row">
 							<a
-								className="flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-colors hover:bg-(--accent-primary-hover) xl:max-w-60"
+								className="mx-auto flex h-8 w-full min-w-0 items-center justify-center gap-2 rounded-lg bg-(--accent-primary) px-4 font-medium text-(--text-on-accent) transition-colors hover:bg-(--accent-primary-hover) xl:max-w-60"
 								href={downloadUrl}
 							>
 								<IconDownload className="size-4" />
 								Скачать файл
 							</a>
-							<div className="flex flex-1 items-center gap-2">
-								{previewType && (
+							{previewType && (
+								<div className="flex flex-1 items-center gap-2">
 									<Button
 										className="h-8 min-w-0 flex-1"
 										variant="toneStrong"
@@ -274,18 +279,20 @@ export const SharedFilePage = () => {
 									>
 										{showPreview ? 'Скрыть просмотр' : 'Предпросмотр'}
 									</Button>
-								)}
-								{previewType === 'text' && (
-									<Button
-										centerIcon={<IconCopy className="size-4" />}
-										className="size-8 shrink-0"
-										disabled={file.size > MAX_TEXT_BYTES}
-										title="Копировать текст"
-										variant="toneStrong"
-										onClick={() => void handleCopyText()}
-									/>
-								)}
-							</div>
+									{previewType === 'text' && (
+										<Button
+											className="h-8 flex-1 shrink-0"
+											disabled={file.size > MAX_TEXT_BYTES}
+											leftIcon={<IconCopy className="size-4" />}
+											title="Копировать текст"
+											variant="toneStrong"
+											onClick={() => void handleCopyText()}
+										>
+											Копировать
+										</Button>
+									)}
+								</div>
+							)}
 						</div>
 						{showPreview && (
 							<div className="relative w-full min-w-0 overflow-hidden rounded-xl bg-(--bg-tertiary)">
@@ -332,7 +339,7 @@ export const SharedFilePage = () => {
 									/>
 								)}
 								{previewType === 'text' && previewStatus === 'success' && (
-									<pre className="max-h-96 min-h-48 overflow-auto p-4 pr-12 text-xs whitespace-pre-wrap select-text">
+									<pre className="max-h-96 min-h-48 max-w-full overflow-auto p-4 text-xs wrap-anywhere whitespace-pre-wrap select-text">
 										{textPreview}
 									</pre>
 								)}

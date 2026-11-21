@@ -3,8 +3,8 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { cn } from '@/shared/lib/utils';
 
-import { conditionIcons } from '../../lib';
-import type { ConditionCode } from '../../model';
+import { conditionIcons } from '../../lib/conditionIcons';
+import type { ConditionCode } from '../../model/types';
 
 interface ConditionIconProps {
 	condition: ConditionCode;

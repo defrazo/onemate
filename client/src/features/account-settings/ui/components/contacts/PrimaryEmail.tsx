@@ -6,8 +6,8 @@ import { useStore } from '@/app/providers';
 import { useResponsive, useValidation } from '@/shared/lib/hooks';
 import { Collapse, Input, PasswordInput } from '@/shared/ui';
 
-import { FormActions } from '..';
-import { PendingEmailDialog } from '.';
+import { FormActions } from '../FormActions';
+import { PendingEmailDialog } from './PendingEmailDialog';
 
 export const PrimaryEmail = observer(() => {
 	const { isMobile } = useResponsive();
@@ -85,12 +85,10 @@ export const PrimaryEmail = observer(() => {
 					variant="tone"
 					onChange={(e) => setMainEmail(e.target.value)}
 				/>
-
 				{isEmailPending && (
 					<p className="text-xs text-(--text-secondary) select-none">Новый e-mail ожидает подтверждения</p>
 				)}
-
-				<Collapse open={showEmailChange}>
+				<Collapse open={showEmailChange && !!mainEmail}>
 					<div className="flex flex-col gap-2">
 						<PasswordInput
 							autoComplete="off"

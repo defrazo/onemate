@@ -1,4 +1,5 @@
-export * from './defaults';
-export type * from './ports';
-export type * from './types';
-export * from './userProfile.store';
+export { createDefaultDashboardLayout } from './defaults';
+export type { IUserProfileThemePort } from './ports';
+export type { Gender, UserProfile } from './types';
+export { UserProfileStore } from './userProfile.store';
+export type { WidgetId, WidgetSlot } from './widgets';

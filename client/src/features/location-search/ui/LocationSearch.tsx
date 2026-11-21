@@ -8,7 +8,7 @@ import { IconLocation } from '@/shared/assets/icons';
 import { cn } from '@/shared/lib/utils';
 import { Input, LoadingState } from '@/shared/ui';
 
-import { LocationSearchStore } from '../model';
+import { LocationSearchStore } from '../model/location.store';
 import { Suggestions } from './components';
 
 interface LocationSearchProps {
@@ -77,7 +77,7 @@ export const LocationSearch = observer(
 							<LoadingState className="mr-1" size="sm" />
 						) : onRemove && value ? (
 							<IconTrash
-								className="mr-1 ml-1.5 size-5.5 cursor-pointer text-(--text-primary)/80 opacity-50 transition-[color,opacity] hover:text-(--status-error) hover:opacity-100"
+								className="mr-1 ml-1.5 size-5.5 cursor-pointer text-(--text-primary)/80 opacity-50 transition-[color,opacity] hover:text-(--danger) hover:opacity-100"
 								onClick={onRemove}
 							/>
 						) : showGeolocation ? (

@@ -122,11 +122,10 @@ export const FilesItemActions = ({
 							.map(({ id, label, icon: Icon, onClick, danger }) => (
 								<div key={id}>
 									{danger && <div className="my-1 border-t border-(--border-primary)" />}
-
 									<Button
 										className={cn(
 											'w-full justify-start text-base hover:bg-(--tone-strong-hover) xl:text-sm',
-											danger && 'text-(--status-error)'
+											danger && 'hover:bg-(--danger-muted) hover:text-(--danger)'
 										)}
 										leftIcon={
 											<Icon

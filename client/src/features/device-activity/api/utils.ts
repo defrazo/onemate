@@ -2,7 +2,7 @@ import { API_URLS } from '@/shared/config';
 import { ApiError, EmptyResultError } from '@/shared/lib/errors';
 import { generateUUID, randomNumber } from '@/shared/lib/utils';
 
-import type { ActivityLog } from '../model';
+import type { ActivityLog } from '../model/types';
 
 export const fakeLog = (opts: { createdAtMs: number; id: string }): ActivityLog => {
 	const ip = fakeIP();

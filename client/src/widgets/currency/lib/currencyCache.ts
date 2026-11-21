@@ -1,26 +1,32 @@
 import { LS_PREFIX } from '@/shared/config';
 import { storage } from '@/shared/lib/storage';
 
-import type { RatesResponse } from '../model';
+import type { RatesResponse } from '../model/types';
 
 const CACHE_KEY = `${LS_PREFIX}currency_rates`;
 const TTL = 12 * 60 * 60 * 1000;
 
-export type CurrencyCacheData = {
+type CurrencyCacheData = {
 	rates: RatesResponse;
 	cachedAt: number;
 };
 
 export const currencyCache = {
 	read(): CurrencyCacheData | null {
-		const cached = storage.get(CACHE_KEY);
-		if (!cached || typeof cached !== 'object') return null;
+		try {
+			const cached = storage.get(CACHE_KEY);
+			if (!cached || typeof cached !== 'object') return null;
 
-		return cached as CurrencyCacheData;
+			return cached as CurrencyCacheData;
+		} catch {
+			return null;
+		}
 	},
 
 	write(rates: RatesResponse) {
-		storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
+		try {
+			storage.set(CACHE_KEY, { rates, cachedAt: Date.now() });
+		} catch {}
 	},
 
 	isFresh(cache: CurrencyCacheData) {
@@ -28,6 +34,8 @@ export const currencyCache = {
 	},
 
 	clear() {
-		storage.remove(CACHE_KEY);
+		try {
+			storage.remove(CACHE_KEY);
+		} catch {}
 	},
 };

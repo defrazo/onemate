@@ -9,11 +9,6 @@ export interface VerifyInviteResponse {
 	invite_token: string;
 }
 
-export interface AuthSessionResponse {
-	authenticated: boolean;
-	user: User | null;
-}
-
 export interface LoginPayload {
 	login: string;
 	password: string;

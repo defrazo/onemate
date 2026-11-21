@@ -34,7 +34,7 @@ export const ConflictDialog = () => {
 	};
 
 	return (
-		<div className="flex flex-col gap-3 select-none md:-mt-4 md:w-md">
+		<div className="flex flex-col gap-3 select-none md:w-md">
 			<div className="flex gap-2">
 				<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-amber-500/12">
 					<IconAlertTriangle className="size-6 text-amber-500" />

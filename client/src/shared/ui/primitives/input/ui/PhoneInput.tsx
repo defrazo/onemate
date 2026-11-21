@@ -2,7 +2,7 @@ import type { ChangeEvent, ComponentProps } from 'react';
 
 import { formatPhone } from '@/shared/lib/utils';
 
-import { Input } from '.';
+import { Input } from './Input';
 
 type InputChangeEvent = ChangeEvent<HTMLInputElement> & {
 	nativeEvent: InputEvent;

@@ -1,6 +1,6 @@
 import { readCache, writeCache } from '@/shared/lib/cache';
 
-import type { MonitoredService } from '../model';
+import type { MonitoredService } from '../model/types';
 
 export type NetworkCacheData = {
 	services: MonitoredService[];

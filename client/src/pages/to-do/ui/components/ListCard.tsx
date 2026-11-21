@@ -11,7 +11,10 @@ import { COLOR_PALETTE, type PaletteColor } from '@/shared/config';
 import { cn } from '@/shared/lib/utils';
 import { Button, NoContent } from '@/shared/ui';
 
-import { AddItem, ItemRow, ListActions, ListHidden } from '.';
+import { AddItem } from './AddItem';
+import { ItemRow } from './ItemRow';
+import { ListActions } from './ListActions';
+import { ListHidden } from './ListHidden';
 
 interface ListCardProps {
 	list: TodoList;
@@ -127,7 +130,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 	}, [isAdding]);
 
 	return (
-		<article
+		<div
 			ref={setCardRef}
 			aria-label={list.title}
 			className={cn(
@@ -143,6 +146,7 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					{...attributes}
 					{...listeners}
 					aria-label={`Переместить список «${list.title}»`}
+					tabIndex={-1}
 				>
 					<span
 						className={cn('ml-0.5 h-1 w-3 shrink-0 rounded-full', isCompleted && 'opacity-40')}
@@ -266,6 +270,6 @@ export const ListCard = observer(({ list, activeItemId, sourceListId, draftIds, 
 					</div>
 				</footer>
 			)}
-		</article>
+		</div>
 	);
 });

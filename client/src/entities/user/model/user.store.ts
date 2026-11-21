@@ -4,8 +4,9 @@ import { clearCache } from '@/shared/lib/cache';
 import { clearDemoStorage } from '@/shared/lib/storage';
 import { BaseStore } from '@/shared/lib/store';
 
-import { userCache } from '../lib';
-import type { ConnectedApp, IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort, Role, User } from '.';
+import type { Role } from './acl';
+import type { IBaseUserPort, IUserAuthPort, IUserRepo, IUserRoutingPort } from './ports';
+import type { ConnectedApp, User } from './types';
 
 export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort, IUserRoutingPort {
 	private repo: IUserRepo | null = null;
@@ -64,9 +65,6 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 		if (!user) return;
 
 		this.lastId = user.id;
-
-		userCache.setUserId(user.id);
-		userCache.setDeletedAt(user.id, user.deleted_at);
 	}
 
 	clearSession(): void {
@@ -80,7 +78,11 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 
 		clearCache(userId);
 
-		if (isDemo) clearDemoStorage(userId);
+		if (isDemo) {
+			try {
+				clearDemoStorage(userId);
+			} catch {}
+		}
 	}
 
 	async loadUser(): Promise<void> {
@@ -131,6 +133,7 @@ export class UserStore extends BaseStore implements IBaseUserPort, IUserAuthPort
 				this.connectedApps = apps;
 				this.isConnectedAppsLoaded = true;
 			});
+		} catch {
 		} finally {
 			runInAction(() => (this.isConnectedAppsLoading = false));
 		}

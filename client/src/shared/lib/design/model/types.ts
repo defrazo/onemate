@@ -1,4 +1,5 @@
-import type { paddings, variants } from '../lib';
+import type { paddings } from '../lib/paddings';
+import type { variants } from '../lib/variants';
 
 export type Component = 'button' | 'input' | 'textarea' | 'checkbox' | 'radio' | 'select';
 

@@ -1,4 +1,5 @@
-import type { ConnectedApp, ConnectedAppsResponse, Role, User } from '.';
+import type { Role } from './acl';
+import type { ConnectedApp, ConnectedAppsResponse, User } from './types';
 
 export interface IBaseUserPort {
 	readonly id: string | null;

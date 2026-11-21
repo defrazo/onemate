@@ -1,3 +1,2 @@
-export * from './providers';
-export * from './repo';
-export * from './utils';
+export { DeviceProviderRouting } from './providers/device.provider.routing';
+export { ActivityRepoRouting } from './repo/activity.repo.routing';

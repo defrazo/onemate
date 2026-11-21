@@ -1,6 +1,6 @@
 import { Input } from '@/shared/ui';
 
-import { useCalculator } from '../model';
+import { useCalculator } from '../model/useCalculator';
 import { Buttons, Log, Status } from './components';
 
 export const Calculator = () => {

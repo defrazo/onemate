@@ -1,3 +1,2 @@
-export * from './tip';
-export type * from './types';
-export * from './useCalendar';
+export { CalendarStore } from './calendar.store';
+export { CALENDAR_TIP } from './tip';

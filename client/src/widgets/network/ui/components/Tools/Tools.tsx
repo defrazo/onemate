@@ -3,7 +3,9 @@ import { type Icon, IconCertificate, IconLink, IconNetwork, IconPlus } from '@ta
 
 import { Button } from '@/shared/ui';
 
-import { PortCheck, ServiceCheck, SslCheck } from '.';
+import { PortCheck } from './PortCheck';
+import { ServiceCheck } from './ServiceCheck';
+import { SslCheck } from './SslCheck';
 
 type ToolId = 'service' | 'port' | 'ssl';
 
@@ -43,7 +45,7 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 					className="min-h-16 rounded-xl"
 					leftIcon={
 						<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
-							<Icon className="size-4 text-(--accent-primary)" />
+							<Icon className="size-5 text-(--accent-primary) xl:size-4" />
 						</div>
 					}
 					type="button"
@@ -60,7 +62,7 @@ export const Tools = ({ onAddService }: { onAddService: () => void }) => {
 				className="mt-auto min-h-16 rounded-xl bg-(--accent-primary)/5 hover:bg-(--accent-primary-muted)"
 				leftIcon={
 					<div className="flex size-9 shrink-0 items-center justify-center rounded-lg bg-(--accent-primary-muted)">
-						<IconPlus className="size-4 text-(--accent-primary)" />
+						<IconPlus className="size-5 text-(--accent-primary) xl:size-4" />
 					</div>
 				}
 				type="button"

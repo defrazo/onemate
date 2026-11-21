@@ -144,7 +144,7 @@ export const ItemRow = observer(
 							<span
 								ref={setActivatorNodeRef}
 								className={cn(
-									'min-w-0 flex-1 cursor-grab touch-pan-y text-sm leading-3.5 break-all select-none active:cursor-grabbing',
+									'min-w-0 flex-1 cursor-grab touch-pan-y text-sm leading-3.5 break-all select-none focus-visible:ring-1 focus-visible:ring-(--accent-primary) focus-visible:outline-none active:cursor-grabbing',
 									item.is_completed && 'text-(--text-disabled) line-through',
 									todoStore.isLoading && 'cursor-default'
 								)}

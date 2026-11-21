@@ -6,8 +6,8 @@ import { useStore } from '@/app/providers';
 import { useValidation } from '@/shared/lib/hooks';
 import { Button, Input, InputLabel, PasswordInput } from '@/shared/ui';
 
-import { authApi } from '../../api';
-import { emailCooldown } from '../../model';
+import { authApi } from '../../api/auth';
+import { emailCooldown } from '../../model/emailCooldown';
 
 export const LoginForm = observer(() => {
 	const { checkLogin } = useValidation();

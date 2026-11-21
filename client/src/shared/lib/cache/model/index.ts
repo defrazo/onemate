@@ -1,1 +1,1 @@
-export type * from './types';
+export type { Cache, CachePatch, CacheSection } from './types';

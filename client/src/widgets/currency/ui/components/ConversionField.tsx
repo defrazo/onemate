@@ -4,7 +4,7 @@ import { observer } from 'mobx-react-lite';
 import { useStore } from '@/app/providers';
 import { Input, Select } from '@/shared/ui';
 
-import { MAX_VALUE } from '../../model';
+import { MAX_VALUE } from '../../model/constants';
 
 export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) => {
 	const { currencyStore, notifyStore } = useStore();
@@ -29,28 +29,33 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 					max={MAX_VALUE}
 					min="0"
 					name={`currency-${currency.code}`}
-					type="number"
+					type="text"
 					value={input}
 					onBlur={() => {
 						setIsEditing(false);
 
-						if (input.trim() === '' || Number(input) <= 0) {
+						const number = Number(input.replace(',', '.'));
+
+						if (!Number.isFinite(number) || number <= 0) {
 							setInput('1');
 							currencyStore.setCurrencyValue(idx, 1);
-						}
+						} else setInput(String(number));
 					}}
 					onChange={(e) => {
 						const value = e.target.value;
-						const number = Number(value);
+
+						if (!/^\d*(?:[.,]\d*)?$/.test(value)) return;
+
+						const number = Number(value.replace(',', '.'));
 
 						setInput(value);
 
-						if (Number.isNaN(number)) return;
+						if (!Number.isFinite(number)) return;
 
 						if (number > MAX_VALUE) {
 							setInput(String(MAX_VALUE));
 							currencyStore.setCurrencyValue(idx, MAX_VALUE);
-							notifyStore.setNotice('9 999 999 – максимум', 'info');
+							notifyStore.setNotice('Максимум 9 999 999', 'info');
 							return;
 						}
 
@@ -64,12 +69,14 @@ export const ConversionField = observer(({ side }: { side: 'base' | 'target' }) 
 			</div>
 			<div className="shrink-0">
 				<Select
+					keyBadge
 					align="start"
 					className="w-30 hover:border-transparent focus:border-transparent"
-					direction="up"
-					listClassName="-right-1 mb-2 left-auto w-60"
+					listPlacement="end"
+					listWidth={240}
 					options={currencyStore.currencyOptions}
 					placeholder="Выберите валюту"
+					selectedLabel="value"
 					value={currency.code}
 					variant="tone"
 					onChange={(value) => currencyStore.selectCurrency(value, side)}

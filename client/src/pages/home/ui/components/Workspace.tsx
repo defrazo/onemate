@@ -1,4 +1,9 @@
-import { Calendar, Currency, Network, Notes, Translator, Weather } from '.';
+import { Calendar } from './Calendar';
+import { Currency } from './Currency';
+import { Network } from './Network';
+import { Notes } from './Notes';
+import { Translator } from './Translator';
+import { Weather } from './Weather';
 
 export const Workspace = () => (
 	<div

@@ -1,7 +1,7 @@
 import { Suspense } from 'react';
 import { useRoutes } from 'react-router-dom';
 
-import { routes } from '.';
+import { routes } from './routes';
 
 export const RouterProvider = () => {
 	const element = useRoutes(routes);

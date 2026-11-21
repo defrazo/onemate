@@ -1,14 +1,27 @@
-import { type CSSProperties, memo } from 'react';
+import { type CSSProperties, Fragment, memo } from 'react';
 import { useSortable } from '@dnd-kit/sortable';
 import { CSS } from '@dnd-kit/utilities';
 import { IconGripHorizontal } from '@tabler/icons-react';
 
-import { Button, Tooltip } from '@/shared/ui';
+import type { WidgetId } from '@/entities/user-profile';
+import { cn } from '@/shared/lib/utils';
+import { Button, Divider, Tooltip } from '@/shared/ui';
 
-import type { WidgetItem } from '../../model';
+import type { WidgetItem } from '../../model/types';
 
-export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem) => {
-	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id });
+interface WidgetProps {
+	items: WidgetItem[];
+	activeId?: WidgetId;
+	onSelect: (id: WidgetId) => void;
+}
+
+export const Widget = memo(({ items, activeId, onSelect }: WidgetProps) => {
+	const active = items.find((item) => item.id === activeId) ?? items[0];
+
+	const { title, icon: Icon, content, tip } = active;
+	const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({
+		id: items[0].id,
+	});
 
 	const combinedStyle: CSSProperties = {
 		transform: CSS.Transform.toString(transform),
@@ -20,19 +33,48 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 	return (
 		<div
 			ref={setNodeRef}
-			className="core-surface-contrast core-pad group relative flex max-h-[45svh] min-h-0 min-w-0 flex-col gap-2 bg-(--bg-secondary) shadow-(--shadow-contrast) select-none md:gap-3 2xl:h-full lg:landscape:max-h-[44.5svh] xl:landscape:max-h-[60svh] 2xl:landscape:max-h-[44svh] lg:landscape:[@media(max-height:600px)]:max-h-[75svh]"
+			data-widget
+			className="core-surface-contrast core-pad group relative flex max-h-[45svh] min-h-0 min-w-0 flex-col gap-2 bg-(--bg-secondary) shadow-(--shadow-contrast) select-none md:gap-3 lg:landscape:max-h-[44.5svh] xl:landscape:max-h-[60svh] 2xl:landscape:max-h-[44svh] lg:landscape:[@media(max-height:600px)]:max-h-[75svh]"
 			style={combinedStyle}
 		>
-			<header className="flex items-center justify-between">
+			<header className="flex shrink-0 items-center justify-between">
 				<Tooltip className="flex items-center gap-2" content={tip}>
 					<div className="flex size-7 items-center justify-center rounded-md bg-(--accent-primary-muted)">
 						<Icon className="size-4 text-(--accent-primary)" stroke={2.5} />
 					</div>
-					<h1 className="trim text-lg font-bold select-none md:mr-auto md:ml-0">{title}</h1>
 				</Tooltip>
+				{items.length === 1 && <h1 className="trim ml-2 text-lg font-bold select-none md:mr-auto">{title}</h1>}
+				{items.length > 1 && (
+					<div
+						aria-label="Виджеты слота"
+						className="mx-2 flex min-w-0 flex-1 items-center gap-2"
+						role="tablist"
+					>
+						{items.map((item, idx) => (
+							<div key={item.id} className="flex min-w-0 items-center gap-2">
+								{idx > 0 && (
+									<Divider className="my-auto h-2.5 bg-(--border-primary)" direction="Y" margX="xs" />
+								)}
+								<Button
+									aria-selected={active.id === item.id}
+									className={cn(
+										'trim text-lg font-bold select-none md:mr-auto md:ml-0 lg:text-base xl:text-lg',
+										active.id === item.id ? 'text-(--text-primary)' : 'text-(--text-disabled)/70'
+									)}
+									padding="none"
+									role="tab"
+									variant="custom"
+									onClick={() => onSelect(item.id)}
+								>
+									{item.title}
+								</Button>
+							</div>
+						))}
+					</div>
+				)}
 				<Button
 					centerIcon={<IconGripHorizontal className="size-4" />}
-					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100"
+					className="cursor-grab touch-none opacity-0 transition-opacity group-hover:opacity-100 focus-visible:ring-0"
 					padding="none"
 					title="Переместить"
 					variant="icon"
@@ -40,7 +82,7 @@ export const Widget = memo(({ id, title, icon: Icon, content, tip }: WidgetItem)
 					{...attributes}
 				/>
 			</header>
-			{content}
+			<Fragment key={active.id}>{content}</Fragment>
 		</div>
 	);
 });

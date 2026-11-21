@@ -25,8 +25,9 @@
 	--accent-secondary-muted: #8073e826;
 
 	/* Специальные */
-	--danger: #b51111;
-	--danger-hover: #b71212;
+	--danger: #C94040;
+	--danger-muted: #c940401a;
+	--danger-hover: #DC5252;
 
 	--tone: #ffffff08;
 	--tone-hover: #ffffff0f;
@@ -48,6 +49,7 @@
 	--border-secondary: #a0a0a0;
 	--border-contrast: transparent;
 	--border-tone: #ffffff26;
+	--border-tone-strong: #ffffff4d;
 
 	/* Тени */
 	--shadow-contrast: none;
@@ -56,6 +58,12 @@
 	--priority-low: #f8ab30;
 	--priority-medium: #58d889;
 	--priority-high: #fa6961;
+
+	/* Режимы (Assistant) */
+	--assistant-explain: #249fd6;
+	--assistant-improve: #25b982;
+	--assistant-translate: #e65e75;
+	--assistant-ideas: #cf62e2;
 
 	/* Палитра */
 	--palette-slate: #94a3b8;
@@ -96,6 +104,7 @@
 
 	/* Специальные */
 	--danger: #b51111;
+	--danger-muted: #b511111a;
 	--danger-hover: #a50b0bd9;
 
 	--tone: #00000008;
@@ -118,6 +127,7 @@
 	--border-secondary: #c9ccd2;
 	--border-contrast: #c3c3c3;
 	--border-tone: #00000026;
+	--border-tone-strong: #0000004d;
 
 	/* Тени */
 	--shadow-contrast: 0 1px 2px rgb(35 40 50 / 10%);
@@ -126,6 +136,12 @@
 	--priority-low: #f8ab30;
 	--priority-medium: #319c58;
 	--priority-high: #d94d48;
+
+	/* Режимы (Assistant) */
+	--assistant-explain: #16769f;
+	--assistant-improve: #207a55;
+	--assistant-translate: #b7435d;
+	--assistant-ideas: #9735a8;
 
 	/* Палитра */
 	--palette-slate: #94a3b8;

@@ -1,7 +1,7 @@
 import { API_URLS } from '@/shared/config';
 import { ApiError, EmptyResultError, handleError } from '@/shared/lib/errors';
 
-import type { City } from '../model';
+import type { City } from '../model/types';
 
 // Получение города по координатам (для определения местоположения через браузер)
 export const fetchCityByCoordinates = async (lat: number, lon: number): Promise<City | null> => {

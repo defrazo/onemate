@@ -1,2 +1,2 @@
-export * from './fetchCityByCoordinates';
-export * from './fetchCityByIP';
+export { fetchCityByCoordinates } from './fetchCityByCoordinates';
+export { fetchCityByIP } from './fetchCityByIP';

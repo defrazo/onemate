@@ -27,7 +27,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 		modalStore.setModal(
 			<ConfirmDialog
 				confirmLabel="Удалить"
-				description="Это действие нельзя отменить."
+				description="Это действие нельзя отменить"
 				title="Удалить заметку?"
 				variant="danger"
 				onCancel={() => modalStore.closeModal()}
@@ -58,7 +58,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 				{!sortingDisabled && (
 					<Button
 						centerIcon={<IconGripHorizontal className="size-4 text-(--text-secondary)" />}
-						className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 active:cursor-grabbing"
+						className="absolute cursor-grab opacity-0 transition-opacity duration-200 group-hover/note:opacity-100 focus-visible:ring-0 active:cursor-grabbing"
 						padding="none"
 						title="Переместить"
 						variant="icon"
@@ -83,7 +83,7 @@ export const CardActions = observer(({ id, text, color, attributes, listeners, s
 			/>
 			<Button
 				centerIcon={<IconTrash className="size-5 xl:size-4" />}
-				className="transition-[color,opacity] hover:text-(--status-error) xl:opacity-0 xl:group-hover/note:opacity-100"
+				className="transition-[color,opacity] hover:text-(--danger) xl:opacity-0 xl:group-hover/note:opacity-100"
 				padding="none"
 				title="Удалить заметку"
 				variant="icon"

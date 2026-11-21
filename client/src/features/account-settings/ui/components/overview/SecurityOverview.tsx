@@ -3,8 +3,9 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
 
-import { useProfile } from '../../../model';
-import { OverviewRow, OverviewSection } from '.';
+import { useProfile } from '../../../model/useProfile';
+import { OverviewRow } from './OverviewRow';
+import { OverviewSection } from './OverviewSection';
 
 export const SecurityOverview = observer(() => {
 	const { deviceActivityStore } = useStore();
