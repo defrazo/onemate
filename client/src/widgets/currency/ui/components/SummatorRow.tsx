@@ -25,7 +25,7 @@ export const SummatorRow = ({ row, index, options, inputRef, onChange, onRemove 
 					autoComplete="off"
 					className="h-8 min-w-0 border-none bg-transparent text-right text-sm"
 					id={`currency-${index}`}
-					inputMode="decimal"
+					inputMode="text"
 					placeholder="0"
 					value={row.amount}
 					onBlur={(event) => {

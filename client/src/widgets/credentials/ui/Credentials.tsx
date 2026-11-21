@@ -140,7 +140,7 @@ export const Credentials = observer(() => {
 						<div ref={searchRef} className="flex shrink-0 items-center gap-1">
 							<Input
 								autoFocus
-								className="h-6 min-w-0 flex-1 rounded-md pl-2 text-sm"
+								className="h-7 min-w-0 flex-1 rounded-md pl-2 text-sm lg:h-6"
 								id="credentials-search"
 								placeholder="Поиск аккаунтов..."
 								value={query}

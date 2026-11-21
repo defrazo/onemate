@@ -62,14 +62,14 @@ export const Button = ({
 		>
 			{loading ? (
 				<>
-					<Spinner className="mr-2 size-4 border-2 border-(--accent-secondary) border-t-(--text-disabled)" />
+					<Spinner className="mr-1.5 size-4 border-2 border-(--accent-secondary) border-t-(--text-disabled)" />
 					{loadingText ?? centerIcon ?? children}
 				</>
 			) : (
 				<>
-					{leftIcon && <span className="mr-2">{leftIcon}</span>}
+					{leftIcon && <span className="mr-1.5">{leftIcon}</span>}
 					{centerIcon ? <span>{centerIcon}</span> : children}
-					{rightIcon && <span className="ml-2">{rightIcon}</span>}
+					{rightIcon && <span className="ml-1.5">{rightIcon}</span>}
 				</>
 			)}
 		</button>

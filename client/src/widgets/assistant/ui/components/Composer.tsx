@@ -49,7 +49,7 @@ export const Composer = ({
 				<Textarea
 					autoResize
 					aria-label="Сообщение Mate AI"
-					className="block max-h-16 min-h-9 scrollbar-none py-2 pr-6 text-sm"
+					className="block max-h-16 min-h-9 scrollbar-none py-2 pr-6 text-sm not-lg:text-base"
 					id="assistant-input"
 					maxLength={ASSISTANT_MAX_LENGTH}
 					placeholder={metadata.placeholder}
@@ -85,7 +85,7 @@ export const Composer = ({
 					generating ? <IconPlayerStopFilled className="size-4" /> : <IconArrowUp className="size-4" />
 				}
 				className={cn(
-					'size-9 min-h-9 shrink-0 rounded-lg',
+					'size-10 min-h-9 shrink-0 rounded-lg lg:size-9',
 					!generating && metadata.color,
 					!generating && 'text-(--text-on-accent)!'
 				)}

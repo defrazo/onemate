@@ -10,7 +10,11 @@ interface ModeSelectorProps {
 }
 
 export const ModeSelector = ({ value, onChange }: ModeSelectorProps) => (
-	<div aria-label="Режим помощника" className="mr-auto flex shrink-0 items-center gap-1" role="group">
+	<div
+		aria-label="Режим помощника"
+		className="flex shrink-0 items-center gap-1 not-lg:flex-1 not-lg:justify-between lg:mr-auto"
+		role="group"
+	>
 		{ASSISTANT_MODES.map(({ id, title, description, icon: Icon, color }) => {
 			const selected = value === id;
 

@@ -123,7 +123,7 @@ export const Notes = observer(() => {
 						<div ref={searchRef} className="mt-auto flex shrink-0 items-center gap-1">
 							<Input
 								autoFocus
-								className="h-6 min-w-0 flex-1 rounded-md pl-2 text-sm"
+								className="h-7 min-w-0 flex-1 rounded-md pl-2 text-sm lg:h-6"
 								enterKeyHint="search"
 								id="notes-search"
 								placeholder="Поиск заметок..."

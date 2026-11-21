@@ -85,7 +85,9 @@ class CloudFileController extends Controller
         } catch (\Throwable) {
         }
 
-        abort_unless(is_string($contents) && $contents !== '', 404);
+        if (!is_string($contents) || $contents === '') {
+            return response('', 204);
+        }
 
         return response($contents, 200, [
             'Content-Type' => 'image/webp',

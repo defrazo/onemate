@@ -3,12 +3,13 @@ import { formatFixed } from '@/shared/lib/utils';
 import type { CurrencyAmount, RatesList } from '../model/types';
 
 const NUMBER_PATTERN = /^(?:\d+(?:[.,]\d*)?|[.,]\d+)$/;
-const EXPRESSION_PATTERN = /^[\d.,+\-*/\s]*$/;
+const EXPRESSION_PATTERN = /^-?[\d.,]*(?:[+\-*/][\d.,]+)*[+\-*/]?$/;
 const TOKEN_PATTERN = /(?:\d+(?:\.\d*)?|\.\d+)|[+\-*/]/g;
 
 const roundAmount = (value: number): number => Math.round((value + Number.EPSILON) * 100) / 100;
 
-export const isAmountInput = (value: string): boolean => EXPRESSION_PATTERN.test(value) && value.length <= 255;
+export const isAmountInput = (value: string): boolean =>
+	value.length <= 255 && EXPRESSION_PATTERN.test(value) && !/[\d.,]*[.,][\d.,]*[.,]/.test(value);
 
 export const evaluateAmount = (value: string): number | null => {
 	const input = value.replace(/\s/g, '').replace(/,/g, '.');

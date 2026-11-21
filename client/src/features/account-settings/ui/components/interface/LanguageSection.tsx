@@ -16,7 +16,7 @@ export const LanguageSection = () => {
 			</div>
 			<Select
 				disabled
-				className="ml-auto h-8 max-w-36 xl:max-w-52"
+				className="ml-auto h-8 max-w-36 text-sm xl:max-w-52"
 				options={languages}
 				value="ru"
 				variant="toneStrong"

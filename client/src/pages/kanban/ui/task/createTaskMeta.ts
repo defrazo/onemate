@@ -3,7 +3,7 @@ import type { Task } from '../../model/types';
 
 export const createTaskMeta = (task: Task) => {
 	const element = document.createElement('div');
-	element.className = 'flex min-h-5.5 items-center justify-between';
+	element.className = 'flex h-5.5 items-center justify-between';
 
 	// === STATUS ===
 	if (task.status !== null) {

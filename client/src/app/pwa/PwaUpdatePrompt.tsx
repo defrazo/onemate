@@ -158,19 +158,19 @@ export const PwaUpdatePrompt = () => {
 				() => (
 					<div className="core-surface flex w-full flex-col gap-2.5 bg-(--bg-secondary) px-3 py-2.5 shadow-[0_12px_32px_rgba(0,0,0,0.28)] select-none">
 						<div className="flex items-center gap-2.5">
-							<div className="flex size-7 shrink-0 items-center justify-center rounded-md bg-(--status-info-muted) text-(--status-info)">
-								<IconInfoCircle className="size-4.5" />
+							<div className="flex size-10 shrink-0 items-center justify-center rounded-md bg-(--status-info-muted) text-(--status-info)">
+								<IconInfoCircle className="size-6" />
 							</div>
 							<div className="min-w-0 flex-1">
-								<p className="text-sm text-(--text-primary)">Доступно обновление OneMate</p>
-								<p className="mt-0.5 text-xs leading-relaxed text-(--text-secondary)">
+								<p className="mt-0.5 text-sm text-(--text-primary)">Доступно обновление OneMate</p>
+								<p className="text-xs leading-relaxed text-(--text-secondary)">
 									Новая версия приложения готова к установке
 								</p>
 							</div>
 						</div>
 						<div className="flex gap-2">
 							<Button
-								className="min-h-11 min-w-0 flex-1 text-sm"
+								className="min-h-8 min-w-0 flex-1 text-sm"
 								padding="sm"
 								variant="tone"
 								onClick={deferUpdate}
@@ -178,7 +178,7 @@ export const PwaUpdatePrompt = () => {
 								Позже
 							</Button>
 							<Button
-								className="min-h-11 min-w-0 flex-1 text-sm"
+								className="min-h-8 min-w-0 flex-1 text-sm"
 								padding="sm"
 								variant="accent"
 								onClick={confirmUpdate}

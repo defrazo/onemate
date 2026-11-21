@@ -49,7 +49,7 @@ export const List = observer(({ notes, sortingDisabled, children }: ListProps) =
 						title="Ничего не найдено"
 					/>
 				) : (
-					<div className="flex min-h-0 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
+					<div className="flex min-h-0 flex-1 scrollbar-none flex-col gap-2 overflow-y-auto md:gap-3">
 						{notes.map((note) => children(note))}
 					</div>
 				)}
