@@ -93,7 +93,7 @@ services:
     healthcheck:
       test:
         ["CMD-SHELL", 'pg_isready -U "$${POSTGRES_USER}" -d "$${POSTGRES_DB}"']
-      interval: 5s
+      interval: 60s
       timeout: 5s
       retries: 10
 
@@ -103,7 +103,7 @@ services:
     restart: unless-stopped
     env_file:
       - ./.env.production
-    command: php artisan queue:work --tries=3 --timeout=40
+    command: php artisan queue:work --sleep=10 --tries=3 --timeout=40
     volumes:
       - onemate_passport:/var/www/html/storage/passport:ro
     depends_on:
