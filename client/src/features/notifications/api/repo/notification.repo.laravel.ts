@@ -4,8 +4,8 @@ import type { INotificationRepo } from '../../model/ports';
 import type { AppNotification } from '../../model/types';
 
 export class NotificationRepoLaravel implements INotificationRepo {
-	async getNotifications(): Promise<AppNotification[]> {
-		const { data } = await api.get<AppNotification[]>('/notifications');
+	async getNotifications(signal?: AbortSignal): Promise<AppNotification[]> {
+		const { data } = await api.get<AppNotification[]>('/notifications', { signal });
 		return data;
 	}
 

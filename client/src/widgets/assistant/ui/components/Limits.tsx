@@ -30,6 +30,29 @@ export const Limits = observer(({ mobile = false, anchorRef }: LimitsProps) => {
 
 	useEffect(() => () => store.setLimitsOpen(false), [store]);
 
+	useEffect(() => {
+		if (!store.limitsOpen) return;
+
+		let lastCheck = Date.now();
+
+		const onVisibilityChange = () => {
+			const now = Date.now();
+
+			if (
+				!store.limitsOpen ||
+				document.visibilityState !== 'visible' ||
+				now - Math.max(lastCheck, store.limitsLoadedAt ?? 0) < 60000
+			)
+				return;
+
+			lastCheck = now;
+			void store.loadLimits();
+		};
+
+		document.addEventListener('visibilitychange', onVisibilityChange);
+		return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+	}, [store, store.limitsOpen]);
+
 	const { refs, floatingStyles, context } = useFloating({
 		open: store.limitsOpen,
 		onOpenChange: store.setLimitsOpen,
@@ -142,6 +165,17 @@ export const Limits = observer(({ mobile = false, anchorRef }: LimitsProps) => {
 							</div>
 						);
 					})}
+					{store.limitsLoadedAt !== null && (
+						<span className="text-xs text-(--text-disabled)">
+							Обновлено:{' '}
+							{new Date(store.limitsLoadedAt).toLocaleString('ru-RU', {
+								day: '2-digit',
+								month: '2-digit',
+								hour: '2-digit',
+								minute: '2-digit',
+							})}
+						</span>
+					)}
 					{data && (store.limitsError || metrics.some(({ outdated }) => outdated)) && (
 						<span className="text-xs text-(--text-disabled)" role="status">
 							{store.limitsError

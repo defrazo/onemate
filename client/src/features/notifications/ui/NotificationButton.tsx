@@ -25,7 +25,10 @@ export const NotificationButton = observer(() => {
 				className="size-9 aria-pressed:bg-(--tone-strong) aria-pressed:text-(--accent-primary)"
 				type="button"
 				variant="iconSurface"
-				onClick={() => setIsOpen((value) => !value)}
+				onClick={() => {
+					if (!isOpen) void notificationStore.refreshIfStale().catch(() => {});
+					setIsOpen((value) => !value);
+				}}
 			/>
 			{notificationStore.unreadCount > 0 && (
 				<span className="absolute top-1.5 right-1.5 size-1.5 rounded-full bg-(--accent-primary)" />
