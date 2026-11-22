@@ -3,47 +3,18 @@ import { observer } from 'mobx-react-lite';
 
 import { useStore } from '../store';
 
-const NOTIFICATIONS_REFRESH_INTERVAL = 60_000;
-
 export const NotificationsProvider = observer(({ children }: PropsWithChildren) => {
-	const { notificationStore, userStore } = useStore();
+	const { notificationStore } = useStore();
 
 	useEffect(() => {
-		if (!userStore.id) {
-			notificationStore.reset();
-			return;
-		}
-
-		let intervalId: number | undefined;
-		let cancelled = false;
-
-		const start = async () => {
-			try {
-				await notificationStore.load();
-			} catch {
-				return;
-			}
-
-			if (cancelled) return;
-
-			intervalId = window.setInterval(() => {
-				void (async () => {
-					try {
-						const newNotifications = await notificationStore.refresh();
-						notificationStore.showBrowserNotifications(newNotifications);
-					} catch {}
-				})();
-			}, NOTIFICATIONS_REFRESH_INTERVAL);
+		const onVisibilityChange = () => {
+			if (document.visibilityState === 'visible') void notificationStore.refreshIfStale().catch(() => {});
 		};
 
-		void start();
+		document.addEventListener('visibilitychange', onVisibilityChange);
 
-		return () => {
-			cancelled = true;
-
-			if (intervalId !== undefined) window.clearInterval(intervalId);
-		};
-	}, [notificationStore, userStore.id]);
+		return () => document.removeEventListener('visibilitychange', onVisibilityChange);
+	}, [notificationStore]);
 
 	return children;
 });

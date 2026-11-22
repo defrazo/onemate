@@ -1,7 +1,7 @@
 import type { AppNotification } from './types';
 
 export interface INotificationRepo {
-	getNotifications(): Promise<AppNotification[]>;
+	getNotifications(signal?: AbortSignal): Promise<AppNotification[]>;
 	readNotification(id: string): Promise<AppNotification>;
 	readAllNotifications(): Promise<void>;
 	deleteNotification(id: string): Promise<void>;

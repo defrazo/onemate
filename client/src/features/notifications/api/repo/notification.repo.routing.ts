@@ -26,9 +26,9 @@ export class NotificationRepoRouting implements INotificationRepo {
 		}
 	}
 
-	async getNotifications(): Promise<AppNotification[]> {
+	async getNotifications(signal?: AbortSignal): Promise<AppNotification[]> {
 		this.checkPermission('notification', 'read');
-		return this.getTargetRepo().getNotifications();
+		return this.getTargetRepo().getNotifications(signal);
 	}
 
 	async readNotification(id: string): Promise<AppNotification> {
