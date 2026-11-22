@@ -31,7 +31,7 @@ export class AssistantStore extends BaseStore {
 	private controller: AbortController | null = null;
 	private timer: ReturnType<typeof setTimeout> | null = null;
 	private limitsController: AbortController | null = null;
-	private limitsTimer: ReturnType<typeof setTimeout> | null = null;
+	private limitsRefreshPending = false;
 	private archiveController: AbortController | null = null;
 	private searchTimer: ReturnType<typeof setTimeout> | null = null;
 	private refreshActive = false;
@@ -44,6 +44,7 @@ export class AssistantStore extends BaseStore {
 	limitsOpen = false;
 	limitsLoading = false;
 	limitsError: string | null = null;
+	limitsLoadedAt: number | null = null;
 
 	view: 'active' | 'archive' | 'readonly' = 'active';
 
@@ -169,11 +170,9 @@ export class AssistantStore extends BaseStore {
 	setLimitsOpen = (open: boolean): void => {
 		this.limitsOpen = open && this.available();
 
-		if (this.limitsTimer) clearTimeout(this.limitsTimer);
-		this.limitsTimer = null;
-
 		if (this.limitsOpen) void this.loadLimits();
 		else {
+			this.limitsRefreshPending = false;
 			this.limitsController?.abort();
 			this.limitsController = null;
 			this.limitsLoading = false;
@@ -181,13 +180,16 @@ export class AssistantStore extends BaseStore {
 	};
 
 	async loadLimits(): Promise<void> {
-		if (!this.available() || this.limitsController) return;
+		if (!this.available()) return;
 
-		if (this.limitsTimer) clearTimeout(this.limitsTimer);
-		this.limitsTimer = null;
+		if (this.limitsController) {
+			this.limitsRefreshPending = true;
+			return;
+		}
 
 		const controller = new AbortController();
 
+		this.limitsRefreshPending = false;
 		this.limitsController = controller;
 		this.limitsLoading = true;
 
@@ -200,6 +202,7 @@ export class AssistantStore extends BaseStore {
 			runInAction(() => {
 				this.limits = result;
 				this.limitsError = null;
+				this.limitsLoadedAt = Date.now();
 			});
 		} catch (error) {
 			if (this.limitsController !== controller || controller.signal.aborted || owner !== this.owner) return;
@@ -213,8 +216,7 @@ export class AssistantStore extends BaseStore {
 					this.limitsController = null;
 					this.limitsLoading = false;
 
-					if (this.limitsOpen && this.available())
-						this.limitsTimer = setTimeout(() => void this.loadLimits(), 25000);
+					if (this.limitsRefreshPending) void this.loadLimits();
 				});
 		}
 	}
@@ -584,13 +586,19 @@ export class AssistantStore extends BaseStore {
 
 		this.conversation = snapshot.conversation;
 		this.merge(snapshot.messages);
+
 		for (const g of snapshot.generations) this.applyGeneration(g, false);
-		this.generation =
+
+		const generation =
 			snapshot.pending_generation ??
 			[...snapshot.generations].sort(
 				(a, b) => b.created_at.localeCompare(a.created_at) || b.id.localeCompare(a.id)
 			)[0] ??
 			null;
+
+		if (generation) this.applyGeneration(generation);
+		else this.generation = null;
+
 		this.before = snapshot.pagination.before_sequence;
 		this.loaded = true;
 	}
@@ -806,7 +814,8 @@ export class AssistantStore extends BaseStore {
 	}
 
 	private applyGeneration(g: AssistantGeneration, current = true): void {
-		const finished = this.generation?.execution_pending && this.generation.id === g.id && !g.execution_pending;
+		const finished =
+			current && !g.execution_pending && (this.generation?.id !== g.id || this.generation.execution_pending);
 		this.generations[g.user_message_id] = g;
 
 		if (current) this.generation = g;
@@ -889,6 +898,7 @@ export class AssistantStore extends BaseStore {
 			limitsOpen: observable,
 			limitsLoading: observable,
 			limitsError: observable,
+			limitsLoadedAt: observable,
 			view: observable,
 			archiveItems: observable,
 			search: observable,
@@ -1025,6 +1035,7 @@ export class AssistantStore extends BaseStore {
 		this.setLimitsOpen(false);
 		this.limits = null;
 		this.limitsError = null;
+		this.limitsLoadedAt = null;
 		this.halt();
 		this.view = 'active';
 		this.archiveItems = [];
