@@ -1,5 +1,5 @@
+import { type ReactNode, useId } from 'react';
 import { IconArrowUp, IconInfoCircle, IconPlayerStopFilled } from '@tabler/icons-react';
-import type { ReactNode } from 'react';
 
 import { cn } from '@/shared/lib/utils';
 import { Button, Textarea, Tooltip } from '@/shared/ui';
@@ -28,6 +28,7 @@ export const Composer = ({
 	onSend,
 	onStop,
 }: ComposerProps) => {
+	const inputId = useId();
 	const generating = phase === 'generating' || phase === 'stopping';
 	const canSend = allowed && !generating && phase !== 'loading' && Boolean(value.trim());
 	const showLength = value.length >= ASSISTANT_MAX_LENGTH - 500;
@@ -50,7 +51,7 @@ export const Composer = ({
 					autoResize
 					aria-label="Сообщение Mate AI"
 					className="block max-h-16 min-h-9 scrollbar-none py-2 pr-6 text-sm not-lg:text-base"
-					id="assistant-input"
+					id={inputId}
 					maxLength={ASSISTANT_MAX_LENGTH}
 					placeholder={metadata.placeholder}
 					rows={1}

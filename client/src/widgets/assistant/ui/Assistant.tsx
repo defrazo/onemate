@@ -1,5 +1,13 @@
-import { createElement, type ReactNode, useEffect, useRef } from 'react';
-import { IconHistory, IconMessagePlus, IconMessages, IconTrash, IconWorld } from '@tabler/icons-react';
+import { createElement, type ReactNode, useEffect, useRef, useState } from 'react';
+import {
+	IconHistory,
+	IconMessagePlus,
+	IconMessages,
+	IconTrash,
+	IconWindowMaximize,
+	IconWindowMinimize,
+	IconWorld,
+} from '@tabler/icons-react';
 import { observer } from 'mobx-react-lite';
 
 import { useStore } from '@/app/providers';
@@ -7,18 +15,19 @@ import { useResponsive } from '@/shared/lib/hooks';
 import { cn } from '@/shared/lib/utils';
 import { BackButton, Button, ConfirmDialog, LoadingState, SyncIndicator, Tooltip } from '@/shared/ui';
 
-import { Archive, Composer, Limits, Messages, MobileActions, ModeSelector, SubmissionError } from './components';
+import { Archive, ChatContent, ChatExpanded, Limits, Messages, MobileActions, ModeSelector } from './components';
 
 export const Assistant = observer(() => {
 	const { isMobile } = useResponsive();
 
 	const { userStore, modalStore, assistantStore: store } = useStore();
 
+	const [expanded, setExpanded] = useState(false);
+
 	const ownedModal = useRef<ReactNode>(null);
 	const actionsRef = useRef<HTMLDivElement>(null);
 
-	const recovery = store.submissionRecovery;
-	const generating = store.phase === 'stopping' || store.generating;
+	const closeExpanded = () => setExpanded(false);
 
 	const confirmDelete = (id: string) => {
 		const owner = userStore.id;
@@ -54,6 +63,10 @@ export const Assistant = observer(() => {
 		},
 		[modalStore, userStore.id]
 	);
+
+	useEffect(() => {
+		if (store.view !== 'active') setExpanded(false);
+	}, [store.view]);
 
 	if (store.view === 'archive') return <Archive store={store} onDelete={confirmDelete} />;
 
@@ -137,6 +150,28 @@ export const Assistant = observer(() => {
 		);
 	}
 
+	const searchControl = userStore.userRole === 'admin' && (
+		<Tooltip
+			content={
+				store.searchEnabled
+					? 'Выключить поиск в интернете'
+					: 'Разрешить поиск в интернете. Расход токенов значительно увеличится'
+			}
+			contentClassName="max-w-70"
+		>
+			<Button
+				aria-checked={store.searchEnabled}
+				aria-label="Поиск в интернете"
+				centerIcon={<IconWorld className="size-6 lg:size-5 xl:size-4" />}
+				className={cn('size-7 rounded-md', store.searchEnabled && 'text-(--accent-primary)!')}
+				padding="none"
+				role="switch"
+				variant="iconSurface"
+				onClick={() => store.setSearchEnabled(!store.searchEnabled)}
+			/>
+		</Tooltip>
+	);
+
 	return (
 		<section aria-label="Mate AI" className="flex min-h-0 min-w-0 flex-1 flex-col gap-1.5 overflow-hidden">
 			<div className="mt-0.5 flex shrink-0 flex-wrap items-center justify-between gap-2 xl:flex-row">
@@ -157,30 +192,20 @@ export const Assistant = observer(() => {
 					</>
 				) : (
 					<div className="ml-auto flex items-center gap-3 border-(--border-primary) not-lg:border-t not-lg:pt-2 lg:gap-1">
-						{userStore.userRole === 'admin' && (
-							<Tooltip
-								content={
-									store.searchEnabled
-										? 'Выключить поиск в интернете'
-										: 'Разрешить поиск в интернете. Расход токенов значительно увеличится'
-								}
-								contentClassName="max-w-70"
-							>
-								<Button
-									aria-checked={store.searchEnabled}
-									aria-label="Поиск в интернете"
-									centerIcon={<IconWorld className="size-6 lg:size-5 xl:size-4" />}
-									className={cn(
-										'size-7 rounded-md',
-										store.searchEnabled && 'text-(--accent-primary)!'
-									)}
-									padding="none"
-									role="switch"
-									variant="iconSurface"
-									onClick={() => store.setSearchEnabled(!store.searchEnabled)}
-								/>
-							</Tooltip>
-						)}
+						<Tooltip content="Развернуть чат">
+							<Button
+								aria-label="Развернуть чат"
+								centerIcon={<IconWindowMaximize className="size-6 lg:size-5 xl:size-4" />}
+								className="hidden size-7 lg:flex"
+								padding="none"
+								variant="iconSurface"
+								onClick={(event) => {
+									event.currentTarget.blur();
+									setExpanded(true);
+								}}
+							/>
+						</Tooltip>
+						{searchControl}
 						<Tooltip content="Лимиты и ограничения">
 							<Limits />
 						</Tooltip>
@@ -208,57 +233,31 @@ export const Assistant = observer(() => {
 					</div>
 				)}
 			</div>
-			<Messages
-				before={store.before}
-				canRetry={store.canSend}
-				error={null}
-				historyError={store.historyError}
-				loadingHistory={store.loadingHistory}
-				messages={store.visibleMessages}
-				phase={store.phase === 'error' && store.error === recovery?.error ? 'idle' : store.phase}
-				recovery={recovery ? { ...recovery, onRepeat: () => void store.repeatSubmission() } : null}
-				regenerateMessageId={store.regenerateMessageId}
-				submittedMessageId={store.lastSubmittedMessageId}
-				onOlder={() => void store.loadOlder()}
-				onRegenerate={(id) => void store.regenerate(id)}
-				onRetry={(id) => void store.retry(id)}
-			/>
-			{generating && (
-				<div className="mr-auto flex items-center gap-2">
-					<LoadingState size="xs" />
-					<span className="shrink-0 text-sm text-(--text-disabled)" role="status">
-						{store.phase === 'stopping' ? 'Останавливаем…' : 'Ожидаем ответ…'}
-					</span>
-				</div>
+			<ChatContent />
+			{expanded && (
+				<ChatExpanded
+					blocked={!!modalStore.modal}
+					controls={
+						<>
+							<ModeSelector value={store.mode} onChange={store.setMode} />
+							<Tooltip content="Свернуть чат">
+								<Button
+									aria-label="Свернуть чат"
+									centerIcon={<IconWindowMinimize className="lg:size-5 xl:size-4" />}
+									className="size-7"
+									padding="none"
+									variant="iconSurface"
+									onClick={closeExpanded}
+								/>
+							</Tooltip>
+							{searchControl}
+						</>
+					}
+					onClose={closeExpanded}
+				>
+					<ChatContent />
+				</ChatExpanded>
 			)}
-			{store.error && store.error !== recovery?.error && (
-				<span className="text-xs text-(--status-error)" role="alert">
-					{store.error}
-				</span>
-			)}
-			{store.error && (
-				<Button className="text-xs" disabled={store.busy} onClick={() => void store.load()}>
-					Обновить диалог
-				</Button>
-			)}
-			<Composer
-				canSend={store.canSend}
-				mode={store.mode}
-				phase={store.phase}
-				recovery={
-					recovery && !recovery.messageId ? (
-						<SubmissionError
-							disabled={recovery.disabled}
-							error={recovery.error}
-							onRepeat={() => void store.repeatSubmission()}
-						/>
-					) : null
-				}
-				value={store.input}
-				onChange={store.setInput}
-				onSend={() => void store.send()}
-				onStop={() => void store.stop()}
-			/>
 			{store.isSyncing && <SyncIndicator />}
 		</section>
 	);
