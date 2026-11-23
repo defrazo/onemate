@@ -107,13 +107,13 @@
 
 /* Ассистент таблицы */
 .assistant-table-scroll {
+	min-width: 0;
 	max-width: 100%;
 	overflow-x: auto;
 }
 
 .assistant-table-scroll table {
-	width: max-content;
-	min-width: 100%;
+	width: 100%;
 	border-collapse: collapse;
 }
 
@@ -122,12 +122,15 @@
 	border: 1px solid var(--border-primary);
 	padding: 0.3em 0.5em;
 	text-align: left;
+	vertical-align: top;
+	overflow-wrap: anywhere;
 }
 
 .assistant-table-scroll th {
 	font-weight: 600;
-	background: var(--bg-secondary);
+	background: var(--tone);
 }
+
 
 /* Ассистент синтаксис */
 .assistant-markdown .hljs-keyword,
